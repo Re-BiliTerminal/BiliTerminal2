@@ -45,12 +45,14 @@ fun readVersion(): String {
 }
 
 fun getGitHash(): String {
-    val stdout = ByteArrayOutputStream()
-    exec {
-        commandLine("git", "rev-parse", "--short", "HEAD")
-        standardOutput = stdout
-    }
-    return stdout.toString().trim()
+    return kotlin.runCatching {
+        val stdout = ByteArrayOutputStream()
+        exec {
+            commandLine("git", "rev-parse", "--short", "HEAD")
+            standardOutput = stdout
+        }
+        stdout.toString().trim()
+    }.getOrNull() ?: "nogit"
 }
 
 android {
@@ -73,6 +75,7 @@ android {
         multiDexEnabled = true
 
         ndk {
+            //noinspection ChromeOsAbiSupport
             abiFilters += setOf("armeabi-v7a", "x86", "mips")
         }
     }
@@ -134,12 +137,17 @@ android {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
+    //noinspection GradleDependency
     implementation("com.google.zxing:core:3.5.0")
+    //noinspection GradleDependency
     implementation("androidx.appcompat:appcompat:1.5.1")
+    //noinspection GradleDependency
     implementation("com.google.android.material:material:1.9.0")
+    //noinspection GradleDependency
     implementation("com.squareup.okhttp3:okhttp:3.12.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("com.github.bumptech.glide:glide:4.13.2")
+    //noinspection GradleDependency
     implementation("org.jsoup:jsoup:1.10.2")
     implementation("com.github.chrisbanes:PhotoView:2.3.0")
     implementation("org.greenrobot:eventbus:3.3.1")
@@ -148,6 +156,7 @@ dependencies {
     implementation(project(":DanmakuFlameMaster"))
     implementation(project(":brotlij"))
     implementation("androidx.asynclayoutinflater:asynclayoutinflater:1.0.0")
+    //noinspection GradleDependency
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     val multidexVersion = "2.0.1"
     implementation("androidx.multidex:multidex:$multidexVersion")

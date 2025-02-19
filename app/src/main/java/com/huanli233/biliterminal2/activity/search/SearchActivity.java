@@ -165,18 +165,8 @@ public class SearchActivity extends InstanceActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     public void searchKeyword(String str) {
-        if (str.contains("Robin") || str.contains("robin")) {
-            if (str.contains("撅")) {
-                MsgUtil.showText("特殊彩蛋", getString(R.string.egg_special));
-                return;
-            }
-            if (str.contains("纳西妲")) {
-                MsgUtil.showText("特殊彩蛋", getString(R.string.egg_robin_nahida));
-                return;
-            }
-        }
-        for (String s:specialList) {
-            if(str.contains(s)){
+        for (String s : specialList) {
+            if (str.contains(s)){
                 MsgUtil.showText("特殊彩蛋", getString(R.string.egg_warmwords_warmworld));
                 break;
             }

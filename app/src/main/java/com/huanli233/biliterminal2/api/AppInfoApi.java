@@ -47,7 +47,7 @@ public class AppInfoApi {
                     if (!SharedPreferencesUtil.getString("player", "null").equals("terminalPlayer"))
                         MsgUtil.showDialog("小提醒", "现在的内置播放器已支持以下特色功能：\n·视频实时观看人数\n·显示直播弹幕\n·强制滚动显示弹幕\n\n欢迎在需要时切换到内置播放器使用哦");
                 }
-                MsgUtil.showText("更新公告", context.getResources().getString(R.string.update_tip) + "\n\n更新细节：\n" + ToolsUtil.getUpdateLog(context));
+//                MsgUtil.showText("更新公告", context.getResources().getString(R.string.update_tip) + "\n\n更新细节：\n" + ToolsUtil.getUpdateLog(context));
                 if (ToolsUtil.isDebugBuild())
                     MsgUtil.showDialog("警告", "这个版本是测试版，仅在测试群中发布，禁止外传到如奇妙应用、小趣空间等平台或其他QQ群");
                 SharedPreferencesUtil.putInt("app_version_last", version);

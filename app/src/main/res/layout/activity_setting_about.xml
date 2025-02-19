@@ -144,86 +144,6 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginVertical="6dp"
-                    android:gravity="center"
-                    android:text="@string/about_group"
-                    android:textSize="12sp" />
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/author_words"
-                android:layout_marginTop="6dp"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent">
-
-                <LinearLayout
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:paddingVertical="6dp"
-                    android:paddingHorizontal="4dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="作者的话"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginVertical="2dp"
-                        android:gravity="center"
-                        android:text="@string/about_say"
-                        android:textSize="11sp" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_marginTop="6dp"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent">
-
-                <LinearLayout
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:paddingVertical="6dp"
-                    android:paddingHorizontal="4dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="温馨提醒"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginVertical="2dp"
-                        android:gravity="center"
-                        android:text="@string/about_group_tip"
-                        android:textSize="11sp" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp">
 
@@ -233,7 +153,7 @@
                     android:gravity="center"
                     android:paddingVertical="6dp"
                     android:paddingHorizontal="4dp"
-                    android:text="@string/about_wearbili"
+                    android:text="@string/about_attention"
                     android:textSize="11sp" />
 
             </com.google.android.material.card.MaterialCardView>
