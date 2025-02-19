@@ -19,7 +19,7 @@ apply plugin: 'com.android.library'
 def SourcePath = 'src/main/'
 
 android {
-    compileSdkVersion 33
+    compileSdk 34
 
     buildTypes {
         release {
@@ -34,6 +34,12 @@ android {
             jniLibs.srcDirs = ["${SourcePath}libs"]
         }
         androidTest.setRoot("${SourcePath}../androidTest")
+    }
+    namespace 'master.flame.danmaku'
+    defaultConfig {
+        minSdkVersion 14
+        //noinspection ExpiredTargetSdkVersion
+        targetSdkVersion 22
     }
 }
 if (rootProject.file('gradle/gradle-mvn-push.gradle').exists()) {

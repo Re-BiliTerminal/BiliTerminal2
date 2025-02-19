@@ -90,7 +90,8 @@ public class DownloadService extends Service {
         }
 
         Intent intent = new Intent(this, DownloadListActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        PendingIntent pendingIntent;
+        pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         builder = new NotificationCompat.Builder(this, "download_service")
                 .setSmallIcon(R.mipmap.icon)
                 .setContentTitle("哔哩终端下载服务")

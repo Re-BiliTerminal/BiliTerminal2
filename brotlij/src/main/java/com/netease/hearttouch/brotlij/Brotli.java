@@ -5,8 +5,6 @@ import java.io.File;
 
 public class Brotli {
 
-    public static final String BROTLI_VERSION = "HEAD-2016-03-20-commit_f453b1bf363be71a23be9d1eec8bf7975dbcfc4e";
-
     public static final Mode DEFAULT_MODE = Mode.GENERIC;
     public static final int DEFAULT_QUALITY = 11;
     public static final int DEFAULT_LGWIN = 22;
@@ -33,7 +31,7 @@ public class Brotli {
          */
         FONT(2);
 
-        public int mode;
+        public final int mode;
 
         Mode(int mode) {
             this.mode = mode;

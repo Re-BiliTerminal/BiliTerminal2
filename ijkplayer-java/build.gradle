@@ -1,11 +1,9 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 33
+    compileSdk 34
+    namespace 'tv.danmaku.ijk.media.player'
 }
 
-dependencies {
-
-}
 
 

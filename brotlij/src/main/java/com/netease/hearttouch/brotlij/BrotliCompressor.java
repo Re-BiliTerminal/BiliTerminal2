@@ -1,7 +1,6 @@
 package com.netease.hearttouch.brotlij;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 
 /**
  * Created by hanpfei0306 on 17-3-31.
@@ -14,12 +13,7 @@ public class BrotliCompressor {
     private static final int DATA_IN_BUFFER_MIN_SIZE = 8 * 1024;
     private static final int DATA_OUT_BUFFER_MIN_SIZE = 16 * 1024;
 
-    private Brotli.Mode mMode = Brotli.DEFAULT_MODE;
-    private int mQuality = Brotli.DEFAULT_QUALITY;
-    private int mLgwin = Brotli.DEFAULT_LGWIN;
-    private int mLgblock = Brotli.DEFAULT_LGBLOCK;
-
-    private long mEncoderInstance;
+    private final long mEncoderInstance;
 
     private byte[] mDataInBuffer;
     private byte[] mDataOutBuffer;
@@ -27,6 +21,10 @@ public class BrotliCompressor {
     private ByteArrayOutputStream mOutputByteArrayOS;
 
     public BrotliCompressor() {
+        int mLgblock = Brotli.DEFAULT_LGBLOCK;
+        int mLgwin = Brotli.DEFAULT_LGWIN;
+        int mQuality = Brotli.DEFAULT_QUALITY;
+        Brotli.Mode mMode = Brotli.DEFAULT_MODE;
         mEncoderInstance = nativeCreateBrotliCompressorInstance(mMode.mode, mQuality, mLgwin, mLgblock);
         mOutputByteArrayOS = new ByteArrayOutputStream();
     }
@@ -79,8 +77,7 @@ public class BrotliCompressor {
     }
 
     public boolean compressFile(String inputFilePath, String outputFilePath) {
-        boolean ret = nativeCompressFile(mEncoderInstance, inputFilePath, outputFilePath);
-        return ret;
+        return nativeCompressFile(mEncoderInstance, inputFilePath, outputFilePath);
     }
 
     public void finish() {

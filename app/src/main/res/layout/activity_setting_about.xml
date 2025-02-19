@@ -252,7 +252,6 @@
                     android:layout_marginHorizontal="8dp"
                     android:gravity="center_vertical"
                     android:text="捐赠列表"
-                    android:textAlignment="textStart"
                     android:textSize="13sp"
                     app:drawableEndCompat="@drawable/arrow_forward" />
             </com.google.android.material.card.MaterialCardView>
@@ -724,7 +723,6 @@
                     android:layout_marginHorizontal="8dp"
                     android:gravity="center_vertical"
                     android:text="开源图标的信息"
-                    android:textAlignment="textStart"
                     android:textSize="13sp"
                     app:drawableEndCompat="@drawable/arrow_forward" />
             </com.google.android.material.card.MaterialCardView>

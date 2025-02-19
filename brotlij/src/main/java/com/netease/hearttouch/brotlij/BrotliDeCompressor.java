@@ -1,7 +1,6 @@
 package com.netease.hearttouch.brotlij;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 
 /**
  * Created by hanpfei0306 on 17-4-5.
@@ -10,7 +9,7 @@ import java.io.File;
 public class BrotliDeCompressor {
     private static final int DATA_IN_BUFFER_SIZE = 16 * 1024;
 
-    private long mDecoderInstance;
+    private final long mDecoderInstance;
 
     private byte[] mDataInBuffer;
 

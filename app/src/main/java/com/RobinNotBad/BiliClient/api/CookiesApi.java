@@ -82,10 +82,6 @@ public class CookiesApi {
      * 生成bili_ticket
      *
      * @return bili_ticket and create time
-     * @throws IOException
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeyException
-     * @throws JSONException
      */
     public static Pair<String, Integer> genBiliTicket() throws IOException, NoSuchAlgorithmException, InvalidKeyException, JSONException {
         int ts = (int) (System.currentTimeMillis() / 1000);

@@ -37,5 +37,19 @@
     <init>(java.lang.Throwable);
 }
 
-# 抛出异常时保留代码行号 
 -keepattributes SourceFile,LineNumberTable
+
+-dontwarn master.flame.danmaku.controller.DrawHandler$Callback
+-dontwarn master.flame.danmaku.controller.IDanmakuView
+-dontwarn master.flame.danmaku.danmaku.loader.ILoader
+-dontwarn master.flame.danmaku.danmaku.loader.android.DanmakuLoaderFactory
+-dontwarn master.flame.danmaku.danmaku.model.AbsDisplayer
+-dontwarn master.flame.danmaku.danmaku.model.BaseDanmaku
+-dontwarn master.flame.danmaku.danmaku.model.DanmakuTimer
+-dontwarn master.flame.danmaku.danmaku.model.IDanmakus
+-dontwarn master.flame.danmaku.danmaku.model.android.DanmakuContext
+-dontwarn master.flame.danmaku.danmaku.model.android.DanmakuFactory
+-dontwarn master.flame.danmaku.danmaku.model.android.Danmakus
+-dontwarn master.flame.danmaku.danmaku.parser.BaseDanmakuParser
+-dontwarn master.flame.danmaku.danmaku.parser.IDataSource
+-dontwarn master.flame.danmaku.danmaku.parser.android.BiliDanmukuParser

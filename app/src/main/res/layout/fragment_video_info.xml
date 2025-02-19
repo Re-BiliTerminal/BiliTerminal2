@@ -44,7 +44,8 @@
                 android:shadowRadius="5"
                 android:textSize="13sp"
                 android:textStyle="bold"
-                tools:text="00:00" />
+                tools:text="00:00"
+                tools:ignore="RtlSymmetry" />
 
         </RelativeLayout>
 
@@ -74,7 +75,7 @@
                 android:layout_height="35sp"
                 android:layout_marginHorizontal="8dp"
                 android:gravity="center_vertical"
-                android:text="本软件疑似为AI创作，请注意甄别"
+                tools:text="本软件疑似为AI创作，请注意甄别"
                 android:textAlignment="textStart"
                 android:textSize="13sp"
                 tools:ignore="RtlCompat" />
@@ -105,12 +106,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="35sp"
                 android:layout_marginHorizontal="8dp"
-                android:drawableEnd="@drawable/arrow_forward"
+                app:drawableEndCompat="@drawable/arrow_forward"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:singleLine="true"
-                android:text="合集 · 纳西妲"
-                android:textAlignment="textStart"
+                tools:text="合集 · 纳西妲"
                 android:textSize="13sp" />
         </com.google.android.material.card.MaterialCardView>
 
@@ -125,9 +125,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:alpha="0.5"
-                android:drawableStart="@drawable/icon_play_16"
+                app:drawableStartCompat="@drawable/icon_play_16"
                 android:drawablePadding="1dp"
-                android:text="114514"
+                tools:text="114514"
                 android:textColor="#fff"
                 android:textSize="12sp" />
 
@@ -137,9 +137,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:alpha="0.5"
-                android:drawableStart="@drawable/icon_danmaku"
+                app:drawableStartCompat="@drawable/icon_danmaku"
                 android:drawablePadding="1dp"
-                android:text="1919"
+                tools:text="1919"
                 android:textSize="12sp" />
 
         </LinearLayout>
@@ -150,9 +150,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:alpha="0.5"
-            android:drawableStart="@drawable/icon_time"
+            app:drawableStartCompat="@drawable/icon_time"
             android:drawablePadding="1dp"
-            android:text="9999-13-32 25:61"
+            tools:text="9999-13-32 25:61"
             android:textSize="12sp" />
 
         <TextView
@@ -161,9 +161,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:alpha="0.5"
-            android:drawableStart="@drawable/icon_bv"
+            app:drawableStartCompat="@drawable/icon_bv"
             android:drawablePadding="1dp"
-            android:text="BV114514"
+            tools:text="BV114514"
             android:textSize="12sp" />
 
         <TextView
@@ -174,7 +174,7 @@
             android:alpha="0.5"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="标签：???"
+            tools:text="标签：???"
             android:textSize="12sp" />
 
         <TextView
@@ -184,7 +184,7 @@
             android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:maxLines="3"
-            android:text="简介简介简介简介简介简介简介"
+            tools:text="简介简介简介简介简介简介简介"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

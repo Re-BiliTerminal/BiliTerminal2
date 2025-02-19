@@ -196,7 +196,6 @@ public class DynamicApi {
             List<Pair<Integer, Integer>> mIndex = new ArrayList<>();
             while (matcher.find()) {
                 int start = matcher.start();
-                // 不包含空格，我直接按照我抓的请求内容弄的
                 int end = matcher.end();
                 Pair<Integer, Integer> pair = new Pair<>(start, end);
                 mIndex.add(pair);

@@ -18,6 +18,7 @@
 
 package tv.danmaku.ijk.media.player;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.media.AudioManager;
@@ -333,6 +334,7 @@ public class AndroidMediaPlayer extends AbstractMediaPlayer {
     /*--------------------
      * Listeners adapter
      */
+    @SuppressLint("NewApi")
     private void attachInternalListeners() {
         mInternalMediaPlayer.setOnPreparedListener(mInternalListenerAdapter);
         mInternalMediaPlayer
@@ -347,6 +349,7 @@ public class AndroidMediaPlayer extends AbstractMediaPlayer {
         mInternalMediaPlayer.setOnTimedTextListener(mInternalListenerAdapter);
     }
 
+    @SuppressLint("NewApi")
     private class AndroidMediaPlayerListenerHolder implements
             MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener,
             MediaPlayer.OnBufferingUpdateListener,
