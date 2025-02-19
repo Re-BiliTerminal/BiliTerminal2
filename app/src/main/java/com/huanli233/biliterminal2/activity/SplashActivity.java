@@ -56,7 +56,6 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         setTheme(R.style.Theme_BiliTerminal2);
         setContentView(R.layout.activity_splash);
-        Log.e("debug", "进入应用");
 
         handler = new Handler(Looper.getMainLooper());
         splashTextView = findViewById(R.id.splashText);

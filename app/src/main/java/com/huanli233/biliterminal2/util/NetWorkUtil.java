@@ -79,7 +79,7 @@ public class NetWorkUtil {
         return INSTANCE.get();
     }
 
-    private synchronized static OkHttpClient.Builder setOkHttpSsl(OkHttpClient.Builder okhttpBuilder) {
+    public synchronized static OkHttpClient.Builder setOkHttpSsl(OkHttpClient.Builder okhttpBuilder) {
         if (Build.VERSION.SDK_INT > 22) return okhttpBuilder;
         try {
             @SuppressLint("CustomX509TrustManager") final X509TrustManager trustAllCert =

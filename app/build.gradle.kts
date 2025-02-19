@@ -149,9 +149,11 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.5.1")
     //noinspection GradleDependency
     implementation("com.google.android.material:material:1.9.0")
-    implementation("com.huanli233.okhttp3-compat:okhttp:5.0.0-p1")
-    implementation("com.huanli233.retrofit2-compat:retrofit:2.12.0-p1")
-    implementation("com.huanli233.retrofit2-compat:converter-gson:2.12.0-p1")
+    implementation("com.huanli233.okhttp3-compat:okhttp:5.0.0-p2")
+    implementation("com.huanli233.retrofit2-compat:retrofit:2.12.0-p2")
+    implementation("com.huanli233.retrofit2-compat:converter-gson:2.12.0-p2") {
+        exclude("com.google.code.gson", "gson")
+    }
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("com.github.bumptech.glide:glide:4.13.2")
     //noinspection GradleDependency
@@ -164,12 +166,15 @@ dependencies {
     implementation(project(":ijkplayer-java"))
     implementation(project(":DanmakuFlameMaster"))
     implementation(project(":brotlij"))
+    implementation(project(":BiliWebApi"))
     implementation("androidx.asynclayoutinflater:asynclayoutinflater:1.0.0")
     //noinspection GradleDependency
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("com.google.code.gson:gson:2.12.1")
+    implementation("com.google.code.gson:gson:2.9.1")
     val multidexVersion = "2.0.1"
     implementation("androidx.multidex:multidex:$multidexVersion")
     implementation("org.brotli:dec:0.1.2")
     implementation("com.aayushatharva.brotli4j:brotli4j:1.16.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0")
 }

@@ -61,9 +61,9 @@ public class ConfInfoApi {
     public static String signWBI(String url_query) throws JSONException, IOException {
         String mixin_key;
         int curr = getDateCurr();
-        if (SharedPreferencesUtil.getInt("last_wbi", 0) < curr) {    //限制一天一次
+        if (SharedPreferencesUtil.getLong("wbi_last_updated", 0) < curr) {    //限制一天一次
             Log.e("debug", "检查WBI");
-            SharedPreferencesUtil.putInt("last_wbi", curr);
+            SharedPreferencesUtil.putLong("wbi_last_updated", curr);
 
             mixin_key = ConfInfoApi.getWBIMixinKey(ConfInfoApi.getWBIRawKey());
             SharedPreferencesUtil.putString("wbi_mixin_key", mixin_key);
