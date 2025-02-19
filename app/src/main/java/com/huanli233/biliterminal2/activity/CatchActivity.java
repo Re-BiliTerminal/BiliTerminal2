@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
-import com.huanli233.biliterminal2.api.AppInfoApi;
 import com.huanli233.biliterminal2.service.DownloadService;
 import com.huanli233.biliterminal2.util.CenterThreadPool;
 import com.huanli233.biliterminal2.util.MsgUtil;
@@ -35,7 +34,6 @@ public class CatchActivity extends BaseActivity {
 
         TextView reason_view = findViewById(R.id.catch_reason);
         TextView stack_view = findViewById(R.id.stack);
-        MaterialButton btn_upload = findViewById(R.id.upload_btn);
 
         Intent intent = getIntent();
         String stack = intent.getStringExtra("stack");
@@ -48,8 +46,6 @@ public class CatchActivity extends BaseActivity {
 
         if (stack != null) {
 
-            boolean allow_upload = false;
-
             if (stack.contains("java.lang.NumberFormatException"))
                 reason_str = new SpannableString("可能的崩溃原因：\n数值转换出错");
             else if (stack.contains("java.lang.UnsatisfiedLinkError"))
@@ -58,45 +54,6 @@ public class CatchActivity extends BaseActivity {
                 reason_str = new SpannableString("可能的崩溃原因：\n数据解析错误");
             else if (stack.contains("java.lang.OutOfMemoryError"))
                 reason_str = new SpannableString("可能的崩溃原因：\n内存爆了，这在小内存设备上很正常");
-            else
-                allow_upload = true;
-
-            if(allow_upload) btn_upload.setOnClickListener(view -> {
-                if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, -1) == -1)
-                    MsgUtil.toast("我们不对未登录时遇到的问题负责\n——除非它真的经常出现且非常影响使用");
-                else {
-                    CenterThreadPool.run(() -> {
-                        Pair<Integer,String> res = AppInfoApi.uploadStack(stack, this);
-                        runOnUiThread(() -> {
-                            if(res.first >= 0) {
-                                btn_upload.setText("请带着你的报错ID：" + res.first + "\n去找开发者\n（提醒：开发者不保证会修好也不保证随时回复你）");
-                                btn_upload.setEnabled(false);
-                            }
-                            if(res.first == -114){
-                                @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-                                StringBuilder text = new StringBuilder();
-                                text.append("已上传，但应该没什么用\n请带着下面的信息找开发者：");
-                                text.append("\n报错类别：");
-                                for (int i = 0; i < Math.max(50,stack.length()); i++) {
-                                    char c = stack.charAt(i);
-                                    if(c == '\n') break;
-                                    text.append(c);
-                                }
-                                text.append("\n上传时间：");
-                                text.append(dateFormat.format(System.currentTimeMillis()));
-                                text.append("\n（提醒：开发者不保证会修好也不保证随时回复你）");
-
-                                btn_upload.setText(text.toString());
-                                btn_upload.setEnabled(false);
-                            }
-                            MsgUtil.toast(res.second);
-                        });
-                    });
-                }
-            });
-            else btn_upload.setOnClickListener(v ->
-                    MsgUtil.toast("此类型报错不可上传\n非特殊情况请勿打扰开发者谢谢喵"));
 
         } else finish();
 

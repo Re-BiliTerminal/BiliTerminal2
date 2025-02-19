@@ -161,22 +161,6 @@
             <include layout="@layout/cell_divider" />
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/sponsor_list"
-                android:layout_marginBottom="4dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="35sp"
-                    android:layout_marginHorizontal="8dp"
-                    android:gravity="center_vertical"
-                    android:text="捐赠列表"
-                    android:textSize="13sp"
-                    app:drawableEndCompat="@drawable/arrow_forward" />
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -544,44 +528,6 @@
             </com.google.android.material.card.MaterialCardView>
 
             <include layout="@layout/cell_divider" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent">
-
-                <LinearLayout
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:paddingVertical="6dp"
-                    android:paddingHorizontal="4dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:textSize="14sp"
-                        android:text="版本相关"
-                        android:layout_gravity="center" />
-
-                    <TextView
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:gravity="center"
-                        android:textSize="11sp"
-                        android:layout_marginTop="2dp"
-                        android:text="@string/update_tip"
-                        android:layout_gravity="center" />
-
-                    <TextView
-                        android:id="@+id/updatelog_view"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:gravity="center"
-                        android:textSize="11sp"
-                        android:layout_marginBottom="2dp"
-                        android:layout_gravity="center" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_height="wrap_content"

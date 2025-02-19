@@ -18,7 +18,6 @@ import com.huanli233.biliterminal2.activity.base.InstanceActivity;
 import com.huanli233.biliterminal2.activity.settings.setup.SetupUIActivity;
 import com.huanli233.biliterminal2.activity.video.RecommendActivity;
 import com.huanli233.biliterminal2.activity.video.local.LocalListActivity;
-import com.huanli233.biliterminal2.api.AppInfoApi;
 import com.huanli233.biliterminal2.api.CookieRefreshApi;
 import com.huanli233.biliterminal2.api.CookiesApi;
 import com.huanli233.biliterminal2.util.CenterThreadPool;
@@ -122,7 +121,6 @@ public class SplashActivity extends Activity {
 
                     handler.postDelayed(()->{
                         startActivity(intent);
-                        CenterThreadPool.run(() -> AppInfoApi.check(SplashActivity.this));
                         finish();
                     },100);
 

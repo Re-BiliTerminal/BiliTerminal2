@@ -51,9 +51,6 @@ public class AboutActivity extends BaseActivity {
                 SpannableString code_str = new SpannableString("版本号\n" + getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
                 code_str.setSpan(new StyleSpan(Typeface.BOLD), 0, 3, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 ((TextView) findViewById(R.id.app_version_code)).setText(code_str);
-
-                ((TextView) findViewById(R.id.updatelog_view)).setText("\n更新细节：\n " + ToolsUtil.getUpdateLog(this));
-                ToolsUtil.setCopy(findViewById(R.id.updatelog_view), ToolsUtil.getUpdateLog(this));
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
@@ -112,14 +109,6 @@ public class AboutActivity extends BaseActivity {
                 });
             }
 
-            findViewById(R.id.author_words).setOnClickListener(view -> {
-                eggClick_authorWords++;
-                if (eggClick_authorWords == 7) {
-                    eggClick_authorWords = 0;
-                    MsgUtil.showText("作者的话", "无论当下的境遇如何，\n这片星空下永远有你的一片位置。\n抱抱屏幕前的你，\n真诚地祝愿你永远快乐幸福。\n让我们一起，迈向“下一个远方”。<extra_insert>{\"type\":\"video\",\"content\":\"BV1UC411B7Co\",\"title\":\"【原神新春会】下一个远方\"}");
-                }
-            });
-
             findViewById(R.id.toUncle).setOnClickListener(view -> {
                 eggClick_toUncle++;
                 if (eggClick_toUncle == 7) {
@@ -135,11 +124,6 @@ public class AboutActivity extends BaseActivity {
                 for (int i = 0; i < logItems.length; i++)
                     str.append('\n').append((i + 1)).append('.').append(logItems[i]);
                 MsgUtil.showText("开源图标的信息", str.toString());
-            });
-
-            findViewById(R.id.sponsor_list).setOnClickListener(view -> {
-                Intent intent = new Intent(this, SponsorActivity.class);
-                startActivity(intent);
             });
 
             if (!ToolsUtil.isDebugBuild()) findViewById(R.id.debug_tip).setVisibility(View.GONE);

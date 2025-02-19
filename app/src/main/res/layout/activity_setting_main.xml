@@ -727,40 +727,6 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/announcement"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="35sp"
-                    android:layout_marginHorizontal="8dp"
-                    android:gravity="center_vertical"
-                    android:text="公告列表"
-                    android:textAlignment="textStart"
-                    android:textSize="13sp"
-                    tools:ignore="RtlCompat"
-                    app:drawableEndCompat="@drawable/arrow_forward" />
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/checkupdate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="35sp"
-                    android:layout_marginHorizontal="8dp"
-                    android:gravity="center_vertical"
-                    android:text="检查更新"
-                    android:textAlignment="textStart"
-                    android:textSize="13sp"
-                    tools:ignore="RtlCompat" />
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/refresh_tutorial"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
