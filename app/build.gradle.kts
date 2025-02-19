@@ -137,6 +137,13 @@ android {
     kotlinOptions {
         jvmTarget = "9"
     }
+
+    applicationVariants.all variant@{
+        outputs.all {
+            val versionName = this@variant.versionName
+            (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName = "BiliTerminal2-${this@variant.name}-${versionName}.apk"
+        }
+    }
 }
 
 dependencies {
