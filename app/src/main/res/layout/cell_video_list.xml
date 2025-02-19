@@ -66,7 +66,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/img_cover" />
 
 
-            <com.RobinNotBad.BiliClient.ui.widget.MarqueeTextView
+            <com.huanli233.biliterminal2.ui.widget.MarqueeTextView
                 android:id="@+id/text_upname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

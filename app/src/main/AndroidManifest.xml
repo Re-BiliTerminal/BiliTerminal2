@@ -27,7 +27,7 @@
         android:largeHeap="true"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
-        android:theme="@style/Theme.BiliClient"
+        android:theme="@style/Theme.BiliTerminal2"
         android:usesCleartextTraffic="true"
         tools:ignore="LockedOrientationActivity,RtlEnabled"
         tools:targetApi="m">
@@ -37,7 +37,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.RobinNotBad.BiliClient.fileprovider"
+            android:authorities="com.huanli233.biliterminal2.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -421,7 +421,7 @@
             android:exported="true"
             android:label="哔哩终端"
             android:screenOrientation="locked"
-            android:theme="@style/Theme.BiliClient.Splash">
+            android:theme="@style/Theme.BiliTerminal2.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

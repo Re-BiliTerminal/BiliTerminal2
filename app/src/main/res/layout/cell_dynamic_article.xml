@@ -77,7 +77,7 @@
             app:layout_constraintTop_toBottomOf="@+id/img_cover"
             app:layout_constraintVertical_bias="0.0" />
 
-        <com.RobinNotBad.BiliClient.ui.widget.MarqueeTextView
+        <com.huanli233.biliterminal2.ui.widget.MarqueeTextView
             android:id="@+id/text_upname"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

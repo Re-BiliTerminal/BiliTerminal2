@@ -28,7 +28,7 @@
             android:textStyle="bold"
             app:drawableStartCompat="@drawable/arrow_back" />
 
-        <com.RobinNotBad.BiliClient.ui.widget.TextClock
+        <com.huanli233.biliterminal2.ui.widget.TextClock
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_marginEnd="8dp"

@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.BiliClient" parent="Theme.MaterialComponents.NoActionBar">
+    <style name="Theme.BiliTerminal2" parent="Theme.MaterialComponents.NoActionBar">
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowBackground">@color/bgblack</item>
         <item name="statusBarBackground">@color/pink</item>
@@ -24,7 +24,7 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="Theme.BiliClient.Splash" parent="Theme.BiliClient">
+    <style name="Theme.BiliTerminal2.Splash" parent="Theme.BiliTerminal2">
         <item name="android:windowBackground">@drawable/splash_text</item>
     </style>
 
@@ -38,7 +38,7 @@
         <item name="colorOnPrimary">@color/textwhite</item>
     </style>
 
-    <style name="Theme.NoSwipe.AppCompat" parent="Theme.BiliClient">
+    <style name="Theme.NoSwipe.AppCompat" parent="Theme.BiliTerminal2">
         <item name="android:windowSwipeToDismiss" tools:ignore="NewApi">false</item>
     </style>
 </resources>

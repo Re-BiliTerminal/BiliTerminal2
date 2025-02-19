@@ -27,7 +27,7 @@
             android:layout_marginStart="8dp"
             android:id="@+id/userAvatar" />
 
-        <com.RobinNotBad.BiliClient.ui.widget.MarqueeTextView
+        <com.huanli233.biliterminal2.ui.widget.MarqueeTextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:singleLine="true"
@@ -41,7 +41,7 @@
             android:id="@+id/userName"
             android:text="NappuHidda" />
 
-        <com.RobinNotBad.BiliClient.ui.widget.MarqueeTextView
+        <com.huanli233.biliterminal2.ui.widget.MarqueeTextView
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:ellipsize="marquee"

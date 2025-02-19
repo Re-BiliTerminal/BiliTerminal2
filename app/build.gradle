@@ -6,7 +6,7 @@ int betaVer = 0
 
 android {
 
-    namespace 'com.RobinNotBad.BiliClient'
+    namespace 'com.huanli233.biliterminal2'
     compileSdk 34
 
     sourceSets {
@@ -16,7 +16,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.RobinNotBad.BiliClient"
+        applicationId "com.huanli233.biliterminal2"
         minSdk 17
         targetSdk 35
         versionCode 20250213
@@ -30,7 +30,7 @@ android {
 
         ndk {
             //noinspection ChromeOsAbiSupport
-            abiFilters 'armeabi-v7a','arm64-v8a','x86',"mips"
+            abiFilters 'armeabi-v7a','x86',"mips"
         }
     }
 

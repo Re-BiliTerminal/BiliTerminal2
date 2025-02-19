@@ -18,7 +18,7 @@ dependencyResolutionManagement {
         maven { url "https://maven.aliyun.com/repository/public" }
     }
 }
-rootProject.name = "BiliClient"
+rootProject.name = "BiliTerminal2"
 include ':app'
 include ':ijkplayer-java'
 include ':DanmakuFlameMaster'
