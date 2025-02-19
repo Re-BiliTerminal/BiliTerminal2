@@ -68,7 +68,7 @@ android {
 
     defaultConfig {
         applicationId = "com.huanli233.biliterminal2"
-        minSdk = 17
+        minSdk = 14
         targetSdk = 35
         versionCode = readVersionCode()
         versionName = "${readVersion()}+${getGitHash()}"
