@@ -4,6 +4,7 @@ import java.io.FileInputStream
 
 plugins {
     id("com.android.application")
+    id("org.jetbrains.kotlin.android")
 }
 
 val versionPropsFile = file("version.properties")
@@ -133,9 +134,13 @@ android {
         viewBinding = false
         buildConfig = true
     }
+    kotlinOptions {
+        jvmTarget = "9"
+    }
 }
 
 dependencies {
+    implementation("androidx.core:core-ktx:1.10.1")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
     //noinspection GradleDependency
     implementation("com.google.zxing:core:3.5.0")
@@ -158,6 +163,7 @@ dependencies {
     implementation("androidx.asynclayoutinflater:asynclayoutinflater:1.0.0")
     //noinspection GradleDependency
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("com.google.code.gson:2.12.1")
     val multidexVersion = "2.0.1"
     implementation("androidx.multidex:multidex:$multidexVersion")
     implementation("org.brotli:dec:0.1.2")
