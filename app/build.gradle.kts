@@ -149,15 +149,18 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.5.1")
     //noinspection GradleDependency
     implementation("com.google.android.material:material:1.9.0")
-    //noinspection GradleDependency
-    implementation("com.squareup.okhttp3:okhttp:3.12.1")
+    implementation("com.huanli233.okhttp3-compat:okhttp:5.0.0-p1")
+    implementation("com.huanli233.retrofit2-compat:retrofit:2.12.0-p1")
+    implementation("com.huanli233.retrofit2-compat:converter-gson:2.12.0-p1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("com.github.bumptech.glide:glide:4.13.2")
     //noinspection GradleDependency
     implementation("org.jsoup:jsoup:1.10.2")
     implementation("com.github.chrisbanes:PhotoView:2.3.0")
     implementation("org.greenrobot:eventbus:3.3.1")
-    implementation("com.geetest.sensebot:sensebot:4.4.2.1")
+    implementation("com.geetest.sensebot:sensebot:4.4.2.1") {
+        exclude(group = "com.squareup.okhttp3")
+    }
     implementation(project(":ijkplayer-java"))
     implementation(project(":DanmakuFlameMaster"))
     implementation(project(":brotlij"))
