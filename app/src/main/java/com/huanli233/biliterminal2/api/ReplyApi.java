@@ -8,7 +8,9 @@ import androidx.annotation.NonNull;
 
 import com.huanli233.biliterminal2.model.ContentType;
 import com.huanli233.biliterminal2.model.Reply;
-import com.huanli233.biliterminal2.util.*;
+import com.huanli233.biliterminal2.util.NetWorkUtil;
+import com.huanli233.biliterminal2.util.Result;
+import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,15 +33,15 @@ public class ReplyApi {
     public static final String TOP_TIP = "[置顶]";
 
     /**
-     * @param originId 评论区id，为评论所属内容的id，例如视频aid
-     * @param rpid 父评论的id，无父评论则为0
-     * @param pageNumber 分页，需要拉取的评论的页号
-     * @param type 评论所属内容类型
-     * @param sort 评论区排序方式，0=时间；1=点赞数量；2=回复数量
+     * @param originId       评论区id，为评论所属内容的id，例如视频aid
+     * @param rpid           父评论的id，无父评论则为0
+     * @param pageNumber     分页，需要拉取的评论的页号
+     * @param type           评论所属内容类型
+     * @param sort           评论区排序方式，0=时间；1=点赞数量；2=回复数量
      * @param replyArrayList 填充数组
      * @return -1错误,0正常，1到底了
      * @throws JSONException json解析异常
-     * @throws IOException 网络异常
+     * @throws IOException   网络异常
      */
     public static int getReplies(long originId, long rpid, int pageNumber, ContentType type, int sort, List<Reply> replyArrayList) throws JSONException, IOException {
 

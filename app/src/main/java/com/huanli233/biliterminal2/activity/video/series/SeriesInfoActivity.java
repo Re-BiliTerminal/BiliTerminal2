@@ -47,14 +47,13 @@ public class SeriesInfoActivity extends RefreshListActivity {
                     setOnLoadMoreListener(this::continueLoading);
                     setAdapter(videoCardAdapter);
 
-                    Log.e("debug", "return=" + pageInfo.return_ps + "require=" + pageInfo.require_ps );
+                    Log.e("debug", "return=" + pageInfo.return_ps + "require=" + pageInfo.require_ps);
 
                     if (pageInfo.return_ps < pageInfo.require_ps) {
                         Log.e("debug", "到底了");
                         setBottom(true);
                     }
-                }
-                else showEmptyView();
+                } else showEmptyView();
                 setRefreshing(false);
             } catch (Exception e) {
                 loadFail(e);

@@ -19,6 +19,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.ImageViewerActivity;
 import com.huanli233.biliterminal2.activity.settings.SettingPlayerChooseActivity;
@@ -30,8 +32,6 @@ import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager;
 import com.huanli233.biliterminal2.util.CenterThreadPool;
 import com.huanli233.biliterminal2.util.GlideUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,8 +75,8 @@ public class BangumiInfoFragment extends Fragment {
         CenterThreadPool
                 .supplyAsyncWithLiveData(() -> BangumiApi.getBangumi(mediaId))
                 .observe(getViewLifecycleOwner(), (result) -> result.onSuccess((bangumi) -> {
-                        this.bangumi = bangumi;
-                        initView();
+                    this.bangumi = bangumi;
+                    initView();
                 }).onFailure((error) -> MsgUtil.err("番剧详情：", error)));
     }
 
@@ -214,7 +214,7 @@ public class BangumiInfoFragment extends Fragment {
     }
 
     public void setOnFinishLoad(Runnable onFinishLoad) {
-        if(loadFinished) onFinishLoad.run();
+        if (loadFinished) onFinishLoad.run();
         else this.onFinishLoad = onFinishLoad;
     }
 }

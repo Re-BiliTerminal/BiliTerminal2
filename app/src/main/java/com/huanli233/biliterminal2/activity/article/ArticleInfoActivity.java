@@ -51,25 +51,25 @@ public class ArticleInfoActivity extends BaseActivity {
         ViewPager viewPager = findViewById(R.id.viewPager);
 
         TerminalContext.getInstance().getArticleInfoByCvId(cvid)
-            .observe(this, (result) -> result.onSuccess((articleInfo)-> {
-                List<Fragment> fragmentList = new ArrayList<>();
-                ArticleInfoFragment articleInfoFragment = ArticleInfoFragment.newInstance(cvid);
-                fragmentList.add(articleInfoFragment);
-                replyFragment = ReplyFragment.newInstance(cvid, ReplyApi.REPLY_TYPE_ARTICLE, seek_reply, articleInfo != null ? articleInfo.upInfo.mid : -1);
-                replyFragment.setSource(articleInfo);
-                fragmentList.add(replyFragment);
-                ViewPagerFragmentAdapter vpfAdapter = new ViewPagerFragmentAdapter(getSupportFragmentManager(), fragmentList);
-                viewPager.setAdapter(vpfAdapter);
-                View view;
-                if ((view = articleInfoFragment.getView()) != null)
-                    view.setVisibility(View.GONE);
-                if (seek_reply != -1) viewPager.setCurrentItem(1);
-                articleInfoFragment.setOnFinishLoad(() -> AnimationUtils.crossFade(loadingView, articleInfoFragment.getView()));
-                TutorialHelper.showPagerTutorial(this,2);
-            }).onFailure((error) -> {
-                loadingView.setImageResource(R.mipmap.loading_2233_error);
-                MsgUtil.err(error);
-            }));
+                .observe(this, (result) -> result.onSuccess((articleInfo) -> {
+                    List<Fragment> fragmentList = new ArrayList<>();
+                    ArticleInfoFragment articleInfoFragment = ArticleInfoFragment.newInstance(cvid);
+                    fragmentList.add(articleInfoFragment);
+                    replyFragment = ReplyFragment.newInstance(cvid, ReplyApi.REPLY_TYPE_ARTICLE, seek_reply, articleInfo != null ? articleInfo.upInfo.mid : -1);
+                    replyFragment.setSource(articleInfo);
+                    fragmentList.add(replyFragment);
+                    ViewPagerFragmentAdapter vpfAdapter = new ViewPagerFragmentAdapter(getSupportFragmentManager(), fragmentList);
+                    viewPager.setAdapter(vpfAdapter);
+                    View view;
+                    if ((view = articleInfoFragment.getView()) != null)
+                        view.setVisibility(View.GONE);
+                    if (seek_reply != -1) viewPager.setCurrentItem(1);
+                    articleInfoFragment.setOnFinishLoad(() -> AnimationUtils.crossFade(loadingView, articleInfoFragment.getView()));
+                    TutorialHelper.showPagerTutorial(this, 2);
+                }).onFailure((error) -> {
+                    loadingView.setImageResource(R.mipmap.loading_2233_error);
+                    MsgUtil.err(error);
+                }));
     }
 
     @Override

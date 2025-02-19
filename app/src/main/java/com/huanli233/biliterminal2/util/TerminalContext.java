@@ -4,16 +4,32 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
+
 import androidx.annotation.Nullable;
 import androidx.collection.LruCache;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
 import com.huanli233.biliterminal2.activity.article.ArticleInfoActivity;
 import com.huanli233.biliterminal2.activity.dynamic.DynamicInfoActivity;
 import com.huanli233.biliterminal2.activity.live.LiveInfoActivity;
 import com.huanli233.biliterminal2.activity.video.info.VideoInfoActivity;
-import com.huanli233.biliterminal2.api.*;
-import com.huanli233.biliterminal2.model.*;
+import com.huanli233.biliterminal2.api.ArticleApi;
+import com.huanli233.biliterminal2.api.DynamicApi;
+import com.huanli233.biliterminal2.api.LiveApi;
+import com.huanli233.biliterminal2.api.ReplyApi;
+import com.huanli233.biliterminal2.api.UserInfoApi;
+import com.huanli233.biliterminal2.api.VideoInfoApi;
+import com.huanli233.biliterminal2.model.ArticleInfo;
+import com.huanli233.biliterminal2.model.ContentType;
+import com.huanli233.biliterminal2.model.Dynamic;
+import com.huanli233.biliterminal2.model.LiveInfo;
+import com.huanli233.biliterminal2.model.LivePlayInfo;
+import com.huanli233.biliterminal2.model.LiveRoom;
+import com.huanli233.biliterminal2.model.Reply;
+import com.huanli233.biliterminal2.model.UserInfo;
+import com.huanli233.biliterminal2.model.VideoInfo;
+
 import org.json.JSONObject;
 
 import java.util.concurrent.Future;
@@ -292,10 +308,11 @@ public class TerminalContext {
             return new MutableLiveData<>(Result.success((LiveInfo) obj));
         }
     }
+
     public LiveData<Result<Reply>> getReply(ContentType contentType, long contentId, long replyId) {
         String key = contentType.getTypeCode() + "_" + contentId + "_" + replyId;
         Object obj = contentLruCache.get(key);
-        if(obj instanceof Reply) {
+        if (obj instanceof Reply) {
             return new MutableLiveData<>(Result.success((Reply) obj));
         } else {
             return CenterThreadPool.supplyAsyncWithLiveData(() -> fetchReply(contentType, contentId, replyId, true).getOrThrow());

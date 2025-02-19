@@ -66,8 +66,8 @@ public class LocalListActivity extends InstanceActivity {
                     CenterThreadPool.run(() -> FileUtil.deleteFolder(file));
                     MsgUtil.showMsg("删除成功");
                     videoList.remove(position);
-                    adapter.notifyItemRemoved(position+1);
-                    adapter.notifyItemRangeChanged(position+1, videoList.size() - position);
+                    adapter.notifyItemRemoved(position + 1);
+                    adapter.notifyItemRangeChanged(position + 1, videoList.size() - position);
                     longClickPosition = -1;
                     checkEmpty();
                 } else {
@@ -86,7 +86,7 @@ public class LocalListActivity extends InstanceActivity {
 
     private void scan(File folder) {
         File[] files = folder.listFiles();
-        if(files==null) return;
+        if (files == null) return;
 
         for (File video : files) {
             if (video.isDirectory()) {
@@ -103,20 +103,19 @@ public class LocalListActivity extends InstanceActivity {
                 File danmakuFile = new File(video, "danmaku.xml");
 
                 if (videoFile.exists() && danmakuFile.exists()) {
-                    File mark = new File(video,".DOWNLOADING");
-                    if(mark.exists()) continue;
+                    File mark = new File(video, ".DOWNLOADING");
+                    if (mark.exists()) continue;
 
                     localVideo.videoFileList.add(videoFile.toString());
                     localVideo.danmakuFileList.add(danmakuFile.toString());    //单集视频
                     videoList.add(localVideo);
-                }
-                else {
+                } else {
                     File[] pages = video.listFiles();      //分页视频
                     if (pages != null) {
                         for (File page : pages) {
                             if (page.isDirectory()) {
-                                File mark = new File(page,".DOWNLOADING");
-                                if(mark.exists()) continue;
+                                File mark = new File(page, ".DOWNLOADING");
+                                if (mark.exists()) continue;
 
                                 File pageVideoFile = new File(page, "video.mp4");
                                 File pageDanmakuFile = new File(page, "danmaku.xml");
@@ -127,7 +126,7 @@ public class LocalListActivity extends InstanceActivity {
                                 }
                             }
                         }
-                        if(localVideo.videoFileList.size() > 0) videoList.add(localVideo);
+                        if (localVideo.videoFileList.size() > 0) videoList.add(localVideo);
                     }
                 }
 
@@ -149,7 +148,7 @@ public class LocalListActivity extends InstanceActivity {
     }
 
     public void refresh() {
-        if(started) CenterThreadPool.run(() -> {
+        if (started) CenterThreadPool.run(() -> {
             runOnUiThread(() -> swipeRefreshLayout.setRefreshing(true));
             int oldSize = videoList.size();
             videoList.clear();

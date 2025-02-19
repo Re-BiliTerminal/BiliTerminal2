@@ -35,7 +35,7 @@ public class JumpToPlayerActivity extends BaseActivity {
     TextView textView;
 
     String bvid;
-    long aid,cid,mid;
+    long aid, cid, mid;
 
     int qn;
 
@@ -48,15 +48,16 @@ public class JumpToPlayerActivity extends BaseActivity {
         public void onActivityResult(ActivityResult o) {
             int code = o.getResultCode();
             Intent result = o.getData();
-            if(code == RESULT_OK && result != null){
-                int progress = result.getIntExtra("progress",0);
+            if (code == RESULT_OK && result != null) {
+                int progress = result.getIntExtra("progress", 0);
                 Log.d("debug-进度回调", String.valueOf(progress));
 
                 CenterThreadPool.run(() -> {
                     if (mid != 0 && aid != 0) try {
                         HistoryApi.reportHistory(aid, cid, mid, progress / 1000);
+                    } catch (Exception e) {
+                        MsgUtil.err("进度上报：", e);
                     }
-                    catch (Exception e) {MsgUtil.err("进度上报：", e);}
                 });
             }
             finish();
@@ -101,12 +102,12 @@ public class JumpToPlayerActivity extends BaseActivity {
                 videourl = video.first;
 
                 try {
-                    if(download != 0) {
+                    if (download != 0) {
                         jump();
                         return;
                     }
                     jump();
-                } catch (Exception e){
+                } catch (Exception e) {
                     MsgUtil.showMsg("没有获取到字幕");
                     jump();
                     e.printStackTrace();
@@ -124,8 +125,8 @@ public class JumpToPlayerActivity extends BaseActivity {
         });
     }
 
-    private void jump(){
-        if(isDestroyed()) return;
+    private void jump() {
+        if (isDestroyed()) return;
         if (download != 0) {
             Intent intent = new Intent();
             intent.setClass(this, DownloadActivity.class);
@@ -150,7 +151,7 @@ public class JumpToPlayerActivity extends BaseActivity {
     }
 
     private void setClickExit(String reason) {
-        runOnUiThread(()->{
+        runOnUiThread(() -> {
             textView.setText(reason);
             textView.setOnClickListener((view) -> finish());
         });

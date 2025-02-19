@@ -20,8 +20,8 @@ import com.huanli233.biliterminal2.activity.base.InstanceActivity;
 import com.huanli233.biliterminal2.activity.video.local.DownloadListActivity;
 import com.huanli233.biliterminal2.activity.video.local.LocalListActivity;
 import com.huanli233.biliterminal2.api.PlayerApi;
-import com.huanli233.biliterminal2.model.DownloadSection;
 import com.huanli233.biliterminal2.helper.sql.DownloadSqlHelper;
+import com.huanli233.biliterminal2.model.DownloadSection;
 import com.huanli233.biliterminal2.util.CenterThreadPool;
 import com.huanli233.biliterminal2.util.FileUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
@@ -61,28 +61,30 @@ public class DownloadService extends Service {
     private final TimerTask timerTask = new TimerTask() {
         @Override
         public void run() {
-            if(downloadingSection == null) return;
-            if(!started) this.cancel();
+            if (downloadingSection == null) return;
+            if (!started) this.cancel();
 
-            String percentStr = String.format(Locale.CHINA,"%.2f",percent * 100);
+            String percentStr = String.format(Locale.CHINA, "%.2f", percent * 100);
 
-            builder.setContentText(downloadingSection.title + "\n" + state + "："+ percentStr + "%");
+            builder.setContentText(downloadingSection.title + "\n" + state + "：" + percentStr + "%");
             notifyManager.notify(1, builder.build());
 
-            MsgUtil.showMsg(state + "："+ percentStr + "%\n" + downloadingSection.name_short);
+            MsgUtil.showMsg(state + "：" + percentStr + "%\n" + downloadingSection.name_short);
         }
     };
 
     public DownloadService() {
     }
+
     @Override
     public void onCreate() {
         super.onCreate();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) notifyManager = getSystemService(NotificationManager.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            notifyManager = getSystemService(NotificationManager.class);
         else notifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("download_service", "下载服务", NotificationManager.IMPORTANCE_DEFAULT);
             channel.setDescription("后台下载视频时的常驻通知");
 
@@ -109,7 +111,7 @@ public class DownloadService extends Service {
     @SuppressLint("MutatingSharedPrefs")
     @Override
     public int onStartCommand(Intent serviceIntent, int flags, int startId) {
-        if(started) {
+        if (started) {
             stopSelf();
             return super.onStartCommand(serviceIntent, flags, startId);
         }
@@ -118,25 +120,25 @@ public class DownloadService extends Service {
         count_finish = 0;
         MsgUtil.showMsg("下载服务已启动");
         toastTimer = new Timer();
-        toastTimer.schedule(timerTask,5000,5000);
+        toastTimer.schedule(timerTask, 5000, 5000);
 
         notifyManager.notify(1, builder.build());
 
-        if(serviceIntent!=null) firstDown = serviceIntent.getLongExtra("first",-1);
+        if (serviceIntent != null) firstDown = serviceIntent.getLongExtra("first", -1);
 
-        CenterThreadPool.run(()->{
+        CenterThreadPool.run(() -> {
             boolean failed = false;
             while (!failed) {
                 downloadingSection = getFirst();
-                if(downloadingSection==null) break;
+                if (downloadingSection == null) break;
 
                 try {
                     String url;
-                    try{
+                    try {
                         url = PlayerApi.getVideo(downloadingSection.aid, downloadingSection.cid, downloadingSection.qn, true).first;
-                    } catch (JSONException e){
+                    } catch (JSONException e) {
                         MsgUtil.showMsg("下载链接获取失败");
-                        setState(downloadingSection.id,"error");
+                        setState(downloadingSection.id, "error");
 
                         builder.setContentText("下载链接获取失败");
                         notifyManager.notify(1, builder.build());
@@ -146,7 +148,7 @@ public class DownloadService extends Service {
 
 
                     try {
-                        setState(downloadingSection.id,"downloading");
+                        setState(downloadingSection.id, "downloading");
                         percent = 0;
                         refreshDownloadList();
 
@@ -160,8 +162,8 @@ public class DownloadService extends Service {
                             case "video_single":  //单集视频
                                 File path_single = downloadingSection.getPath();
 
-                                file_sign = new File(path_single,".DOWNLOADING");
-                                if(!file_sign.exists())file_sign.createNewFile();
+                                file_sign = new File(path_single, ".DOWNLOADING");
+                                if (!file_sign.exists()) file_sign.createNewFile();
 
                                 state = "下载弹幕";
                                 String url_dm_single = downloadingSection.url_dm;
@@ -183,10 +185,10 @@ public class DownloadService extends Service {
                                 File path_page = downloadingSection.getPath();
                                 File path_parent = path_page.getParentFile();
 
-                                if(!path_page.exists()) path_page.mkdirs();
+                                if (!path_page.exists()) path_page.mkdirs();
 
-                                file_sign = new File(path_page,".DOWNLOADING");
-                                if(!file_sign.exists())file_sign.createNewFile();
+                                file_sign = new File(path_page, ".DOWNLOADING");
+                                if (!file_sign.exists()) file_sign.createNewFile();
 
                                 state = "下载封面";
                                 String url_cover_multi = downloadingSection.url_cover;
@@ -208,17 +210,17 @@ public class DownloadService extends Service {
                                 break;
                         }
 
-                        if(file_sign!=null && file_sign.exists()) file_sign.delete();
+                        if (file_sign != null && file_sign.exists()) file_sign.delete();
 
                         deleteSection(downloadingSection.id);
 
                         downloadingSection = null;
                         refreshLocalList();
                         count_finish++;
-                    } catch (RuntimeException e){
-                        MsgUtil.showMsg("下载失败："+e.getMessage());
+                    } catch (RuntimeException e) {
+                        MsgUtil.showMsg("下载失败：" + e.getMessage());
                         e.printStackTrace();
-                        setState(downloadingSection.id,"error");
+                        setState(downloadingSection.id, "error");
 
                         builder.setContentText("下载失败：" + e.getMessage());
                         notifyManager.notify(2, builder.setOngoing(false).build());
@@ -238,7 +240,7 @@ public class DownloadService extends Service {
             }
 
             refreshDownloadList();
-            if(count_finish != 0) MsgUtil.showMsg("全部下载完成");
+            if (count_finish != 0) MsgUtil.showMsg("全部下载完成");
 
             builder.setContentText("全部下载已完成");
             notifyManager.notify(2, builder.setOngoing(false).build());
@@ -249,13 +251,13 @@ public class DownloadService extends Service {
         return super.onStartCommand(serviceIntent, flags, startId);
     }
 
-    private void refreshDownloadList(){
-        if(DownloadListActivity.weakRef != null) {
+    private void refreshDownloadList() {
+        if (DownloadListActivity.weakRef != null) {
             DownloadListActivity.weakRef.get().refreshList(true);
         }
     }
 
-    private void refreshLocalList(){
+    private void refreshLocalList() {
         InstanceActivity instance = BiliTerminal.getInstanceActivityOnTop();
         if (instance instanceof LocalListActivity && !instance.isDestroyed())
             ((LocalListActivity) (instance)).refresh();
@@ -285,8 +287,8 @@ public class DownloadService extends Service {
             e.printStackTrace();
             throw new RuntimeException("文件错误");
         } finally {
-            if(inputStream!=null) inputStream.close();
-            if(fileOutputStream!=null) fileOutputStream.close();
+            if (inputStream != null) inputStream.close();
+            if (fileOutputStream != null) fileOutputStream.close();
             if (response.body() != null) response.body().close();
             response.close();
         }
@@ -310,23 +312,22 @@ public class DownloadService extends Service {
             throw new RuntimeException("文件错误");
         } finally {
             if (bufferedSink != null) bufferedSink.close();
-            if(response.body()!=null) response.body().close();
+            if (response.body() != null) response.body().close();
             response.close();
         }
     }
 
 
-
     @Override
     public void onDestroy() {
-        if(toastTimer!=null) toastTimer.cancel();
+        if (toastTimer != null) toastTimer.cancel();
         started = false;
         percent = -1;
         count_finish = 0;
         state = null;
-        if(downloadingSection!=null) {
+        if (downloadingSection != null) {
             FileUtil.deleteFolder(downloadingSection.getPath());
-            CenterThreadPool.run(()-> {
+            CenterThreadPool.run(() -> {
                 if (downloadingSection != null) {
                     setState(downloadingSection.id, "none");
                     downloadingSection = null;
@@ -488,33 +489,33 @@ public class DownloadService extends Service {
     }
 
     //以下为外部调用方法
-    public static void startDownload(String title, long aid, long cid, String danmaku, String cover, int qn){
-        CenterThreadPool.run(()->{
+    public static void startDownload(String title, long aid, long cid, String danmaku, String cover, int qn) {
+        CenterThreadPool.run(() -> {
             try {
                 DownloadSqlHelper helper = new DownloadSqlHelper(BiliTerminal.context);
                 SQLiteDatabase database = helper.getWritableDatabase();
                 database.execSQL("insert into download(type,state,aid,cid,qn,title,child,cover,danmaku) values(?,?,?,?,?,?,?,?,?)",
-                        new Object[]{"video_single","none", aid, cid, qn, title, "", cover, danmaku});
+                        new Object[]{"video_single", "none", aid, cid, qn, title, "", cover, danmaku});
                 database.close();
 
-                File path_single = FileUtil.getDownloadPath(title,null);
+                File path_single = FileUtil.getDownloadPath(title, null);
                 path_single.mkdirs();
 
-                File file_sign = new File(path_single,".DOWNLOADING");
-                if(!file_sign.exists())file_sign.createNewFile();
+                File file_sign = new File(path_single, ".DOWNLOADING");
+                if (!file_sign.exists()) file_sign.createNewFile();
 
                 MsgUtil.showMsg("已添加下载");
 
                 Context context = BiliTerminal.context;
                 context.startService(new Intent(context, DownloadService.class));
-            } catch (Exception e){
+            } catch (Exception e) {
                 MsgUtil.err(e);
             }
         });
     }
 
-    public static void startDownload(String parent, String child, long aid, long cid, String danmaku, String cover, int qn){
-        CenterThreadPool.run(()-> {
+    public static void startDownload(String parent, String child, long aid, long cid, String danmaku, String cover, int qn) {
+        CenterThreadPool.run(() -> {
             try {
                 DownloadSqlHelper helper = new DownloadSqlHelper(BiliTerminal.context);
                 SQLiteDatabase database = helper.getWritableDatabase();
@@ -523,17 +524,17 @@ public class DownloadService extends Service {
                 database.close();
 
 
-                File path_page = FileUtil.getDownloadPath(parent,child);
+                File path_page = FileUtil.getDownloadPath(parent, child);
                 path_page.mkdirs();
 
-                File file_sign = new File(path_page,".DOWNLOADING");
-                if(!file_sign.exists())file_sign.createNewFile();
+                File file_sign = new File(path_page, ".DOWNLOADING");
+                if (!file_sign.exists()) file_sign.createNewFile();
 
                 MsgUtil.showMsg("已添加下载");
 
                 Context context = BiliTerminal.context;
                 context.startService(new Intent(context, DownloadService.class));
-            } catch (Exception e){
+            } catch (Exception e) {
                 MsgUtil.err(e);
             }
         });

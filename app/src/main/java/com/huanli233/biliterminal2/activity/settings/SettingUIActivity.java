@@ -7,13 +7,13 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.EditText;
 
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.huanli233.biliterminal2.BiliTerminal;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.util.AsyncLayoutInflaterX;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.google.android.material.switchmaterial.SwitchMaterial;
 
 public class SettingUIActivity extends BaseActivity {
 
@@ -45,17 +45,16 @@ public class SettingUIActivity extends BaseActivity {
             density_input.setText(String.valueOf((density == -1 ? displayMetrics.densityDpi + "(默认)" : density)));
 
             SwitchMaterial round = findViewById(R.id.switch_round);
-            round.setChecked(SharedPreferencesUtil.getBoolean("player_ui_round",false));
+            round.setChecked(SharedPreferencesUtil.getBoolean("player_ui_round", false));
             round.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if(isChecked){
+                if (isChecked) {
                     uiPaddingH.setText("11");
                     uiPaddingV.setText("11");
-                    SharedPreferencesUtil.putBoolean("player_ui_round",true);
-                }
-                else{
+                    SharedPreferencesUtil.putBoolean("player_ui_round", true);
+                } else {
                     uiPaddingH.setText("0");
                     uiPaddingV.setText("0");
-                    SharedPreferencesUtil.putBoolean("player_ui_round",false);
+                    SharedPreferencesUtil.putBoolean("player_ui_round", false);
                 }
             });
 
@@ -70,7 +69,7 @@ public class SettingUIActivity extends BaseActivity {
                 SharedPreferencesUtil.putInt("paddingV_percent", 0);
                 SharedPreferencesUtil.putFloat("dpi", 1.0f);
                 SharedPreferencesUtil.putInt("density", -1);
-                SharedPreferencesUtil.putBoolean("player_ui_round",false);
+                SharedPreferencesUtil.putBoolean("player_ui_round", false);
                 uiScaleInput.setText("1.0");
                 uiPaddingH.setText("0");
                 uiPaddingV.setText("0");
@@ -116,7 +115,7 @@ public class SettingUIActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        if(uiScaleInput != null) save();
+        if (uiScaleInput != null) save();
         super.onDestroy();
     }
 }

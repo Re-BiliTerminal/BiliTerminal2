@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 
 import androidx.lifecycle.Lifecycle;
 
+import com.google.android.material.button.MaterialButton;
 import com.huanli233.biliterminal2.BiliTerminal;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
@@ -29,7 +30,6 @@ import com.huanli233.biliterminal2.activity.video.PreciousActivity;
 import com.huanli233.biliterminal2.activity.video.RecommendActivity;
 import com.huanli233.biliterminal2.activity.video.local.LocalListActivity;
 import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -76,9 +76,10 @@ public class MenuActivity extends BaseActivity {
 
         Intent intent = getIntent();
         from = intent.getStringExtra("from");
-        if(from!=null){
-            Log.d("debug-menu",from);
-            if(btnNames.containsKey(from)) setPageName(Objects.requireNonNull(btnNames.get(from)).first);
+        if (from != null) {
+            Log.d("debug-menu", from);
+            if (btnNames.containsKey(from))
+                setPageName(Objects.requireNonNull(btnNames.get(from)).first);
         }
 
         findViewById(R.id.top).setOnClickListener(view -> finish());
@@ -158,7 +159,8 @@ public class MenuActivity extends BaseActivity {
     private void killAndJump(String name) {
         if (btnNames.containsKey(name) && !Objects.equals(name, from)) {
             InstanceActivity instance = BiliTerminal.getInstanceActivityOnTop();
-            if (instance != null && instance.getLifecycle().getCurrentState() != Lifecycle.State.DESTROYED) instance.finish();
+            if (instance != null && instance.getLifecycle().getCurrentState() != Lifecycle.State.DESTROYED)
+                instance.finish();
 
             Intent intent = new Intent();
             intent.setClass(MenuActivity.this, Objects.requireNonNull(btnNames.get(name)).second);
@@ -198,7 +200,7 @@ public class MenuActivity extends BaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_MENU) finish();
+        if (keyCode == KeyEvent.KEYCODE_MENU) finish();
         return super.onKeyDown(keyCode, event);
     }
 }

@@ -8,7 +8,6 @@ import android.os.Process;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
-import android.util.Pair;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -16,12 +15,6 @@ import androidx.annotation.Nullable;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.service.DownloadService;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
-import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.google.android.material.button.MaterialButton;
-
-import java.text.SimpleDateFormat;
 
 public class CatchActivity extends BaseActivity {
     private boolean openStack = false;

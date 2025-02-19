@@ -60,7 +60,7 @@ public class TextClock extends TextView {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
     private boolean stopped = false;
 
-    public void init(){
+    public void init() {
         setTypeface(Typeface.DEFAULT_BOLD);
     }
 
@@ -68,25 +68,25 @@ public class TextClock extends TextView {
         @Override
         public void run() {
             removeCallbacks(this);
-            if(stopped) return;
+            if (stopped) return;
 
             long now = System.currentTimeMillis();
             setText(dateFormat.format(now));
 
             long next = 60000 - now % 60000;
-            postDelayed(this,next);
+            postDelayed(this, next);
             //Log.i("debug-clock-tick","now:" + SystemClock.uptimeMillis() + " | next:" + next);
             //再次修改，原先的handler容易被系统杀…
         }
     };
 
 
-    public void startTick(){
+    public void startTick() {
         stopped = false;
         ticker.run();
     }
 
-    public void stopTick(){
+    public void stopTick() {
         stopped = true;
         removeCallbacks(ticker);
     }
@@ -108,7 +108,7 @@ public class TextClock extends TextView {
     public void onScreenStateChanged(int screenState) {
         super.onScreenStateChanged(screenState);
 
-        if(screenState == SCREEN_STATE_ON) startTick();
+        if (screenState == SCREEN_STATE_ON) startTick();
         else stopTick();
     }
 
@@ -116,7 +116,7 @@ public class TextClock extends TextView {
     public void onVisibilityAggregated(boolean isVisible) {
         super.onVisibilityAggregated(isVisible);
 
-        if(isVisible) startTick();
+        if (isVisible) startTick();
         else stopTick();
     }
 

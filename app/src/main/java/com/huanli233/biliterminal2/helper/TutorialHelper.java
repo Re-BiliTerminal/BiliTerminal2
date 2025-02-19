@@ -12,12 +12,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.viewpager.widget.ViewPager;
 
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.TutorialActivity;
@@ -222,37 +217,7 @@ public class TutorialHelper {
         }
     }
 
-    public static void showPagerTutorial(Activity activity, int pagecount){
-        activity.runOnUiThread(()->{
-            String pagename = activity.getClass().getSimpleName();
-            TextView textView = activity.findViewById(R.id.text_tutorial_pager);
-            if(SharedPreferencesUtil.getBoolean("tutorial_pager_"+ pagename, true)) {
-                Log.d("debug-tutorial", pagename);
-                textView.setVisibility(View.VISIBLE);
-                textView.setText(activity.getString(R.string.tutorial_pager).replace("NNN", String.valueOf(pagecount)));
-
-                View viewPager = activity.findViewById(R.id.viewPager);
-                if (viewPager instanceof ViewPager) {
-                    ((ViewPager) viewPager).addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                        @Override
-                        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                            if (position != 0) textView.setVisibility(View.GONE);
-                        }
-
-                        @Override
-                        public void onPageSelected(int position) {
-                        }
-
-                        @Override
-                        public void onPageScrollStateChanged(int state) {
-                        }
-                    });
-                }
-                SharedPreferencesUtil.putBoolean("tutorial_pager_" + pagename, false);
-            }
-            else{
-                textView.setVisibility(View.GONE);
-            }
-        });
+    public static void showPagerTutorial(Activity activity, int pagecount) {
+        // DO NOTHING
     }
 }

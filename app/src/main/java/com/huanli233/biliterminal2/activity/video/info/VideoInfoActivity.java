@@ -102,11 +102,11 @@ public class VideoInfoActivity extends BaseActivity {
             ViewPagerFragmentAdapter vpfAdapter = new ViewPagerFragmentAdapter(getSupportFragmentManager(), fragmentList);
             viewPager.setAdapter(vpfAdapter);
             if (seek_reply != -1) viewPager.setCurrentItem(1);
-            videoInfoFragment.setOnFinishLoad(()-> AnimationUtils.crossFade(loading, videoInfoFragment.getView()));
+            videoInfoFragment.setOnFinishLoad(() -> AnimationUtils.crossFade(loading, videoInfoFragment.getView()));
         }).onFailure((error) -> {
             loading.setImageResource(R.mipmap.loading_2233_error);
             MsgUtil.showMsg("获取信息失败！\n可能是视频不存在？");
-            CenterThreadPool.runOnUIThreadAfter(5L, TimeUnit.SECONDS, ()->
+            CenterThreadPool.runOnUIThreadAfter(5L, TimeUnit.SECONDS, () ->
                     MsgUtil.err(error));
         }));
     }

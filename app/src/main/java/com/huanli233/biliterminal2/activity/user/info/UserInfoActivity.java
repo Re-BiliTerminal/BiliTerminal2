@@ -61,7 +61,7 @@ public class UserInfoActivity extends BaseActivity {
 
             findViewById(R.id.loading).setVisibility(View.GONE);
 
-            TutorialHelper.showPagerTutorial(this,3);
+            TutorialHelper.showPagerTutorial(this, 3);
         });
     }
 

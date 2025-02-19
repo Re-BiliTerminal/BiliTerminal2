@@ -18,6 +18,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.Target;
+import com.google.android.material.card.MaterialCardView;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.CopyTextActivity;
 import com.huanli233.biliterminal2.activity.ImageViewerActivity;
@@ -28,11 +33,6 @@ import com.huanli233.biliterminal2.util.CenterThreadPool;
 import com.huanli233.biliterminal2.util.GlideUtil;
 import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
 import com.huanli233.biliterminal2.util.TerminalContext;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.Target;
-import com.google.android.material.card.MaterialCardView;
 
 import org.json.JSONArray;
 import org.json.JSONException;

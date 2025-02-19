@@ -1,18 +1,24 @@
 package com.huanli233.biliterminal2.model;
 
+import static com.huanli233.biliterminal2.api.ReplyApi.TOP_TIP;
+
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.huanli233.biliterminal2.util.JsonUtil;
 import com.huanli233.biliterminal2.util.ToolsUtil;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static com.huanli233.biliterminal2.api.ReplyApi.TOP_TIP;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
 
 public class Reply implements Parcelable, Serializable {
     public long rpid;
@@ -40,8 +46,7 @@ public class Reply implements Parcelable, Serializable {
     }
 
     /**
-     *
-     * @param isRoot 是否是根评论
+     * @param isRoot    是否是根评论
      * @param replyJson 评论json对象
      * @throws JSONException json解析异常
      */

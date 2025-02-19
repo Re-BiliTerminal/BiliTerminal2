@@ -15,10 +15,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.model.SettingSection;
 import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,9 +35,9 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         put("divider", -1);
         put("switch", 0);
         put("choose", 1);
-        put("input_int",2);
-        put("input_float",3);
-        put("input_string",4);
+        put("input_int", 2);
+        put("input_float", 3);
+        put("input_string", 4);
 
     }};
 
@@ -108,7 +108,8 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         public void bind(SettingSection settingSection) {
-            if(settingSection.desc==null || settingSection.desc.isEmpty()) desc.setVisibility(View.GONE);
+            if (settingSection.desc == null || settingSection.desc.isEmpty())
+                desc.setVisibility(View.GONE);
             else {
                 desc.setText(settingSection.desc);
                 desc.setVisibility(View.VISIBLE);
@@ -135,7 +136,8 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         public void bind(SettingSection settingSection) {
-            if(settingSection.desc==null || settingSection.desc.isEmpty()) desc.setVisibility(View.GONE);
+            if (settingSection.desc == null || settingSection.desc.isEmpty())
+                desc.setVisibility(View.GONE);
             else {
                 desc.setText(settingSection.desc);
                 desc.setVisibility(View.VISIBLE);
@@ -167,27 +169,33 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         public void bind(SettingSection settingSection) {
-            if(settingSection.desc==null || settingSection.desc.isEmpty()) desc.setVisibility(View.GONE);
+            if (settingSection.desc == null || settingSection.desc.isEmpty())
+                desc.setVisibility(View.GONE);
             else {
                 desc.setText(settingSection.desc);
                 desc.setVisibility(View.VISIBLE);
             }
             name.setText(settingSection.name);
-            switch (settingSection.type){
+            switch (settingSection.type) {
                 case "input_int":
                     int intValue = SharedPreferencesUtil.getInt(settingSection.id, Integer.parseInt(settingSection.defaultValue));
                     input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
                     input.setText(String.valueOf(intValue));
                     input.addTextChangedListener(new TextWatcher() {
                         @Override
-                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
+
                         @Override
-                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
+
                         @Override
                         public void afterTextChanged(Editable editable) {
                             try {
                                 SharedPreferencesUtil.putInt(settingSection.id, Integer.parseInt(editable.toString()));
-                            } catch (Exception ignored){}
+                            } catch (Exception ignored) {
+                            }
                         }
                     });
                     break;
@@ -197,14 +205,19 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     input.setText(String.valueOf(floatValue));
                     input.addTextChangedListener(new TextWatcher() {
                         @Override
-                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
+
                         @Override
-                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
+
                         @Override
                         public void afterTextChanged(Editable editable) {
                             try {
                                 SharedPreferencesUtil.putFloat(settingSection.id, Float.parseFloat(editable.toString()));
-                            } catch (Exception ignored){}
+                            } catch (Exception ignored) {
+                            }
                         }
                     });
                     break;
@@ -214,9 +227,13 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     input.setText(strValue);
                     input.addTextChangedListener(new TextWatcher() {
                         @Override
-                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
+
                         @Override
-                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
+
                         @Override
                         public void afterTextChanged(Editable editable) {
                             SharedPreferencesUtil.putString(settingSection.id, editable.toString());

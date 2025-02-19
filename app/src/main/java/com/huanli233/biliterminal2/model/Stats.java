@@ -27,6 +27,7 @@ public class Stats implements Parcelable, Serializable {
     public Stats() {
 
     }
+
     protected Stats(Parcel in) {
         view = in.readInt();
         like = in.readInt();

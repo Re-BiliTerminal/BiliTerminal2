@@ -170,7 +170,7 @@ public class DownloadActivity extends BaseActivity {
                     bufferedSink.close();
                 }
             }
-            if(response.body()!=null) response.body().close();
+            if (response.body() != null) response.body().close();
             response.close();
         } catch (IOException e) {
             runOnUiThread(() -> MsgUtil.showMsg("弹幕下载失败！"));

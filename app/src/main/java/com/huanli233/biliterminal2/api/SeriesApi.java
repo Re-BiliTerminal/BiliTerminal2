@@ -57,9 +57,9 @@ public class SeriesApi {
     /**
      * 获取合集信息
      *
-     * @param mid       mid（或许可以为任意）
-     * @param id 合集id
-     * @param page      页数
+     * @param mid  mid（或许可以为任意）
+     * @param id   合集id
+     * @param page 页数
      * @return Collection对象与分页信息
      */
     public static PageInfo getSeriesInfo(String type, long mid, int id, int page, ArrayList<VideoCard> videoList) throws JSONException, IOException {
@@ -67,11 +67,11 @@ public class SeriesApi {
         switch (type) {
             case "series":
                 url = "https://api.bilibili.com/x/series/archives" + new NetWorkUtil.FormData()
-                    .setUrlParam(true)
-                    .put("mid", mid)
-                    .put("series_id", id)
-                    .put("pn", page)
-                    .put("ps", 30);
+                        .setUrlParam(true)
+                        .put("mid", mid)
+                        .put("series_id", id)
+                        .put("pn", page)
+                        .put("ps", 30);
                 break;
             case "season":
                 url = "https://api.bilibili.com/x/polymer/web-space/seasons_archives_list" + new NetWorkUtil.FormData()
@@ -93,7 +93,7 @@ public class SeriesApi {
         if (data != null) {
             JSONObject pageJson = data.optJSONObject("page");
             if (pageJson != null) {
-                switch (type){
+                switch (type) {
                     case "series":
                         pageInfo.page_num = pageJson.optInt("num", -1);
                         pageInfo.require_ps = pageJson.optInt("size", -1);
@@ -114,10 +114,10 @@ public class SeriesApi {
                     JSONObject archive = archives.getJSONObject(i);
                     VideoCard videoCard = new VideoCard();
                     videoCard.aid = archive.optLong("aid", 0);
-                    videoCard.bvid = archive.optString("bvid","");
-                    videoCard.cover = archive.optString("pic","");
+                    videoCard.bvid = archive.optString("bvid", "");
+                    videoCard.cover = archive.optString("pic", "");
                     videoCard.view = ToolsUtil.toWan(archive.getJSONObject("stat").optInt("view", -1));
-                    videoCard.title = archive.optString("title","");
+                    videoCard.title = archive.optString("title", "");
                     videoList.add(videoCard);
                 }
             }
@@ -132,8 +132,7 @@ public class SeriesApi {
         if (meta.has("season_id")) {
             series.type = "season";
             series.id = meta.getInt("season_id");
-        }
-        else {
+        } else {
             series.type = "series";
             series.id = meta.getInt("series_id");
         }

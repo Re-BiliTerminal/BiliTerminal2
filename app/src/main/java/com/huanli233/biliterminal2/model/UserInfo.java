@@ -2,7 +2,9 @@ package com.huanli233.biliterminal2.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -123,6 +125,7 @@ public class UserInfo implements Parcelable, Serializable {
 
     public UserInfo() {
     }
+
     public UserInfo(JSONObject userInfoJson) throws JSONException {
         this.level = userInfoJson.getJSONObject("level_info").getInt("current_level");
         this.mid = userInfoJson.getLong("mid");

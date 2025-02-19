@@ -90,14 +90,14 @@ public class ArticleInfoFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.recyclerView);
 
-        if(SharedPreferencesUtil.getBoolean("ui_landscape",false)) {
+        if (SharedPreferencesUtil.getBoolean("ui_landscape", false)) {
             WindowManager windowManager = (WindowManager) view.getContext().getSystemService(Context.WINDOW_SERVICE);
             Display display = windowManager.getDefaultDisplay();
             DisplayMetrics metrics = new DisplayMetrics();
-            if(Build.VERSION.SDK_INT >= 17) display.getRealMetrics(metrics);
+            if (Build.VERSION.SDK_INT >= 17) display.getRealMetrics(metrics);
             else display.getMetrics(metrics);
             int paddings = metrics.widthPixels / 6;
-            recyclerView.setPadding(paddings,0,paddings,0);
+            recyclerView.setPadding(paddings, 0, paddings, 0);
         }
 
         //开始解析内容
@@ -108,7 +108,8 @@ public class ArticleInfoFragment extends Fragment {
                 if (articleInfo == null) articleInfo = ArticleApi.getArticle(cvid);
 
                 if (articleInfo == null) {
-                    if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0) == 0) MsgUtil.showMsg("登录后再尝试");
+                    if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0) == 0)
+                        MsgUtil.showMsg("登录后再尝试");
                     else MsgUtil.showMsg("获取信息失败！\n可能是专栏不存在？");
                     requireActivity().finish();
                     return;
@@ -137,7 +138,9 @@ public class ArticleInfoFragment extends Fragment {
                     recyclerView.setAdapter(adapter);
                     if (onFinishLoad != null) onFinishLoad.run();
                 });
-            } catch (Exception e) {MsgUtil.err(e);}
+            } catch (Exception e) {
+                MsgUtil.err(e);
+            }
         });
     }
 

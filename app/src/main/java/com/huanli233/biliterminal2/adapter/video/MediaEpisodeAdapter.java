@@ -10,10 +10,10 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.listener.OnItemClickListener;
 import com.huanli233.biliterminal2.model.Bangumi;
-import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
 

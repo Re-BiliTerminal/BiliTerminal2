@@ -62,8 +62,8 @@ public class BiliTerminal extends Application {
      */
     public static Context getFitDisplayContext(Context old) {
         float dpiTimes = SharedPreferencesUtil.getFloat("dpi", 1.0F);
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) return old;
-        if(!DPI_FORCE_CHANGE && dpiTimes == 1.0F) return old;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) return old;
+        if (!DPI_FORCE_CHANGE && dpiTimes == 1.0F) return old;
         try {
             DisplayMetrics displayMetrics = old.getResources().getDisplayMetrics();
             Configuration configuration = old.getResources().getConfiguration();

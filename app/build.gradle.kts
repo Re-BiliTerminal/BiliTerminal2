@@ -140,6 +140,7 @@ android {
 }
 
 dependencies {
+    //noinspection GradleDependency
     implementation("androidx.core:core-ktx:1.10.1")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
     //noinspection GradleDependency

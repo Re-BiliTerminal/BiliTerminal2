@@ -14,6 +14,12 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.utils.widget.ImageFilterView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.card.MaterialCardView;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.ImageViewerActivity;
 import com.huanli233.biliterminal2.activity.user.info.UserInfoActivity;
@@ -25,12 +31,6 @@ import com.huanli233.biliterminal2.util.GlideUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
 import com.huanli233.biliterminal2.util.ToolsUtil;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.card.MaterialCardView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -172,7 +172,7 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
                             }
                             int result = ArticleApi.addCoin(articleInfo.id, articleInfo.upInfo.mid, 1);
                             if (result == 0) {
-                                if(++coinAdd <= 2) articleInfo.stats.coined++;
+                                if (++coinAdd <= 2) articleInfo.stats.coined++;
                                 context.runOnUiThread(() -> {
                                     MsgUtil.showMsg("投币成功！");
                                     coinLabel.setText(ToolsUtil.toWan(++articleInfo.stats.coin));

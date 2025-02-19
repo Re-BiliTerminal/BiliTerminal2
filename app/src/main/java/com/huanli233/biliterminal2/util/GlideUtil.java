@@ -22,15 +22,15 @@ public class GlideUtil {
     public static final int MAX_W_LOW = 1024;
 
     public static String url(String url) {
-        if(!url.startsWith("http") || url.endsWith("gif") || url.contains("@") || url.contains("afdiancdn.com")) return url;
-        if(SharedPreferencesUtil.getBoolean("image_request_jpg",false)){
+        if (!url.startsWith("http") || url.endsWith("gif") || url.contains("@") || url.contains("afdiancdn.com"))
+            return url;
+        if (SharedPreferencesUtil.getBoolean("image_request_jpg", false)) {
             if (url.endsWith("jpeg") || url.endsWith("jpg")) return url;
             return url + "@0e_"
                     + QUALITY_LOW + "q_"
                     //+ MAX_H_LOW + "h_"
                     + MAX_W_LOW + "w.jpeg";
-        }
-        else {
+        } else {
             if (url.endsWith("webp")) return url;
             return url + "@0e_"
                     + QUALITY_LOW + "q_"
@@ -40,15 +40,15 @@ public class GlideUtil {
     }
 
     public static String url_hq(String url) {
-        if(!url.startsWith("http") || url.endsWith("gif") || url.contains("@") || url.contains("afdiancdn.com")) return url;
-        if(SharedPreferencesUtil.getBoolean("image_request_jpg",false)){
+        if (!url.startsWith("http") || url.endsWith("gif") || url.contains("@") || url.contains("afdiancdn.com"))
+            return url;
+        if (SharedPreferencesUtil.getBoolean("image_request_jpg", false)) {
             if (url.endsWith("jpeg") || url.endsWith("jpg")) return url;
             return url + "@0e_"
                     + QUALITY_HIGH + "q_"
                     //+ MAX_H_HIGH + "h_"
                     + MAX_W_HIGH + "w.jpeg";
-        }
-        else {
+        } else {
             if (url.endsWith("webp")) return url;
             return url + "@0e_"
                     + QUALITY_HIGH + "q_"

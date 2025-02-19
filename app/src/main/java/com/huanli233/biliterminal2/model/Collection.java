@@ -23,7 +23,9 @@ public class Collection implements Parcelable, Serializable {
         public String title;
         public int type;
         public List<Episode> episodes = new ArrayList<>();
-        public Section(){}
+
+        public Section() {
+        }
 
         protected Section(Parcel in) {
             season_id = in.readInt();
@@ -70,7 +72,8 @@ public class Collection implements Parcelable, Serializable {
         public String bvid;
         public VideoInfo arc;
 
-        public Episode(){}
+        public Episode() {
+        }
 
         protected Episode(Parcel in) {
             season_id = in.readInt();
@@ -112,7 +115,10 @@ public class Collection implements Parcelable, Serializable {
             }
         };
     }
-    public Collection(){}
+
+    public Collection() {
+    }
+
     protected Collection(Parcel in) {
         id = in.readInt();
         title = in.readString();

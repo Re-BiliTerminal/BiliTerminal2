@@ -10,13 +10,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.card.MaterialCardView;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.api.FavoriteApi;
 import com.huanli233.biliterminal2.util.CenterThreadPool;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
 import com.huanli233.biliterminal2.util.ToolsUtil;
-import com.google.android.material.card.MaterialCardView;
 
 import org.json.JSONException;
 

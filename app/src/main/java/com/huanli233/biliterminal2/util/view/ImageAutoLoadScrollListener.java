@@ -7,8 +7,8 @@ import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_SETTLING;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
 import com.bumptech.glide.Glide;
+import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
 
 public class ImageAutoLoadScrollListener extends RecyclerView.OnScrollListener {
     @Override

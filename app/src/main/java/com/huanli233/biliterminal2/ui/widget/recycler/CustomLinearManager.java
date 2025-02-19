@@ -25,8 +25,8 @@ public class CustomLinearManager extends LinearLayoutManager {
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
         try {
             super.onLayoutChildren(recycler, state);
-        } catch (Throwable e){
-            MsgUtil.err("列表报错：",e);
+        } catch (Throwable e) {
+            MsgUtil.err("列表报错：", e);
         }
     }
 }

@@ -3,11 +3,11 @@ package com.huanli233.biliterminal2.activity.settings;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.activity.settings.login.SpecialLoginActivity;
@@ -17,25 +17,16 @@ import com.huanli233.biliterminal2.service.DownloadService;
 import com.huanli233.biliterminal2.util.CenterThreadPool;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.NetWorkUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Objects;
-
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-import okio.BufferedSource;
 
 public class TestActivity extends BaseActivity {
 
     SwitchMaterial sw_wbi, sw_post;
     EditText input_link, input_data, output;
-    MaterialCardView btn_crash,btn_request, btn_cookies, btn_start, btn_download, btn_download_goto, btn_download_clear;
+    MaterialCardView btn_crash, btn_request, btn_cookies, btn_start, btn_download, btn_download_goto, btn_download_clear;
 
     JSONArray conversation;
 
@@ -60,32 +51,32 @@ public class TestActivity extends BaseActivity {
 
         btn_request = findViewById(R.id.request);
 
-        btn_request.setOnClickListener(view -> CenterThreadPool.run(()->{
+        btn_request.setOnClickListener(view -> CenterThreadPool.run(() -> {
             try {
                 String url = input_link.getText().toString();
-                if(!url.startsWith("https://") && !url.startsWith("http://")) url = "https://" + url;
+                if (!url.startsWith("https://") && !url.startsWith("http://"))
+                    url = "https://" + url;
 
                 if (sw_wbi.isChecked()) url = ConfInfoApi.signWBI(url);
 
-                runOnUiThread(()->{
+                runOnUiThread(() -> {
                     output.setText("");
                     MsgUtil.showMsg("发出请求！");
                 });
                 String result;
-                if(sw_post.isChecked()) {
+                if (sw_post.isChecked()) {
                     String data = input_data.getText().toString();
                     result = Objects.requireNonNull(NetWorkUtil.post(url, data).body()).string();
-                }
-                else {
+                } else {
                     result = Objects.requireNonNull(NetWorkUtil.get(url).body()).string();
                 }
 
-                runOnUiThread(()->{
+                runOnUiThread(() -> {
                     output.setText(result);
                     MsgUtil.showMsg("请求成功！");
                 });
-            }catch (Exception e){
-                runOnUiThread(()->{
+            } catch (Exception e) {
+                runOnUiThread(() -> {
                     output.setText(e.toString());
                     MsgUtil.showMsg("请求失败！");
                 });
@@ -100,20 +91,20 @@ public class TestActivity extends BaseActivity {
             startActivity(intent);
         });
 
-        btn_start.setOnClickListener(v -> startService(new Intent(this,DownloadService.class)));
+        btn_start.setOnClickListener(v -> startService(new Intent(this, DownloadService.class)));
 
         btn_download.setOnClickListener(v -> {
-            DownloadService.startDownload("雀魂","早春赏樱",501590258L,294292444L,
+            DownloadService.startDownload("雀魂", "早春赏樱", 501590258L, 294292444L,
                     "https://comment.bilibili.com/294292444.xml",
-                    "http://i1.hdslb.com/bfs/archive/321b2291b55f1effc0f0646f593cf47b78ea0e9b.png",16);
+                    "http://i1.hdslb.com/bfs/archive/321b2291b55f1effc0f0646f593cf47b78ea0e9b.png", 16);
 
-            DownloadService.startDownload("雀魂","曲水流觞",501590258L,294370880L,
+            DownloadService.startDownload("雀魂", "曲水流觞", 501590258L, 294370880L,
                     "https://comment.bilibili.com/294370880.xml",
-                    "http://i1.hdslb.com/bfs/archive/321b2291b55f1effc0f0646f593cf47b78ea0e9b.png",16);
+                    "http://i1.hdslb.com/bfs/archive/321b2291b55f1effc0f0646f593cf47b78ea0e9b.png", 16);
 
-            DownloadService.startDownload("雀魂","锦绣梦",501590258L,493168287L,
+            DownloadService.startDownload("雀魂", "锦绣梦", 501590258L, 493168287L,
                     "https://comment.bilibili.com/493168287.xml",
-                    "http://i1.hdslb.com/bfs/archive/321b2291b55f1effc0f0646f593cf47b78ea0e9b.png",16);
+                    "http://i1.hdslb.com/bfs/archive/321b2291b55f1effc0f0646f593cf47b78ea0e9b.png", 16);
 
 
             //startService(new Intent(TestActivity.this,DownloadService.class));

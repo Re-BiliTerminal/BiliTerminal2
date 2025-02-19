@@ -15,13 +15,13 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.snackbar.SnackbarContentLayout;
 import com.huanli233.biliterminal2.BiliTerminal;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.DialogActivity;
 import com.huanli233.biliterminal2.activity.ShowTextActivity;
 import com.huanli233.biliterminal2.event.SnackEvent;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.snackbar.SnackbarContentLayout;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
@@ -40,7 +40,7 @@ public class MsgUtil {
         } else {
             toast(str);
         }
-        Log.d("debug-msg",str);
+        Log.d("debug-msg", str);
     }
 
     public static void showMsgLong(String str) {
@@ -49,7 +49,7 @@ public class MsgUtil {
         } else {
             toastLong(str);
         }
-        Log.d("debug-msg-long",str);
+        Log.d("debug-msg-long", str);
     }
 
     public static void toast(String str) {
@@ -112,8 +112,8 @@ public class MsgUtil {
     public static Snackbar createSnack(View view, CharSequence text, int duration, Action action) {
         Snackbar snackbar;
         snackbar = Snackbar.make(view, text, duration);
-        snackbar.setBackgroundTint(Color.argb(0x85,0x80,0x80,0x80));
-        snackbar.setTextColor(Color.rgb(0xeb,0xe0,0xe2));
+        snackbar.setBackgroundTint(Color.argb(0x85, 0x80, 0x80, 0x80));
+        snackbar.setTextColor(Color.rgb(0xeb, 0xe0, 0xe2));
         View snackBarView = snackbar.getView();
         snackBarView.setOnTouchListener((v, event) -> false);
         snackBarView.setPadding(ToolsUtil.dp2px(6), 0, 0, 0);
@@ -139,11 +139,12 @@ public class MsgUtil {
         return snackbar;
     }
 
-    public static void err(Throwable e){
-        err(null,e);
+    public static void err(Throwable e) {
+        err(null, e);
     }
+
     public static void err(String desc, Throwable e) {
-        if(desc!=null) Log.e("debug-error",desc);
+        if (desc != null) Log.e("debug-error", desc);
         e.printStackTrace();
 
         StringBuilder output = new StringBuilder(desc == null ? "" : desc);
@@ -166,19 +167,18 @@ public class MsgUtil {
                 output.append("数据解析错误：\n");
                 output.append(e_str.replace("org.json.JSONException:", ""));
             }
-        }
-        else if(e instanceof IndexOutOfBoundsException) {
+        } else if (e instanceof IndexOutOfBoundsException) {
             if (SharedPreferencesUtil.getBoolean("dev_recyclererr_detailed", false)) {
                 Writer writer = new StringWriter();
                 PrintWriter printWriter = new PrintWriter(writer);
                 e.printStackTrace(printWriter);
                 showText(desc + "Adapter错误", writer.toString());
                 return;
-            } else{
+            } else {
                 output.append("遇到Adapter错误：\n无需上报，除非你在某个界面经常遇到");
             }
-        }
-        else if(e instanceof SQLException) output.append("数据库读写错误\n请清理空间或清除软件数据");
+        } else if (e instanceof SQLException)
+            output.append("数据库读写错误\n请清理空间或清除软件数据");
         else {
             output.append("错误：");
             output.append(e_str);

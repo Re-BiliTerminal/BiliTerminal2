@@ -14,6 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.user.info.UserInfoActivity;
 import com.huanli233.biliterminal2.adapter.video.VideoCardHolder;
@@ -25,9 +28,6 @@ import com.huanli233.biliterminal2.util.GlideUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.TerminalContext;
 import com.huanli233.biliterminal2.util.ToolsUtil;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.text.SimpleDateFormat;
 
@@ -92,7 +92,7 @@ public class NoticeHolder extends RecyclerView.ViewHolder {
             VideoCardHolder holder = new VideoCardHolder(View.inflate(context, R.layout.cell_dynamic_video, extraCard));
             holder.showVideoCard(childVideoCard, context);
             holder.itemView.findViewById(R.id.videoCardView).setOnClickListener(view ->
-                TerminalContext.getInstance().enterVideoDetailPage(context, 0, childVideoCard.bvid)
+                    TerminalContext.getInstance().enterVideoDetailPage(context, 0, childVideoCard.bvid)
             );
         }
         if (message.replyInfo != null || message.dynamicInfo != null) {

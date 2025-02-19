@@ -6,12 +6,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
 
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.activity.settings.UIPreviewActivity;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.google.android.material.switchmaterial.SwitchMaterial;
 
 public class SetupUIActivity extends BaseActivity {
 
@@ -32,17 +32,16 @@ public class SetupUIActivity extends BaseActivity {
         uiPaddingV.setText(String.valueOf(SharedPreferencesUtil.getInt("paddingV_percent", 0)));
 
         SwitchMaterial round = findViewById(R.id.switch_round);
-        round.setChecked(SharedPreferencesUtil.getBoolean("player_ui_round",false));
+        round.setChecked(SharedPreferencesUtil.getBoolean("player_ui_round", false));
         round.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(isChecked){
+            if (isChecked) {
                 uiPaddingH.setText("11");
                 uiPaddingV.setText("11");
-                SharedPreferencesUtil.putBoolean("player_ui_round",true);
-            }
-            else{
+                SharedPreferencesUtil.putBoolean("player_ui_round", true);
+            } else {
                 uiPaddingH.setText("0");
                 uiPaddingV.setText("0");
-                SharedPreferencesUtil.putBoolean("player_ui_round",false);
+                SharedPreferencesUtil.putBoolean("player_ui_round", false);
             }
         });
 
@@ -65,7 +64,7 @@ public class SetupUIActivity extends BaseActivity {
             SharedPreferencesUtil.putInt("paddingH_percent", 0);
             SharedPreferencesUtil.putInt("paddingV_percent", 0);
             SharedPreferencesUtil.putFloat("dpi", 1.0f);
-            SharedPreferencesUtil.putBoolean("player_ui_round",false);
+            SharedPreferencesUtil.putBoolean("player_ui_round", false);
             uiScaleInput.setText("1.0");
             uiPaddingH.setText("0");
             uiPaddingV.setText("0");

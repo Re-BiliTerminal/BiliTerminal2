@@ -22,8 +22,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class TutorialActivity extends BaseActivity {
-    private int wait_time = 3;
-
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,24 +50,6 @@ public class TutorialActivity extends BaseActivity {
             }
 
             MaterialButton close_btn = findViewById(R.id.close_btn);
-            close_btn.setEnabled(false);
-            Timer timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    runOnUiThread(() -> {
-                        if (wait_time > 0) {
-                            close_btn.setText(String.format(Locale.getDefault(), "已阅(%ds)", wait_time));
-                            close_btn.setEnabled(false);
-                            wait_time--;
-                        } else {
-                            close_btn.setText("已阅");
-                            close_btn.setEnabled(true);
-                            timer.cancel();
-                        }
-                    });
-                }
-            }, 0, 1000);
             close_btn.setOnClickListener(view -> {
                 SharedPreferencesUtil.putInt("tutorial_ver_" + intent.getStringExtra("tag"), intent.getIntExtra("version", -1));
                 finish();

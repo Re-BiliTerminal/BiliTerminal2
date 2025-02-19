@@ -12,13 +12,13 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.ListChooseActivity;
 import com.huanli233.biliterminal2.activity.dynamic.DynamicActivity;
 import com.huanli233.biliterminal2.activity.dynamic.send.SendDynamicActivity;
 import com.huanli233.biliterminal2.activity.live.FollowLiveActivity;
 import com.huanli233.biliterminal2.model.Dynamic;
-import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;

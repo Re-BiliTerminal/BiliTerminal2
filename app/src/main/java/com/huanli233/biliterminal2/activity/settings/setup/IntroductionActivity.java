@@ -2,15 +2,13 @@ package com.huanli233.biliterminal2.activity.settings.setup;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 
+import com.google.android.material.card.MaterialCardView;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.activity.settings.login.LoginActivity;
-import com.huanli233.biliterminal2.activity.settings.login.SpecialLoginActivity;
 import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.google.android.material.card.MaterialCardView;
 
 public class IntroductionActivity extends BaseActivity {
 

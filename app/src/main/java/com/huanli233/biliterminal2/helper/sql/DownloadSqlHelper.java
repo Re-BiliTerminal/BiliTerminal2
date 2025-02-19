@@ -34,7 +34,7 @@ public class DownloadSqlHelper extends SQLiteOpenHelper {
                 db.execSQL("drop table if exists download");
                 onCreate(db);
             }
-        } catch (Throwable e){
+        } catch (Throwable e) {
             MsgUtil.err(e);
         }
     }

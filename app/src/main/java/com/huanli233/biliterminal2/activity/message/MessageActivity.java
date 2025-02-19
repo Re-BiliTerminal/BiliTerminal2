@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.card.MaterialCardView;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.InstanceActivity;
 import com.huanli233.biliterminal2.adapter.message.PrivateMsgSessionsAdapter;
@@ -20,7 +21,6 @@ import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager;
 import com.huanli233.biliterminal2.util.AsyncLayoutInflaterX;
 import com.huanli233.biliterminal2.util.CenterThreadPool;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.google.android.material.card.MaterialCardView;
 
 import org.json.JSONObject;
 

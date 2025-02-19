@@ -13,6 +13,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.card.MaterialCardView;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.activity.user.info.UserInfoActivity;
@@ -21,10 +25,6 @@ import com.huanli233.biliterminal2.util.GlideUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
 import com.huanli233.biliterminal2.util.ToolsUtil;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,8 +131,7 @@ public class AboutActivity extends BaseActivity {
                 if (SharedPreferencesUtil.getBoolean("developer", false)) {
                     MsgUtil.showMsg("已关闭开发者模式！");
                     SharedPreferencesUtil.putBoolean("developer", false);
-                }
-                else {
+                } else {
                     eggClick_Dev++;
                     if (eggClick_Dev == 7) {
                         SharedPreferencesUtil.putBoolean("developer", true);

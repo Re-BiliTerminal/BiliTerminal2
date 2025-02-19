@@ -42,7 +42,7 @@ public class QualityChooserActivity extends BaseActivity {
         long aid = getIntent().getLongExtra("aid", 0);
         String bvid = getIntent().getStringExtra("bvid");
 
-        TerminalContext.getInstance().getVideoInfoByAidOrBvId(aid,bvid).observe(this,result -> result.onSuccess((videoInfo -> {
+        TerminalContext.getInstance().getVideoInfoByAidOrBvId(aid, bvid).observe(this, result -> result.onSuccess((videoInfo -> {
 
             QualityChooseAdapter adapter = new QualityChooseAdapter(this);
             int page = getIntent().getIntExtra("page", 0);

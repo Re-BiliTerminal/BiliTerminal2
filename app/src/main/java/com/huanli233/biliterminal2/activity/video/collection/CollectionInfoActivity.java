@@ -15,6 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.ImageViewerActivity;
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
@@ -22,12 +27,9 @@ import com.huanli233.biliterminal2.adapter.video.VideoCardHolder;
 import com.huanli233.biliterminal2.model.Collection;
 import com.huanli233.biliterminal2.model.VideoCard;
 import com.huanli233.biliterminal2.model.VideoInfo;
-import com.huanli233.biliterminal2.util.*;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.RequestOptions;
+import com.huanli233.biliterminal2.util.GlideUtil;
+import com.huanli233.biliterminal2.util.TerminalContext;
+import com.huanli233.biliterminal2.util.ToolsUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,7 +48,7 @@ public class CollectionInfoActivity extends RefreshListActivity {
         long mid = getIntent().getLongExtra("mid", -1);
         setPageName("合集详情");
 
-        TerminalContext.getInstance().getVideoInfoByAidOrBvId(from_aid,null).observe(this, result -> result.onSuccess((videoInfo -> {
+        TerminalContext.getInstance().getVideoInfoByAidOrBvId(from_aid, null).observe(this, result -> result.onSuccess((videoInfo -> {
             collection = videoInfo.collection;
 
             RecyclerView.Adapter<RecyclerView.ViewHolder> adapter;

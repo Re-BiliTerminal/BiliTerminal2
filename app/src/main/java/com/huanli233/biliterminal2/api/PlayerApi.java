@@ -53,7 +53,7 @@ public class PlayerApi {
     }
 
     public static void startDownloading(VideoInfo videoInfo, int page, int qn) {
-        if(SharedPreferencesUtil.getBoolean("dev_download_old",false)) {
+        if (SharedPreferencesUtil.getBoolean("dev_download_old", false)) {
             Context context = BiliTerminal.context;
 
             Intent intent = new Intent(context, JumpToPlayerActivity.class)
@@ -71,7 +71,7 @@ public class PlayerApi {
             return;
         }
 
-        if(videoInfo.cids.size() == 1)
+        if (videoInfo.cids.size() == 1)
             DownloadService.startDownload(videoInfo.title,
                     videoInfo.aid, videoInfo.cids.get(0),
                     ("https://comment.bilibili.com/" + videoInfo.cids.get(0) + ".xml"),
@@ -209,21 +209,21 @@ public class PlayerApi {
         JSONObject data = NetWorkUtil.getJson(url).getJSONObject("data");
 
         JSONArray subtitles = data.getJSONObject("subtitle").getJSONArray("subtitles");
-        Log.d("debug-subtitle",subtitles.toString());
+        Log.d("debug-subtitle", subtitles.toString());
 
         SubtitleLink[] links = new SubtitleLink[subtitles.length() + 1];
         for (int i = 0; i < subtitles.length(); i++) {
             JSONObject subtitle = subtitles.getJSONObject(i);
 
             long id = subtitle.getLong("id");
-            boolean isAI = subtitle.getInt("type")==1;
+            boolean isAI = subtitle.getInt("type") == 1;
             String lang = subtitle.getString("lan_doc");
             String subtitle_url = "https:" + subtitle.getString("subtitle_url");
 
-            SubtitleLink link = new SubtitleLink(id,lang,subtitle_url,isAI);
+            SubtitleLink link = new SubtitleLink(id, lang, subtitle_url, isAI);
             links[i] = link;
         }
-        links[subtitles.length()] = new SubtitleLink(-1,"不显示字幕","null",false);
+        links[subtitles.length()] = new SubtitleLink(-1, "不显示字幕", "null", false);
         return links;
     }
 

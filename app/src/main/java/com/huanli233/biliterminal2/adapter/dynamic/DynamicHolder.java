@@ -20,6 +20,13 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.EncodeStrategy;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.card.MaterialCardView;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.ImageViewerActivity;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
@@ -32,14 +39,12 @@ import com.huanli233.biliterminal2.model.ArticleCard;
 import com.huanli233.biliterminal2.model.Dynamic;
 import com.huanli233.biliterminal2.model.LiveRoom;
 import com.huanli233.biliterminal2.model.VideoCard;
-import com.huanli233.biliterminal2.util.*;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.load.EncodeStrategy;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.card.MaterialCardView;
+import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.EmoteUtil;
+import com.huanli233.biliterminal2.util.GlideUtil;
+import com.huanli233.biliterminal2.util.MsgUtil;
+import com.huanli233.biliterminal2.util.TerminalContext;
+import com.huanli233.biliterminal2.util.ToolsUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -271,7 +276,7 @@ public class DynamicHolder extends RecyclerView.ViewHolder {
                 VideoCardHolder video_holder = new VideoCardHolder(cell_dynamic_video);
                 video_holder.showVideoCard(childVideoCard, context);
                 boolean finalIsPgc = isPgc;
-                cell_dynamic_video.setOnClickListener(view -> TerminalContext.getInstance().enterVideoDetailPage(context, childVideoCard.aid, "", finalIsPgc ? "media": null));
+                cell_dynamic_video.setOnClickListener(view -> TerminalContext.getInstance().enterVideoDetailPage(context, childVideoCard.aid, "", finalIsPgc ? "media" : null));
                 cell_dynamic_video.setVisibility(View.VISIBLE);
                 break;
 
@@ -308,7 +313,7 @@ public class DynamicHolder extends RecyclerView.ViewHolder {
                 }
                 View imageCard = cell_dynamic_image;
                 ImageView imageView = imageCard.findViewById(R.id.imageView);
-                if(!pictureList.isEmpty()) {
+                if (!pictureList.isEmpty()) {
                     Glide.with(context).asDrawable().load(GlideUtil.url(pictureList.get(0)))
                             .transition(GlideUtil.getTransitionOptions())
                             .placeholder(R.mipmap.placeholder)
@@ -334,7 +339,7 @@ public class DynamicHolder extends RecyclerView.ViewHolder {
             content.setMaxLines(5);
             if (dynamic.dynamicId != 0) {
                 (isChild ? itemView.findViewById(R.id.dynamic_child) : itemView).setOnClickListener(view -> {
-                    if(context instanceof Activity) {
+                    if (context instanceof Activity) {
                         TerminalContext.getInstance().enterDynamicDetailPageForResult((Activity) context, dynamic.dynamicId, getAdapterPosition(), GO_TO_INFO_REQUEST);
                     } else {
                         TerminalContext.getInstance().enterDynamicDetailPage(context, dynamic.dynamicId, getAdapterPosition());

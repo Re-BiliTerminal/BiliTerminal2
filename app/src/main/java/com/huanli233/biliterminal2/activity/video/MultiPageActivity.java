@@ -42,7 +42,7 @@ public class MultiPageActivity extends BaseActivity {
         Intent intent = getIntent();
         long aid = intent.getLongExtra("aid", 0);
         String bvid = intent.getStringExtra("bvid");
-        TerminalContext.getInstance().getVideoInfoByAidOrBvId(aid,bvid).observe(this, result -> result.onSuccess((videoInfo -> {
+        TerminalContext.getInstance().getVideoInfoByAidOrBvId(aid, bvid).observe(this, result -> result.onSuccess((videoInfo -> {
             this.videoInfo = videoInfo;
             PageChooseAdapter adapter = new PageChooseAdapter(this, videoInfo.pagenames);
 
@@ -51,10 +51,9 @@ public class MultiPageActivity extends BaseActivity {
                     File rootPath = new File(FileUtil.getDownloadPath(), FileUtil.stringToFile(videoInfo.title));
                     File downPath = new File(rootPath, FileUtil.stringToFile(videoInfo.pagenames.get(position)));
                     if (downPath.exists()) {
-                        File file_sign = new File(downPath,".DOWNLOADING");
+                        File file_sign = new File(downPath, ".DOWNLOADING");
                         MsgUtil.showMsg(file_sign.exists() ? "已在下载队列" : "已下载完成");
-                    }
-                    else {
+                    } else {
                         startActivity(
                                 new Intent()
                                         .putExtra("page", position)

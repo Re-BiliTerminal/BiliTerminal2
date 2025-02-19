@@ -10,6 +10,7 @@ import android.widget.EditText;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
+import com.google.android.material.card.MaterialCardView;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.EmoteActivity;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
@@ -20,7 +21,6 @@ import com.huanli233.biliterminal2.model.Reply;
 import com.huanli233.biliterminal2.util.CenterThreadPool;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.google.android.material.card.MaterialCardView;
 
 import org.greenrobot.eventbus.EventBus;
 

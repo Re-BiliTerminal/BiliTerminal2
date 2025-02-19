@@ -185,7 +185,7 @@ public class PlayerDanmuClientListener extends WebSocketListener {
                         playerActivity.adddanmaku(nickname + "：" + content, Color.WHITE);
                     else playerActivity.adddanmaku(content, Color.WHITE);
 
-                    Log.e("debug","pkg_dm");
+                    Log.e("debug", "pkg_dm");
                     break;
 
                 //看过的人数

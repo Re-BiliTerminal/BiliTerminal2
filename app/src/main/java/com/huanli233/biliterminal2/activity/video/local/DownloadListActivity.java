@@ -41,7 +41,7 @@ public class DownloadListActivity extends RefreshListActivity {
 
         MsgUtil.showMsg("提醒：能用就行\n此页面可能存在诸多问题");
 
-        CenterThreadPool.run(()->{
+        CenterThreadPool.run(() -> {
             created = true;
             refreshList(false);
 
@@ -49,9 +49,10 @@ public class DownloadListActivity extends RefreshListActivity {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    if(DownloadService.downloadingSection!=null && started) runOnUiThread(()->adapter.notifyItemChanged(0));
+                    if (DownloadService.downloadingSection != null && started)
+                        runOnUiThread(() -> adapter.notifyItemChanged(0));
                 }
-            },300,500);
+            }, 300, 500);
         });
 
 
@@ -59,82 +60,78 @@ public class DownloadListActivity extends RefreshListActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     public void refreshList(boolean fromOutside) {
-        if(this.isDestroyed() || !created) return;
-        if(fromOutside && !started) return;
-        Log.d("debug","刷新下载列表");
+        if (this.isDestroyed() || !created) return;
+        if (fromOutside && !started) return;
+        Log.d("debug", "刷新下载列表");
 
         boolean downloading = DownloadService.downloadingSection != null;
 
         sections = downloading ? DownloadService.getAllExceptDownloading() : DownloadService.getAll();
 
         if (sections == null && DownloadService.downloadingSection == null) {
-            if(!emptyTipShown) {
-                runOnUiThread(()->MsgUtil.showMsg("下载列表为空"));
+            if (!emptyTipShown) {
+                runOnUiThread(() -> MsgUtil.showMsg("下载列表为空"));
                 showEmptyView();
                 emptyTipShown = true;
             }
-        }
-        else {
-            if(sections != null) for (DownloadSection s:sections) {
-                Log.d("debug-download",s.name_short);
+        } else {
+            if (sections != null) for (DownloadSection s : sections) {
+                Log.d("debug-download", s.name_short);
             }
 
-            if(emptyTipShown) {
+            if (emptyTipShown) {
                 emptyTipShown = false;
                 hideEmptyView();
             }
 
-            if(firstRefresh){
-                adapter = new DownloadAdapter(DownloadListActivity.this,sections);
-                adapter.setOnClickListener(position -> CenterThreadPool.run(()->{
-                    Log.d("debug-download","click:"+position);
+            if (firstRefresh) {
+                adapter = new DownloadAdapter(DownloadListActivity.this, sections);
+                adapter.setOnClickListener(position -> CenterThreadPool.run(() -> {
+                    Log.d("debug-download", "click:" + position);
                     if (position == -1) {
-                        if(DownloadService.started) {
+                        if (DownloadService.started) {
                             stopService(new Intent(this, DownloadService.class));
                             MsgUtil.showMsg("已结束下载服务");
-                        }
-                        else{
+                        } else {
                             startService(new Intent(this, DownloadService.class));
                         }
-                    }
-                    else{
-                        if(position < sections.size()){
+                    } else {
+                        if (position < sections.size()) {
                             DownloadSection section = sections.get(position);
-                            if(section.state.equals("downloading")) {
+                            if (section.state.equals("downloading")) {
                                 try {
                                     File folder = section.getPath();
                                     FileUtil.deleteFolder(folder);
                                     folder.mkdirs();
-                                    File sign = new File(folder,".DOWNLOADING");
+                                    File sign = new File(folder, ".DOWNLOADING");
                                     sign.createNewFile();
                                 } catch (IOException e) {
-                                    MsgUtil.err("文件错误：",e);
+                                    MsgUtil.err("文件错误：", e);
                                 }
                             }
 
-                            DownloadService.setState(section.id,"none");
+                            DownloadService.setState(section.id, "none");
                             Intent intent = new Intent(this, DownloadService.class);
-                            intent.putExtra("first",section.id);
+                            intent.putExtra("first", section.id);
                             startService(intent);
                         }
                     }
                 }));
 
-                adapter.setOnLongClickListener(position -> CenterThreadPool.run(()->{
+                adapter.setOnLongClickListener(position -> CenterThreadPool.run(() -> {
                     try {
                         final DownloadSection delete;
-                        if(position == -1){
+                        if (position == -1) {
                             delete = DownloadService.downloadingSection;
                             stopService(new Intent(this, DownloadService.class));
-                        }
-                        else delete = sections.get(position);
-                        if(delete == null) return;
+                        } else delete = sections.get(position);
+                        if (delete == null) return;
 
                         DownloadService.deleteSection(delete.id);
 
                         refreshList(false);
                         MsgUtil.showMsg("删除成功");
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         MsgUtil.err(e);
                     }
                 }));
@@ -142,11 +139,10 @@ public class DownloadListActivity extends RefreshListActivity {
                 setAdapter(adapter);
                 started = true;
                 firstRefresh = false;
-            }
-            else {
+            } else {
                 adapter.downloadList = sections;
-                runOnUiThread(()->adapter.notifyDataSetChanged());
-                Log.d("debug-adapter",String.valueOf(adapter.getItemCount()));
+                runOnUiThread(() -> adapter.notifyDataSetChanged());
+                Log.d("debug-adapter", String.valueOf(adapter.getItemCount()));
             }
         }
 
@@ -154,7 +150,7 @@ public class DownloadListActivity extends RefreshListActivity {
 
     @Override
     protected void onDestroy() {
-        if(timer!=null) timer.cancel();
+        if (timer != null) timer.cancel();
         weakRef = null;
         super.onDestroy();
     }

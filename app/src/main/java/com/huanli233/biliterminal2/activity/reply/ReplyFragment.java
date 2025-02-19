@@ -113,14 +113,14 @@ public class ReplyFragment extends RefreshListFragment {
         setForceSingleColumn();
         super.onViewCreated(view, savedInstanceState);
 
-        if(SharedPreferencesUtil.getBoolean("ui_landscape",false)) {
+        if (SharedPreferencesUtil.getBoolean("ui_landscape", false)) {
             WindowManager windowManager = (WindowManager) view.getContext().getSystemService(Context.WINDOW_SERVICE);
             Display display = windowManager.getDefaultDisplay();
             DisplayMetrics metrics = new DisplayMetrics();
-            if(Build.VERSION.SDK_INT >= 17) display.getRealMetrics(metrics);
+            if (Build.VERSION.SDK_INT >= 17) display.getRealMetrics(metrics);
             else display.getMetrics(metrics);
             int paddings = metrics.widthPixels / 6;
-            recyclerView.setPadding(paddings,0,paddings,0);
+            recyclerView.setPadding(paddings, 0, paddings, 0);
         }
 
         setOnRefreshListener(() -> refresh(aid));
@@ -153,6 +153,7 @@ public class ReplyFragment extends RefreshListFragment {
             });
         }
     }
+
     public void setSource(Object source) {
         this.source = source;
         if (replyAdapter != null) {

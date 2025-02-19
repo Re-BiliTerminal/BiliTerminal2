@@ -13,6 +13,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.message.PrivateMsgActivity;
 import com.huanli233.biliterminal2.activity.user.info.UserInfoActivity;
@@ -20,9 +23,6 @@ import com.huanli233.biliterminal2.model.PrivateMessage;
 import com.huanli233.biliterminal2.model.PrivateMsgSession;
 import com.huanli233.biliterminal2.model.UserInfo;
 import com.huanli233.biliterminal2.util.GlideUtil;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 
 import org.json.JSONException;
 

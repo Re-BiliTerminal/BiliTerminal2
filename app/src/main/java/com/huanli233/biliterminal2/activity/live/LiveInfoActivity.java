@@ -12,6 +12,11 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.button.MaterialButton;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.ImageViewerActivity;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
@@ -25,12 +30,13 @@ import com.huanli233.biliterminal2.model.LivePlayInfo;
 import com.huanli233.biliterminal2.model.LiveRoom;
 import com.huanli233.biliterminal2.model.UserInfo;
 import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager;
-import com.huanli233.biliterminal2.util.*;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.button.MaterialButton;
+import com.huanli233.biliterminal2.util.AnimationUtils;
+import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.GlideUtil;
+import com.huanli233.biliterminal2.util.MsgUtil;
+import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.TerminalContext;
+import com.huanli233.biliterminal2.util.ToolsUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +79,7 @@ public class LiveInfoActivity extends BaseActivity {
             RecyclerView quality_list = findViewById(R.id.quality_list);
 
             AnimationUtils.crossFade(loading, scrollView);
-            TerminalContext.getInstance().getLiveInfoByRoomId(room_id).observe(this, (liveInfoResult)-> liveInfoResult.onSuccess((liveInfo) -> {
+            TerminalContext.getInstance().getLiveInfoByRoomId(room_id).observe(this, (liveInfoResult) -> liveInfoResult.onSuccess((liveInfo) -> {
                 room = liveInfo.getLiveRoom();
                 UserInfo userInfo = liveInfo.getUserInfo();
                 playInfo = liveInfo.getLivePlayInfo();
@@ -133,7 +139,7 @@ public class LiveInfoActivity extends BaseActivity {
                                     } catch (Throwable ignored) {
                                         mid = 0;
                                     }
-                                    Intent player = PlayerApi.jumpToPlayer(this, play_url, "","", "直播·" + room.title, false, room_id, "", 0, mid, 0, true);
+                                    Intent player = PlayerApi.jumpToPlayer(this, play_url, "", "", "直播·" + room.title, false, room_id, "", 0, mid, 0, true);
                                     startActivity(player);
                                 } catch (ActivityNotFoundException e) {
                                     MsgUtil.showMsg("没有找到播放器，请检查是否安装");

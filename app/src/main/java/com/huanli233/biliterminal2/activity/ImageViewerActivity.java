@@ -83,7 +83,7 @@ public class ImageViewerActivity extends BaseActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if(positionOffset % 1 == 0)
+                if (positionOffset % 1 == 0)
                     textView.setText("第" + (position + 1) + "/" + imageList.size() + "张");
             }
 

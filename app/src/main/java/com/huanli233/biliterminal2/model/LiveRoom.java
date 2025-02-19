@@ -37,7 +37,9 @@ public class LiveRoom implements Parcelable, Serializable {
         public String desc;
         public int type;
 
-        public Verify(){}
+        public Verify() {
+        }
+
         protected Verify(Parcel in) {
             role = in.readInt();
             desc = in.readString();
@@ -78,7 +80,9 @@ public class LiveRoom implements Parcelable, Serializable {
         public int icon_location;
         public String icon_web;
 
-        public Watched(){}
+        public Watched() {
+        }
+
         protected Watched(Parcel in) {
             isSwitch = in.readByte() != 0;
             num = in.readInt();
@@ -117,7 +121,9 @@ public class LiveRoom implements Parcelable, Serializable {
             }
         };
     }
-    public LiveRoom(){}
+
+    public LiveRoom() {
+    }
 
     protected LiveRoom(Parcel in) {
         roomid = in.readLong();

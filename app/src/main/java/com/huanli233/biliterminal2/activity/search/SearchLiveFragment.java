@@ -50,26 +50,26 @@ public class SearchLiveFragment extends SearchFragment {
     }
 
     private void continueLoading(int page) {
-        CenterThreadPool.run(()-> {
+        CenterThreadPool.run(() -> {
             Log.e("debug", "加载下一页");
             try {
                 Object result = SearchApi.searchType(keyword, page, "live");
                 if (result != null) {
                     if (page == 1) showEmptyView(false);
                     JSONArray jsonArray = null;
-                    if(result instanceof JSONObject) jsonArray = ((JSONObject)result).optJSONArray("live_room");
-                    else if(result instanceof JSONArray) jsonArray = (JSONArray) result;
+                    if (result instanceof JSONObject)
+                        jsonArray = ((JSONObject) result).optJSONArray("live_room");
+                    else if (result instanceof JSONArray) jsonArray = (JSONArray) result;
 
                     List<LiveRoom> list = new ArrayList<>();
                     if (jsonArray != null) list.addAll(LiveApi.analyzeLiveRooms(jsonArray));
-                    if(list.size()==0) setBottom(true);
+                    if (list.size() == 0) setBottom(true);
                     else CenterThreadPool.runOnUiThread(() -> {
                         int lastSize = roomList.size();
                         roomList.addAll(list);
                         liveCardAdapter.notifyItemRangeInserted(lastSize + 1, roomList.size() - lastSize);
                     });
-                }
-                else setBottom(true);
+                } else setBottom(true);
             } catch (Exception e) {
                 report(e);
             }
@@ -88,7 +88,7 @@ public class SearchLiveFragment extends SearchFragment {
             int size_old = this.roomList.size();
             this.roomList.clear();
             if (size_old != 0) this.liveCardAdapter.notifyItemRangeRemoved(0, size_old);
-            CenterThreadPool.run(()->continueLoading(page));
+            CenterThreadPool.run(() -> continueLoading(page));
         });
     }
 

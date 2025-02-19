@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -54,7 +53,7 @@ public class SearchActivity extends InstanceActivity {
     boolean tutorial_show;
     String classname;
 
-    String[] specialList = {"自杀","自尽","自残","抑郁","双相"};
+    String[] specialList = {"自杀", "自尽", "自残", "抑郁", "双相"};
 
     @SuppressLint({"MissingInflatedId", "NotifyDataSetChanged", "InflateParams"})
     @Override
@@ -63,7 +62,7 @@ public class SearchActivity extends InstanceActivity {
         setContentView(R.layout.activity_loading);
 
         classname = getClass().getSimpleName();
-        tutorial_show = SharedPreferencesUtil.getBoolean("tutorial_pager_"+ classname, true);
+        tutorial_show = SharedPreferencesUtil.getBoolean("tutorial_pager_" + classname, true);
 
         new AsyncLayoutInflaterX(this).inflate(R.layout.activity_search, null, (layoutView, id, parent) -> {
             setContentView(layoutView);
@@ -104,12 +103,12 @@ public class SearchActivity extends InstanceActivity {
             viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
                 @Override
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                    if(position!=0) {
+                    if (position != 0) {
                         onScrolled(256);  //让搜索框隐藏
-                        if(tutorial_show) {
+                        if (tutorial_show) {
                             tutorial_show = false;
                             findViewById(R.id.text_tutorial_pager).setVisibility(View.GONE);
-                            SharedPreferencesUtil.putBoolean("tutorial_pager_"+ classname, false);
+                            SharedPreferencesUtil.putBoolean("tutorial_pager_" + classname, false);
                         }
                     }
 
@@ -166,7 +165,7 @@ public class SearchActivity extends InstanceActivity {
     @SuppressLint("NotifyDataSetChanged")
     public void searchKeyword(String str) {
         for (String s : specialList) {
-            if (str.contains(s)){
+            if (str.contains(s)) {
                 MsgUtil.showText("特殊彩蛋", getString(R.string.egg_warmwords_warmworld));
                 break;
             }
@@ -234,16 +233,10 @@ public class SearchActivity extends InstanceActivity {
                     if (fragmentCurr != null) {
                         ((SearchFragment) fragmentCurr).refresh();
                     }
-                } catch (Exception e) {report(e);}
-                refreshing = false;
-
-                if(tutorial_show) {
-                    runOnUiThread(() -> {
-                        TextView textView = findViewById(R.id.text_tutorial_pager);
-                        textView.setVisibility(View.VISIBLE);
-                        textView.setText(getString(R.string.tutorial_pager).replace("NNN", "4"));
-                    });
+                } catch (Exception e) {
+                    report(e);
                 }
+                refreshing = false;
             }
         }
     }

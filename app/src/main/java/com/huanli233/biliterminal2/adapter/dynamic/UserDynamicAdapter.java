@@ -20,6 +20,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.ImageViewerActivity;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
@@ -35,11 +40,6 @@ import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
 import com.huanli233.biliterminal2.util.TerminalContext;
 import com.huanli233.biliterminal2.util.ToolsUtil;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -183,7 +183,7 @@ public class UserDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                                 msg = "操作成功喵~";
                             } else {
                                 CenterThreadPool.runOnUiThread(() -> userInfoHolder.setFollowed(userInfo.followed));
-                                if(result == 25056) msg = "被B站风控系统拦截了\n（无法解决）";
+                                if (result == 25056) msg = "被B站风控系统拦截了\n（无法解决）";
                                 else msg = "操作失败（原因未知）：" + result;
                             }
                             MsgUtil.showMsg(msg);

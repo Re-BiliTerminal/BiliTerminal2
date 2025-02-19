@@ -12,6 +12,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.video.local.DownloadListActivity;
 import com.huanli233.biliterminal2.activity.video.local.LocalPageChooseActivity;
@@ -21,10 +25,6 @@ import com.huanli233.biliterminal2.model.LocalVideo;
 import com.huanli233.biliterminal2.util.GlideUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.ToolsUtil;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 
@@ -49,11 +49,10 @@ public class LocalVideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if(viewType == 0) {
+        if (viewType == 0) {
             View view = LayoutInflater.from(this.context).inflate(R.layout.cell_video_local, parent, false);
             return new LocalVideoHolder(view);
-        }
-        else {
+        } else {
             View view = LayoutInflater.from(this.context).inflate(R.layout.cell_goto, parent, false);
             return new GotoHolder(view);
         }
@@ -61,9 +60,9 @@ public class LocalVideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if(position!=0) {
+        if (position != 0) {
             int realPosition = position - 1;
-            ((LocalVideoHolder)holder).showLocalVideo(localVideoList.get(realPosition), context);    //此函数在VideoCardHolder里
+            ((LocalVideoHolder) holder).showLocalVideo(localVideoList.get(realPosition), context);    //此函数在VideoCardHolder里
 
             holder.itemView.setOnClickListener(view -> {
                 LocalVideo localVideo = localVideoList.get(realPosition);
@@ -92,16 +91,15 @@ public class LocalVideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     return true;    //必须要true哦，不然上面的点按也会触发
                 } else return false;
             });
-        }
-        else ((GotoHolder)holder).show(context);
+        } else ((GotoHolder) holder).show(context);
     }
 
     @Override
     public int getItemCount() {
-        return localVideoList.size()+1;
+        return localVideoList.size() + 1;
     }
 
-    public static class GotoHolder extends RecyclerView.ViewHolder{
+    public static class GotoHolder extends RecyclerView.ViewHolder {
 
         TextView textView;
 
@@ -110,7 +108,7 @@ public class LocalVideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             textView = itemView.findViewById(R.id.text);
         }
 
-        public void show(Context context){
+        public void show(Context context) {
             textView.setText("下载列表");
             itemView.setOnClickListener(v ->
                     context.startActivity(new Intent(context, DownloadListActivity.class)));
@@ -139,7 +137,8 @@ public class LocalVideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         .apply(RequestOptions.bitmapTransform(new RoundedCorners(ToolsUtil.dp2px(5))))
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .into(cover);
-            } catch (Exception ignored){}
+            } catch (Exception ignored) {
+            }
         }
     }
 

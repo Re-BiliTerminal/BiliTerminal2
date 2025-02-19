@@ -13,5 +13,6 @@ public class PlayerData {
     public int progress;
     public boolean live;
 
-    public PlayerData() {}
+    public PlayerData() {
+    }
 }

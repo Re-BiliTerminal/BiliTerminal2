@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.google.android.material.button.MaterialButton;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
-import com.google.android.material.button.MaterialButton;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,7 +16,6 @@ public class DialogActivity extends BaseActivity {
 
     int wait_time = 0;
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +32,7 @@ public class DialogActivity extends BaseActivity {
             close_btn.setEnabled(false);
             wait_time = intent.getIntExtra("wait_time", 0);
             Timer timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
+            timer.schedule(new TimerTask() {
                 @SuppressLint("SetTextI18n")
                 @Override
                 public void run() {

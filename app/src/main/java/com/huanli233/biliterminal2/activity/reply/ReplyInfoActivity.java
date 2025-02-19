@@ -9,10 +9,12 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.adapter.ReplyAdapter;
@@ -25,6 +27,7 @@ import com.huanli233.biliterminal2.util.CenterThreadPool;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
 import com.huanli233.biliterminal2.util.TerminalContext;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -167,36 +170,36 @@ public class ReplyInfoActivity extends BaseActivity {
         refreshLayout.setRefreshing(true);
 
         TerminalContext.getInstance().getReply(type, oid, rpid).observe(this, (rootReplyResult) -> {
-           rootReplyResult.onSuccess((rootReply) -> {
-               List<Reply> list = new ArrayList<>();
-               Future<Integer> future  = CenterThreadPool.supplyAsyncWithFuture(() -> ReplyApi.getReplies(oid, rpid, page, type, sort, list));
-               CenterThreadPool.observe(future, (result) -> {
-                   if (result != -1) {
-                       runOnUiThread(() -> {
-                           replyList.clear();
-                           replyList.add(0, rootReply);
-                           replyList.addAll(list);
-                           if (replyAdapter == null) {
-                               replyAdapter = new ReplyAdapter(this, replyList, oid, rpid, type.getTypeCode(), sort, mid);
-                               replyAdapter.isDetail = true;
-                               setOnSortSwitch();
-                               recyclerView.setAdapter(replyAdapter);
-                           } else {
-                               replyAdapter.notifyDataSetChanged();
-                           }
-                           refreshLayout.setRefreshing(false);
-                       });
-                       if (result == 1) {
-                           Log.e("debug", "到底了");
-                           bottom = true;
-                       } else bottom = false;
-                   }
-               }, (error) -> {
-                   this.onPullDataFailed(new Exception(error));
-               });
-           }).onFailure((error) -> {
-               this.onPullDataFailed(new Exception(error));
-           });
+            rootReplyResult.onSuccess((rootReply) -> {
+                List<Reply> list = new ArrayList<>();
+                Future<Integer> future = CenterThreadPool.supplyAsyncWithFuture(() -> ReplyApi.getReplies(oid, rpid, page, type, sort, list));
+                CenterThreadPool.observe(future, (result) -> {
+                    if (result != -1) {
+                        runOnUiThread(() -> {
+                            replyList.clear();
+                            replyList.add(0, rootReply);
+                            replyList.addAll(list);
+                            if (replyAdapter == null) {
+                                replyAdapter = new ReplyAdapter(this, replyList, oid, rpid, type.getTypeCode(), sort, mid);
+                                replyAdapter.isDetail = true;
+                                setOnSortSwitch();
+                                recyclerView.setAdapter(replyAdapter);
+                            } else {
+                                replyAdapter.notifyDataSetChanged();
+                            }
+                            refreshLayout.setRefreshing(false);
+                        });
+                        if (result == 1) {
+                            Log.e("debug", "到底了");
+                            bottom = true;
+                        } else bottom = false;
+                    }
+                }, (error) -> {
+                    this.onPullDataFailed(new Exception(error));
+                });
+            }).onFailure((error) -> {
+                this.onPullDataFailed(new Exception(error));
+            });
         });
     }
 

@@ -135,11 +135,12 @@ public class PrivateMsgApi {
                 JSONObject sessionJson = sessions.getJSONObject(i);
                 session.talkerUid = sessionJson.getLong("talker_id");
 
-                if(!sessionJson.isNull("last_msg")) {
+                if (!sessionJson.isNull("last_msg")) {
                     session.contentType = sessionJson.getJSONObject("last_msg").getInt("msg_type");
                     String content = sessionJson.getJSONObject("last_msg").getString("content");
 
-                    if (content.endsWith("}") && content.startsWith("{")) session.content = new JSONObject(content);
+                    if (content.endsWith("}") && content.startsWith("{"))
+                        session.content = new JSONObject(content);
                 }
 
                 session.unread = sessionJson.getInt("unread_count");

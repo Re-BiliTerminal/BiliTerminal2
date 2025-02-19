@@ -34,9 +34,9 @@ public class FileUtil {
     }
 
     public static void deleteFolder(File folder) {
-        if(!folder.exists()) return;
+        if (!folder.exists()) return;
 
-        if(folder.isFile()) {
+        if (folder.isFile()) {
             folder.delete();
             return;
         }
@@ -56,33 +56,33 @@ public class FileUtil {
     }
 
     public static JSONObject readJson(File file) {
-        if(file==null || !file.exists() || !file.canRead() || !file.isFile()) return null;
+        if (file == null || !file.exists() || !file.canRead() || !file.isFile()) return null;
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             FileInputStream inputStream = new FileInputStream(file);
             FileChannel channel = inputStream.getChannel();
-            ByteBuffer buffer = ByteBuffer.allocate(1<<13);
+            ByteBuffer buffer = ByteBuffer.allocate(1 << 13);
             int i;
-            while ((i = channel.read(buffer)) != -1){
+            while ((i = channel.read(buffer)) != -1) {
                 buffer.flip();
-                outputStream.write(buffer.array(),0,i);
+                outputStream.write(buffer.array(), 0, i);
                 buffer.clear();
             }
             return new JSONObject(outputStream.toString());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static boolean checkStoragePermission(){
+    public static boolean checkStoragePermission() {
         int sdk = Build.VERSION.SDK_INT;
-        if(sdk < 17) return true;
+        if (sdk < 17) return true;
         return ContextCompat.checkSelfPermission(BiliTerminal.context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(BiliTerminal.context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
-    public static void requestStoragePermission(Activity activity){
+    public static void requestStoragePermission(Activity activity) {
         ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
     }
 
@@ -91,19 +91,19 @@ public class FileUtil {
         try {
             File nomedia = new File(path, ".nomedia");    //为了防止系统扫描
             if (!nomedia.exists()) nomedia.createNewFile();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return path;
     }
 
-    public static File getDownloadPath(String title){
-        return getDownloadPath(title,null);
+    public static File getDownloadPath(String title) {
+        return getDownloadPath(title, null);
     }
 
-    public static File getDownloadPath(String title, String child){
+    public static File getDownloadPath(String title, String child) {
         File parentFolder = new File(getDownloadPath(), stringToFile(title));
-        if(child==null || child.isEmpty()) return parentFolder;
+        if (child == null || child.isEmpty()) return parentFolder;
         return new File(parentFolder, stringToFile(child));
     }
 
@@ -111,12 +111,12 @@ public class FileUtil {
         return new File(SharedPreferencesUtil.getString("save_path_pictures", Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/哔哩终端/"));
     }
 
-    public static void requireTFCardPermission(){
+    public static void requireTFCardPermission() {
 
     }
 
     public static String stringToFile(String str) {
-        return str.substring(0,Math.min(85,str.length()))    //防止长度溢出
+        return str.substring(0, Math.min(85, str.length()))    //防止长度溢出
                 .replace("|", "｜")
                 .replace(":", "：")
                 .replace("*", "﹡")

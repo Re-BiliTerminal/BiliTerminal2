@@ -11,6 +11,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.listener.OnItemClickListener;
 import com.huanli233.biliterminal2.listener.OnItemLongClickListener;
@@ -18,10 +22,6 @@ import com.huanli233.biliterminal2.model.DownloadSection;
 import com.huanli233.biliterminal2.service.DownloadService;
 import com.huanli233.biliterminal2.util.GlideUtil;
 import com.huanli233.biliterminal2.util.ToolsUtil;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -44,6 +44,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Downlo
     public void setOnLongClickListener(OnItemLongClickListener listener) {
         this.longClickListener = listener;
     }
+
     public void setOnClickListener(OnItemClickListener listener) {
         this.clickListener = listener;
     }
@@ -57,19 +58,18 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Downlo
 
     @Override
     public void onBindViewHolder(@NonNull DownloadHolder holder, int position) {
-        if(position==0) {
+        if (position == 0) {
             holder.show(DownloadService.downloadingSection, context);    //第一项为正在下载的项（不存在就gone掉）
             holder.showProgress(DownloadService.state, DownloadService.percent);
-        }
-        else {
+        } else {
             holder.show(downloadList.get(position - 1), context);    //后续项为待下载的项
-            holder.showProgress(null,-1);
+            holder.showProgress(null, -1);
         }
 
         //holder.showLocalVideo(downloadList.get(position), context);
 
         holder.itemView.setOnClickListener(view -> {
-            if(clickListener!=null) clickListener.onItemClick(position - 1);
+            if (clickListener != null) clickListener.onItemClick(position - 1);
         });
 
         holder.itemView.setOnLongClickListener(view -> {
@@ -82,7 +82,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Downlo
 
     @Override
     public int getItemCount() {
-        if(downloadList==null) return 1;
+        if (downloadList == null) return 1;
         else return downloadList.size() + 1;
     }
 
@@ -102,14 +102,14 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Downlo
         }
 
         public void show(DownloadSection section, Context context) {
-            if(section == null) {
+            if (section == null) {
                 title.setText("没有下载中的项");
                 extra.setText("点击下面继续下载喵？");
                 cover.setImageResource(R.mipmap.placeholder);
                 return;
             }
             title.setText(section.name_short);
-            switch (section.state){
+            switch (section.state) {
                 case "error":
                     extra.setText("下载出错");
                     break;
@@ -117,7 +117,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Downlo
                     extra.setText("等待下载");
                     break;
                 case "downloading":
-                    if(DownloadService.downloadingSection==null) extra.setText("下载中断");
+                    if (DownloadService.downloadingSection == null) extra.setText("下载中断");
                     break;
                 default:
                     extra.setText("未知状态？");
@@ -131,15 +131,15 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Downlo
         }
 
         @SuppressLint({"SetTextI18n"})
-        public void showProgress(String state, float percent){
-            if(state == null || percent==-1) {
+        public void showProgress(String state, float percent) {
+            if (state == null || percent == -1) {
                 progress.setVisibility(View.GONE);
                 extra.setText("未知状态");
                 return;
             }
             progress.setVisibility(View.VISIBLE);
             extra.setVisibility(View.VISIBLE);
-            extra.setText(state + "：" + String.format(Locale.CHINA,"%.2f", percent*100));
+            extra.setText(state + "：" + String.format(Locale.CHINA, "%.2f", percent * 100));
             int width = (int) (itemView.getMeasuredWidth() * percent);
             ViewGroup.LayoutParams layoutParams = progress.getLayoutParams();
             layoutParams.width = width;

@@ -25,6 +25,11 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.button.MaterialButton;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.ImageViewerActivity;
 import com.huanli233.biliterminal2.activity.reply.ReplyInfoActivity;
@@ -42,11 +47,6 @@ import com.huanli233.biliterminal2.util.GlideUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
 import com.huanli233.biliterminal2.util.ToolsUtil;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.button.MaterialButton;
 
 import org.json.JSONException;
 
@@ -185,7 +185,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }
             int last_length = name_str.length();
             name_str.append(" ").append(String.valueOf(sender.level));
-            if(sender.is_senior_member == 1) name_str.append("+");
+            if (sender.is_senior_member == 1) name_str.append("+");
             name_str.setSpan(ToolsUtil.getLevelBadge(context, sender), last_length + 1, name_str.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
             //等级
@@ -226,8 +226,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         e.printStackTrace();
                     }
                 });
-            }
-            else setTopSpan(reply, replyHolder);
+            } else setTopSpan(reply, replyHolder);
 
             ToolsUtil.setLink(replyHolder.message);
             ToolsUtil.setAtLink(reply.atNameToMid, replyHolder.message);
@@ -362,7 +361,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }));
 
             //删除按钮
-            if(isManager || reply.sender.mid == SharedPreferencesUtil.getLong("mid",0)) {
+            if (isManager || reply.sender.mid == SharedPreferencesUtil.getLong("mid", 0)) {
                 View.OnClickListener onDeleteClick = view -> MsgUtil.showMsg("长按删除");
                 replyHolder.item_reply_delete.setOnClickListener(onDeleteClick);
                 View.OnLongClickListener onDeleteLongClick = new View.OnLongClickListener() {
@@ -414,8 +413,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 };
                 replyHolder.item_reply_delete.setOnLongClickListener(onDeleteLongClick);
                 replyHolder.item_reply_delete.setVisibility(View.VISIBLE);
-            }
-            else replyHolder.item_reply_delete.setVisibility(View.GONE);
+            } else replyHolder.item_reply_delete.setVisibility(View.GONE);
 
             //回复按钮
             replyHolder.replyBtn.setOnClickListener(view -> {
@@ -435,8 +433,8 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
-    public void setSource(Object source){   //传入并判断是否有删评论的权限  这种东西判断一次就够了，放onBindViewHolder里还开线程，神金啊
-        if(SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0) == 0) return;
+    public void setSource(Object source) {   //传入并判断是否有删评论的权限  这种东西判断一次就够了，放onBindViewHolder里还开线程，神金啊
+        if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0) == 0) return;
 
         try {
             if (source != null) {
@@ -448,8 +446,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             break;
                         }
                     }
-                }
-                else if (source instanceof UserInfo) {
+                } else if (source instanceof UserInfo) {
                     isManager = ((UserInfo) source).mid == SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0);
                 }
             }

@@ -73,7 +73,7 @@ public class BatteryView extends View {
         //画电量
         paint.setStrokeWidth(0f);
         paint.setColor(mCharging ? Color.GREEN :
-                (mPower<=20 ? Color.RED : Color.WHITE));
+                (mPower <= 20 ? Color.RED : Color.WHITE));
 
         if (power_percent != 0) {
             Rect fill = new Rect(fill_left, fill_top, fill_right, fill_bottom);
@@ -89,7 +89,7 @@ public class BatteryView extends View {
         invalidate();
     }
 
-    public void setCharging(boolean charging){
+    public void setCharging(boolean charging) {
         mCharging = charging;
         invalidate();
     }

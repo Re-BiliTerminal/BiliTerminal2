@@ -51,15 +51,14 @@ public class SearchFragment extends Fragment {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if(newState != RecyclerView.SCROLL_STATE_DRAGGING) return;
+                if (newState != RecyclerView.SCROLL_STATE_DRAGGING) return;
 
-                if(!recyclerView.canScrollVertically(-1)) {
+                if (!recyclerView.canScrollVertically(-1)) {
                     if (requireActivity() instanceof SearchActivity) {
                         SearchActivity activity = (SearchActivity) requireActivity();  //不能向上滚动了就显示搜索栏
                         activity.onScrolled(-114);
                     }
-                }
-                else if (listener != null && !recyclerView.canScrollVertically(1) && !swipeRefreshLayout.isRefreshing() && !bottom) {
+                } else if (listener != null && !recyclerView.canScrollVertically(1) && !swipeRefreshLayout.isRefreshing() && !bottom) {
                     goOnLoad();
                 }
             }
@@ -157,19 +156,20 @@ public class SearchFragment extends Fragment {
                 : new CustomLinearManager(requireContext());
     }
 
-    public void update(String keyword){
+    public void update(String keyword) {
         this.page = 1;
         this.keyword = keyword;
         this.refreshable = true;
         setBottom(false);
     }
 
-    public void refresh(){
-        if(!refreshable) return;
+    public void refresh() {
+        if (!refreshable) return;
         refreshable = false;
         setRefreshing(true);
         refreshListener.onRefresh();
     }
 
-    protected void refreshInternal(){}
+    protected void refreshInternal() {
+    }
 }

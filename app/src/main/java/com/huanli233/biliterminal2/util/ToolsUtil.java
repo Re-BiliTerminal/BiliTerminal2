@@ -112,7 +112,7 @@ public class ToolsUtil {
                 .replace("</em>", "");
     }
 
-    public static String removeHtml(String html){
+    public static String removeHtml(String html) {
         return Jsoup.parse(html).text();
     }
 
@@ -290,7 +290,7 @@ public class ToolsUtil {
         public void updateDrawState(@NonNull TextPaint ds) {
             super.updateDrawState(ds);
             ds.setUnderlineText(false);
-            ds.setColor(Color.rgb(0x66,0xcc,0xff));
+            ds.setColor(Color.rgb(0x66, 0xcc, 0xff));
         }
     }
 
@@ -354,14 +354,14 @@ public class ToolsUtil {
     public static ImageSpan getLevelBadge(Context context, UserInfo userInfo) {
         int level = userInfo.level;
 
-        if(level <= -1 || level >= 7) level = 0;
-        if(userInfo.is_senior_member == 1) level = 7;
+        if (level <= -1 || level >= 7) level = 0;
+        if (userInfo.is_senior_member == 1) level = 7;
 
         Drawable drawable = ToolsUtil.getDrawable(context, levelBadges[level]);
 
         float lineHeight = ToolsUtil.getTextHeightWithSize(context);
         float lineWidth = lineHeight * 1.56f;
-        if(userInfo.is_senior_member == 1) lineWidth = lineHeight * 1.96f;
+        if (userInfo.is_senior_member == 1) lineWidth = lineHeight * 1.96f;
         drawable.setBounds(0, 0, (int) lineWidth, (int) lineHeight);
         return new ImageSpan(drawable);
     }
@@ -373,7 +373,7 @@ public class ToolsUtil {
         return fontMetrics.descent - fontMetrics.ascent;
     }
 
-    public static int getRgb888(int color){
+    public static int getRgb888(int color) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append((color >> 16) & 0xff);
         stringBuilder.append((color >> 8) & 0xff);

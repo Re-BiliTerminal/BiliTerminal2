@@ -13,15 +13,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.huanli233.biliterminal2.R;
-import com.huanli233.biliterminal2.model.VideoCard;
-import com.huanli233.biliterminal2.util.GlideUtil;
-import com.huanli233.biliterminal2.util.ToolsUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.huanli233.biliterminal2.R;
+import com.huanli233.biliterminal2.model.VideoCard;
+import com.huanli233.biliterminal2.util.GlideUtil;
+import com.huanli233.biliterminal2.util.ToolsUtil;
 
 public class VideoCardHolder extends RecyclerView.ViewHolder {
     TextView title, upName, viewCount;
@@ -46,8 +46,7 @@ public class VideoCardHolder extends RecyclerView.ViewHolder {
         String str_viewCount = videoCard.view;
         if (str_viewCount == null || str_viewCount.isEmpty()) {
             viewCount.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             viewCount.setText(str_viewCount);
         }
 
@@ -59,11 +58,11 @@ public class VideoCardHolder extends RecyclerView.ViewHolder {
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .apply(RequestOptions.bitmapTransform(new RoundedCorners(ToolsUtil.dp2px(5))).sizeMultiplier(0.85f))
                     .into(cover);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        switch (videoCard.type){
+        switch (videoCard.type) {
             case "live":
                 SpannableString sstr_live = new SpannableString("[直播]" + ToolsUtil.htmlToString(videoCard.title));
                 sstr_live.setSpan(new ForegroundColorSpan(Color.rgb(207, 75, 95)), 0, 4, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);

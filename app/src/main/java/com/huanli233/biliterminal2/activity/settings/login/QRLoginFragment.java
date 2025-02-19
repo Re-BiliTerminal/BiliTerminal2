@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.Guideline;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.card.MaterialCardView;
 import com.huanli233.biliterminal2.BiliTerminal;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.SplashActivity;
@@ -26,7 +27,6 @@ import com.huanli233.biliterminal2.util.CenterThreadPool;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.NetWorkUtil;
 import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.google.android.material.card.MaterialCardView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,7 +62,7 @@ public class QRLoginFragment extends Fragment {
         super.onCreate(savedInstance);
 
         Bundle bundle = getArguments();
-        if(bundle!=null) from_setup = bundle.getBoolean("from_setup",false);
+        if (bundle != null) from_setup = bundle.getBoolean("from_setup", false);
     }
 
     @Override
@@ -171,7 +171,7 @@ public class QRLoginFragment extends Fragment {
                 try {
                     Response response = LoginApi.getLoginState();
                     assert response.body() != null;
-                    if(!isAdded()) {
+                    if (!isAdded()) {
                         this.cancel();
                         return;
                     }
@@ -195,7 +195,7 @@ public class QRLoginFragment extends Fragment {
                             break;
                         case 0:
                             this.cancel();
-                            CenterThreadPool.runOnUiThread(()->scanStat.setText("正在处理登录……"));
+                            CenterThreadPool.runOnUiThread(() -> scanStat.setText("正在处理登录……"));
                             String cookies = SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, "");
 
                             SharedPreferencesUtil.putLong(SharedPreferencesUtil.mid, Long.parseLong(NetWorkUtil.getInfoFromCookie("DedeUserID", cookies)));

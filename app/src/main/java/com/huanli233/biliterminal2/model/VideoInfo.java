@@ -38,7 +38,8 @@ public class VideoInfo implements Parcelable, Serializable {    //自定义类�
     public int copyright; // 是否转载
     public Collection collection;
 
-    public VideoInfo() {}
+    public VideoInfo() {
+    }
 
 
     protected VideoInfo(Parcel in) {
@@ -105,7 +106,7 @@ public class VideoInfo implements Parcelable, Serializable {    //自定义类�
         }
     };
 
-    public VideoCard toCard(){
+    public VideoCard toCard() {
         return new VideoCard(title, staff.get(0).name, ToolsUtil.toWan(stats.view), cover, aid, bvid);
     }
 }

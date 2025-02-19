@@ -6,8 +6,8 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
 
-import com.huanli233.biliterminal2.model.Emote;
 import com.bumptech.glide.Glide;
+import com.huanli233.biliterminal2.model.Emote;
 
 import org.json.JSONArray;
 import org.json.JSONException;

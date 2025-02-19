@@ -16,6 +16,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.card.MaterialCardView;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.EmoteActivity;
 import com.huanli233.biliterminal2.activity.ImageViewerActivity;
@@ -36,11 +41,6 @@ import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
 import com.huanli233.biliterminal2.util.TerminalContext;
 import com.huanli233.biliterminal2.util.ToolsUtil;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -85,7 +85,7 @@ public class SendDynamicActivity extends BaseActivity {
             ConstraintLayout extraCard = findViewById(R.id.extraCard);
             VideoInfo video = null;
             Dynamic forward = null;
-            if(TerminalContext.getInstance().getForwardContent() instanceof VideoInfo) {
+            if (TerminalContext.getInstance().getForwardContent() instanceof VideoInfo) {
                 video = (VideoInfo) TerminalContext.getInstance().getForwardContent();
             } else {
                 forward = (Dynamic) TerminalContext.getInstance().getForwardContent();
@@ -95,7 +95,7 @@ public class SendDynamicActivity extends BaseActivity {
                 showChildDyn(childCard, forward);
             } else if (video != null) {
                 VideoCardHolder holder = new VideoCardHolder(LayoutInflater.from(this).inflate(R.layout.cell_video_list, extraCard));
-                holder.showVideoCard(video.toCard(),this);
+                holder.showVideoCard(video.toCard(), this);
             }
 
             send.setOnClickListener(view -> {
@@ -183,7 +183,7 @@ public class SendDynamicActivity extends BaseActivity {
                 VideoCardHolder video_holder = new VideoCardHolder(cell_dynamic_video);
                 video_holder.showVideoCard(childVideoCard, this);
                 boolean finalIsPgc = isPgc;
-                cell_dynamic_video.setOnClickListener(view -> TerminalContext.getInstance().enterVideoDetailPage(this, childVideoCard.aid, "", finalIsPgc ? "media": null));
+                cell_dynamic_video.setOnClickListener(view -> TerminalContext.getInstance().enterVideoDetailPage(this, childVideoCard.aid, "", finalIsPgc ? "media" : null));
                 cell_dynamic_video.setVisibility(View.VISIBLE);
                 break;
 

@@ -19,7 +19,8 @@ public class DownloadSection {
     public String name_short;
     public String state;
 
-    public DownloadSection(){}
+    public DownloadSection() {
+    }
 
     public DownloadSection(Cursor cursor) {
         id = cursor.getInt(0);
@@ -47,11 +48,10 @@ public class DownloadSection {
     }
 
     public File getPath() {
-        if(type.contains("video")) {
-            File path = FileUtil.getDownloadPath(title,child);
-            if(!path.exists()) path.mkdirs();
+        if (type.contains("video")) {
+            File path = FileUtil.getDownloadPath(title, child);
+            if (!path.exists()) path.mkdirs();
             return path;
-        }
-        else return FileUtil.getDownloadPicturePath();
+        } else return FileUtil.getDownloadPicturePath();
     }
 }

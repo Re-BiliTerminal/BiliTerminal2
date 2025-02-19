@@ -6,12 +6,13 @@ import androidx.core.util.Consumer;
 public class Result<T> {
     private final Object realResult;
     private boolean isSuccess = false;
-    private Result (T val) {
+
+    private Result(T val) {
         realResult = new Success<>(val);
         isSuccess = true;
     }
 
-    private Result (Exception e) {
+    private Result(Exception e) {
         realResult = new Failure(e);
     }
 
@@ -27,17 +28,18 @@ public class Result<T> {
             }
             return success.value;
         }
-        throw ((Failure)realResult).error;
+        throw ((Failure) realResult).error;
     }
+
     public T getOrNull() {
-        if(isSuccess() && realResult instanceof Success) {
-            return ((Success<T>)realResult).value;
+        if (isSuccess() && realResult instanceof Success) {
+            return ((Success<T>) realResult).value;
         }
         return null;
     }
 
-    public Result<T> onSuccess(Consumer<T> onSuccess){
-        if(isSuccess()) {
+    public Result<T> onSuccess(Consumer<T> onSuccess) {
+        if (isSuccess()) {
             T value = getOrNull();
             if (value != null) {
                 onSuccess.accept(value);
@@ -48,7 +50,7 @@ public class Result<T> {
 
     public Result<T> onFailure(Consumer<Throwable> onFailure) {
         if (!isSuccess() && realResult instanceof Failure) {
-            Throwable error = ((Failure)realResult).error;
+            Throwable error = ((Failure) realResult).error;
             if (error != null) {
                 onFailure.accept(error);
             }
@@ -68,15 +70,18 @@ public class Result<T> {
         return new Result<>(error);
     }
 
-    private static class Success<T>{
+    private static class Success<T> {
         T value;
-        private Success (T value) {
+
+        private Success(T value) {
             this.value = value;
         }
 
     }
+
     private static class Failure {
         Exception error;
+
         private Failure(Exception error) {
             this.error = error;
         }

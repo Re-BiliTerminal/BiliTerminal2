@@ -19,7 +19,7 @@ public class InstanceActivity extends BaseActivity {
         findViewById(R.id.top).setOnClickListener(view -> menuClick.run());
     }
 
-    public Runnable menuClick = (()->{
+    public Runnable menuClick = (() -> {
         Intent intent = new Intent();
         intent.setClass(this, MenuActivity.class);
         if (getIntent().hasExtra("from"))
@@ -30,7 +30,7 @@ public class InstanceActivity extends BaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_MENU) menuClick.run();
+        if (keyCode == KeyEvent.KEYCODE_MENU) menuClick.run();
         return super.onKeyDown(keyCode, event);
     }
 }

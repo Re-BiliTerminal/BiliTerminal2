@@ -17,7 +17,10 @@ import com.huanli233.biliterminal2.adapter.viewpager.ViewPagerFragmentAdapter;
 import com.huanli233.biliterminal2.api.ReplyApi;
 import com.huanli233.biliterminal2.event.ReplyEvent;
 import com.huanli233.biliterminal2.helper.TutorialHelper;
-import com.huanli233.biliterminal2.util.*;
+import com.huanli233.biliterminal2.util.AnimationUtils;
+import com.huanli233.biliterminal2.util.AsyncLayoutInflaterX;
+import com.huanli233.biliterminal2.util.MsgUtil;
+import com.huanli233.biliterminal2.util.TerminalContext;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -52,27 +55,27 @@ public class DynamicInfoActivity extends BaseActivity {
             TutorialHelper.showTutorialList(this, R.array.tutorial_dynamic_info, 6);
             TerminalContext.getInstance().getDynamicById(id)
                     .observe(this, (dynamicResult) -> dynamicResult.onSuccess((dynamic) -> {
-                List<Fragment> fragmentList = new ArrayList<>();
-                DynamicInfoFragment diFragment = DynamicInfoFragment.newInstance(id);
-                fragmentList.add(diFragment);
-                rFragment = ReplyFragment.newInstance(dynamic.comment_id, dynamic.comment_type, seek_reply, dynamic.userInfo.mid);
-                rFragment.setSource(dynamic);
-                rFragment.replyType = ReplyApi.REPLY_TYPE_DYNAMIC;
-                fragmentList.add(rFragment);
-                ViewPagerFragmentAdapter vpfAdapter = new ViewPagerFragmentAdapter(getSupportFragmentManager(), fragmentList);
-                ViewPager viewPager = findViewById(R.id.viewPager);
-                viewPager.setAdapter(vpfAdapter);  //没啥好说的，教科书式的ViewPager使用方法
-                View view;
-                if ((view = diFragment.getView()) != null) view.setVisibility(View.GONE);
-                if (seek_reply != -1) viewPager.setCurrentItem(1);
-                diFragment.setOnFinishLoad(() -> {
-                    AnimationUtils.crossFade(findViewById(R.id.loading), diFragment.getView());
-                    TutorialHelper.showPagerTutorial(this,2);
-                });
-            }).onFailure((e) -> {
-                MsgUtil.err(e);
-                ((ImageView) findViewById(R.id.loading)).setImageResource(R.mipmap.loading_2233_error);
-            }));
+                        List<Fragment> fragmentList = new ArrayList<>();
+                        DynamicInfoFragment diFragment = DynamicInfoFragment.newInstance(id);
+                        fragmentList.add(diFragment);
+                        rFragment = ReplyFragment.newInstance(dynamic.comment_id, dynamic.comment_type, seek_reply, dynamic.userInfo.mid);
+                        rFragment.setSource(dynamic);
+                        rFragment.replyType = ReplyApi.REPLY_TYPE_DYNAMIC;
+                        fragmentList.add(rFragment);
+                        ViewPagerFragmentAdapter vpfAdapter = new ViewPagerFragmentAdapter(getSupportFragmentManager(), fragmentList);
+                        ViewPager viewPager = findViewById(R.id.viewPager);
+                        viewPager.setAdapter(vpfAdapter);  //没啥好说的，教科书式的ViewPager使用方法
+                        View view;
+                        if ((view = diFragment.getView()) != null) view.setVisibility(View.GONE);
+                        if (seek_reply != -1) viewPager.setCurrentItem(1);
+                        diFragment.setOnFinishLoad(() -> {
+                            AnimationUtils.crossFade(findViewById(R.id.loading), diFragment.getView());
+                            TutorialHelper.showPagerTutorial(this, 2);
+                        });
+                    }).onFailure((e) -> {
+                        MsgUtil.err(e);
+                        ((ImageView) findViewById(R.id.loading)).setImageResource(R.mipmap.loading_2233_error);
+                    }));
         });
     }
 

@@ -35,6 +35,12 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.ImageViewerActivity;
 import com.huanli233.biliterminal2.activity.dynamic.send.SendDynamicActivity;
@@ -63,12 +69,6 @@ import com.huanli233.biliterminal2.util.Result;
 import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
 import com.huanli233.biliterminal2.util.TerminalContext;
 import com.huanli233.biliterminal2.util.ToolsUtil;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -139,7 +139,9 @@ public class VideoInfoFragment extends Fragment {
                         if (dynId != -1) MsgUtil.showMsg("转发成功~");
                         else MsgUtil.showMsg("转发失败");
 
-                    } catch (Exception e) {MsgUtil.err(e);}
+                    } catch (Exception e) {
+                        MsgUtil.err(e);
+                    }
                 });
             }
         }
@@ -162,7 +164,7 @@ public class VideoInfoFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        if(bundle == null) {
+        if (bundle == null) {
             MsgUtil.showMsg("视频详情页：数据为空");
             return;
         }
@@ -186,14 +188,14 @@ public class VideoInfoFragment extends Fragment {
     public void onViewCreated(@NonNull View rootview, Bundle savedInstanceState) {
         super.onViewCreated(rootview, savedInstanceState);
 
-        if(SharedPreferencesUtil.getBoolean("ui_landscape",false)) {
+        if (SharedPreferencesUtil.getBoolean("ui_landscape", false)) {
             WindowManager windowManager = (WindowManager) rootview.getContext().getSystemService(Context.WINDOW_SERVICE);
             Display display = windowManager.getDefaultDisplay();
             DisplayMetrics metrics = new DisplayMetrics();
-            if(Build.VERSION.SDK_INT >= 17) display.getRealMetrics(metrics);
+            if (Build.VERSION.SDK_INT >= 17) display.getRealMetrics(metrics);
             else display.getMetrics(metrics);
             int paddings = metrics.widthPixels / 6;
-            rootview.setPadding(paddings,0,paddings,0);
+            rootview.setPadding(paddings, 0, paddings, 0);
         }
 
         ImageView cover = rootview.findViewById(R.id.img_cover);
@@ -225,9 +227,9 @@ public class VideoInfoFragment extends Fragment {
         if (onFinishLoad != null) onFinishLoad.run();
         else loadFinished = true;
 
-        if(videoInfo == null){
+        if (videoInfo == null) {
             Activity activity = getActivity();
-            if(activity == null) {
+            if (activity == null) {
                 return;
             }
             CenterThreadPool.runOnUiThread(activity::finish);
@@ -237,13 +239,13 @@ public class VideoInfoFragment extends Fragment {
         if (videoInfo.epid != -1) { //不是空的的话就应该跳转到番剧页面了
             CenterThreadPool.run(() -> {
                 Context context = getContext();
-                if(context == null) {
+                if (context == null) {
                     return;
                 }
                 TerminalContext.getInstance()
                         .enterVideoDetailPage(context, BangumiApi.getMdidFromEpid(videoInfo.epid), null, "media");
                 Activity activity = getActivity();
-                if(activity == null) {
+                if (activity == null) {
                     return;
                 }
                 CenterThreadPool.runOnUiThread(activity::finish);
@@ -265,7 +267,7 @@ public class VideoInfoFragment extends Fragment {
                 //历史记录接口，如果没有记录过该视频，会返回历史记录的最后一项，神奇吧
             } catch (Exception e) {
                 MsgUtil.err(e);
-                progressPair = new Pair<>(0L,0);
+                progressPair = new Pair<>(0L, 0);
             }
 
             //标签显示
@@ -289,7 +291,9 @@ public class VideoInfoFragment extends Fragment {
                                 }
                             });
                         });
-                    } catch (Exception e) {MsgUtil.err(e);}
+                    } catch (Exception e) {
+                        MsgUtil.err(e);
+                    }
                 });
             }
 
@@ -308,10 +312,12 @@ public class VideoInfoFragment extends Fragment {
                         if (videoInfo.stats.favoured)
                             fav.setImageResource(R.drawable.icon_fav_1);
                     });
-                } catch (Exception e) {MsgUtil.err(e);}
+                } catch (Exception e) {
+                    MsgUtil.err(e);
+                }
             });
 
-            if(isAdded()) requireActivity().runOnUiThread(()-> {
+            if (isAdded()) requireActivity().runOnUiThread(() -> {
 
                 //标题
                 title.setText(getTitleSpan());
@@ -349,7 +355,7 @@ public class VideoInfoFragment extends Fragment {
                     }
                     showCover();
                 });
-                if(coverPlayEnabled) cover.setOnLongClickListener(v -> {
+                if (coverPlayEnabled) cover.setOnLongClickListener(v -> {
                     showCover();
                     return true;
                 });
@@ -422,7 +428,9 @@ public class VideoInfoFragment extends Fragment {
                             String finalMsg = msg;
                             MsgUtil.showMsg(finalMsg);
                         }
-                    } catch (Exception e) {MsgUtil.err(e);}
+                    } catch (Exception e) {
+                        MsgUtil.err(e);
+                    }
                 }));
 
                 //投币
@@ -451,9 +459,12 @@ public class VideoInfoFragment extends Fragment {
                                 String finalMsg = msg;
                                 MsgUtil.showMsg(finalMsg);
                             }
-                        } catch (Exception e) {MsgUtil.err(e);}
+                        } catch (Exception e) {
+                            MsgUtil.err(e);
+                        }
+                    } else {
+                        MsgUtil.showMsg("投币数量到达上限");
                     }
-                    else {MsgUtil.showMsg("投币数量到达上限");}
                 }));
 
                 //收藏
@@ -485,7 +496,7 @@ public class VideoInfoFragment extends Fragment {
                 //下载
                 download.setOnClickListener(view1 -> downloadClick());
                 download.setOnLongClickListener(v -> {
-                    CenterThreadPool.run(()->{
+                    CenterThreadPool.run(() -> {
                         File downPath = FileUtil.getDownloadPath(videoInfo.title, null);
                         FileUtil.deleteFolder(downPath);
                         MsgUtil.showMsg("已清除此视频的缓存文件夹");
@@ -518,8 +529,7 @@ public class VideoInfoFragment extends Fragment {
                     collectionCard.setOnClickListener((view1) ->
                             startActivity(new Intent(requireContext(), CollectionInfoActivity.class)
                                     .putExtra("fromVideo", videoInfo.aid)));
-                }
-                else {
+                } else {
                     collectionCard.setVisibility(View.GONE);
                 }
 
@@ -545,7 +555,7 @@ public class VideoInfoFragment extends Fragment {
         return titleStr;
     }
 
-    private SpannableStringBuilder getDescSpan(String tags){
+    private SpannableStringBuilder getDescSpan(String tags) {
         SpannableStringBuilder tag_str = new SpannableStringBuilder("标签：");
         for (String str : tags.split("/")) {
             int old_len = tag_str.length();
@@ -589,17 +599,16 @@ public class VideoInfoFragment extends Fragment {
         play_clicked = true;
     }
 
-    private void downloadClick(){
+    private void downloadClick() {
         if (!FileUtil.checkStoragePermission()) {
             FileUtil.requestStoragePermission(requireActivity());
         } else {
-            File downPath = FileUtil.getDownloadPath(videoInfo.title,null);
+            File downPath = FileUtil.getDownloadPath(videoInfo.title, null);
 
-            if (downPath.exists() && videoInfo.pagenames.size() == 1){
-                File file_sign = new File(downPath,".DOWNLOADING");
+            if (downPath.exists() && videoInfo.pagenames.size() == 1) {
+                File file_sign = new File(downPath, ".DOWNLOADING");
                 MsgUtil.showMsg(file_sign.exists() ? "已在下载队列" : "已下载完成");
-            }
-            else {
+            } else {
                 if (videoInfo.pagenames.size() > 1) {
                     Intent intent = new Intent();
                     intent.setClass(requireContext(), MultiPageActivity.class)
@@ -607,9 +616,8 @@ public class VideoInfoFragment extends Fragment {
                             .putExtra("aid", videoInfo.aid)
                             .putExtra("bvid", videoInfo.bvid);
                     startActivity(intent);
-                }
-                else {
-                    startActivity(new Intent(requireContext(),QualityChooserActivity.class)
+                } else {
+                    startActivity(new Intent(requireContext(), QualityChooserActivity.class)
                             .putExtra("page", 0)
                             .putExtra("aid", videoInfo.aid)
                             .putExtra("bvid", videoInfo.bvid)
@@ -619,7 +627,7 @@ public class VideoInfoFragment extends Fragment {
         }
     }
 
-    private void showCover(){
+    private void showCover() {
         try {
             Intent intent = new Intent();
             intent.setClass(requireContext(), ImageViewerActivity.class);
@@ -627,12 +635,13 @@ public class VideoInfoFragment extends Fragment {
             imageList.add(videoInfo.cover);
             intent.putExtra("imageList", imageList);
             requireContext().startActivity(intent);
-        } catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
     }
 
 
     public void setOnFinishLoad(Runnable onFinishLoad) {
-        if(loadFinished) onFinishLoad.run();
+        if (loadFinished) onFinishLoad.run();
         else this.onFinishLoad = onFinishLoad;
     }
 }

@@ -2,19 +2,17 @@ package com.huanli233.biliterminal2.activity.settings;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.google.android.material.card.MaterialCardView;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.InstanceActivity;
 import com.huanli233.biliterminal2.activity.settings.login.LoginActivity;
 import com.huanli233.biliterminal2.activity.settings.login.SpecialLoginActivity;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.google.android.material.card.MaterialCardView;
 
 public class SettingMainActivity extends InstanceActivity {
 
@@ -132,7 +130,7 @@ public class SettingMainActivity extends InstanceActivity {
             //清除教程进度
             MaterialCardView refreshTutorial = findViewById(R.id.refresh_tutorial);
             refreshTutorial.setOnClickListener(view -> {
-                if(refreshTutorialClick++ > 0){
+                if (refreshTutorialClick++ > 0) {
                     refreshTutorialClick = 0;
 
                     for (int i = 0; i < getResources().getStringArray(R.array.tutorial_list).length; i++) {
@@ -140,7 +138,7 @@ public class SettingMainActivity extends InstanceActivity {
                     }
 
                     MsgUtil.showMsg("教程进度已清除");
-                }else MsgUtil.showMsg("再点一次清除");
+                } else MsgUtil.showMsg("再点一次清除");
             });
 
             MaterialCardView test = findViewById(R.id.test);    //用于测试

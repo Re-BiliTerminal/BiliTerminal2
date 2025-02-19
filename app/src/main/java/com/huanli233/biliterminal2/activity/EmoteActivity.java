@@ -22,6 +22,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
+import com.google.android.material.tabs.TabLayout;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.api.EmoteApi;
@@ -31,8 +33,6 @@ import com.huanli233.biliterminal2.ui.widget.recycler.CustomGridManager;
 import com.huanli233.biliterminal2.util.CenterThreadPool;
 import com.huanli233.biliterminal2.util.GlideUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.bumptech.glide.Glide;
-import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;
 import java.util.Objects;
@@ -59,7 +59,7 @@ public class EmoteActivity extends BaseActivity {
         CenterThreadPool.run(() -> {
             try {
                 String from = getIntent().getStringExtra("from");
-                if(from==null) from = EmoteApi.BUSINESS_REPLY;
+                if (from == null) from = EmoteApi.BUSINESS_REPLY;
 
                 List<EmotePackage> packages = EmoteApi.getEmotes(from);
                 runOnUiThread(() -> {
@@ -89,12 +89,12 @@ public class EmoteActivity extends BaseActivity {
                     tabLayout.setTabIconTint(null);
                     int count = tabLayout.getTabCount();
 
-                    CenterThreadPool.run(()->{
+                    CenterThreadPool.run(() -> {
                         for (int i = 0; i < count; i++) {
                             int finalI = i;
                             Objects.requireNonNull(packages);
 
-                            runOnUiThread(()->{
+                            runOnUiThread(() -> {
                                 Objects.requireNonNull(tabLayout.getTabAt(finalI)).setText(packages.get(finalI).text);
                                 if (finalI != 0)
                                     Objects.requireNonNull(tabLayout.getTabAt(finalI)).setTabLabelVisibility(TabLayout.TAB_LABEL_VISIBILITY_UNLABELED);
@@ -107,7 +107,7 @@ public class EmoteActivity extends BaseActivity {
                                         .submit().get();
                                 runOnUiThread(() -> Objects.requireNonNull(tabLayout.getTabAt(finalI)).setIcon(drawable));
                             } catch (ExecutionException e) {
-                                MsgUtil.err("加载表情列表图标时出现错误：",e);
+                                MsgUtil.err("加载表情列表图标时出现错误：", e);
                                 e.printStackTrace();
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
