@@ -2,7 +2,50 @@ plugins {
     id 'com.android.application'
 }
 
-int betaVer = 0
+def versionPropsFile = file('version.properties')
+def versionProps = new Properties()
+
+if (versionPropsFile.exists()) {
+    versionProps.load(new FileInputStream(versionPropsFile))
+} else {
+    versionProps['VERSION_CODE'] = '1'
+}
+
+tasks.register('incrementVersionCode') {
+    doLast {
+        def versionCode = versionProps['VERSION_CODE'].toInteger()
+        versionCode++
+        versionProps['VERSION_CODE'] = versionCode.toString()
+        versionProps.store(versionPropsFile.newWriter(), null)
+        println "Incremented VERSION_CODE to ${versionCode}"
+    }
+}
+
+tasks.configureEach { task ->
+    if (task.name == 'assembleRelease') {
+        task.dependsOn incrementVersionCode
+    }
+}
+
+def readVersionCode() {
+    def versionFile = file('version.properties')
+    def props = new Properties()
+    props.load(new FileInputStream(versionFile))
+    return Integer.parseInt(props['VERSION_CODE'])
+}
+
+def readVersion() {
+    def versionFile = file('version.properties')
+    def props = new Properties()
+    props.load(new FileInputStream(versionFile))
+    return props['VERSION']
+}
+
+def getGitHash() {
+    def stdout = new ByteArrayOutputStream()
+    exec { commandLine 'git', 'rev-parse', '--short', 'HEAD'; standardOutput = stdout }
+    return stdout.toString().trim()
+}
 
 android {
 
@@ -19,12 +62,8 @@ android {
         applicationId "com.huanli233.biliterminal2"
         minSdk 17
         targetSdk 35
-        versionCode 20250213
-        versionName "2.7.3"
-
-        if (betaVer) {
-            versionName += "-BETA" + betaVer
-        }
+        versionCode readVersionCode()
+        versionName "${readVersion()}+${getGitHash()}"
 
         multiDexEnabled true
 
@@ -50,8 +89,7 @@ android {
 
     buildTypes {
         release {
-            buildConfigField "boolean", "BETA", String.valueOf(betaVer > 0)
-            buildConfigField "boolean", "LOG_DEBUG", "true"
+            buildConfigField "boolean", "BETA", "false"
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -63,7 +101,7 @@ android {
             }
         }
         debug {
-            buildConfigField "boolean", "BETA", String.valueOf(betaVer > 0)
+            buildConfigField "boolean", "BETA", "true"
             signingConfig signingConfigs.debug
         }
     }
@@ -85,6 +123,7 @@ android {
 
 dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
+    //noinspection GradleDependency
     implementation 'com.google.zxing:core:3.5.0'
     //noinspection GradleDependency
     implementation 'androidx.appcompat:appcompat:1.5.1'
@@ -98,7 +137,7 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.10.2'
     //noinspection GradleCompatible
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
-    implementation 'org.greenrobot:eventbus:3.2.0'
+    implementation 'org.greenrobot:eventbus:3.3.1'
     // Geetest（目前没用到）
     implementation 'com.geetest.sensebot:sensebot:4.4.2.1'
     //danmaku
@@ -110,6 +149,7 @@ dependencies {
     implementation project(path: ':DanmakuFlameMaster')
     implementation project(path: ':brotlij')
     implementation 'androidx.asynclayoutinflater:asynclayoutinflater:1.0.0'
+    //noinspection GradleDependency
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     def multidex_version = "2.0.1"
     implementation "androidx.multidex:multidex:$multidex_version"
