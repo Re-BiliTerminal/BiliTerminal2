@@ -58,7 +58,7 @@ public class CenterThreadPool {
             COROUTINE_SCOPE = null;
             THREAD_POOL = new AtomicReference<>();
         } else {
-            COROUTINE_SCOPE = CoroutineScopeKt.CoroutineScope((CoroutineContext) Dispatchers.getIO());
+            COROUTINE_SCOPE = CoroutineScopeKt.CoroutineScope(Dispatchers.getIO());
             THREAD_POOL = null;
         }
     }

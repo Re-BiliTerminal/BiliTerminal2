@@ -74,7 +74,7 @@ public class DownloadActivity extends BaseActivity {
         progressText = findViewById(R.id.progressText);
         progressView = findViewById(R.id.progressView);
 
-        scrHeight = window_height;
+        scrHeight = windowHeight;
 
         timer.schedule(showText, 100, 100);
         CenterThreadPool.run(() -> {

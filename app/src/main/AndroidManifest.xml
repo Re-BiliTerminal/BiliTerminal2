@@ -109,7 +109,7 @@
         <activity
             android:name=".activity.GetIntentActivity"
             android:exported="true"
-            android:label="使用哔哩终端打开"
+            android:label="使用BiliTerminal2打开"
             android:screenOrientation="locked">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

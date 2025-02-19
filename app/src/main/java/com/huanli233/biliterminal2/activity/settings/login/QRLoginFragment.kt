@@ -17,7 +17,6 @@ import com.huanli233.biliterminal2.BiliTerminal
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.activity.SplashActivity
 import com.huanli233.biliterminal2.api.CookiesApi.ACTIVE_COOKIE_PAYLOAD
-import com.huanli233.biliterminal2.api.LoginApi
 import com.huanli233.biliterminal2.api.bilibiliApi
 import com.huanli233.biliterminal2.util.CenterThreadPool
 import com.huanli233.biliterminal2.util.MsgUtil
@@ -25,10 +24,10 @@ import com.huanli233.biliterminal2.util.NetWorkUtil
 import com.huanli233.biliterminal2.util.QRCodeUtil
 import com.huanli233.biliterminal2.util.SharedPreferencesUtil
 import com.huanli233.biliwebapi.api.interfaces.ILoginApi
+import com.huanli233.biliwebapi.bean.ApiResponse
 import com.huanli233.biliwebapi.bean.login.QrCode
 import kotlinx.coroutines.launch
 import org.json.JSONException
-import org.json.JSONObject
 import java.io.IOException
 import java.util.Timer
 import java.util.TimerTask
@@ -41,6 +40,37 @@ class QRLoginFragment : Fragment() {
     var needRefresh: Boolean = false
     var fromSetup: Boolean = false
     var qrScale: Int = 0
+    private var state = QRLoginState.NONE
+        set(value) {
+            field = value
+            CenterThreadPool.runOnUiThread {
+                when (value) {
+                    QRLoginState.NONE ->
+                        scanStat.text = getString(R.string.login_qrcode_reuesting)
+
+                    QRLoginState.WAITING ->
+                        scanStat.text = getString(R.string.login_qrcode_wating)
+
+                    QRLoginState.EXPIRED -> {
+                        scanStat.text = getString(R.string.login_qrcode_expired)
+                        needRefresh = true
+                        timer?.cancel()
+                    }
+
+                    QRLoginState.SCANNED ->
+                        scanStat.text = getString(R.string.login_qrcode_scanned)
+
+                    QRLoginState.LOGGED_IN -> {
+                        scanStat.text =
+                            getString(R.string.login_qrcode_logining)
+                        timer?.cancel()
+                    }
+
+                    else -> scanStat.text =
+                        getString(R.string.login_qrcode_unknown_code)
+                }
+            }
+        }
 
     override fun onCreate(savedInstance: Bundle?) {
         super.onCreate(savedInstance)
@@ -71,8 +101,8 @@ class QRLoginFragment : Fragment() {
                     SplashActivity::class.java
                 )
             )
-            if (timer != null) timer!!.cancel()
-            if (isAdded) requireActivity().finish()
+            timer?.cancel()
+            activity?.finish()
         }
 
         val special = view.findViewById<MaterialCardView>(R.id.special)
@@ -83,8 +113,8 @@ class QRLoginFragment : Fragment() {
             )
             intent.putExtra("from_setup", fromSetup)
             startActivity(intent)
-            if (timer != null) timer!!.cancel()
-            if (isAdded) requireActivity().finish()
+            timer?.cancel()
+            activity?.finish()
         }
 
         qrImageView.setOnClickListener {
@@ -99,21 +129,18 @@ class QRLoginFragment : Fragment() {
                     0 -> {
                         guidelineLeft.setGuidelinePercent(0.00f)
                         guidelineRight.setGuidelinePercent(1.00f)
-                        MsgUtil.showMsg("切换为大二维码")
                         qrScale = 1
                     }
 
                     1 -> {
                         guidelineLeft.setGuidelinePercent(0.30f)
                         guidelineRight.setGuidelinePercent(0.70f)
-                        MsgUtil.showMsg("切换为小二维码")
                         qrScale = 2
                     }
 
                     2 -> {
                         guidelineLeft.setGuidelinePercent(0.15f)
                         guidelineRight.setGuidelinePercent(0.85f)
-                        MsgUtil.showMsg("切换为默认大小")
                         qrScale = 0
                     }
                 }
@@ -123,14 +150,13 @@ class QRLoginFragment : Fragment() {
         if (isAdded) refreshQrCode()
     }
 
-    fun refreshQrCode() {
-        println("refreshQrCode")
+    private fun refreshQrCode() {
         lifecycleScope.launch {
             try {
-                println("launchRequest")
                 CenterThreadPool.runOnUiThread { scanStat.text = "正在获取二维码" }
                 val qrCode = QrCode.generate(bilibiliApi)
                 qrImage = QRCodeUtil.createQRCodeBitmap(qrCode.data!!.url, 320, 320)
+                needRefresh = false
 
                 CenterThreadPool.runOnUiThread {
                     qrImageView.setImageBitmap(qrImage)
@@ -153,101 +179,81 @@ class QRLoginFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        if (timer != null) timer!!.cancel()
+        timer?.cancel()
         super.onDestroy()
     }
 
-    fun startLoginDetect(data: QrCode) {
-        timer = Timer()
-        timer!!.schedule(object : TimerTask() {
-            @SuppressLint("SetTextI18n")
-            override fun run() {
-                lifecycleScope.launch {
-                    try {
-                        val response = data.poll()
-                        if (!isAdded) {
+    private fun startLoginDetect(data: QrCode) {
+        state = QRLoginState.WAITING
+        timer = Timer().apply {
+            schedule(object : TimerTask() {
+                @SuppressLint("SetTextI18n")
+                override fun run() {
+                    lifecycleScope.launch {
+                        try {
+                            val response = data.poll()
+                            if (!isAdded) {
+                                cancel()
+                                return@launch
+                            }
+
+                            val code = response.data?.code
+                            when (code) {
+                                86090 -> state = QRLoginState.SCANNED
+                                86101 -> state = QRLoginState.WAITING
+                                86038 -> state = QRLoginState.EXPIRED
+                                0 -> {
+                                    state = QRLoginState.LOGGED_IN
+                                    processLogin(response)
+                                }
+
+                                else -> state = QRLoginState.UNKNOWN
+                            }
+                        } catch (e: Exception) {
+                            if (isAdded) CenterThreadPool.runOnUiThread {
+                                qrImageView.isEnabled = true
+                                scanStat.text = """
+                                    无法获取二维码信息，点击上方重试
+                                    ${e.message}
+                                """.trimIndent()
+                                MsgUtil.err(e)
+                            }
                             cancel()
-                            return@launch
                         }
-
-                        val code = response.data?.code
-                        when (code) {
-                            86090 -> CenterThreadPool.runOnUiThread {
-                                scanStat.text =
-                                    "已扫描，请在手机上点击登录"
-                            }
-
-                            86101 -> CenterThreadPool.runOnUiThread {
-                                scanStat.text =
-                                    "请使用官方手机端哔哩哔哩扫码登录\n点击二维码可以进行放大和缩小"
-                            }
-
-                            86038 -> {
-                                CenterThreadPool.runOnUiThread {
-                                    scanStat.text = "二维码已失效，点击上方重新获取"
-                                    qrImageView.isEnabled = true
-                                }
-                                cancel()
-                            }
-
-                            0 -> {
-                                cancel()
-                                CenterThreadPool.runOnUiThread {
-                                    scanStat.text =
-                                        "正在处理登录……"
-                                }
-                                val cookies =
-                                    SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, "")
-
-                                SharedPreferencesUtil.putLong(
-                                    SharedPreferencesUtil.mid,
-                                    NetWorkUtil.getInfoFromCookie("DedeUserID", cookies).toLong()
-                                )
-                                SharedPreferencesUtil.putString(
-                                    SharedPreferencesUtil.csrf,
-                                    NetWorkUtil.getInfoFromCookie("bili_jct", cookies)
-                                )
-                                SharedPreferencesUtil.putString(
-                                    SharedPreferencesUtil.refresh_token,
-                                    response.data?.refreshToken.orEmpty()
-                                )
-
-                                SharedPreferencesUtil.putBoolean(
-                                    SharedPreferencesUtil.cookie_refresh,
-                                    true
-                                )
-
-                                val instance = BiliTerminal.getInstanceActivityOnTop()
-                                if (instance != null && !instance.isDestroyed) instance.finish()
-
-                                NetWorkUtil.refreshHeaders()
-
-                                bilibiliApi.getApi(ILoginApi::class.java).activeCookie(ACTIVE_COOKIE_PAYLOAD).code
-
-                                startActivity(Intent(requireContext(), SplashActivity::class.java))
-
-                                if (isAdded) requireActivity().finish()
-                            }
-
-                            else -> CenterThreadPool.runOnUiThread {
-                                scanStat.text =
-                                    "二维码登录API可能变动，\n但你仍然可以尝试扫码登录。\n建议反馈给开发者"
-                            }
-                        }
-                    } catch (e: Exception) {
-                        if (isAdded) CenterThreadPool.runOnUiThread {
-                            qrImageView.isEnabled = true
-                            scanStat.text = """
-                            无法获取二维码信息，点击上方重试
-                            ${e.message}
-                            """.trimIndent()
-                            MsgUtil.err(e)
-                        }
-                        cancel()
                     }
                 }
-            }
-        }, 2000, 500)
+            }, 2000, 500)
+        }
+    }
+
+    private suspend fun processLogin(response: ApiResponse<QrCode.LoginResult>) {
+        val cookies =
+            SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, "")
+
+        SharedPreferencesUtil.putLong(
+            SharedPreferencesUtil.mid,
+            NetWorkUtil.getInfoFromCookie("DedeUserID", cookies).toLong()
+        )
+        SharedPreferencesUtil.putString(
+            SharedPreferencesUtil.csrf,
+            NetWorkUtil.getInfoFromCookie("bili_jct", cookies)
+        )
+        SharedPreferencesUtil.putString(
+            SharedPreferencesUtil.refresh_token,
+            response.data?.refreshToken.orEmpty()
+        )
+
+        SharedPreferencesUtil.putBoolean(
+            SharedPreferencesUtil.cookie_refresh,
+            true
+        )
+
+        val instance = BiliTerminal.getInstanceActivityOnTop()
+        if (instance != null && !instance.isDestroyed) instance.finish()
+        NetWorkUtil.refreshHeaders()
+        bilibiliApi.getApi(ILoginApi::class.java).activeCookie(ACTIVE_COOKIE_PAYLOAD).code
+        startActivity(Intent(requireContext(), SplashActivity::class.java))
+        if (isAdded) requireActivity().finish()
     }
 
     companion object {
@@ -259,5 +265,9 @@ class QRLoginFragment : Fragment() {
             fragment.arguments = args
             return fragment
         }
+    }
+
+    private enum class QRLoginState {
+        NONE, WAITING, SCANNED, LOGGED_IN, EXPIRED, UNKNOWN
     }
 }

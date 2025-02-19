@@ -67,7 +67,7 @@
                     android:layout_marginHorizontal="8dp"
                     android:layout_height="35sp"
                     android:gravity="center_vertical"
-                    android:text="哔哩终端，启动！"
+                    android:text="@string/enter_app"
                     android:textAlignment="textStart"
                     android:textSize="13sp"
                     android:visibility="visible"

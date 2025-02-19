@@ -1,305 +1,291 @@
-package com.huanli233.biliterminal2.activity.base;
+package com.huanli233.biliterminal2.activity.base
 
-import static com.huanli233.biliterminal2.activity.dynamic.DynamicActivity.getRelayDynamicLauncher;
+import android.content.Context
+import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
+import android.content.res.Resources
+import android.os.Build
+import android.os.Bundle
+import android.util.DisplayMetrics
+import android.view.Display
+import android.view.InputDevice
+import android.view.KeyEvent
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewConfiguration
+import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.ListView
+import android.widget.ScrollView
+import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewConfigurationCompat
+import androidx.core.widget.NestedScrollView
+import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.RecyclerView
+import com.huanli233.biliterminal2.BiliTerminal
+import com.huanli233.biliterminal2.R
+import com.huanli233.biliterminal2.activity.dynamic.DynamicActivity
+import com.huanli233.biliterminal2.event.SnackEvent
+import com.huanli233.biliterminal2.ui.widget.recycler.CustomGridManager
+import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager
+import com.huanli233.biliterminal2.util.AsyncLayoutInflaterX
+import com.huanli233.biliterminal2.util.MsgUtil
+import com.huanli233.biliterminal2.util.SharedPreferencesUtil
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.os.Build;
-import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Display;
-import android.view.InputDevice;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewConfiguration;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.TextView;
+open class BaseActivity : AppCompatActivity() {
+    var windowWidth: Int = 0
+    @JvmField
+    var windowHeight: Int = 0
+    var oldContext: Context? = null
+    @JvmField
+    val relayDynamicLauncher: ActivityResultLauncher<Intent> =
+        DynamicActivity.getRelayDynamicLauncher(
+            this
+        )
+    var forceSingleColumn: Boolean = false
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.ViewConfigurationCompat;
-import androidx.core.widget.NestedScrollView;
-import androidx.lifecycle.Lifecycle;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.huanli233.biliterminal2.BiliTerminal;
-import com.huanli233.biliterminal2.R;
-import com.huanli233.biliterminal2.event.SnackEvent;
-import com.huanli233.biliterminal2.ui.widget.recycler.CustomGridManager;
-import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager;
-import com.huanli233.biliterminal2.util.AsyncLayoutInflaterX;
-import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-
-public class BaseActivity extends AppCompatActivity {
-    public int window_width, window_height;
-    public Context old_context;
-    public final ActivityResultLauncher<Intent> relayDynamicLauncher = getRelayDynamicLauncher(this);
-    public boolean force_single_column = false;
-
-    //调整应用内dpi的代码，其他Activity要继承于BaseActivity才能调大小
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        old_context = newBase;
-        super.attachBaseContext(BiliTerminal.getFitDisplayContext(newBase));
+    override fun attachBaseContext(newBase: Context) {
+        oldContext = newBase
+        super.attachBaseContext(BiliTerminal.getFitDisplayContext(newBase))
     }
 
-    //调整页面边距，参考了hankmi的方式
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setRequestedOrientation(SharedPreferencesUtil.getBoolean("ui_landscape", false)
-                ? ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-                : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        requestedOrientation = if (SharedPreferencesUtil.getBoolean("ui_landscape", false))
+            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        else
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState)
 
-        int paddingH_percent = SharedPreferencesUtil.getInt("paddingH_percent", 0);
-        int paddingV_percent = SharedPreferencesUtil.getInt("paddingV_percent", 0);
+        val paddingHPercent: Int = SharedPreferencesUtil.getInt("paddingH_percent", 0)
+        val paddingVPercent: Int = SharedPreferencesUtil.getInt("paddingV_percent", 0)
 
-        View rootView = this.getWindow().getDecorView().getRootView();
-        WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
-        DisplayMetrics metrics = new DisplayMetrics();
-        if (Build.VERSION.SDK_INT >= 17) display.getRealMetrics(metrics);
-        else display.getMetrics(metrics);
+        val rootView: View = this.window.decorView.rootView
+        val windowManager: WindowManager = getSystemService(WINDOW_SERVICE) as WindowManager
+        val display: Display = windowManager.defaultDisplay
+        val metrics = DisplayMetrics()
+        if (Build.VERSION.SDK_INT >= 17) display.getRealMetrics(metrics)
+        else display.getMetrics(metrics)
 
-        int scrW = metrics.widthPixels;
-        int scrH = metrics.heightPixels;
-        if (paddingH_percent != 0 || paddingV_percent != 0) {
-            Log.e("debug", "调整边距");
-            int paddingH = scrW * paddingH_percent / 100;
-            int paddingV = scrH * paddingV_percent / 100;
-            window_width = scrW - paddingH;
-            window_height = scrH - paddingV;
-            rootView.setPadding(paddingH, paddingV, paddingH, paddingV);
+        val scrW: Int = metrics.widthPixels
+        val scrH: Int = metrics.heightPixels
+        if (paddingHPercent != 0 || paddingVPercent != 0) {
+            val paddingH: Int = scrW * paddingHPercent / 100
+            val paddingV: Int = scrH * paddingVPercent / 100
+            windowWidth = scrW - paddingH
+            windowHeight = scrH - paddingV
+            rootView.setPadding(paddingH, paddingV, paddingH, paddingV)
         } else {
-            window_width = scrW;
-            window_height = scrH;
+            windowWidth = scrW
+            windowHeight = scrH
         }
 
-        // 随便加的
-        int density;
-        if ((density = SharedPreferencesUtil.getInt("density", -1)) >= 72) {
-            setDensity(density);
+        var density: Int
+        if ((SharedPreferencesUtil.getInt("density", -1).also { density = it }) >= 72) {
+            setDensity(density)
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        if (!SharedPreferencesUtil.getBoolean("back_disable", false)) super.onBackPressed();
+    override fun onBackPressed() {
+        if (!SharedPreferencesUtil.getBoolean("back_disable", false)) super.onBackPressed()
     }
 
-    public void setPageName(String name) {
-        TextView textView = findViewById(R.id.pageName);
+    fun setPageName(name: String?) {
+        val textView: TextView? = findViewById(R.id.pageName)
         if (textView != null) {
-            textView.setText(name);
-            textView.setMaxLines(1);
+            textView.text = name
+            textView.maxLines = 1
         }
     }
 
-    public void setTopbarExit() {
-        /*
-        //圆屏适配
-        if(SharedPreferencesUtil.getBoolean("player_ui_round",false)){
-            TextView pagename = findViewById(R.id.pageName);
-            if(pagename != null) {
-                ViewGroup.LayoutParams params = pagename.getLayoutParams();
-                params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                int paddings = ToolsUtil.dp2px(16);
-                Log.d("debug-round","ok");
-                pagename.setPadding(paddings,paddings,paddings,0);
-                pagename.setLayoutParams(params);
-                pagename.setGravity(Gravity.CENTER);
+    fun setTopbarExit() {
+        val view: View? = findViewById(R.id.top)
+        if (view == null) return
+        if (Build.VERSION.SDK_INT > 17 && view.hasOnClickListeners()) return
+        view.setOnClickListener(View.OnClickListener { view1: View? ->
+            if (Build.VERSION.SDK_INT < 17 || !isDestroyed) {
+                finish()
             }
-        }
-
-         */
-
-        View view = findViewById(R.id.top);
-        if (view == null) return;
-        if (Build.VERSION.SDK_INT > 17 && view.hasOnClickListeners()) return;
-        view.setOnClickListener(view1 -> {
-            if (Build.VERSION.SDK_INT < 17 || !isDestroyed()) {
-                finish();
-            }
-        });
-        Log.e("debug", "set_exit");
+        })
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
-            if (Build.VERSION.SDK_INT < 17 || !isDestroyed()) {
-                finish();
+            if (Build.VERSION.SDK_INT < 17 || !isDestroyed) {
+                finish()
             }
         }
-        return super.onKeyDown(keyCode, event);
+        return super.onKeyDown(keyCode, event)
     }
 
-    public void report(Exception e) {
-        runOnUiThread(() -> MsgUtil.err(getClassName(), e));
+    fun report(e: Exception?) {
+        runOnUiThread({ MsgUtil.err(className, e) })
     }
 
-    private boolean eventBusInit = false;
+    private var eventBusInit: Boolean = false
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!(this instanceof InstanceActivity)) setTopbarExit();
+    override fun onStart() {
+        super.onStart()
+        if (this !is InstanceActivity) setTopbarExit()
         if (eventBusEnabled() && !eventBusInit) {
-            EventBus.getDefault().register(this);
-            eventBusInit = true;
+            EventBus.getDefault().register(this)
+            eventBusInit = true
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    override fun onResume() {
+        super.onResume()
         if (eventBusEnabled()) {
-            SnackEvent snackEvent;
-            if ((snackEvent = EventBus.getDefault().getStickyEvent(SnackEvent.class)) != null)
-                onEvent(snackEvent);
+            var snackEvent: SnackEvent
+            if ((EventBus.getDefault().getStickyEvent(SnackEvent::class.java)
+                    .also { snackEvent = it }) != null
+            ) onEvent(snackEvent)
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    override fun onDestroy() {
+        super.onDestroy()
         if (eventBusInit) {
-            EventBus.getDefault().unregister(this);
-            eventBusInit = false;
+            EventBus.getDefault().unregister(this)
+            eventBusInit = false
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onEvent(SnackEvent event) {
-        if (isFinishing()) return;
-        MsgUtil.processSnackEvent(event, getWindow().getDecorView().getRootView());
+    fun onEvent(event: SnackEvent) {
+        if (isFinishing) return
+        MsgUtil.processSnackEvent(event, window.decorView.rootView)
     }
 
-    protected boolean eventBusEnabled() {
-        return SharedPreferencesUtil.getBoolean(SharedPreferencesUtil.SNACKBAR_ENABLE, true);
+    protected open fun eventBusEnabled(): Boolean {
+        return SharedPreferencesUtil.getBoolean(SharedPreferencesUtil.SNACKBAR_ENABLE, true)
     }
 
-    public void setDensity(int targetDensityDpi) {
-        if (Build.VERSION.SDK_INT < 17) return;
-        Resources resources = getResources();
+    fun setDensity(targetDensityDpi: Int) {
+        if (Build.VERSION.SDK_INT < 17) return
+        val resources: Resources = resources
 
-        if (resources.getConfiguration().densityDpi == targetDensityDpi) return;
+        if (resources.configuration.densityDpi == targetDensityDpi) return
 
-        Configuration configuration = resources.getConfiguration();
-        configuration.densityDpi = targetDensityDpi;
-        configuration.fontScale = 1f;
-        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
+        val configuration: Configuration = resources.configuration
+        configuration.densityDpi = targetDensityDpi
+        configuration.fontScale = 1f
+        resources.updateConfiguration(configuration, resources.displayMetrics)
     }
 
-    protected void asyncInflate(int id, InflateCallBack callBack) {
-        setContentView(R.layout.activity_loading);
-        new AsyncLayoutInflaterX(this).inflate(id, null, (view, layoutId, parent) -> {
-            setContentView(view);
-            if (this instanceof InstanceActivity) {
-                ((InstanceActivity) this).setMenuClick();
-            } else {
-                setTopbarExit();
-            }
-            callBack.finishInflate(view, layoutId);
-        });
+    protected fun asyncInflate(id: Int, callBack: InflateCallBack) {
+        setContentView(R.layout.activity_loading)
+        AsyncLayoutInflaterX(this).inflate(
+            id,
+            null,
+            { view: View?, layoutId: Int, parent: ViewGroup? ->
+                setContentView(view)
+                if (this is InstanceActivity) {
+                    this.setMenuClick()
+                } else {
+                    setTopbarExit()
+                }
+                callBack.finishInflate(view, layoutId)
+            })
     }
 
     protected interface InflateCallBack {
-        void finishInflate(View view, int id);
+        fun finishInflate(view: View?, id: Int)
     }
 
-    public RecyclerView.LayoutManager getLayoutManager() {
-        return SharedPreferencesUtil.getBoolean("ui_landscape", false) && !force_single_column
-                ? new CustomGridManager(this, 3)
-                : new CustomLinearManager(this);
+    val layoutManager: RecyclerView.LayoutManager
+        get() = if (SharedPreferencesUtil.getBoolean(
+                "ui_landscape",
+                false
+            ) && !forceSingleColumn
+        )
+            CustomGridManager(this, 3)
+        else
+            CustomLinearManager(this)
+
+    fun setForceSingleColumn() {
+        forceSingleColumn = true
     }
 
-    public void setForceSingleColumn() {
-        force_single_column = true;
-    }
-
-    @Override
-    public void onContentChanged() {
-        super.onContentChanged();
-        //自动适配表冠
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {    //既然不支持，那低版本直接跳过
-            ViewGroup rootView = (ViewGroup) this.getWindow().getDecorView();
-            setRotaryScroll(rootView);
+    override fun onContentChanged() {
+        super.onContentChanged()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val rootView: ViewGroup = this.window.decorView as ViewGroup
+            setRotaryScroll(rootView)
         }
     }
 
-    private void setRotaryScroll(View view) {
-        if (view instanceof ViewGroup) {
-            ViewGroup vp = (ViewGroup) view;
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private fun setRotaryScroll(view: View) {
+        if (view is ViewGroup) {
+            val vp: ViewGroup = view
             try {
-                for (int i = 0; i < vp.getChildCount(); i++) {
-                    View viewChild = vp.getChildAt(i);
+                for (i in 0 until vp.childCount) {
+                    val viewChild: View = vp.getChildAt(i)
 
-                    float multiple = -114;
-                    if (viewChild instanceof ScrollView || viewChild instanceof NestedScrollView)
-                        multiple = SharedPreferencesUtil.getFloat("ui_rotatory_scroll", 0);
-                    if (viewChild instanceof RecyclerView)
-                        multiple = SharedPreferencesUtil.getFloat("ui_rotatory_recycler", 0);
-                    if (viewChild instanceof ListView)
-                        multiple = SharedPreferencesUtil.getFloat("ui_rotatory_list", 0);
+                    var multiple: Float = -114f
+                    if (viewChild is ScrollView || viewChild is NestedScrollView) multiple =
+                        SharedPreferencesUtil.getFloat("ui_rotatory_scroll", 0f)
+                    if (viewChild is RecyclerView) multiple =
+                        SharedPreferencesUtil.getFloat("ui_rotatory_recycler", 0f)
+                    if (viewChild is ListView) multiple =
+                        SharedPreferencesUtil.getFloat("ui_rotatory_list", 0f)
 
-                    if (multiple == -114) setRotaryScroll(viewChild);  //不符合上面的情况说明不是可滑动列表
-                    if (multiple <= 0) return;    //负值和0都不执行
+                    if (multiple == -114f) setRotaryScroll(viewChild)
+                    if (multiple <= 0) return
 
-                    float finalMultiple = multiple;
-                    viewChild.setOnGenericMotionListener((v, ev) -> {
-                        if (ev.getAction() == MotionEvent.ACTION_SCROLL && ev.getSource() == InputDevice.SOURCE_ROTARY_ENCODER) {
-                            float delta = -ev.getAxisValue(MotionEvent.AXIS_SCROLL)
+                    val finalMultiple: Float = multiple
+                    viewChild.setOnGenericMotionListener({ v: View?, ev: MotionEvent ->
+                        if (ev.action == MotionEvent.ACTION_SCROLL && ev.source == InputDevice.SOURCE_ROTARY_ENCODER) {
+                            val delta: Float = (-ev.getAxisValue(MotionEvent.AXIS_SCROLL)
                                     * ViewConfigurationCompat.getScaledVerticalScrollFactor(
-                                    ViewConfiguration.get(BiliTerminal.context),
-                                    BiliTerminal.context) * 2;
+                                ViewConfiguration.get(BiliTerminal.context),
+                                BiliTerminal.context
+                            ) * 2)
 
-                            if (viewChild instanceof ScrollView)
-                                ((ScrollView) viewChild).smoothScrollBy(0, Math.round(delta * finalMultiple));
-                            else if (viewChild instanceof NestedScrollView)
-                                ((NestedScrollView) viewChild).smoothScrollBy(0, Math.round(delta * finalMultiple));
-                            else if (viewChild instanceof RecyclerView)
-                                ((RecyclerView) viewChild).smoothScrollBy(0, Math.round(delta * finalMultiple));
-                            else
-                                ((ListView) viewChild).smoothScrollBy(0, Math.round(delta * finalMultiple));
+                            if (viewChild is ScrollView) viewChild.smoothScrollBy(
+                                0,
+                                Math.round(delta * finalMultiple)
+                            )
+                            else if (viewChild is NestedScrollView) viewChild.smoothScrollBy(
+                                0,
+                                Math.round(delta * finalMultiple)
+                            )
+                            else if (viewChild is RecyclerView) viewChild.smoothScrollBy(
+                                0,
+                                Math.round(delta * finalMultiple)
+                            )
+                            else (viewChild as ListView).smoothScrollBy(
+                                0,
+                                Math.round(delta * finalMultiple)
+                            )
 
-                            viewChild.requestFocus();
+                            viewChild.requestFocus()
 
-                            return true;
+                            return@setOnGenericMotionListener true
                         }
-
-                        return false;
-                    });
+                        false
+                    })
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }
 
-    @Override
-    public boolean isDestroyed() {
-        return getLifecycle().getCurrentState().equals(Lifecycle.State.DESTROYED);
+    override fun isDestroyed(): Boolean {
+        return lifecycle.currentState == Lifecycle.State.DESTROYED
     }
 
-    public String getClassName() {
-        return this.getClass().getSimpleName();
-    }
+    val className: String
+        get() {
+            return javaClass.simpleName
+        }
 }
