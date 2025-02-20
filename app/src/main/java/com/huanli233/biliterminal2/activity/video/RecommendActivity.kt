@@ -1,80 +1,72 @@
-package com.huanli233.biliterminal2.activity.video;
+package com.huanli233.biliterminal2.activity.video
 
-import android.annotation.SuppressLint;
-import android.os.Bundle;
-import android.util.Log;
+import android.annotation.SuppressLint
+import android.os.Bundle
+import com.huanli233.biliterminal2.R
+import com.huanli233.biliterminal2.activity.base.RefreshMainActivity
+import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter
+import com.huanli233.biliterminal2.api.RecommendApi
+import com.huanli233.biliterminal2.helper.TutorialHelper
+import com.huanli233.biliterminal2.model.VideoCard
+import com.huanli233.biliterminal2.util.CenterThreadPool
 
-import com.huanli233.biliterminal2.R;
-import com.huanli233.biliterminal2.activity.base.RefreshMainActivity;
-import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter;
-import com.huanli233.biliterminal2.api.RecommendApi;
-import com.huanli233.biliterminal2.helper.TutorialHelper;
-import com.huanli233.biliterminal2.model.VideoCard;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class RecommendActivity extends RefreshMainActivity {
-
-    private List<VideoCard> videoCardList;
-    private VideoCardAdapter videoCardAdapter;
-    private boolean firstRefresh = true;
+class RecommendActivity : RefreshMainActivity() {
+    private var videoCardList: MutableList<VideoCard>? = null
+    private var videoCardAdapter: VideoCardAdapter? = null
+    private var firstRefresh = true
 
     @SuppressLint("MissingInflatedId")
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setMenuClick();
-        Log.e("debug", "进入推荐页");
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setMenuClick()
 
-        setOnRefreshListener(this::refreshRecommend);
-        setOnLoadMoreListener(page -> addRecommend());
+        setOnRefreshListener { this.refreshRecommend() }
+        setOnLoadMoreListener { addRecommend() }
 
-        setPageName("推荐");
+        setPageName(getString(R.string.recommend))
+        recyclerView.setHasFixedSize(true)
 
-        recyclerView.setHasFixedSize(true);
+        TutorialHelper.showTutorialList(this, R.array.tutorial_recommend, 0)
 
-        TutorialHelper.showTutorialList(this, R.array.tutorial_recommend, 0);
-
-        refreshRecommend();
+        refreshRecommend()
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private void refreshRecommend() {
-        Log.e("debug", "刷新");
+    private fun refreshRecommend() {
         if (firstRefresh) {
-            videoCardList = new ArrayList<>();
+            videoCardList = ArrayList()
         } else {
-            int last = videoCardList.size();
-            videoCardList.clear();
-            videoCardAdapter.notifyItemRangeRemoved(0, last);
+            val last = videoCardList!!.size
+            videoCardList!!.clear()
+            videoCardAdapter!!.notifyItemRangeRemoved(0, last)
         }
 
-        addRecommend();
+        addRecommend()
     }
 
-    private void addRecommend() {
-        Log.e("debug", "加载下一页");
-        CenterThreadPool.run(() -> {
+    private fun addRecommend() {
+        CenterThreadPool.run {
             try {
-                List<VideoCard> list = new ArrayList<>();
-                RecommendApi.getRecommend(list);
-                setRefreshing(false);
+                val list: List<VideoCard> = ArrayList()
+                RecommendApi.getRecommend(list)
+                setRefreshing(false)
 
-                runOnUiThread(() -> {
-                    videoCardList.addAll(list);
+                runOnUiThread {
+                    videoCardList!!.addAll(list)
                     if (firstRefresh) {
-                        firstRefresh = false;
-                        videoCardAdapter = new VideoCardAdapter(this, videoCardList);
-                        setAdapter(videoCardAdapter);
+                        firstRefresh = false
+                        videoCardAdapter = VideoCardAdapter(this, videoCardList)
+                        setAdapter(videoCardAdapter)
                     } else {
-                        videoCardAdapter.notifyItemRangeInserted(videoCardList.size() - list.size(), list.size());
+                        videoCardAdapter!!.notifyItemRangeInserted(
+                            videoCardList!!.size - list.size,
+                            list.size
+                        )
                     }
-                });
-            } catch (Exception e) {
-                loadFail(e);
+                }
+            } catch (e: Exception) {
+                loadFail(e)
             }
-        });
+        }
     }
 }

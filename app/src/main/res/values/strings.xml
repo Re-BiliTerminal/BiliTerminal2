@@ -121,6 +121,7 @@
     <string name="name_huanli233">huanli233</string>
     <string name="desc_huanli233">此分支的创建者</string>
     <string name="disclaimer">免责声明</string>
+    <string name="recommend">推荐</string>
     <string-array name="icon_license">
         <item>界面设置: Newicons, MIT License</item>
         <item>番剧: hicon, MIT License</item>
