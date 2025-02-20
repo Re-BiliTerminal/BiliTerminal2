@@ -216,6 +216,7 @@ class QRLoginFragment : Fragment() {
                                     无法获取二维码信息，点击上方重试
                                     ${e.message}
                                 """.trimIndent()
+                                needRefresh = true
                                 MsgUtil.err(e)
                             }
                             cancel()
@@ -248,7 +249,7 @@ class QRLoginFragment : Fragment() {
             true
         )
 
-        val instance = BiliTerminal.getInstanceActivityOnTop()
+        val instance = BiliTerminal.instanceActivityOnTop
         if (instance != null && !instance.isDestroyed) instance.finish()
         NetWorkUtil.refreshHeaders()
         bilibiliApi.getApi(ILoginApi::class.java).activeCookie(ACTIVE_COOKIE_PAYLOAD).code

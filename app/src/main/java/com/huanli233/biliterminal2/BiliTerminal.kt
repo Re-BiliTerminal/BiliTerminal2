@@ -41,6 +41,9 @@ class BiliTerminal : Application() {
         @SuppressLint("StaticFieldLeak")
         var context: Context? = null
 
+        val contextNotNull: Context
+            get() = context!!
+
         @JvmField
         var DPI_FORCE_CHANGE: Boolean = false
 

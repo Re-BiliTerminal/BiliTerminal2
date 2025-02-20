@@ -111,6 +111,16 @@
     <string name="confirm_setting">确认设置</string>
     <string name="enter_app">哔哩终端，启动！</string>
     <string name="restore_success">恢复完成</string>
+    <string name="info_open_source_icons">开源图标的信息</string>
+    <string name="about">关于</string>
+    <string name="version_name">版本名</string>
+    <string name="version_code">版本号</string>
+    <string name="debug_tip">当前版本为测试版\n不代表最终正式版</string>
+    <string name="name_robin_not_bad">RobinNotBad</string>
+    <string name="desc_robin_not_bad">和他的纳西妲酱（项目发起者|屎山奠基人）</string>
+    <string name="name_huanli233">huanli233</string>
+    <string name="desc_huanli233">此分支的创建者</string>
+    <string name="disclaimer">免责声明</string>
     <string-array name="icon_license">
         <item>界面设置: Newicons, MIT License</item>
         <item>番剧: hicon, MIT License</item>

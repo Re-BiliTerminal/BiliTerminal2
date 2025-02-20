@@ -1,147 +1,123 @@
-package com.huanli233.biliterminal2.activity.settings;
+package com.huanli233.biliterminal2.activity.settings
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Typeface;
-import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.StyleSpan;
-import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Typeface
+import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.StyleSpan
+import android.util.Log
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.card.MaterialCardView
+import com.huanli233.biliterminal2.R
+import com.huanli233.biliterminal2.activity.base.BaseActivity
+import com.huanli233.biliterminal2.activity.user.info.UserInfoActivity
+import com.huanli233.biliterminal2.util.AsyncLayoutInflaterX
+import com.huanli233.biliterminal2.util.GlideUtil
+import com.huanli233.biliterminal2.util.MsgUtil
+import com.huanli233.biliterminal2.util.SharedPreferencesUtil
+import com.huanli233.biliterminal2.util.ToolsUtil
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.card.MaterialCardView;
-import com.huanli233.biliterminal2.R;
-import com.huanli233.biliterminal2.activity.base.BaseActivity;
-import com.huanli233.biliterminal2.activity.user.info.UserInfoActivity;
-import com.huanli233.biliterminal2.util.AsyncLayoutInflaterX;
-import com.huanli233.biliterminal2.util.GlideUtil;
-import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.huanli233.biliterminal2.util.ToolsUtil;
+class AboutActivity : BaseActivity() {
+    var eggClickAuthorWords: Int = 0
+    var eggClickToUncle: Int = 0
+    var eggClickDev: Int = 0
 
-import java.util.ArrayList;
-import java.util.List;
+    @SuppressLint("MissingInflatedId", "SetTextI18n", "InflateParams")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_loading)
 
-public class AboutActivity extends BaseActivity {
-    int eggClick_authorWords = 0, eggClick_toUncle = 0, eggClick_Dev = 0;
-
-    @SuppressLint({"MissingInflatedId", "SetTextI18n", "InflateParams"})
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_loading);
-
-        new AsyncLayoutInflaterX(this).inflate(R.layout.activity_setting_about, null, (layoutView, resId, parent) -> {
-            setContentView(layoutView);
-            Log.e("debug", "进入关于页面");
-            setTopbarExit();
+        AsyncLayoutInflaterX(this).inflate(
+            R.layout.activity_setting_about, null
+        ) { layoutView: View?, _: Int, _: ViewGroup? ->
+            setContentView(layoutView)
+            Log.e("debug", "进入关于页面")
+            setTopbarExit()
 
             try {
-                SpannableString version_str = new SpannableString("版本名\n" + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
-                version_str.setSpan(new StyleSpan(Typeface.BOLD), 0, 3, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                ((TextView) findViewById(R.id.app_version)).setText(version_str);
+                val versionStr = SpannableString(
+                    "版本名\n" + packageManager.getPackageInfo(
+                        packageName, 0
+                    ).versionName
+                )
+                versionStr.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    0,
+                    3,
+                    Spanned.SPAN_INCLUSIVE_INCLUSIVE
+                )
+                (findViewById<View>(R.id.app_version) as TextView).text =
+                    versionStr
 
-                SpannableString code_str = new SpannableString("版本号\n" + getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
-                code_str.setSpan(new StyleSpan(Typeface.BOLD), 0, 3, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                ((TextView) findViewById(R.id.app_version_code)).setText(code_str);
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
+                val versionCodeStr = SpannableString(
+                    "版本号\n" + packageManager.getPackageInfo(
+                        packageName, 0
+                    ).versionCode
+                )
+                versionCodeStr.setSpan(StyleSpan(Typeface.BOLD), 0, 3, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                (findViewById<View>(R.id.app_version_code) as TextView).text =
+                    versionCodeStr
+            } catch (e: PackageManager.NameNotFoundException) {
+                e.printStackTrace()
             }
 
-            List<ImageView> developerAvaterViews = new ArrayList<>() {{
-                add(findViewById(R.id.robinAvatar));
-                add(findViewById(R.id.duduAvatar));
-                add(findViewById(R.id.dadaAvatar));
-                add(findViewById(R.id.moyeAvatar));
-                add(findViewById(R.id.silentAvatar));
-                add(findViewById(R.id.huanliAvatar));
-            }};
-            List<Integer> developerAvaters = new ArrayList<>() {{
-                add(R.mipmap.avatar_robin);
-                add(R.mipmap.avatar_dudu);
-                add(-1);
-                add(R.mipmap.avatar_moye);
-                add(R.mipmap.avatar_silent);
-                add(R.mipmap.avatar_huanli);
-            }};
-            List<MaterialCardView> developerCardList = new ArrayList<>() {{
-                add(findViewById(R.id.robin_card));
-                add(findViewById(R.id.dudu_card));
-                add(findViewById(R.id.dada_card));
-                add(findViewById(R.id.moye_card));
-                add(findViewById(R.id.silent_card));
-                add(findViewById(R.id.huanli_card));
-            }};
-            List<Long> developerUidList = new ArrayList<>() {{
-                add((long) 646521226);
-                add((long) 517053179);
-                add((long) 432128342);
-                add((long) 394675616);
-                add((long) 40140732);
-                add((long) 673815151);
-            }};
+            val developerAvaterViews: List<ImageView> = listOf(
+                findViewById(R.id.robinAvatar),
+                findViewById(R.id.huanliAvatar)
+            )
+            val developerAvaters: List<Int> = listOf(R.mipmap.avatar_robin, R.mipmap.avatar_huanli)
+            val developerCardList: List<MaterialCardView> = listOf(findViewById(R.id.robin_card), findViewById(R.id.huanli_card))
+            val developerUidList: List<Long> = listOf(646521226, 673815151)
 
-            for (int i = 0; i < developerAvaterViews.size(); i++) {
-                int finalI = i;
-                if (developerAvaters.get(i) != -1) try {
-                    Glide.with(this).load(developerAvaters.get(i))
-                            .transition(GlideUtil.getTransitionOptions())
-                            .placeholder(R.mipmap.akari)
-                            .apply(RequestOptions.circleCropTransform())
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .into(developerAvaterViews.get(i));
-                } catch (Exception ignored) {
+            for (i in developerAvaterViews.indices) {
+                if (developerAvaters[i] != -1) kotlin.runCatching {
+                    Glide.with(this).load(developerAvaters[i])
+                        .transition(GlideUtil.getTransitionOptions())
+                        .placeholder(R.mipmap.akari)
+                        .apply(RequestOptions.circleCropTransform())
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .into(developerAvaterViews[i])
                 }
 
 
-                developerCardList.get(i).setOnClickListener(view -> {
-                    Intent intent = new Intent()
-                            .setClass(this, UserInfoActivity.class)
-                            .putExtra("mid", developerUidList.get(finalI));
-                    startActivity(intent);
-                });
+                developerCardList[i].setOnClickListener { view: View? ->
+                    val intent = Intent()
+                        .setClass(this, UserInfoActivity::class.java)
+                        .putExtra("mid", developerUidList[i])
+                    startActivity(intent)
+                }
             }
 
-            findViewById(R.id.toUncle).setOnClickListener(view -> {
-                eggClick_toUncle++;
-                if (eggClick_toUncle == 7) {
-                    eggClick_toUncle = 0;
-                    MsgUtil.showText("给叔叔", "\"你指尖跃动的电光，是我此生不灭的信仰。\"<extra_insert>{\"type\":\"video\",\"content\":\"BV157411v76Z\",\"title\":\"【B站入站曲】\"}");
+            findViewById<View>(R.id.toUncle).setOnClickListener {
+                eggClickToUncle++
+                if (eggClickToUncle == 7) {
+                    eggClickToUncle = 0
+                    MsgUtil.showText(
+                        "给叔叔",
+                        "\"你指尖跃动的电光，是我此生不灭的信仰。\"<extra_insert>{\"type\":\"video\",\"content\":\"BV157411v76Z\",\"title\":\"【B站入站曲】\"}"
+                    )
                 }
-            });
+            }
 
-            findViewById(R.id.icon_license_list).setOnClickListener(v -> {
-                StringBuilder str = new StringBuilder(getString(R.string.desc_icon_license));
+            findViewById<View>(R.id.icon_license_list).setOnClickListener { v: View? ->
+                val str = StringBuilder(getString(R.string.desc_icon_license))
+                val logItems = resources.getStringArray(R.array.icon_license)
+                for (i in logItems.indices) str.append('\n').append((i + 1)).append('.')
+                    .append(logItems[i])
+                MsgUtil.showText(getString(R.string.info_open_source_icons), str.toString())
+            }
 
-                String[] logItems = getResources().getStringArray(R.array.icon_license);
-                for (int i = 0; i < logItems.length; i++)
-                    str.append('\n').append((i + 1)).append('.').append(logItems[i]);
-                MsgUtil.showText("开源图标的信息", str.toString());
-            });
-
-            if (!ToolsUtil.isDebugBuild()) findViewById(R.id.debug_tip).setVisibility(View.GONE);
-            findViewById(R.id.version_code_card).setOnClickListener(view -> {
-                if (SharedPreferencesUtil.getBoolean("developer", false)) {
-                    MsgUtil.showMsg("已关闭开发者模式！");
-                    SharedPreferencesUtil.putBoolean("developer", false);
-                } else {
-                    eggClick_Dev++;
-                    if (eggClick_Dev == 7) {
-                        SharedPreferencesUtil.putBoolean("developer", true);
-                        MsgUtil.showMsg("已启用开发者模式！");
-                        eggClick_Dev = 0;
-                    }
-                }
-            });
-
-        });
-
+            if (!ToolsUtil.isDebugBuild()) findViewById<View>(R.id.debug_tip).visibility =
+                View.GONE
+        }
     }
 }

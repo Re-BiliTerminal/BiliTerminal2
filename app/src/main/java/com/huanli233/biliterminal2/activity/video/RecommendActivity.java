@@ -15,9 +15,6 @@ import com.huanli233.biliterminal2.util.CenterThreadPool;
 import java.util.ArrayList;
 import java.util.List;
 
-//推荐页面
-//2023-07-13
-
 public class RecommendActivity extends RefreshMainActivity {
 
     private List<VideoCard> videoCardList;

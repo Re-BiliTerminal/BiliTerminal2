@@ -246,8 +246,8 @@ open class BaseActivity : AppCompatActivity() {
                         if (ev.action == MotionEvent.ACTION_SCROLL && ev.source == InputDevice.SOURCE_ROTARY_ENCODER) {
                             val delta: Float = (-ev.getAxisValue(MotionEvent.AXIS_SCROLL)
                                     * ViewConfigurationCompat.getScaledVerticalScrollFactor(
-                                ViewConfiguration.get(BiliTerminal.context),
-                                BiliTerminal.context
+                                ViewConfiguration.get(BiliTerminal.contextNotNull),
+                                BiliTerminal.contextNotNull
                             ) * 2)
 
                             if (viewChild is ScrollView) viewChild.smoothScrollBy(
