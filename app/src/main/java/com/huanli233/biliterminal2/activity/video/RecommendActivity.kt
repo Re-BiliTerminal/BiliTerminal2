@@ -6,12 +6,10 @@ import androidx.lifecycle.lifecycleScope
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.activity.base.RefreshMainActivity
 import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter
-import com.huanli233.biliterminal2.api.RecommendApi
 import com.huanli233.biliterminal2.api.bilibiliApi
 import com.huanli233.biliterminal2.helper.TutorialHelper
 import com.huanli233.biliterminal2.model.VideoCard
 import com.huanli233.biliterminal2.model.toVideoCard
-import com.huanli233.biliterminal2.util.CenterThreadPool
 import com.huanli233.biliterminal2.util.uniqId
 import com.huanli233.biliwebapi.bean.recommend.home.HomeRecommend
 import kotlinx.coroutines.launch
@@ -21,7 +19,6 @@ class RecommendActivity : RefreshMainActivity() {
     private val videoCardAdapter: VideoCardAdapter by lazy { VideoCardAdapter(this, videoCardList) }
     private var firstRefresh = true
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setMenuClick()
@@ -37,7 +34,6 @@ class RecommendActivity : RefreshMainActivity() {
         refreshRecommend()
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun refreshRecommend() {
         val last = videoCardList.size
         videoCardList.clear()

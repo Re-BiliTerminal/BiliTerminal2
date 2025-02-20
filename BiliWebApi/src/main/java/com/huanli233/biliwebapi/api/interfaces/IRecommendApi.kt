@@ -1,6 +1,7 @@
 package com.huanli233.biliwebapi.api.interfaces
 
 import com.huanli233.biliwebapi.bean.ApiResponse
+import com.huanli233.biliwebapi.bean.ListResult
 import com.huanli233.biliwebapi.bean.recommend.home.HomeRecommend
 import com.huanli233.biliwebapi.bean.video.VideoInfo
 import com.huanli233.biliwebapi.httplib.annotation.Queries
@@ -15,4 +16,10 @@ interface IRecommendApi {
 
     @GET("/x/web-interface/archive/related")
     suspend fun getRelated(@Query("aid") aid: Long, @Query("bvid") bvid: String): ApiResponse<List<VideoInfo>>
+
+    @GET("/x/web-interface/popular/precious")
+    suspend fun getPrecious(@Query("page") page: Int, @Query("page_size") pageSize: Int = 10): ApiResponse<ListResult<VideoInfo>>
+
+    @GET("/x/web-interface/popular")
+    suspend fun getPopular(@Query("pn") page: Int, @Query("ps") pageSize: Int = 10): ApiResponse<ListResult<VideoInfo>>
 }

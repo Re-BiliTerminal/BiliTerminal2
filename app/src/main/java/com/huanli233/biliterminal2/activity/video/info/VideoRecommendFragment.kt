@@ -2,19 +2,14 @@ package com.huanli233.biliterminal2.activity.video.info
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.util.Consumer
 import androidx.lifecycle.lifecycleScope
 import com.huanli233.biliterminal2.activity.base.RefreshListFragment
 import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter
-import com.huanli233.biliterminal2.api.RecommendApi
 import com.huanli233.biliterminal2.api.bilibiliApi
 import com.huanli233.biliterminal2.api.toResultNonNull
 import com.huanli233.biliterminal2.model.toVideoCard
-import com.huanli233.biliterminal2.util.CenterThreadPool
-import com.huanli233.biliterminal2.util.Result
 import com.huanli233.biliwebapi.bean.video.VideoInfo
 import kotlinx.coroutines.launch
-import java.util.concurrent.Callable
 
 class VideoRecommendFragment : RefreshListFragment() {
     private var aid: Long = 0
