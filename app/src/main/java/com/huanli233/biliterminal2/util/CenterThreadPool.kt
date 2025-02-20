@@ -1,65 +1,58 @@
-package com.huanli233.biliterminal2.util;
+package com.huanli233.biliterminal2.util
 
-import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-
-import androidx.core.util.Consumer;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-
-import kotlin.Unit;
-import kotlin.coroutines.Continuation;
-import kotlin.coroutines.CoroutineContext;
-import kotlin.coroutines.EmptyCoroutineContext;
-import kotlinx.coroutines.BuildersKt;
-import kotlinx.coroutines.CoroutineScope;
-import kotlinx.coroutines.CoroutineScopeKt;
-import kotlinx.coroutines.CoroutineStart;
-import kotlinx.coroutines.Dispatchers;
+import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import androidx.core.util.Consumer
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.util.concurrent.ArrayBlockingQueue
+import java.util.concurrent.Callable
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Future
+import java.util.concurrent.FutureTask
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicReference
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * @author silent碎月
- * 核心运行线程池
- * BuildersKt.launch 系列调用可以在java端调起协程,更加轻量
  */
-public class CenterThreadPool {
+object CenterThreadPool {
+    private val MAIN_THREAD_HANDLER = Handler(Looper.getMainLooper())
+    private var COROUTINE_SCOPE: CoroutineScope? = null
+    private var THREAD_POOL: AtomicReference<ExecutorService?> = AtomicReference()
 
-    private static final Handler MAIN_THREAD_HANDLER = new Handler(Looper.getMainLooper());
-    private static final CoroutineScope COROUTINE_SCOPE;
-    private static final AtomicReference<ExecutorService> THREAD_POOL;
-
-    private static ExecutorService getThreadPoolInstance() {
-        if (THREAD_POOL == null) return null;
-        int bestThreadPoolSize = Runtime.getRuntime().availableProcessors();
-        while (THREAD_POOL.get() == null) {
-            THREAD_POOL.compareAndSet(null, new ThreadPoolExecutor(
-                    bestThreadPoolSize / 2,
-                    bestThreadPoolSize * 2,
-                    60,
-                    TimeUnit.SECONDS,
-                    new ArrayBlockingQueue<>(20)
-            ));
+    private val threadPoolInstance: ExecutorService?
+        get() {
+            val bestThreadPoolSize =
+                Runtime.getRuntime().availableProcessors()
+            while (THREAD_POOL.get() == null) {
+                THREAD_POOL.compareAndSet(
+                    null, ThreadPoolExecutor(
+                        bestThreadPoolSize / 2,
+                        bestThreadPoolSize * 2,
+                        60,
+                        TimeUnit.SECONDS,
+                        ArrayBlockingQueue(20)
+                    )
+                )
+            }
+            return THREAD_POOL.get()
         }
-        return THREAD_POOL.get();
-    }
 
-    static {
+    init {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            COROUTINE_SCOPE = null;
-            THREAD_POOL = new AtomicReference<>();
+            COROUTINE_SCOPE = null
+            THREAD_POOL = AtomicReference()
         } else {
-            COROUTINE_SCOPE = CoroutineScopeKt.CoroutineScope(Dispatchers.getIO());
-            THREAD_POOL = null;
+            COROUTINE_SCOPE = CoroutineScope(Dispatchers.IO)
         }
     }
 
@@ -69,24 +62,21 @@ public class CenterThreadPool {
      *
      * @param runnable 要运行的任务
      */
-    public static void run(Runnable runnable) {
-        try {
-            //能用协程用协程
-            if (COROUTINE_SCOPE != null) {
-                BuildersKt.launch(COROUTINE_SCOPE, EmptyCoroutineContext.INSTANCE, CoroutineStart.DEFAULT, (CoroutineScope scope, Continuation<? super Unit> continuation) -> {
-                    runnable.run();
-                    return Unit.INSTANCE;
-                });
-                //协程不可用时尝试以原生线程池运行
-            } else if (getThreadPoolInstance() != null) {
-                getThreadPoolInstance().submit(runnable);
+    @JvmStatic
+    fun run(runnable: Runnable) {
+        kotlin.runCatching {
+            COROUTINE_SCOPE?.launch(
+                EmptyCoroutineContext,
+                CoroutineStart.DEFAULT
+            ) {
+                runnable.run()
+            } ?: if (threadPoolInstance != null) {
+                threadPoolInstance!!.submit(runnable)
             } else {
-                //都不可用再开线程
-                new Thread(runnable).start();
+                Thread(runnable).start()
             }
-        } catch (Throwable e) {
-            //最后再放手一博
-            new Thread(runnable).start();
+        }.onFailure {
+            Thread(runnable).start()
         }
     }
 
@@ -97,19 +87,20 @@ public class CenterThreadPool {
      * @param supplier 要运行的任务
      * @param <T>      返回值类型
      * @return LiveData包装的返回值
-     */
-    public static <T> LiveData<Result<T>> supplyAsyncWithLiveData(Callable<T> supplier) {
-        MutableLiveData<Result<T>> retval = new MutableLiveData<>();
-        CenterThreadPool.run(() -> {
+    </T> */
+    @JvmStatic
+    fun <T> supplyAsyncWithLiveData(supplier: Callable<T>): LiveData<Result<T>> {
+        val retval = MutableLiveData<Result<T>>()
+        run {
             try {
-                T res = supplier.call();
-                retval.postValue(Result.success(res));
-            } catch (Exception e) {
-                retval.postValue(Result.failure(e));
-                MsgUtil.err(e);
+                val res = supplier.call()
+                retval.postValue(Result.success(res))
+            } catch (e: Exception) {
+                retval.postValue(Result.failure(e))
+                MsgUtil.err(e)
             }
-        });
-        return retval;
+        }
+        return retval
     }
 
     /**
@@ -119,11 +110,12 @@ public class CenterThreadPool {
      * @param supplier 一个带返回值的lambda表达式或Supplier的实现类
      * @param <T>      返回值类型
      * @return 返回一个可供CenterThreadPool观察的Future对象
-     */
-    public static <T> Future<T> supplyAsyncWithFuture(Callable<T> supplier) {
-        FutureTask<T> ftask = new FutureTask<>(supplier);
-        CenterThreadPool.run(ftask);
-        return ftask;
+    </T> */
+    @JvmStatic
+    fun <T> supplyAsyncWithFuture(supplier: Callable<T>?): Future<T> {
+        val ftask = FutureTask(supplier)
+        run(ftask)
+        return ftask
     }
 
     /**
@@ -132,27 +124,29 @@ public class CenterThreadPool {
      * @param deferred 一个将要在未来返回一个 T 类型对象的对象
      * @param consumer 对T进行观察的lambda表达式或者类
      * @param <T>      要观察的类型
-     */
-    public static <T> void observe(Future<T> deferred, Consumer<T> consumer) {
-        CenterThreadPool.run(() -> {
+    </T> */
+    @JvmStatic
+    fun <T> observe(deferred: Future<T>, consumer: Consumer<T>) {
+        run {
             try {
-                T value = deferred.get();
-                CenterThreadPool.runOnUiThread(() -> consumer.accept(value));
-            } catch (Throwable ignored) {
+                val value = deferred.get()
+                runOnUiThread { consumer.accept(value) }
+            } catch (ignored: Throwable) {
             }
-        });
+        }
     }
 
 
-    public static <T> void observe(Future<T> future, Consumer<T> consumer, Consumer<Throwable> onFailure) {
-        CenterThreadPool.run(() -> {
+    @JvmStatic
+    fun <T> observe(future: Future<T>, consumer: Consumer<T>, onFailure: Consumer<Throwable?>) {
+        run {
             try {
-                T value = future.get();
-                CenterThreadPool.runOnUiThread(() -> consumer.accept(value));
-            } catch (Exception e) {
-                onFailure.accept(e);
+                val value = future.get()
+                runOnUiThread { consumer.accept(value) }
+            } catch (e: Exception) {
+                onFailure.accept(e)
             }
-        });
+        }
     }
 
     /**
@@ -160,17 +154,19 @@ public class CenterThreadPool {
      *
      * @param runnable 要运行的任务
      */
-    public static void runOnUiThread(Runnable runnable) {
-        MAIN_THREAD_HANDLER.post(runnable);
+    @JvmStatic
+    fun runOnUiThread(runnable: Runnable) {
+        MAIN_THREAD_HANDLER.post(runnable)
     }
 
-    public static void runOnUIThreadAfter(long time, TimeUnit unit, Runnable runnable) {
-        long millis = TimeUnit.MILLISECONDS.convert(time, unit);
-        MAIN_THREAD_HANDLER.postDelayed(runnable, millis);
+    @JvmStatic
+    fun runOnUIThreadAfter(time: Long, unit: TimeUnit?, runnable: Runnable) {
+        val millis = TimeUnit.MILLISECONDS.convert(time, unit)
+        MAIN_THREAD_HANDLER.postDelayed(runnable, millis)
     }
 
-    public static void runOnUIThreadAfter(long time, Runnable runnable) {
-        MAIN_THREAD_HANDLER.postDelayed(runnable, time);
+    @JvmStatic
+    fun runOnUIThreadAfter(time: Long, runnable: Runnable) {
+        MAIN_THREAD_HANDLER.postDelayed(runnable, time)
     }
-
 }
