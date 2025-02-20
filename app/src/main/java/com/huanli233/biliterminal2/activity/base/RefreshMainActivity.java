@@ -28,7 +28,6 @@ public class RefreshMainActivity extends InstanceActivity {
     public long lastLoadTimestamp;
     protected boolean isRefreshing;
 
-    //帮你findView和设置滚动监测器，自动显示转圈动画
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +81,6 @@ public class RefreshMainActivity extends InstanceActivity {
         listener = loadMore;
     }
 
-    //自动
     private void goOnLoad() {
         synchronized (this) {
             long timeCurrent = System.currentTimeMillis();
@@ -105,7 +103,7 @@ public class RefreshMainActivity extends InstanceActivity {
         setRefreshing(false);
     }
 
-    public void loadFail(Exception e) {
+    public void loadFail(Throwable e) {
         page--;
         report(e);
         setRefreshing(false);

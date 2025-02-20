@@ -108,7 +108,7 @@ public class MenuActivity extends BaseActivity {
             btnList = getDefaultSortList();
         }
 
-        if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0) == 0) {
+        if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0) == 0) {
             btnList.add(0, "login");
             btnList.remove("dynamic");
             btnList.remove("message");

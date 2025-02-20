@@ -37,7 +37,7 @@ public class PlayerApi {
     public static void startGettingUrl(Context context, VideoInfo videoInfo, int page, int progress) {
         long mid;
         try {
-            mid = SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0);
+            mid = SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0);
         } catch (Throwable ignored) {
             mid = 0;
         }
@@ -94,7 +94,7 @@ public class PlayerApi {
      * @return 视频url与完整返回信息
      */
     public static Pair<String, String> getVideo(long aid, long cid, int qn, boolean download) throws JSONException, IOException {
-        boolean html5 = !download && SharedPreferencesUtil.getString("player", "").equals("mtvPlayer");
+        boolean html5 = !download && SharedPreferencesUtil.getString(SharedPreferencesUtil.PLAYER, "").equals("mtvPlayer");
         //html5方式现在已经仅对小电视播放器保留了
 
         String url = "https://api.bilibili.com/x/player/wbi/playurl?"
@@ -126,7 +126,7 @@ public class PlayerApi {
         Log.e("debug-准备跳转", "--------");
 
         Intent intent = new Intent();
-        switch (SharedPreferencesUtil.getString("player", "null")) {
+        switch (SharedPreferencesUtil.getString(SharedPreferencesUtil.PLAYER, "null")) {
             case "terminalPlayer":
                 intent.setClass(context, PlayerActivity.class);
                 intent.putExtra("url", videourl);
@@ -144,7 +144,7 @@ public class PlayerApi {
             case "mtvPlayer":
                 intent.setClassName(context.getString(R.string.player_mtv_package), "com.xinxiangshicheng.wearbiliplayer.cn.player.PlayerActivity");
                 intent.setAction(Intent.ACTION_VIEW);
-                intent.putExtra("cookie", SharedPreferencesUtil.getString("cookies", ""));
+                intent.putExtra("cookie", SharedPreferencesUtil.getString(SharedPreferencesUtil.COOKIES, ""));
                 intent.putExtra("mode", (local ? "2" : "0"));
                 intent.putExtra("url", videourl);
                 intent.putExtra("danmaku", danmakuurl);
@@ -161,7 +161,7 @@ public class PlayerApi {
 
                 if (!local) {
                     Map<String, String> headers = new HashMap<>();
-                    headers.put("Cookie", SharedPreferencesUtil.getString("cookies", ""));
+                    headers.put("Cookie", SharedPreferencesUtil.getString(SharedPreferencesUtil.COOKIES, ""));
                     headers.put("Referer", "https://www.bilibili.com/");
                     intent.putExtra("cookie", (Serializable) headers);
                     intent.putExtra("agent", NetWorkUtil.USER_AGENT_WEB);

@@ -77,9 +77,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//真正的视频详情页
-//2023-07-17
-
 public class VideoInfoFragment extends Fragment {
     private static final String TAG = "VideoInfoFragment";
     private Runnable onFinishLoad;
@@ -93,7 +90,7 @@ public class VideoInfoFragment extends Fragment {
     private Pair<Long, Integer> progressPair;
     private boolean play_clicked = false;
 
-    private Boolean coverPlayEnabled = SharedPreferencesUtil.getBoolean(SharedPreferencesUtil.cover_play_enable, false);
+    private Boolean coverPlayEnabled = SharedPreferencesUtil.getBoolean(SharedPreferencesUtil.COVER_PLAY_ENABLE, false);
 
     final int RESULT_ADDED = 1;
     final int RESULT_DELETED = -1;
@@ -113,7 +110,6 @@ public class VideoInfoFragment extends Fragment {
         }
     });
 
-    // 其实我不会用，也是抄的上面的😡
     final ActivityResultLauncher<Intent> writeDynamicLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<>() {
         @Override
         public void onActivityResult(ActivityResult result) {
@@ -344,8 +340,8 @@ public class VideoInfoFragment extends Fragment {
                         .into(cover);
                 cover.requestFocus();
                 cover.setOnClickListener(view1 -> {
-                    if (SharedPreferencesUtil.getString("player", null) == null) {
-                        SharedPreferencesUtil.putBoolean(SharedPreferencesUtil.cover_play_enable, true);
+                    if (SharedPreferencesUtil.getString(SharedPreferencesUtil.PLAYER, "").isEmpty()) {
+                        SharedPreferencesUtil.putBoolean(SharedPreferencesUtil.COVER_PLAY_ENABLE, true);
                         Toast.makeText(requireContext(), "将播放视频！\n如需变更点击行为请至设置->偏好设置喵", Toast.LENGTH_SHORT).show();
                         coverPlayEnabled = true;
                     }
@@ -390,7 +386,6 @@ public class VideoInfoFragment extends Fragment {
                     return true;
                 });
 
-                //播放
                 play.setOnClickListener(view1 -> playClick());
                 play.setOnLongClickListener(view1 -> {
                     Intent intent = new Intent();
@@ -404,7 +399,7 @@ public class VideoInfoFragment extends Fragment {
 
                 //点赞
                 rootview.findViewById(R.id.layout_like).setOnClickListener(view1 -> CenterThreadPool.run(() -> {
-                    if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0) == 0) {
+                    if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0) == 0) {
                         MsgUtil.showMsg("还没有登录喵~");
                         return;
                     }
@@ -433,9 +428,8 @@ public class VideoInfoFragment extends Fragment {
                     }
                 }));
 
-                //投币
                 rootview.findViewById(R.id.layout_coin).setOnClickListener(view1 -> CenterThreadPool.run(() -> {
-                    if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0) == 0) {
+                    if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0) == 0) {
                         MsgUtil.showMsg("还没有登录喵~");
                         return;
                     }
@@ -517,7 +511,7 @@ public class VideoInfoFragment extends Fragment {
                 });
 
                 //未登录隐藏按钮
-                if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0) == 0) {
+                if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0) == 0) {
                     addWatchlater.setVisibility(View.GONE);
                     relay.setVisibility(View.GONE);
                 }

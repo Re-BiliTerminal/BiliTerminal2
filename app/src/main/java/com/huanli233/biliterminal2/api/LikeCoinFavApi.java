@@ -14,9 +14,9 @@ import java.util.Objects;
 public class LikeCoinFavApi {
 
 
-    public static int like(long aid, int likeState) throws IOException, JSONException {  //likeState 1点赞0取消
+    public static int like(long aid, int likeState) throws IOException, JSONException {
         String url = "https://api.bilibili.com/x/web-interface/archive/like";
-        String per = "aid=" + aid + "&like=" + likeState + "&csrf=" + SharedPreferencesUtil.getString("csrf", "");
+        String per = "aid=" + aid + "&like=" + likeState + "&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
 
         JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, per, NetWorkUtil.webHeaders).body()).string());
         Log.e("debug-点赞", result.toString());
@@ -25,7 +25,7 @@ public class LikeCoinFavApi {
 
     public static int coin(long aid, int multiply) throws IOException, JSONException {
         String url = "https://api.bilibili.com/x/web-interface/coin/add";
-        String per = "aid=" + aid + "&multiply=" + multiply + "&csrf=" + SharedPreferencesUtil.getString("csrf", "");
+        String per = "aid=" + aid + "&multiply=" + multiply + "&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
 
         JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, per, NetWorkUtil.webHeaders).body()).string());
         Log.e("debug-投币", result.toString());
@@ -36,7 +36,7 @@ public class LikeCoinFavApi {
         String strMid = String.valueOf(SharedPreferencesUtil.getLong("mid", 0));
         String addFid = fid + strMid.substring(strMid.length() - 2);
         String url = "https://api.bilibili.com/medialist/gateway/coll/resource/deal";
-        String per = "rid=" + aid + "&type=2&add_media_ids=" + addFid + "&del_media_ids=&csrf=" + SharedPreferencesUtil.getString("csrf", "");
+        String per = "rid=" + aid + "&type=2&add_media_ids=" + addFid + "&del_media_ids=&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
 
         JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, per, NetWorkUtil.webHeaders).body()).string());
         Log.e("debug-添加收藏", result.toString());

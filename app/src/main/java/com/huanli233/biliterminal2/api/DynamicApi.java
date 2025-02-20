@@ -55,7 +55,7 @@ public class DynamicApi {
                 .put("type", 4)
                 .put("rid", 0)
                 .put("content", content)
-                .put("csrf", SharedPreferencesUtil.getString("csrf", ""))
+                .put("csrf", SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, ""))
                 .toString(), NetWorkUtil.webHeaders));
         try {
             JSONObject respBody = new JSONObject(resp.body().string());
@@ -78,7 +78,7 @@ public class DynamicApi {
      * @return 发送成功返回的动态id，失败返回-1
      */
     public static long publishComplex(@NonNull JSONArray contents, JSONArray pics, JSONObject option, JSONObject topic, int scene, Map<String, Object> otherArgs) throws IOException, JSONException {
-        String url = "https://api.bilibili.com/x/dynamic/feed/create/dyn?csrf=" + SharedPreferencesUtil.getString("csrf", "");
+        String url = "https://api.bilibili.com/x/dynamic/feed/create/dyn?csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
         JSONObject reqBody = new JSONObject()
                 .put("content", new JSONObject().put("contents", contents))
                 .put("scene", scene)
@@ -149,7 +149,7 @@ public class DynamicApi {
         Response resp = Objects.requireNonNull(NetWorkUtil.post(url, new NetWorkUtil.FormData()
                 .put("dynamic_id", dyid)
                 .put("content", text)
-                .put("csrf_token", SharedPreferencesUtil.getString("csrf", ""))
+                .put("csrf_token", SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, ""))
                 .toString(), NetWorkUtil.webHeaders));
         try {
             JSONObject respBody = new JSONObject(resp.body().string());
@@ -236,7 +236,7 @@ public class DynamicApi {
         Response resp = Objects.requireNonNull(NetWorkUtil.post(url, new NetWorkUtil.FormData()
                 .put("dynamic_id", dyid)
                 .put("up", up ? 1 : 2)
-                .put("csrf_token", SharedPreferencesUtil.getString("csrf", ""))
+                .put("csrf_token", SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, ""))
                 .toString(), NetWorkUtil.webHeaders));
         try {
             JSONObject respBody = new JSONObject(resp.body().string());
@@ -250,7 +250,7 @@ public class DynamicApi {
         String url = "https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/rm_dynamic";
         Response resp = Objects.requireNonNull(NetWorkUtil.post(url, new NetWorkUtil.FormData()
                 .put("dynamic_id", dyid)
-                .put("csrf_token", SharedPreferencesUtil.getString("csrf", ""))
+                .put("csrf_token", SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, ""))
                 .toString(), NetWorkUtil.webHeaders));
         try {
             JSONObject respBody = new JSONObject(resp.body().string());
@@ -416,11 +416,11 @@ public class DynamicApi {
                     case "MAJOR_TYPE_PGC":
                         JSONObject bangumi = major.getJSONObject("pgc");
                         VideoCard card = new VideoCard();
-                        card.type = "media_bangumi";
-                        card.aid = BangumiApi.getMdidFromEpid(bangumi.getLong("epid"));
-                        card.title = bangumi.getString("title");
-                        card.cover = bangumi.getString("cover");
-                        card.view = bangumi.getJSONObject("stat").getString("play");
+                        card.setType("media_bangumi");
+                        card.setAid(BangumiApi.getMdidFromEpid(bangumi.getLong("epid")));
+                        card.setTitle(bangumi.getString("title"));
+                        card.setCover(bangumi.getString("cover"));
+                        card.setView(bangumi.getJSONObject("stat").getString("play"));
                         dynamic.major_object = card;
                         break;
                     case "MAJOR_TYPE_ARTICLE":
@@ -513,14 +513,14 @@ public class DynamicApi {
     }
 
     private static VideoCard analyzeVideoCard(JSONObject jsonObject) throws JSONException {
-        return new VideoCard(
-                jsonObject.getString("title"),
-                "投稿视频",
-                jsonObject.getJSONObject("stat").getString("play"),
-                jsonObject.getString("cover"),
-                Long.parseLong(jsonObject.getString("aid")),
-                jsonObject.getString("bvid")
-        );
+        VideoCard card = new VideoCard();
+        card.setTitle(jsonObject.getString("title"));
+        card.setUploader("投稿视频");
+        card.setView(jsonObject.getJSONObject("stat").getString("play"));
+        card.setCover(jsonObject.getString("cover"));
+        card.setAid(jsonObject.getLong("aid"));
+        card.setBvid(jsonObject.getString("bvid"));
+        return card;
     }
 
     public static class Content {

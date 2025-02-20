@@ -38,7 +38,7 @@ public class WatchLaterApi {
                 String upName = videoCard.getJSONObject("owner").getString("name");
                 long view = videoCard.getJSONObject("stat").getLong("view");
                 String viewStr = ToolsUtil.toWan(view) + "观看";
-                videoCardList.add(new VideoCard(title, upName, viewStr, cover, aid, bvid));
+                videoCardList.add(VideoCard.of(title, upName, viewStr, cover, aid, bvid));
             }
         }
         return videoCardList;
@@ -46,7 +46,7 @@ public class WatchLaterApi {
 
     public static int delete(long aid) throws IOException, JSONException {
         String url = "https://api.bilibili.com/x/v2/history/toview/del";
-        String per = "aid=" + aid + "&csrf=" + SharedPreferencesUtil.getString("csrf", "");
+        String per = "aid=" + aid + "&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
 
         Response response = NetWorkUtil.post(url, per, NetWorkUtil.webHeaders);
 
@@ -57,7 +57,7 @@ public class WatchLaterApi {
 
     public static int add(long aid) throws IOException, JSONException {
         String url = "https://api.bilibili.com/x/v2/history/toview/add";
-        String per = "aid=" + aid + "&csrf=" + SharedPreferencesUtil.getString("csrf", "");
+        String per = "aid=" + aid + "&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
 
         Response response = NetWorkUtil.post(url, per, NetWorkUtil.webHeaders);
 

@@ -6,5 +6,8 @@ import com.google.gson.annotations.SerializedName
 data class VipLabel(
     @Expose val path: String,
     @Expose val text: String,
-    @SerializedName("label_theme") @Expose val labelTheme: String
+    @Expose @SerializedName("label_theme") val labelTheme: String,
+    @Expose @SerializedName("text_color") val textColor: String,
+    @Expose @SerializedName("bg_style") val bgStyle: Int,
+    @Expose @SerializedName("bg_color") val bgColor: String
 )

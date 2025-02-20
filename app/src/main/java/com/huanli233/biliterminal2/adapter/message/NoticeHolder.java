@@ -92,7 +92,7 @@ public class NoticeHolder extends RecyclerView.ViewHolder {
             VideoCardHolder holder = new VideoCardHolder(View.inflate(context, R.layout.cell_dynamic_video, extraCard));
             holder.showVideoCard(childVideoCard, context);
             holder.itemView.findViewById(R.id.videoCardView).setOnClickListener(view ->
-                    TerminalContext.getInstance().enterVideoDetailPage(context, 0, childVideoCard.bvid)
+                    TerminalContext.getInstance().enterVideoDetailPage(context, 0, childVideoCard.getBvid())
             );
         }
         if (message.replyInfo != null || message.dynamicInfo != null) {

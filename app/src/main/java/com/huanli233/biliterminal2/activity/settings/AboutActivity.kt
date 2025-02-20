@@ -32,6 +32,7 @@ class AboutActivity : BaseActivity() {
     var eggClickDev: Int = 0
 
     @SuppressLint("MissingInflatedId", "SetTextI18n", "InflateParams")
+    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_loading)

@@ -80,6 +80,7 @@ class BiliTerminal : Application() {
         }
 
         @get:Throws(PackageManager.NameNotFoundException::class)
+        @Suppress("DEPRECATION")
         val version: Int
             get() = context!!.packageManager
                 .getPackageInfo(context!!.packageName, 0).versionCode

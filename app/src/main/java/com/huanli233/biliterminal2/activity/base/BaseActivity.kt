@@ -56,6 +56,7 @@ open class BaseActivity : AppCompatActivity() {
         super.attachBaseContext(BiliTerminal.getFitDisplayContext(newBase))
     }
 
+    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         requestedOrientation = if (SharedPreferencesUtil.getBoolean("ui_landscape", false))
             ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
@@ -125,8 +126,8 @@ open class BaseActivity : AppCompatActivity() {
         return super.onKeyDown(keyCode, event)
     }
 
-    fun report(e: Exception?) {
-        runOnUiThread({ MsgUtil.err(className, e) })
+    fun report(e: Throwable) {
+        runOnUiThread { MsgUtil.err(className, e) }
     }
 
     private var eventBusInit: Boolean = false
@@ -168,6 +169,7 @@ open class BaseActivity : AppCompatActivity() {
         return SharedPreferencesUtil.getBoolean(SharedPreferencesUtil.SNACKBAR_ENABLE, true)
     }
 
+    @Suppress("DEPRECATION")
     fun setDensity(targetDensityDpi: Int) {
         if (Build.VERSION.SDK_INT < 17) return
         val resources: Resources = resources

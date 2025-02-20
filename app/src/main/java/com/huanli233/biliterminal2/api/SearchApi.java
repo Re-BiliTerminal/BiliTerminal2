@@ -72,26 +72,25 @@ public class SearchApi {
             JSONObject typecard = input.getJSONObject(i);
             String type = typecard.getString("result_type");
             if (type.equals("video")) {
-                JSONArray data = typecard.getJSONArray("data");    //把这个列表提出来，接着拆
+                JSONArray data = typecard.getJSONArray("data");
                 for (int j = 0; j < data.length(); j++) {
-                    JSONObject card = data.getJSONObject(j);    //获得视频卡片
+                    JSONObject card = data.getJSONObject(j);
                     if (!card.getString("type").equals("video"))
-                        continue; //警惕虚假视频卡片（阿B为什么要把直播间放进视频结果里）
+                        continue;
 
                     String title = card.getString("title");
                     title = title.replace("<em class=\"keyword\">", "").replace("</em>", "");
-                    //标题里的红字，知道怎么显示但因为懒所以直接删（//显示方式可以用imagespan，参照表情包那部分程序（EmoteUtil），期待后人补齐（
                     title = ToolsUtil.htmlToString(title);
 
                     String bvid = card.getString("bvid");
                     long aid = card.getLong("aid");
-                    String cover = "http:" + card.getString("pic");  //离谱了嗷，前面甚至不肯加个http:
+                    String cover = "http:" + card.getString("pic");
                     String upName = card.getString("author");
 
                     long play = card.getLong("play");
                     String playTimesStr = ToolsUtil.toWan(play) + "观看";
 
-                    videoCardList.add(new VideoCard(title, upName, playTimesStr, cover, aid, bvid, type));
+                    videoCardList.add(VideoCard.of(title, upName, playTimesStr, cover, aid, bvid));
                 }
             } else if (type.equals("media_bangumi") && first) {
                 JSONArray data = typecard.getJSONArray("data");
@@ -100,14 +99,13 @@ public class SearchApi {
 
                     String title = card.getString("title");
                     title = title.replace("<em class=\"keyword\">", "").replace("</em>", "");
-                    //标题里的红字,直接上面复制粘贴
                     title = ToolsUtil.htmlToString(title);
                     String cover = card.getString("cover");
                     String upName = card.getString("areas");
                     long aid = card.getLong("media_id");
                     String bvid = card.getString("season_id");
                     String playTimesStr = card.getString("index_show");
-                    videoCardList.add(new VideoCard(title, upName, playTimesStr, cover, aid, bvid, type));
+                    videoCardList.add(VideoCard.of(title, upName, playTimesStr, cover, aid, bvid));
                 }
             }
         }

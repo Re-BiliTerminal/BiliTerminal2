@@ -76,7 +76,7 @@ public class SplashActivity extends Activity {
             //FileUtil.clearCache(this);  //先清个缓存（为了防止占用过大）
             //不需要了，我把大部分图片的硬盘缓存都关闭了，只有表情包保留，这样既可以缩减缓存占用又能在一定程度上减少流量消耗
 
-            if (SharedPreferencesUtil.getBoolean(SharedPreferencesUtil.setup, false)) {//判断是否设置完成
+            if (SharedPreferencesUtil.getBoolean(SharedPreferencesUtil.SETUP, false)) {//判断是否设置完成
                 try {
                     // 未登录时请求bilibili.com
                     if (SharedPreferencesUtil.getLong("mid", 0) != 0) {
@@ -161,7 +161,7 @@ public class SplashActivity extends Activity {
             JSONObject cookieInfo = CookieRefreshApi.cookieInfo();
             if (cookieInfo.getBoolean("refresh")) {
                 Log.e("Cookie", "需要刷新");
-                if (Objects.equals(SharedPreferencesUtil.getString(SharedPreferencesUtil.refresh_token, ""), ""))
+                if (Objects.equals(SharedPreferencesUtil.getString(SharedPreferencesUtil.REFRESH_TOKEN, ""), ""))
                     runOnUiThread(() -> MsgUtil.showMsgLong("无法刷新Cookie，请重新登录！"));
                 else {
                     String correspondPath = CookieRefreshApi.getCorrespondPath(cookieInfo.getLong("timestamp"));
@@ -184,10 +184,10 @@ public class SplashActivity extends Activity {
     }
 
     private void resetLogin() {
-        SharedPreferencesUtil.putLong(SharedPreferencesUtil.mid, 0L);
-        SharedPreferencesUtil.putString(SharedPreferencesUtil.csrf, "");
-        SharedPreferencesUtil.putString(SharedPreferencesUtil.cookies, "");
-        SharedPreferencesUtil.putString(SharedPreferencesUtil.refresh_token, "");
+        SharedPreferencesUtil.putLong(SharedPreferencesUtil.MID, 0L);
+        SharedPreferencesUtil.putString(SharedPreferencesUtil.CSRF, "");
+        SharedPreferencesUtil.putString(SharedPreferencesUtil.COOKIES, "");
+        SharedPreferencesUtil.putString(SharedPreferencesUtil.REFRESH_TOKEN, "");
         NetWorkUtil.refreshHeaders();
     }
 

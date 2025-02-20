@@ -135,7 +135,7 @@ public class LiveInfoActivity extends BaseActivity {
                                 try {
                                     long mid;
                                     try {
-                                        mid = SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0);
+                                        mid = SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0);
                                     } catch (Throwable ignored) {
                                         mid = 0;
                                     }
@@ -153,7 +153,7 @@ public class LiveInfoActivity extends BaseActivity {
                     }
                 }));
                 play.setOnLongClickListener(view -> {
-                    if (!SharedPreferencesUtil.getString("player", "null").equals("terminalPlayer"))
+                    if (!SharedPreferencesUtil.getString(SharedPreferencesUtil.PLAYER, "null").equals("terminalPlayer"))
                         MsgUtil.showMsgLong("若无法播放请更换为内置播放器");
                     Intent intent = new Intent();
                     intent.setClass(this, SettingPlayerChooseActivity.class);
@@ -168,7 +168,7 @@ public class LiveInfoActivity extends BaseActivity {
                     MediaEpisodeAdapter qualityAdapter = new MediaEpisodeAdapter();
                     ArrayList<Bangumi.Episode> qualityList = new ArrayList<>();
                     qualityAdapter.setOnItemClickListener(index -> {
-                        hostAdapter.setData(new ArrayList<>()); //先留空
+                        hostAdapter.setData(new ArrayList<>());
                         play.setEnabled(false);
                         CenterThreadPool.run(() -> {
                             try {
@@ -201,7 +201,7 @@ public class LiveInfoActivity extends BaseActivity {
                     runOnUiThread(() -> host_list.setAdapter(hostAdapter));
                     refresh_host_list();
                 }
-                if (!SharedPreferencesUtil.getString("player", "null").equals("terminalPlayer"))
+                if (!SharedPreferencesUtil.getString(SharedPreferencesUtil.PLAYER, "null").equals("terminalPlayer"))
                     MsgUtil.showMsgLong("直播可能只有内置播放器可以正常播放");
 
             }).onFailure((e) -> {

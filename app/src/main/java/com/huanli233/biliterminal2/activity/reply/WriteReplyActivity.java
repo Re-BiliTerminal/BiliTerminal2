@@ -57,7 +57,7 @@ public class WriteReplyActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reply_write);
 
-        if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0) == 0) {
+        if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0) == 0) {
             MsgUtil.showMsg("还没有登录喵~");
             finish();
         }
@@ -81,7 +81,7 @@ public class WriteReplyActivity extends BaseActivity {
         }
 
         send.setOnClickListener(view -> {
-            if (SharedPreferencesUtil.getBoolean(SharedPreferencesUtil.cookie_refresh, true)) {
+            if (SharedPreferencesUtil.getBoolean(SharedPreferencesUtil.COOKIE_REFRESH, true)) {
                 if (!sent) {
                     CenterThreadPool.run(() -> {
                         String text = editText.getText().toString();

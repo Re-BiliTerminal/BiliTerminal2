@@ -60,12 +60,12 @@ public class MessageApi {
                 if (object.getJSONObject("item").getString("type").equals("video")) {
                     likeInfo.content = "等总共 " + object.getLong("counts") + " 人点赞了你的视频";
                     VideoCard videoCard = new VideoCard();
-                    videoCard.aid = 0;
-                    videoCard.bvid = object.getJSONObject("item").getString("uri").replace("https://www.bilibili.com/video/BV", "");
-                    videoCard.upName = "";
-                    videoCard.title = object.getJSONObject("item").getString("title");
-                    videoCard.cover = object.getJSONObject("item").getString("image");
-                    videoCard.view = "";
+                    videoCard.setAid(0);
+                    videoCard.setBvid(object.getJSONObject("item").getString("uri").replace("https://www.bilibili.com/video/BV", ""));
+                    videoCard.setUploader("");
+                    videoCard.setTitle(object.getJSONObject("item").getString("title"));
+                    videoCard.setCover(object.getJSONObject("item").getString("image"));
+                    videoCard.setView("");
                     likeInfo.videoCard = videoCard;
                 } else if (object.getJSONObject("item").getString("type").equals("reply")) {
                     likeInfo.content = "等总共 " + object.getLong("counts") + " 人点赞了你的评论";
@@ -101,7 +101,6 @@ public class MessageApi {
                     likeInfo.dynamicInfo = replyInfo;
                 } else if (object.getJSONObject("item").getString("type").equals("article")) {
                     likeInfo.content = "等总共 " + object.getLong("counts") + " 人点赞了你的专栏";
-                    // 实在是抽象 但是我没时间改那么多
                     Reply replyChildInfo = new Reply();
                     replyChildInfo.rpid = object.getJSONObject("item").getLong("target_id");
                     replyChildInfo.message = object.getJSONObject("item").getString("title");
@@ -147,12 +146,12 @@ public class MessageApi {
 
                 if (object.getJSONObject("item").getString("type").equals("video")) {
                     VideoCard videoCard = new VideoCard();
-                    videoCard.aid = 0;
-                    videoCard.bvid = object.getJSONObject("item").getString("uri").replace("https://www.bilibili.com/video/BV", "");
-                    videoCard.upName = "";
-                    videoCard.title = object.getJSONObject("item").getString("title");
-                    videoCard.cover = object.getJSONObject("item").getString("image");
-                    videoCard.view = "";
+                    videoCard.setAid(0);
+                    videoCard.setBvid(object.getJSONObject("item").getString("uri").replace("https://www.bilibili.com/video/BV", ""));
+                    videoCard.setUploader("");
+                    videoCard.setTitle(object.getJSONObject("item").getString("title"));
+                    videoCard.setCover(object.getJSONObject("item").getString("image"));
+                    videoCard.setView("");
                     replyInfo.videoCard = videoCard;
                 } else if (object.getJSONObject("item").getString("type").equals("reply")) {
                     Reply replyChildInfo = new Reply();
@@ -230,12 +229,12 @@ public class MessageApi {
 
                 if (object.getJSONObject("item").getString("type").equals("video")) {
                     VideoCard videoCard = new VideoCard();
-                    videoCard.aid = 0;
-                    videoCard.bvid = object.getJSONObject("item").getString("uri").replace("https://www.bilibili.com/video/BV", "");
-                    videoCard.upName = "";
-                    videoCard.title = object.getJSONObject("item").getString("title");
-                    videoCard.cover = object.getJSONObject("item").getString("image");
-                    videoCard.view = "";
+                    videoCard.setAid(0);
+                    videoCard.setBvid(object.getJSONObject("item").getString("uri").replace("https://www.bilibili.com/video/BV", ""));
+                    videoCard.setUploader("");
+                    videoCard.setTitle(object.getJSONObject("item").getString("title"));
+                    videoCard.setCover(object.getJSONObject("item").getString("image"));
+                    videoCard.setView("");
                     replyInfo.videoCard = videoCard;
                 } else if (object.getJSONObject("item").getString("type").equals("reply")) {
                     Reply replyChildInfo = new Reply();
@@ -293,7 +292,7 @@ public class MessageApi {
     }
 
     public static ArrayList<MessageCard> getSystemMsg() throws IOException, JSONException {
-        String url = "https://message.bilibili.com/x/sys-msg/query_user_notify?csrf=" + NetWorkUtil.getInfoFromCookie("bili_jct", SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, "")) + "&page_size=35&build=0&mobi_app=web";
+        String url = "https://message.bilibili.com/x/sys-msg/query_user_notify?csrf=" + NetWorkUtil.getInfoFromCookie("bili_jct", SharedPreferencesUtil.getString(SharedPreferencesUtil.COOKIES, "")) + "&page_size=35&build=0&mobi_app=web";
         JSONObject all = NetWorkUtil.getJson(url);
         if (all.has("data") && !all.isNull("data")) {
             JSONObject data = all.getJSONObject("data");

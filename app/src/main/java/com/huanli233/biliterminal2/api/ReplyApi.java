@@ -147,7 +147,7 @@ public class ReplyApi {
     public static Pair<Integer, Reply> sendReply(long oid, long root, long parent, String text, int type) throws IOException, JSONException {
         String url = "https://api.bilibili.com/x/v2/reply/add";
         String arg = "oid=" + oid + "&type=" + type + (root == 0 ? "" : ("&root=" + root + "&parent=" + parent))
-                + "&message=" + text + "&jsonp=jsonp&csrf=" + SharedPreferencesUtil.getString("csrf", "");
+                + "&message=" + text + "&jsonp=jsonp&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
         JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, arg, NetWorkUtil.webHeaders).body()).string());
         Log.e("debug-发送评论", result.toString());
         JSONObject reply = null;
@@ -167,7 +167,7 @@ public class ReplyApi {
 
     public static int likeReply(long oid, long root, boolean action) throws IOException, JSONException {
         String url = "https://api.bilibili.com/x/v2/reply/action";
-        String arg = "oid=" + oid + "&type=1&rpid=" + root + "&action=" + (action ? "1" : "0") + "&jsonp=jsonp&csrf=" + SharedPreferencesUtil.getString("csrf", "");
+        String arg = "oid=" + oid + "&type=1&rpid=" + root + "&action=" + (action ? "1" : "0") + "&jsonp=jsonp&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
         JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, arg, NetWorkUtil.webHeaders).body()).string());
         Log.e("debug-点赞评论", result.toString());
         return result.getInt("code");
@@ -187,7 +187,7 @@ public class ReplyApi {
                 .put("type", type)
                 .put("oid", oid)
                 .put("rpid", rpid)
-                .put("csrf", SharedPreferencesUtil.getString("csrf", ""))
+                .put("csrf", SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, ""))
                 .toString();
         JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, reqBody, NetWorkUtil.webHeaders).body()).string());
         Log.e("debug-点赞评论", result.toString());

@@ -96,7 +96,7 @@ public class PrivateMsgAdapter extends RecyclerView.Adapter<PrivateMsgAdapter.Vi
         try {
             holder.nameTv.setText(msg.name);
             if (selfUid == -1) {
-                selfUid = SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, -1);
+                selfUid = SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, -1);
             }
             if (msg.uid == selfUid) {
                 holder.root.setGravity(Gravity.END);

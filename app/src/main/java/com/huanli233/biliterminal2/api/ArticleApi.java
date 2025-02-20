@@ -111,7 +111,7 @@ public class ArticleApi {
         Response resp = Objects.requireNonNull(NetWorkUtil.post(url, new NetWorkUtil.FormData()
                 .put("id", cvid)
                 .put("type", type ? 1 : 2)
-                .put("csrf", SharedPreferencesUtil.getString("csrf", ""))
+                .put("csrf", SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, ""))
                 .toString(), NetWorkUtil.webHeaders));
         try {
             assert resp.body() != null;
@@ -137,7 +137,7 @@ public class ArticleApi {
                 .put("upid", upid)
                 .put("avtype", 2)
                 .put("multiply", multiply)
-                .put("csrf", SharedPreferencesUtil.getString("csrf", ""))
+                .put("csrf", SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, ""))
                 .toString(), NetWorkUtil.webHeaders));
         try {
             assert resp.body() != null;
@@ -158,7 +158,7 @@ public class ArticleApi {
         String url = "https://api.bilibili.com/x/article/favorites/add";
         Response resp = Objects.requireNonNull(NetWorkUtil.post(url, new NetWorkUtil.FormData()
                 .put("id", cvid)
-                .put("csrf", SharedPreferencesUtil.getString("csrf", ""))
+                .put("csrf", SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, ""))
                 .toString(), NetWorkUtil.webHeaders));
         assert resp.body() != null;
         JSONObject respBody = new JSONObject(resp.body().string());
@@ -175,7 +175,7 @@ public class ArticleApi {
         String url = "https://api.bilibili.com/x/article/favorites/del";
         Response resp = Objects.requireNonNull(NetWorkUtil.post(url, new NetWorkUtil.FormData()
                 .put("id", cvid)
-                .put("csrf", SharedPreferencesUtil.getString("csrf", ""))
+                .put("csrf", SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, ""))
                 .toString(), NetWorkUtil.webHeaders));
         assert resp.body() != null;
         JSONObject respBody = new JSONObject(resp.body().string());

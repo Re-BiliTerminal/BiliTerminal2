@@ -200,7 +200,7 @@ public class DynamicHolder extends RecyclerView.ViewHolder {
     }
 
     @SuppressLint("SetTextI18n")
-    public void showDynamic(Dynamic dynamic, Context context, boolean clickable) {    //公用的显示函数 这样修改和调用都方便
+    public void showDynamic(Dynamic dynamic, Context context, boolean clickable) {
         ToolsUtil.setCopy(content);
         username.setText(dynamic.userInfo.name);
         if (!dynamic.userInfo.vip_nickname_color.isEmpty()) {
@@ -276,7 +276,7 @@ public class DynamicHolder extends RecyclerView.ViewHolder {
                 VideoCardHolder video_holder = new VideoCardHolder(cell_dynamic_video);
                 video_holder.showVideoCard(childVideoCard, context);
                 boolean finalIsPgc = isPgc;
-                cell_dynamic_video.setOnClickListener(view -> TerminalContext.getInstance().enterVideoDetailPage(context, childVideoCard.aid, "", finalIsPgc ? "media" : null));
+                cell_dynamic_video.setOnClickListener(view -> TerminalContext.getInstance().enterVideoDetailPage(context, childVideoCard.getAid(), "", finalIsPgc ? "media" : null));
                 cell_dynamic_video.setVisibility(View.VISIBLE);
                 break;
 
@@ -284,11 +284,11 @@ public class DynamicHolder extends RecyclerView.ViewHolder {
             case "MAJOR_TYPE_LIVE_RCMD":
                 LiveRoom liveRoom = (LiveRoom) dynamic.major_object;
                 VideoCard childLiveCard = new VideoCard();
-                childLiveCard.title = liveRoom.title;
-                childLiveCard.cover = liveRoom.cover;
-                childLiveCard.upName = liveRoom.uname;
-                childLiveCard.view = "";
-                childLiveCard.type = "live";
+                childLiveCard.setTitle(liveRoom.title);
+                childLiveCard.setCover(liveRoom.cover);
+                childLiveCard.setUploader(liveRoom.uname);
+                childLiveCard.setView("");
+                childLiveCard.setType("live");
 
                 VideoCardHolder card_holder = new VideoCardHolder(cell_dynamic_video);
                 card_holder.showVideoCard(childLiveCard, context);

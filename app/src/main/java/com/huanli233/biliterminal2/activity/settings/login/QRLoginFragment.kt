@@ -229,23 +229,23 @@ class QRLoginFragment : Fragment() {
 
     private suspend fun processLogin(response: ApiResponse<QrCode.LoginResult>) {
         val cookies =
-            SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, "")
+            SharedPreferencesUtil.getString(SharedPreferencesUtil.COOKIES, "")
 
         SharedPreferencesUtil.putLong(
-            SharedPreferencesUtil.mid,
+            SharedPreferencesUtil.MID,
             NetWorkUtil.getInfoFromCookie("DedeUserID", cookies).toLong()
         )
         SharedPreferencesUtil.putString(
-            SharedPreferencesUtil.csrf,
+            SharedPreferencesUtil.CSRF,
             NetWorkUtil.getInfoFromCookie("bili_jct", cookies)
         )
         SharedPreferencesUtil.putString(
-            SharedPreferencesUtil.refresh_token,
+            SharedPreferencesUtil.REFRESH_TOKEN,
             response.data?.refreshToken.orEmpty()
         )
 
         SharedPreferencesUtil.putBoolean(
-            SharedPreferencesUtil.cookie_refresh,
+            SharedPreferencesUtil.COOKIE_REFRESH,
             true
         )
 

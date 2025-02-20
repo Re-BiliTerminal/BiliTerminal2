@@ -319,7 +319,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             });
 
             replyHolder.likeCount.setOnClickListener(view -> CenterThreadPool.run(() -> {
-                if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0) == 0) {
+                if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0) == 0) {
                     ((Activity) context).runOnUiThread(() -> MsgUtil.showMsg("还没有登录喵~"));
                     return;
                 }
@@ -434,20 +434,20 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     public void setSource(Object source) {   //传入并判断是否有删评论的权限  这种东西判断一次就够了，放onBindViewHolder里还开线程，神金啊
-        if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0) == 0) return;
+        if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0) == 0) return;
 
         try {
             if (source != null) {
                 if (source instanceof List<?>) {
                     List<UserInfo> staffs = (List<UserInfo>) source;
                     for (UserInfo userInfo : staffs) {
-                        if (userInfo.mid == SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0)) {
+                        if (userInfo.mid == SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0)) {
                             isManager = true;
                             break;
                         }
                     }
                 } else if (source instanceof UserInfo) {
-                    isManager = ((UserInfo) source).mid == SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0);
+                    isManager = ((UserInfo) source).mid == SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0);
                 }
             }
         } catch (Exception e) {

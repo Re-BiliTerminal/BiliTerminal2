@@ -18,6 +18,7 @@ import com.huanli233.biliterminal2.util.TerminalContext;
 import com.huanli233.biliterminal2.util.ToolsUtil;
 
 import java.util.List;
+import java.util.Objects;
 
 public class LiveCardAdapter extends RecyclerView.Adapter<VideoCardHolder> {
 
@@ -46,16 +47,16 @@ public class LiveCardAdapter extends RecyclerView.Adapter<VideoCardHolder> {
         LiveRoom room = roomList.get(position);
 
         VideoCard videoCard = new VideoCard();
-        videoCard.title = ToolsUtil.removeHtml(room.title);
-        if (!room.user_cover.startsWith("http")) videoCard.cover = "http:" + room.user_cover;
-        else videoCard.cover = room.user_cover;
-        if (TextUtils.isEmpty(videoCard.cover) || videoCard.cover.equals("http:"))
-            videoCard.cover = room.cover;
-        videoCard.upName = room.uname;
-        videoCard.view = ToolsUtil.toWan(room.online) + "人观看";
-        videoCard.type = "live";
+        videoCard.setTitle(ToolsUtil.removeHtml(room.title));
+        if (!room.user_cover.startsWith("http")) videoCard.setCover("http:" + room.user_cover);
+        else videoCard.setCover(room.user_cover);
+        if (TextUtils.isEmpty(videoCard.getCover()) || Objects.equals(videoCard.getCover(), "http:"))
+            videoCard.setCover(room.cover);
+        videoCard.setUploader(room.uname);
+        videoCard.setView(ToolsUtil.toWan(room.online) + "人观看");
+        videoCard.setType("live");
 
-        holder.showVideoCard(videoCard, context);    //此函数在VideoCardHolder里
+        holder.showVideoCard(videoCard, context);
 
         holder.itemView.setOnClickListener(view -> TerminalContext.getInstance().enterLiveDetailPage(context, room.roomid));
 

@@ -161,16 +161,12 @@ public class PrivateMsgApi {
                 "msg[dev_id]=" + getDevId()
                         + "&msg[msg_type]=" + msgType
                         + "&msg[content]=" + content
-                        + "&msg[receiver_type]=1&csrf=" + SharedPreferencesUtil.getString("csrf", "")
+                        + "&msg[receiver_type]=1&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "")
                         + "&msg[sender_uid]=" + senderUid
                         + "&msg[receiver_id]=" + receiverUid
                         + "&msg[timestamp]=" + timestamp;
 
-        JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, per, NetWorkUtil.webHeaders).body()).string());
-
-        Log.e("debug-发送私信", result.toString());
-        Log.e("debug-发送私信", NetWorkUtil.webHeaders.toString());
-        return result;
+        return new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, per, NetWorkUtil.webHeaders).body()).string());
     }
 
     private static String getDevId() {
@@ -190,16 +186,15 @@ public class PrivateMsgApi {
         return new String(s);
     }
 
-    // 由于接口特殊性定制的textReplaceEmote
     public static SpannableString textReplaceEmote(String text, JSONArray emote, float scale, Context context) throws JSONException, ExecutionException, InterruptedException {
         SpannableString result = new SpannableString(text);
         if (emote != null && emote.length() > 0) {
-            for (int i = 0; i < emote.length(); i++) {    //遍历每一个表情包
+            for (int i = 0; i < emote.length(); i++) {
                 JSONObject key = emote.getJSONObject(i);
 
                 String name = key.getString("text");
                 String emoteUrl = key.getString("url");
-                int size = key.getInt("size");  //B站十分贴心的帮你把表情包大小都写好了，快说谢谢蜀黍
+                int size = key.getInt("size");
 
                 EmoteUtil.replaceSingle(text, result, name, emoteUrl, size, scale, context);
             }

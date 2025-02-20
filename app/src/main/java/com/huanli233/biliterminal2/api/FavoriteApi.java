@@ -115,7 +115,13 @@ public class FavoriteApi {
 
                     JSONObject stat = video.getJSONObject("stat");
                     String view = ToolsUtil.toWan(stat.getLong("view")) + "观看";
-                    videoList.add(new VideoCard(title, upName, view, cover, aid, ""));
+                    VideoCard card = new VideoCard();
+                    card.setTitle(title);
+                    card.setCover(cover);
+                    card.setAid(aid);
+                    card.setUploader(upName);
+                    card.setView(view);
+                    videoList.add(VideoCard.of(title, upName, view, cover, aid, ""));
                 }
                 return 0;
             } else return 1;
@@ -170,7 +176,7 @@ public class FavoriteApi {
         String strMid = String.valueOf(SharedPreferencesUtil.getLong("mid", 0));
         String addFid = fid + strMid.substring(strMid.length() - 2);
         String url = "https://api.bilibili.com/medialist/gateway/coll/resource/deal";
-        String per = "rid=" + aid + "&type=2&add_media_ids=" + addFid + "&del_media_ids=&csrf=" + SharedPreferencesUtil.getString("csrf", "");
+        String per = "rid=" + aid + "&type=2&add_media_ids=" + addFid + "&del_media_ids=&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
 
         JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, per, NetWorkUtil.webHeaders).body()).string());
         Log.e("debug-添加收藏", result.toString());
@@ -180,9 +186,9 @@ public class FavoriteApi {
 
     public static int deleteFavorite(long aid, long fid) throws IOException, JSONException {
         String strMid = String.valueOf(SharedPreferencesUtil.getLong("mid", 0));
-        String delFid = fid + strMid.substring(strMid.length() - 2);    //腕上哔哩那边是错的，fid后面要加上mid的后两位而不是定值，虽然这不影响什么
+        String delFid = fid + strMid.substring(strMid.length() - 2);
         String url = "https://api.bilibili.com/medialist/gateway/coll/resource/batch/del";
-        String per = "resources=" + aid + ":2&media_id=" + delFid + "&csrf=" + SharedPreferencesUtil.getString("csrf", "");
+        String per = "resources=" + aid + ":2&media_id=" + delFid + "&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
 
         JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, per, NetWorkUtil.webHeaders).body()).string());
         Log.e("debug-删除收藏", result.toString());

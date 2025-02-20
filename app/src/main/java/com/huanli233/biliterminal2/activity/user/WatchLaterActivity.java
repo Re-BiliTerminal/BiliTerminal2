@@ -3,6 +3,7 @@ package com.huanli233.biliterminal2.activity.user;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 
+import com.elvishew.xlog.XLog;
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter;
 import com.huanli233.biliterminal2.api.WatchLaterApi;
@@ -38,7 +39,7 @@ public class WatchLaterActivity extends RefreshListActivity {
                     if (longClickPosition == position) {
                         CenterThreadPool.run(() -> {
                             try {
-                                int result = WatchLaterApi.delete(videoCardList.get(position).aid);
+                                int result = WatchLaterApi.delete(videoCardList.get(position).getAid());
                                 longClickPosition = -1;
                                 if (result == 0) runOnUiThread(() -> {
                                     MsgUtil.showMsg("删除成功");
@@ -48,10 +49,8 @@ public class WatchLaterActivity extends RefreshListActivity {
                                 });
                                 else
                                     runOnUiThread(() -> MsgUtil.showMsg("删除失败，错误码：" + result));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                            } catch (Exception e) {
+                                XLog.e(e);
                             }
                         });
                     } else {

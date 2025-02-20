@@ -33,7 +33,7 @@ public class AddFavoriteActivity extends RefreshListActivity {
         Intent intent = getIntent();
         aid = intent.getLongExtra("aid", 0);
 
-        if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0) == 0) {
+        if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0) == 0) {
             MsgUtil.showMsg("还没有登录喵~");
             finish();
             return;

@@ -53,12 +53,12 @@ public class SpecialLoginActivity extends BaseActivity {
                 try {
                     JSONObject jsonObject = new JSONObject(loginInfo);
                     String cookies = jsonObject.getString("cookies");
-                    SharedPreferencesUtil.putLong(SharedPreferencesUtil.mid, Long.parseLong(NetWorkUtil.getInfoFromCookie("DedeUserID", cookies)));
-                    SharedPreferencesUtil.putString(SharedPreferencesUtil.csrf, NetWorkUtil.getInfoFromCookie("bili_jct", cookies));
-                    SharedPreferencesUtil.putString(SharedPreferencesUtil.cookies, cookies);
-                    SharedPreferencesUtil.putString(SharedPreferencesUtil.refresh_token, jsonObject.getString("refresh_token"));
+                    SharedPreferencesUtil.putLong(SharedPreferencesUtil.MID, Long.parseLong(NetWorkUtil.getInfoFromCookie("DedeUserID", cookies)));
+                    SharedPreferencesUtil.putString(SharedPreferencesUtil.CSRF, NetWorkUtil.getInfoFromCookie("bili_jct", cookies));
+                    SharedPreferencesUtil.putString(SharedPreferencesUtil.COOKIES, cookies);
+                    SharedPreferencesUtil.putString(SharedPreferencesUtil.REFRESH_TOKEN, jsonObject.getString("refresh_token"));
                     runOnUiThread(() -> MsgUtil.showMsg("登录成功！"));
-                    SharedPreferencesUtil.putBoolean(SharedPreferencesUtil.setup, true);
+                    SharedPreferencesUtil.putBoolean(SharedPreferencesUtil.SETUP, true);
 
                     NetWorkUtil.refreshHeaders();
 
@@ -80,8 +80,8 @@ public class SpecialLoginActivity extends BaseActivity {
             }
             JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put("cookies", SharedPreferencesUtil.getString("cookies", ""));
-                jsonObject.put("refresh_token", SharedPreferencesUtil.getString(SharedPreferencesUtil.refresh_token, ""));
+                jsonObject.put("cookies", SharedPreferencesUtil.getString(SharedPreferencesUtil.COOKIES, ""));
+                jsonObject.put("refresh_token", SharedPreferencesUtil.getString(SharedPreferencesUtil.REFRESH_TOKEN, ""));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

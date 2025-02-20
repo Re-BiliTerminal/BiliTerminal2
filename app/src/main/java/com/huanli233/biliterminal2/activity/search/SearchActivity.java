@@ -130,7 +130,7 @@ public class SearchActivity extends InstanceActivity {
             });
 
             try {
-                searchHistory = JsonUtil.jsonToArrayList(new JSONArray(SharedPreferencesUtil.getString(SharedPreferencesUtil.search_history, "[]")), false);
+                searchHistory = JsonUtil.jsonToArrayList(new JSONArray(SharedPreferencesUtil.getString(SharedPreferencesUtil.SEARCH_HISTORY, "[]")), false);
             } catch (JSONException e) {
                 runOnUiThread(() -> MsgUtil.err(e));
                 searchHistory = new ArrayList<>();
@@ -142,7 +142,7 @@ public class SearchActivity extends InstanceActivity {
                 searchHistory.remove(position);
                 searchHistoryAdapter.notifyItemRemoved(position);
                 searchHistoryAdapter.notifyItemRangeChanged(position, searchHistory.size() - position);
-                SharedPreferencesUtil.putString(SharedPreferencesUtil.search_history, new JSONArray(searchHistory).toString());
+                SharedPreferencesUtil.putString(SharedPreferencesUtil.SEARCH_HISTORY, new JSONArray(searchHistory).toString());
             });
             historyRecyclerview.setLayoutManager(new CustomLinearManager(this));
             historyRecyclerview.setAdapter(searchHistoryAdapter);
@@ -198,7 +198,7 @@ public class SearchActivity extends InstanceActivity {
                 if (!searchHistory.contains(str)) {
                     try {
                         searchHistory.add(0, str);
-                        SharedPreferencesUtil.putString(SharedPreferencesUtil.search_history, new JSONArray(searchHistory).toString());
+                        SharedPreferencesUtil.putString(SharedPreferencesUtil.SEARCH_HISTORY, new JSONArray(searchHistory).toString());
                         runOnUiThread(() -> {
                             searchHistoryAdapter.notifyItemInserted(0);
                             searchHistoryAdapter.notifyItemRangeChanged(0, searchHistory.size());
@@ -212,7 +212,7 @@ public class SearchActivity extends InstanceActivity {
                         int pos = searchHistory.indexOf(str);
                         searchHistory.remove(str);
                         searchHistory.add(0, str);
-                        SharedPreferencesUtil.putString(SharedPreferencesUtil.search_history, new JSONArray(searchHistory).toString());
+                        SharedPreferencesUtil.putString(SharedPreferencesUtil.SEARCH_HISTORY, new JSONArray(searchHistory).toString());
                         runOnUiThread(() -> {
                             searchHistoryAdapter.notifyItemMoved(pos, 0);
                             searchHistoryAdapter.notifyItemRangeChanged(0, searchHistory.size());

@@ -108,7 +108,7 @@ public class ArticleInfoFragment extends Fragment {
                 if (articleInfo == null) articleInfo = ArticleApi.getArticle(cvid);
 
                 if (articleInfo == null) {
-                    if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0) == 0)
+                    if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0) == 0)
                         MsgUtil.showMsg("登录后再尝试");
                     else MsgUtil.showMsg("获取信息失败！\n可能是专栏不存在？");
                     requireActivity().finish();

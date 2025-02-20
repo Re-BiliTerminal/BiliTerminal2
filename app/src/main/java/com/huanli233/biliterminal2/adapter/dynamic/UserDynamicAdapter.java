@@ -167,7 +167,7 @@ public class UserDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 userInfoHolder.liveRoom.setOnClickListener(view -> TerminalContext.getInstance().enterLiveDetailPage(context, userInfo.live_room.roomid));
             } else userInfoHolder.liveRoom.setVisibility(View.GONE);
 
-            if ((userInfo.mid == SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0)) || (SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0) == 0) || (userInfo.mid == 0))
+            if ((userInfo.mid == SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0)) || (SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0) == 0) || (userInfo.mid == 0))
                 userInfoHolder.followBtn.setVisibility(View.GONE);
             else userInfoHolder.followBtn.setChecked(userInfo.followed);
             userInfoHolder.followBtn.setOnClickListener(btn -> {

@@ -140,7 +140,7 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
 
                 like.setOnClickListener(view1 -> CenterThreadPool.run(() -> {
                     try {
-                        if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0) == 0) {
+                        if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0) == 0) {
                             context.runOnUiThread(() -> MsgUtil.showMsg("还没有登录喵~"));
                             return;
                         }
@@ -166,7 +166,7 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
                 coin.setOnClickListener(view1 -> CenterThreadPool.run(() -> {
                     if (articleInfo.stats.coined < articleInfo.stats.allow_coin) {
                         try {
-                            if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0) == 0) {
+                            if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0) == 0) {
                                 context.runOnUiThread(() -> MsgUtil.showMsg("还没有登录喵~"));
                                 return;
                             }

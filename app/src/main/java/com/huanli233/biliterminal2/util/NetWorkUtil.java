@@ -221,7 +221,7 @@ public class NetWorkUtil {
 
         //如果没有新cookies，直接返回
         if (newCookies.isEmpty()) return;
-        String cookiesStr = SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, "");
+        String cookiesStr = SharedPreferencesUtil.getString(SharedPreferencesUtil.COOKIES, "");
         ArrayList<String> oldCookies = (cookiesStr.equals("") ? new ArrayList<>() : new ArrayList<>(Arrays.asList(cookiesStr.split("; "))));  //转list
 
         for (String newCookie : newCookies) {  //对每一条新cookie遍历
@@ -257,10 +257,8 @@ public class NetWorkUtil {
         for (String setCookie : oldCookies) {
             setCookies.append(setCookie).append("; ");
         }
-        //如果一次setCookies都没有，就不要存了， 因为是个空字符串
         if (setCookies.length() >= 2) {
-            Log.e("debug-save-result", setCookies.substring(0, setCookies.length() - 2));
-            SharedPreferencesUtil.putString(SharedPreferencesUtil.cookies, setCookies.substring(0, setCookies.length() - 2));
+            SharedPreferencesUtil.putString(SharedPreferencesUtil.COOKIES, setCookies.substring(0, setCookies.length() - 2));
             refreshHeaders();
         }
     }
@@ -273,9 +271,9 @@ public class NetWorkUtil {
      */
     public static void putCookie(String key, String val) {
         synchronized (NetWorkUtil.class) {
-            Cookies cookies = new Cookies(SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""));
+            Cookies cookies = new Cookies(SharedPreferencesUtil.getString(SharedPreferencesUtil.COOKIES, ""));
             cookies.set(key, val);
-            SharedPreferencesUtil.putString(SharedPreferencesUtil.cookies, cookies.toString());
+            SharedPreferencesUtil.putString(SharedPreferencesUtil.COOKIES, cookies.toString());
         }
     }
 
@@ -286,7 +284,7 @@ public class NetWorkUtil {
      */
     public static void setCookies(Cookies cookies) {
         synchronized (NetWorkUtil.class) {
-            SharedPreferencesUtil.putString(SharedPreferencesUtil.cookies, cookies.toString());
+            SharedPreferencesUtil.putString(SharedPreferencesUtil.COOKIES, cookies.toString());
         }
     }
 
@@ -297,14 +295,14 @@ public class NetWorkUtil {
      */
     public static Cookies getCookies() {
         synchronized (NetWorkUtil.class) {
-            return new Cookies(SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""));
+            return new Cookies(SharedPreferencesUtil.getString(SharedPreferencesUtil.COOKIES, ""));
         }
     }
 
     public static final String USER_AGENT_WEB = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5414.75 Safari/537.36";
     public static final ArrayList<String> webHeaders = new ArrayList<>() {{
         add("Cookie");
-        add(SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""));
+        add(SharedPreferencesUtil.getString(SharedPreferencesUtil.COOKIES, ""));
         add("Referer");
         add("https://www.bilibili.com/");
         add("User-Agent");
@@ -312,7 +310,7 @@ public class NetWorkUtil {
     }};
 
     public static void refreshHeaders() {
-        webHeaders.set(1, SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""));
+        webHeaders.set(1, SharedPreferencesUtil.getString(SharedPreferencesUtil.COOKIES, ""));
     }
 
     public static class FormData {

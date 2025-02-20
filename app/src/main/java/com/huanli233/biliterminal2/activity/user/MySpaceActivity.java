@@ -124,11 +124,11 @@ public class MySpaceActivity extends InstanceActivity {
                         logout.setOnClickListener(view -> {
                             if (confirmLogout) {
                                 CenterThreadPool.run(UserInfoApi::exitLogin);
-                                SharedPreferencesUtil.removeValue(SharedPreferencesUtil.cookies);
-                                SharedPreferencesUtil.removeValue(SharedPreferencesUtil.mid);
-                                SharedPreferencesUtil.removeValue(SharedPreferencesUtil.csrf);
-                                SharedPreferencesUtil.removeValue(SharedPreferencesUtil.refresh_token);
-                                SharedPreferencesUtil.removeValue(SharedPreferencesUtil.cookie_refresh);
+                                SharedPreferencesUtil.removeValue(SharedPreferencesUtil.COOKIES);
+                                SharedPreferencesUtil.removeValue(SharedPreferencesUtil.MID);
+                                SharedPreferencesUtil.removeValue(SharedPreferencesUtil.CSRF);
+                                SharedPreferencesUtil.removeValue(SharedPreferencesUtil.REFRESH_TOKEN);
+                                SharedPreferencesUtil.removeValue(SharedPreferencesUtil.COOKIE_REFRESH);
                                 MsgUtil.showMsg("账号已退出");
                                 Intent intent = new Intent(this, LoginActivity.class);
                                 startActivity(intent);

@@ -805,7 +805,7 @@ public class PlayerActivity extends Activity implements IjkMediaPlayer.OnPrepare
             if (isOnlineVideo) {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Referer", "https://www.bilibili.com/");
-                headers.put("Cookie", SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""));
+                headers.put("Cookie", SharedPreferencesUtil.getString(SharedPreferencesUtil.COOKIES, ""));
                 ijkPlayer.setDataSource(nowurl, headers);
             } else ijkPlayer.setDataSource(nowurl);
         } catch (IOException e) {
@@ -1171,7 +1171,7 @@ public class PlayerActivity extends Activity implements IjkMediaPlayer.OnPrepare
         assert loader != null;
         loader.load(stream);
         BaseDanmakuParser parser = new BiliDanmukuParser();
-        parser.sharedPreferences = SharedPreferencesUtil.getSharedPreferences();
+        parser.sharedPreferences = SharedPreferencesUtil.sharedPreferences;
         IDataSource<?> dataSource = loader.getDataSource();
         parser.load(dataSource);
         return parser;
@@ -1478,7 +1478,7 @@ public class PlayerActivity extends Activity implements IjkMediaPlayer.OnPrepare
                 String url = "https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?type=0&id=" + aid;
                 ArrayList<String> mHeaders = new ArrayList<>() {{
                     add("Cookie");
-                    add(SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""));
+                    add(SharedPreferencesUtil.getString(SharedPreferencesUtil.COOKIES, ""));
                     add("Referer");
                     add("https://live.bilibili.com/" + aid);
                     add("Origin");
@@ -1496,7 +1496,7 @@ public class PlayerActivity extends Activity implements IjkMediaPlayer.OnPrepare
                 okHttpClient = new OkHttpClient();
                 Request request = new Request.Builder()
                         .url(url)
-                        .header("Cookie", SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""))
+                        .header("Cookie", SharedPreferencesUtil.getString(SharedPreferencesUtil.COOKIES, ""))
                         .header("Origin", "https://live.bilibili.com")
                         .header("User-Agent", USER_AGENT_WEB)
                         .build();

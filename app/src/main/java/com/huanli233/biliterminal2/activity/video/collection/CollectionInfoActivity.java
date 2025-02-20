@@ -52,7 +52,7 @@ public class CollectionInfoActivity extends RefreshListActivity {
             collection = videoInfo.collection;
 
             RecyclerView.Adapter<RecyclerView.ViewHolder> adapter;
-            if (collection.sections == null && collection.cards != null) {
+            if (collection.sections == null && collection.videos != null) {
                 adapter = new CardAdapter(this, collection);
             } else if (collection.sections != null) {
                 adapter = new SectionAdapter(this, collection, recyclerView);
@@ -86,7 +86,7 @@ public class CollectionInfoActivity extends RefreshListActivity {
 
         public CardAdapter(Context context, Collection collection) {
             this.context = context;
-            this.data = collection.cards;
+            this.data = collection.videos;
             this.collection = collection;
         }
 
@@ -114,7 +114,7 @@ public class CollectionInfoActivity extends RefreshListActivity {
                 position--;
                 VideoCardHolder videoCardHolder = (VideoCardHolder) holder;
                 VideoCard videoCard = data.get(position);
-                videoCardHolder.itemView.setOnClickListener((view) -> TerminalContext.getInstance().enterVideoDetailPage(context, videoCard.aid, videoCard.bvid));
+                videoCardHolder.itemView.setOnClickListener((view) -> TerminalContext.getInstance().enterVideoDetailPage(context, videoCard.getAid(), videoCard.getBvid()));
                 videoCardHolder.showVideoCard(videoCard, context);
             } else if (holder instanceof CollectionInfoHolder) {
                 CollectionInfoHolder collectionInfoHolder = (CollectionInfoHolder) holder;
@@ -232,8 +232,8 @@ public class CollectionInfoActivity extends RefreshListActivity {
                 position--;
                 VideoCardHolder videoCardHolder = (VideoCardHolder) holder;
                 VideoInfo videoInfo = data.get(getSectionPos(position)).episodes.get(getEpisodePos(position)).arc;
-                VideoCard videoCard = new VideoCard(videoInfo.title, "", ToolsUtil.toWan(videoInfo.stats.view), videoInfo.cover, videoInfo.aid, videoInfo.bvid);
-                videoCardHolder.itemView.setOnClickListener((view) -> TerminalContext.getInstance().enterVideoDetailPage(context, videoCard.aid, videoCard.bvid));
+                VideoCard videoCard = videoInfo.toCard();
+                videoCardHolder.itemView.setOnClickListener((view) -> TerminalContext.getInstance().enterVideoDetailPage(context, videoCard.getAid(), videoCard.getBvid()));
                 videoCardHolder.showVideoCard(videoCard, context);
             } else if (holder instanceof CollectionInfoHolder) {
                 CollectionInfoHolder collectionInfoHolder = (CollectionInfoHolder) holder;

@@ -73,7 +73,7 @@ public class SendDynamicActivity extends BaseActivity {
             setContentView(layoutView);
             setTopbarExit();
 
-            if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0) == 0) {
+            if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0) == 0) {
                 setResult(RESULT_CANCELED);
                 finish();
                 MsgUtil.showMsg("还没有登录喵~");
@@ -100,7 +100,7 @@ public class SendDynamicActivity extends BaseActivity {
 
             send.setOnClickListener(view -> {
                 // 不了解遂直接保留cookie刷新判断了
-                if (SharedPreferencesUtil.getBoolean(SharedPreferencesUtil.cookie_refresh, true)) {
+                if (SharedPreferencesUtil.getBoolean(SharedPreferencesUtil.COOKIE_REFRESH, true)) {
                     String text = editText.getText().toString();
                     Intent result = new Intent();
                     // 原神级的传数据
@@ -183,7 +183,7 @@ public class SendDynamicActivity extends BaseActivity {
                 VideoCardHolder video_holder = new VideoCardHolder(cell_dynamic_video);
                 video_holder.showVideoCard(childVideoCard, this);
                 boolean finalIsPgc = isPgc;
-                cell_dynamic_video.setOnClickListener(view -> TerminalContext.getInstance().enterVideoDetailPage(this, childVideoCard.aid, "", finalIsPgc ? "media" : null));
+                cell_dynamic_video.setOnClickListener(view -> TerminalContext.getInstance().enterVideoDetailPage(this, childVideoCard.getAid(), "", finalIsPgc ? "media" : null));
                 cell_dynamic_video.setVisibility(View.VISIBLE);
                 break;
 

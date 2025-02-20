@@ -15,7 +15,7 @@ import java.util.List;
 public class HistoryApi {
     public static void reportHistory(long aid, long cid, long mid, long progress) throws IOException {
         String url = "https://api.bilibili.com/x/report/web/heartbeat";
-        String per = "aid=" + aid + "&cid=" + cid + "&mid=" + mid + "&csrf=" + SharedPreferencesUtil.getString("csrf", "") + "&played_time=" + progress + "&realtime=0&start_ts=" + (System.currentTimeMillis() / 1000) + "&type=3&dt=2&play_type=1";
+        String per = "aid=" + aid + "&cid=" + cid + "&mid=" + mid + "&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "") + "&played_time=" + progress + "&realtime=0&start_ts=" + (System.currentTimeMillis() / 1000) + "&type=3&dt=2&play_type=1";
         NetWorkUtil.post(url, per, NetWorkUtil.webHeaders);
     }
 
@@ -35,7 +35,14 @@ public class HistoryApi {
                 String viewStr;
                 if (progress == 0) viewStr = "还没看过";
                 else viewStr = "看到" + ToolsUtil.toTime(videoCard.getInt("progress"));
-                videoList.add(new VideoCard(title, upName, viewStr, cover, aid, bvid));
+                VideoCard card = new VideoCard();
+                card.setAid(aid);
+                card.setBvid(bvid);
+                card.setTitle(title);
+                card.setCover(cover);
+                card.setUploader(upName);
+                card.setView(viewStr);
+                videoList.add(card);
             }
             return 0;
         } else return 1;

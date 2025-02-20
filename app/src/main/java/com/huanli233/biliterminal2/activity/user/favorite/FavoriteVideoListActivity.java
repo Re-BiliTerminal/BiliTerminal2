@@ -51,7 +51,7 @@ public class FavoriteVideoListActivity extends RefreshListActivity {
                         if (longClickPosition == position) {
                             CenterThreadPool.run(() -> {
                                 try {
-                                    int delResult = FavoriteApi.deleteFavorite(videoList.get(position).aid, fid);
+                                    int delResult = FavoriteApi.deleteFavorite(videoList.get(position).getAid(), fid);
                                     longClickPosition = -1;
                                     if (delResult == 0) runOnUiThread(() -> {
                                         MsgUtil.showMsg("删除成功");

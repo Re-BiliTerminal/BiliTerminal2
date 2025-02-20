@@ -153,7 +153,7 @@ public class UserInfoApi {
                     String upName = card.getString("author");
                     String title = card.getString("title");
 
-                    videoList.add(new VideoCard(title, upName, playStr, cover, aid, bvid));
+                    videoList.add(VideoCard.of(title, upName, playStr, cover, aid, bvid));
                 }
                 return 0;
             } else return -1;
@@ -192,7 +192,7 @@ public class UserInfoApi {
 
     public static int followUser(long mid, boolean isFollow) throws IOException, JSONException {
         String url = "https://api.bilibili.com/x/relation/modify?";
-        String arg = "fid=" + mid + "&csrf=" + NetWorkUtil.getInfoFromCookie("bili_jct", SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""));
+        String arg = "fid=" + mid + "&csrf=" + NetWorkUtil.getInfoFromCookie("bili_jct", SharedPreferencesUtil.getString(SharedPreferencesUtil.COOKIES, ""));
         if (isFollow) arg += "&act=1"; //关注
         else arg += "&act=2"; //取消关注
         JSONObject all = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, arg, NetWorkUtil.webHeaders).body()).string());

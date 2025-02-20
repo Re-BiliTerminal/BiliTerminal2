@@ -159,7 +159,7 @@ public class MsgUtil {
                 e.printStackTrace(printWriter);
                 showText(desc + "数据解析错误", writer.toString());
                 return;
-            } else if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 0) == 0) {
+            } else if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0) == 0) {
                 output.append("数据解析错误\n建议登陆后再尝试");
             } else if (e_str.contains("-352") || e_str.contains("22015") || e_str.contains("65056"))
                 output.append(context.getString(R.string.err_rejected));

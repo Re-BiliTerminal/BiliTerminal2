@@ -18,10 +18,13 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.elvishew.xlog.XLog;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.model.VideoCard;
 import com.huanli233.biliterminal2.util.GlideUtil;
 import com.huanli233.biliterminal2.util.ToolsUtil;
+
+import java.util.Objects;
 
 public class VideoCardHolder extends RecyclerView.ViewHolder {
     TextView title, upName, viewCount;
@@ -37,13 +40,13 @@ public class VideoCardHolder extends RecyclerView.ViewHolder {
 
     @SuppressLint("SetTextI18n")
     public void showVideoCard(VideoCard videoCard, Context context) {
-        String str_upName = videoCard.upName;
+        String str_upName = videoCard.getUploader();
         if (str_upName == null || str_upName.isEmpty()) {
             upName.setVisibility(View.GONE);
         } else upName.setText(str_upName);
 
 
-        String str_viewCount = videoCard.view;
+        String str_viewCount = videoCard.getView();
         if (str_viewCount == null || str_viewCount.isEmpty()) {
             viewCount.setVisibility(View.GONE);
         } else {
@@ -51,30 +54,33 @@ public class VideoCardHolder extends RecyclerView.ViewHolder {
         }
 
         try {
-            Glide.with(context).asDrawable().load(GlideUtil.url(videoCard.cover))
-                    .transition(GlideUtil.getTransitionOptions())
-                    .placeholder(R.mipmap.placeholder)
-                    .format(DecodeFormat.PREFER_RGB_565)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(ToolsUtil.dp2px(5))).sizeMultiplier(0.85f))
-                    .into(cover);
+            String coverUrl = videoCard.getCover();
+            if (coverUrl != null && !coverUrl.isEmpty()) {
+                Glide.with(context).asDrawable().load(GlideUtil.url(coverUrl))
+                        .transition(GlideUtil.getTransitionOptions())
+                        .placeholder(R.mipmap.placeholder)
+                        .format(DecodeFormat.PREFER_RGB_565)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .apply(RequestOptions.bitmapTransform(new RoundedCorners(ToolsUtil.dp2px(5))).sizeMultiplier(0.85f))
+                        .into(cover);
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            XLog.e(e);
         }
 
-        switch (videoCard.type) {
+        switch (videoCard.getType()) {
             case "live":
-                SpannableString sstr_live = new SpannableString("[直播]" + ToolsUtil.htmlToString(videoCard.title));
+                SpannableString sstr_live = new SpannableString("[直播]" + ToolsUtil.htmlToString(videoCard.getTitle()));
                 sstr_live.setSpan(new ForegroundColorSpan(Color.rgb(207, 75, 95)), 0, 4, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                 title.setText(sstr_live);
                 break;
             case "series":
-                SpannableString sstr_series = new SpannableString("[系列]" + ToolsUtil.htmlToString(videoCard.title));
+                SpannableString sstr_series = new SpannableString("[系列]" + ToolsUtil.htmlToString(videoCard.getTitle()));
                 sstr_series.setSpan(new ForegroundColorSpan(Color.rgb(207, 75, 95)), 0, 4, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                 title.setText(sstr_series);
                 break;
             default:
-                title.setText(ToolsUtil.htmlToString(videoCard.title));
+                title.setText(ToolsUtil.htmlToString(videoCard.getTitle()));
         }
 
     }

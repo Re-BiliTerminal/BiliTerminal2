@@ -10,6 +10,7 @@ import com.huanli233.biliwebapi.bean.ApiResponse
 import okhttp3.ResponseBody
 import retrofit2.Converter
 import java.io.IOException
+import java.lang.reflect.Field
 
 internal class GsonResponseBodyConverter<T>(
     private val apiInstance: BiliWebApi,
@@ -28,9 +29,37 @@ internal class GsonResponseBodyConverter<T>(
                 if (it is ApiResponse<*>) {
                     it.data?.let { data ->
                         if (data is ApiData) data.api = apiInstance
+                        data.javaClass.fields.forEach { injectApiInstance(data, it) }
                     }
                 }
             }
+        }
+    }
+
+    fun isFieldPrimitiveOrWrapper(field: Field): Boolean {
+        return field.type.isPrimitive || field.type in wrapperTypes
+    }
+
+    private val wrapperTypes = setOf(
+        Boolean::class.java,
+        Byte::class.java,
+        Char::class.java,
+        Short::class.java,
+        Int::class.java,
+        Long::class.java,
+        Float::class.java,
+        Double::class.java
+    )
+
+    private fun injectApiInstance(instance: Any, field: Field) {
+        if (isFieldPrimitiveOrWrapper(field)) return
+        field.isAccessible = true
+        val value = field.get(instance)
+        if (value is ApiData) {
+            value.api = apiInstance
+        }
+        value.javaClass.fields.forEach {
+            injectApiInstance(value, it)
         }
     }
 }

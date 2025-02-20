@@ -56,4 +56,13 @@ public class Series implements Parcelable, Serializable {
         dest.writeLong(mid);
         dest.writeString(total);
     }
+
+    public VideoCard toVideoCard() {
+        VideoCard card = new VideoCard();
+        card.setTitle(title);
+        card.setCover(cover);
+        card.setType(type);
+        card.setView(total);
+        return card;
+    }
 }

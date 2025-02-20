@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class SettingPlayerChooseActivity extends BaseActivity {
 
-    final String playerCurr = SharedPreferencesUtil.getString("player", "null");
+    final String playerCurr = SharedPreferencesUtil.getString(SharedPreferencesUtil.PLAYER, "null");
     MaterialCardView terminalPlayer, mtvPlayer, aliangPlayer, qn_choose;
     ArrayList<MaterialCardView> cardViewList;
     int checkPosition = -1;
@@ -40,7 +40,6 @@ public class SettingPlayerChooseActivity extends BaseActivity {
         new AsyncLayoutInflaterX(this).inflate(R.layout.activity_setting_player_choose, null, (layoutView, resId, parent) -> {
             setContentView(layoutView);
             setTopbarExit();
-            Log.e("debug", "选择播放器");
 
             terminalPlayer = findViewById(R.id.terminalPlayer);
             mtvPlayer = findViewById(R.id.mtvPlayer);

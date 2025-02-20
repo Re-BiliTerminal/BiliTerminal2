@@ -95,7 +95,7 @@ public class VideoInfoActivity extends BaseActivity {
             replyFragment.setSource(videoInfo);
             fragmentList.add(replyFragment);
             if (SharedPreferencesUtil.getBoolean("related_enable", true)) {
-                VideoRcmdFragment vrFragment = VideoRcmdFragment.newInstance(videoInfo.aid);
+                VideoRecommendFragment vrFragment = VideoRecommendFragment.newInstance(videoInfo.aid);
                 fragmentList.add(vrFragment);
             }
             viewPager.setOffscreenPageLimit(fragmentList.size());

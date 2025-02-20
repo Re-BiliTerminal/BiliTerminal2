@@ -43,6 +43,7 @@ import com.huanli233.biliterminal2.activity.user.info.UserInfoActivity;
 import com.huanli233.biliterminal2.model.At;
 import com.huanli233.biliterminal2.model.UserInfo;
 
+import org.jetbrains.annotations.Nullable;
 import org.jsoup.Jsoup;
 
 import java.util.List;
@@ -50,8 +51,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-//2023-07-25
 
 @SuppressLint("ClickableViewAccessibility")
 public class ToolsUtil {
@@ -92,8 +91,9 @@ public class ToolsUtil {
         else return cgminStr + ":" + cgsecStr;
     }
 
-    public static String htmlToString(String html) {
-        return html.replace("&lt;", "<")
+    @Nullable
+    public static String htmlToString(@Nullable String html) {
+        return html != null ? html.replace("&lt;", "<")
                 .replace("&gt;", ">")
                 .replace("&quot;", "\"")
                 .replace("&amp;", "&")
@@ -101,7 +101,7 @@ public class ToolsUtil {
                 .replace("&#34;", "\"")
                 .replace("&#38;", "&")
                 .replace("&#60;", "<")
-                .replace("&#62;", ">");
+                .replace("&#62;", ">") : null;
     }
 
     public static String htmlReString(String html) {

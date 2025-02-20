@@ -2,6 +2,7 @@ package com.huanli233.biliterminal2.api;
 
 import android.util.Log;
 
+import com.elvishew.xlog.XLog;
 import com.huanli233.biliterminal2.model.Bangumi;
 import com.huanli233.biliterminal2.model.VideoCard;
 import com.huanli233.biliterminal2.util.NetWorkUtil;
@@ -34,11 +35,11 @@ public class BangumiApi {
         for (int i = 0; i < list.length(); i++) {
             JSONObject bangumi = list.getJSONObject(i);
             VideoCard card = new VideoCard();
-            card.type = "media_bangumi";
-            card.aid = bangumi.getLong("media_id");
-            card.title = bangumi.getString("title");
-            card.cover = bangumi.getString("cover");
-            card.view = ToolsUtil.toWan(bangumi.getJSONObject("stat").optInt("view"));
+            card.setType("media_bangumi");
+            card.setAid(bangumi.getLong("media_id"));
+            card.setTitle(bangumi.getString("title"));
+            card.setCover(bangumi.getString("cover"));
+            card.setView(ToolsUtil.toWan(bangumi.getJSONObject("stat").optInt("view")));
 
             cardList.add(card);
         }
@@ -46,7 +47,6 @@ public class BangumiApi {
     }
 
 
-    //获取番剧信息, 详情页需要有基本的cover, 信息等
     public static Bangumi getBangumi(long mediaId) throws JSONException, IOException {
         Bangumi bangumi = new Bangumi();
         bangumi.info = getInfo(mediaId);
@@ -66,7 +66,7 @@ public class BangumiApi {
 
             return all.getJSONObject("result").getLong("media_id");
         } catch (Exception e) {
-            e.printStackTrace();
+            XLog.e(e);
             return 0L;
         }
     }

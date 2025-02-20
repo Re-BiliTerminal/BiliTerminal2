@@ -131,7 +131,7 @@ public class PrivateMsgActivity extends BaseActivity {
                 if (!contentEt.getText().toString().equals("")) {
                     String content = contentEt.getText().toString();
                     runOnUiThread(() -> contentEt.setText(""));
-                    JSONObject result = PrivateMsgApi.sendMsg(SharedPreferencesUtil.getLong(SharedPreferencesUtil.mid, 114514), uid, PrivateMessage.TYPE_TEXT, System.currentTimeMillis() / 1000, "{\"content\":\"" + content + "\"}");
+                    JSONObject result = PrivateMsgApi.sendMsg(SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 114514), uid, PrivateMessage.TYPE_TEXT, System.currentTimeMillis() / 1000, "{\"content\":\"" + content + "\"}");
                     runOnUiThread(() -> {
                         try {
                             if (result.getInt("code") == 0) {
