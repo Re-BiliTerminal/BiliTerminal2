@@ -43,7 +43,6 @@ public class MySpaceActivity extends InstanceActivity {
         new AsyncLayoutInflaterX(this).inflate(R.layout.activity_myspace, null, (layoutView, resId, parent) -> {
             setContentView(layoutView);
             setMenuClick();
-            Log.e("debug", "进入个人页");
 
             userAvatar = findViewById(R.id.userAvatar);
             userName = findViewById(R.id.userName);

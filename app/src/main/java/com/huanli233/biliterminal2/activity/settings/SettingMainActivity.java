@@ -26,9 +26,7 @@ public class SettingMainActivity extends InstanceActivity {
         super.onCreate(savedInstanceState);
 
         asyncInflate(R.layout.activity_setting_main, ((layoutView, id) -> {
-            Log.e("debug", "进入设置页");
 
-            //查看登录信息
             MaterialCardView login_cookie = findViewById(R.id.login_cookie);
             login_cookie.setOnClickListener(view -> {
                 Intent intent = new Intent();
@@ -37,7 +35,6 @@ public class SettingMainActivity extends InstanceActivity {
                 startActivity(intent);
             });
 
-            //登录
             MaterialCardView login = findViewById(R.id.login);
             if (SharedPreferencesUtil.getLong("mid", 0) == 0) {
                 login_cookie.setVisibility(View.GONE);
@@ -49,7 +46,6 @@ public class SettingMainActivity extends InstanceActivity {
                 });
             }
 
-            //播放器选择
             MaterialCardView playerSetting = findViewById(R.id.playerSetting);
             playerSetting.setOnClickListener(view -> {
                 Intent intent = new Intent();
@@ -57,8 +53,6 @@ public class SettingMainActivity extends InstanceActivity {
                 startActivity(intent);
             });
 
-
-            //内置播放器设置
             MaterialCardView clientPlayerSetting = findViewById(R.id.terminalPlayerSetting);
             clientPlayerSetting.setOnClickListener(view -> {
                 Intent intent = new Intent();
@@ -66,7 +60,6 @@ public class SettingMainActivity extends InstanceActivity {
                 startActivity(intent);
             });
 
-            //界面设置
             MaterialCardView uiSetting = findViewById(R.id.uiSetting);
             uiSetting.setOnClickListener(view -> {
                 Intent intent = new Intent();
@@ -74,11 +67,9 @@ public class SettingMainActivity extends InstanceActivity {
                 startActivity(intent);
             });
 
-            // 菜单设置
             MaterialCardView menuSetting = findViewById(R.id.menuSetting);
             menuSetting.setOnClickListener(view -> startActivity(new Intent(this, SettingMenuActivity.class)));
 
-            //偏好设置
             MaterialCardView prefSetting = findViewById(R.id.prefSetting);
             prefSetting.setOnClickListener(view -> {
                 Intent intent = new Intent();
@@ -86,7 +77,6 @@ public class SettingMainActivity extends InstanceActivity {
                 startActivity(intent);
             });
 
-            //评论区设置
             MaterialCardView repliesSetting = findViewById(R.id.repliesSetting);
             repliesSetting.setOnClickListener(view -> {
                 Intent intent = new Intent();
@@ -94,7 +84,6 @@ public class SettingMainActivity extends InstanceActivity {
                 startActivity(intent);
             });
 
-            //评论区设置
             MaterialCardView infoSetting = findViewById(R.id.infoSetting);
             infoSetting.setOnClickListener(view -> {
                 Intent intent = new Intent();
@@ -102,16 +91,13 @@ public class SettingMainActivity extends InstanceActivity {
                 startActivity(intent);
             });
 
-            //实验性设置
             MaterialCardView laboratorySetting = findViewById(R.id.laboratory);
-            //laboratorySetting.setVisibility(View.GONE);
             laboratorySetting.setOnClickListener(view -> {
                 Intent intent = new Intent();
                 intent.setClass(this, SettingLaboratoryActivity.class);
                 startActivity(intent);
             });
 
-            //关于
             MaterialCardView about = findViewById(R.id.about);
             about.setOnClickListener(view -> {
                 Intent intent = new Intent();
@@ -119,7 +105,6 @@ public class SettingMainActivity extends InstanceActivity {
                 startActivity(intent);
             });
 
-            //彩蛋
             String[] eggList = getResources().getStringArray(R.array.eggs);
             about.setOnLongClickListener(view -> {
                 MsgUtil.showText("彩蛋", eggList[eggClick]);
@@ -127,7 +112,6 @@ public class SettingMainActivity extends InstanceActivity {
                 return true;
             });
 
-            //清除教程进度
             MaterialCardView refreshTutorial = findViewById(R.id.refresh_tutorial);
             refreshTutorial.setOnClickListener(view -> {
                 if (refreshTutorialClick++ > 0) {
@@ -141,7 +125,7 @@ public class SettingMainActivity extends InstanceActivity {
                 } else MsgUtil.showMsg("再点一次清除");
             });
 
-            MaterialCardView test = findViewById(R.id.test);    //用于测试
+            MaterialCardView test = findViewById(R.id.test);
             test.setVisibility(SharedPreferencesUtil.getBoolean("developer", false) ? View.VISIBLE : View.GONE);
             test.setOnClickListener(view -> {
                 Intent intent = new Intent(this, TestActivity.class);

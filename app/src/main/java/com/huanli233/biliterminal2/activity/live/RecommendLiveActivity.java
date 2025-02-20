@@ -48,15 +48,13 @@ public class RecommendLiveActivity extends RefreshMainActivity {
             try {
                 List<LiveRoom> list;
                 list = LiveApi.getRecommend(page);
-                Log.e("debug", "下一页");
                 runOnUiThread(() -> {
                     if (list != null) {
                         roomList.addAll(list);
                         adapter.notifyItemRangeInserted(roomList.size() - list.size(), list.size());
                     }
                 });
-                if (list != null && list.size() < 1) {
-                    Log.e("debug", "到底了");
+                if (list != null && list.isEmpty()) {
                     setBottom(true);
                 }
                 setRefreshing(false);

@@ -40,7 +40,6 @@ public class GetIntentActivity extends Activity {
         Uri uri = intent.getData();
         if (uri != null) {
             String host = uri.getHost();
-            Log.e("debug-host", host);
 
             switch (host) {
                 case "video":

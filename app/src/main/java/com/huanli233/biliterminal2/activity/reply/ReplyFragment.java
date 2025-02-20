@@ -126,8 +126,6 @@ public class ReplyFragment extends RefreshListFragment {
         setOnRefreshListener(() -> refresh(aid));
         setOnLoadMoreListener(this::continueLoading);
 
-        Log.e("debug-av号", String.valueOf(aid));
-
         replyList = new ArrayList<>();
         if (!dontload) {
             CenterThreadPool.run(() -> {
@@ -143,7 +141,6 @@ public class ReplyFragment extends RefreshListFragment {
                         setAdapter(replyAdapter);
 
                         if (result == 1) {
-                            Log.e("debug", "到底了");
                             setBottom(true);
                         }
                     }
@@ -175,14 +172,12 @@ public class ReplyFragment extends RefreshListFragment {
                 this.pagination = pageState.second;
                 setRefreshing(false);
                 if (result != -1) {
-                    Log.e("debug", "下一页");
                     runOnUiThread(() -> {
                         replyList.addAll(list);
                         if (replyAdapter != null)
                             replyAdapter.notifyItemRangeInserted(replyList.size() - list.size() + 1, list.size());
                     });
                     if (result == 1) {
-                        Log.e("debug", "到底了");
                         bottom = true;
                     }
                 }
@@ -238,11 +233,7 @@ public class ReplyFragment extends RefreshListFragment {
                             replyAdapter.notifyDataSetChanged();
                         }
                     });
-                    //replyAdapter.notifyItemRangeInserted(0,replyList.size());
-                    if (result == 1) {
-                        Log.e("debug", "到底了");
-                        bottom = true;
-                    } else bottom = false;
+                    bottom = result == 1;
                 }
             } catch (Exception e) {
                 loadFail(e);

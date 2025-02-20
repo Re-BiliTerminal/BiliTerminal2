@@ -49,8 +49,6 @@ public class ReplyApi {
                 + "&type=" + type.getTypeCode() + "&oid=" + originId + "&sort=" + sort + (rpid == 0 ? "" : ("&root=" + rpid));
         JSONObject all = NetWorkUtil.getJson(url);
 
-        //Log.e("debug-评论区",all.toString());
-
         int size = replyArrayList.size();
         if (all.getInt("code") == 0 && !all.isNull("data")) {
             JSONObject data = all.getJSONObject("data");
@@ -108,11 +106,7 @@ public class ReplyApi {
         if (rpid > 0) reqData.put("seek_rpid", rpid);
         String url = "https://api.bilibili.com/x/v2/reply/wbi/main" + reqData;
 
-        //Log.e("debug-评论区链接", url);
-
         JSONObject all = NetWorkUtil.getJson(ConfInfoApi.signWBI(url));
-
-        //Log.e("debug-评论区",all.toString());
 
         if (all.getInt("code") == 0 && !all.isNull("data")) {
             JSONObject data = all.getJSONObject("data");
@@ -149,7 +143,6 @@ public class ReplyApi {
         String arg = "oid=" + oid + "&type=" + type + (root == 0 ? "" : ("&root=" + root + "&parent=" + parent))
                 + "&message=" + text + "&jsonp=jsonp&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
         JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, arg, NetWorkUtil.webHeaders).body()).string());
-        Log.e("debug-发送评论", result.toString());
         JSONObject reply = null;
         if (result.has("data") && !result.isNull("data") && result.getJSONObject("data").has("reply") && !result.getJSONObject("data").isNull("reply")) {
             reply = result.getJSONObject("data").getJSONObject("reply");
@@ -169,7 +162,6 @@ public class ReplyApi {
         String url = "https://api.bilibili.com/x/v2/reply/action";
         String arg = "oid=" + oid + "&type=1&rpid=" + root + "&action=" + (action ? "1" : "0") + "&jsonp=jsonp&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
         JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, arg, NetWorkUtil.webHeaders).body()).string());
-        Log.e("debug-点赞评论", result.toString());
         return result.getInt("code");
     }
 
@@ -190,7 +182,6 @@ public class ReplyApi {
                 .put("csrf", SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, ""))
                 .toString();
         JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, reqBody, NetWorkUtil.webHeaders).body()).string());
-        Log.e("debug-点赞评论", result.toString());
         return result.getInt("code");
     }
 

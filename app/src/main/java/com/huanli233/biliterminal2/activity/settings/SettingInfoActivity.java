@@ -19,7 +19,6 @@ public class SettingInfoActivity extends RefreshListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setPageName("详情页设置");
-        Log.e("debug", "进入详情页设置");
 
         final List<SettingSection> sectionList = new ArrayList<>() {{
             add(new SettingSection("switch", "收藏夹单选", "fav_single", getString(R.string.desc_fav_single), "false"));

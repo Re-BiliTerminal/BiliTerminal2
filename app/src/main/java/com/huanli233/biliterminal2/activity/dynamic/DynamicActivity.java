@@ -158,7 +158,6 @@ public class DynamicActivity extends RefreshMainActivity {
         super.onCreate(savedInstanceState);
 
         setMenuClick();
-        Log.e("debug", "进入动态页");
 
         setOnRefreshListener(this::refreshDynamic);
         setOnLoadMoreListener(page -> addDynamic(type));
@@ -172,7 +171,6 @@ public class DynamicActivity extends RefreshMainActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     private void refreshDynamic() {
-        Log.e("debug", "刷新");
         if (firstRefresh) {
             dynamicList = new ArrayList<>();
         } else {
@@ -191,7 +189,6 @@ public class DynamicActivity extends RefreshMainActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     private void addDynamic(String type, boolean refresh) {
-        Log.e("debug", "加载下一页");
         CenterThreadPool.run(() -> {
             try {
                 List<Dynamic> list = new ArrayList<>();

@@ -11,14 +11,6 @@ import com.huanli233.biliterminal2.util.CenterThreadPool;
 
 import java.util.ArrayList;
 
-//用户的视频系列列表
-//2024-06-13
-
-//我宣布：
-//在此之后：series统一叫系列，collection统一叫合集
-//我看b站他们自己都没搞明白，全都叫合集，请允许我在此问候下他们的开发者……
-//2024-10-20
-
 public class UserSeriesActivity extends RefreshListActivity {
 
     private long mid;
@@ -55,10 +47,8 @@ public class UserSeriesActivity extends RefreshListActivity {
                 int last = seriesList.size();
                 int result = SeriesApi.getUserSeries(mid, page, seriesList);
                 if (result != -1) {
-                    Log.e("debug", "下一页");
                     runOnUiThread(() -> adapter.notifyItemRangeInserted(last, seriesList.size() - last));
                     if (result == 1) {
-                        Log.e("debug", "到底了");
                         bottom = true;
                     }
                 }

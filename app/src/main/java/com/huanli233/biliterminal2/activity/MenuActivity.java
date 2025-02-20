@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.Lifecycle;
 
 import com.google.android.material.button.MaterialButton;
@@ -72,12 +73,10 @@ public class MenuActivity extends BaseActivity {
 
 
         time = System.currentTimeMillis();
-        Log.e("debug", "MenuActivity onCreate: " + time);
 
         Intent intent = getIntent();
         from = intent.getStringExtra("from");
         if (from != null) {
-            Log.d("debug-menu", from);
             if (btnNames.containsKey(from))
                 setPageName(Objects.requireNonNull(btnNames.get(from)).first);
         }
@@ -87,7 +86,6 @@ public class MenuActivity extends BaseActivity {
         List<String> btnList;
 
         String sortConf = SharedPreferencesUtil.getString(SharedPreferencesUtil.MENU_SORT, "");
-        Log.e("debug_sort", sortConf);
 
         if (!TextUtils.isEmpty(sortConf)) {
             String[] splitName = sortConf.split(";");
@@ -119,7 +117,7 @@ public class MenuActivity extends BaseActivity {
         if (!SharedPreferencesUtil.getBoolean("menu_precious", false)) btnList.remove("precious");
         if (!SharedPreferencesUtil.getBoolean("menu_live", false)) btnList.remove("live");
 
-        btnList.add("exit"); //如果你希望用户手动把退出按钮排到第一个（
+        btnList.add("exit");
 
         LinearLayout layout = findViewById(R.id.menu_layout);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -141,19 +139,6 @@ public class MenuActivity extends BaseActivity {
             layout.addView(materialButton, params);
         }
 
-        Log.e("debug", "MenuActivity onCreate in: " + (System.currentTimeMillis() - time));
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.e("debug", "MenuActivity onStart in: " + (System.currentTimeMillis() - time));
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.e("debug", "MenuActivity onResume in: " + (System.currentTimeMillis() - time));
     }
 
     private void killAndJump(String name) {
@@ -168,12 +153,12 @@ public class MenuActivity extends BaseActivity {
             startActivity(intent);
         } else {
             switch (name) {
-                case "exit": //退出按钮
+                case "exit":
                     InstanceActivity instance = BiliTerminal.getInstanceActivityOnTop();
                     if (instance != null && !instance.isDestroyed()) instance.finish();
                     Process.killProcess(Process.myPid());
                     break;
-                case "login": //登录按钮
+                case "login":
                     Intent intent = new Intent();
                     intent.setClass(MenuActivity.this, LoginActivity.class);
                     startActivity(intent);
@@ -199,7 +184,7 @@ public class MenuActivity extends BaseActivity {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU) finish();
         return super.onKeyDown(keyCode, event);
     }

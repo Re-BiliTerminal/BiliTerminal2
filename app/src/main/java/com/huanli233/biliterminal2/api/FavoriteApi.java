@@ -46,12 +46,6 @@ public class FavoriteApi {
 
                 favoriteFolder.videoCount = folder.getInt("count");
                 favoriteFolder.maxCount = folder.getInt("max_count");
-                Log.e("debug-收藏夹ID", String.valueOf(favoriteFolder.id));
-                Log.e("debug-收藏夹名称", favoriteFolder.name);
-                Log.e("debug-收藏夹封面", favoriteFolder.cover);
-                Log.e("debug-收藏夹视频数量", String.valueOf(favoriteFolder.videoCount));
-                Log.e("debug-收藏夹视频上限", String.valueOf(favoriteFolder.maxCount));
-                Log.e("debug-收藏夹", "----------------");
                 folderList.add(favoriteFolder);
             }
         }
@@ -179,7 +173,6 @@ public class FavoriteApi {
         String per = "rid=" + aid + "&type=2&add_media_ids=" + addFid + "&del_media_ids=&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
 
         JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, per, NetWorkUtil.webHeaders).body()).string());
-        Log.e("debug-添加收藏", result.toString());
         return result.getInt("code");
     }
 
@@ -191,7 +184,6 @@ public class FavoriteApi {
         String per = "resources=" + aid + ":2&media_id=" + delFid + "&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
 
         JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, per, NetWorkUtil.webHeaders).body()).string());
-        Log.e("debug-删除收藏", result.toString());
         return result.getInt("code");
     }
 

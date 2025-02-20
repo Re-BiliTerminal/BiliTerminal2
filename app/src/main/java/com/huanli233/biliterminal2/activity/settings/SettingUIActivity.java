@@ -28,7 +28,6 @@ public class SettingUIActivity extends BaseActivity {
         new AsyncLayoutInflaterX(this).inflate(R.layout.activity_setting_ui, null, (layoutView, resId, parent) -> {
             setContentView(R.layout.activity_setting_ui);
             setTopbarExit();
-            Log.e("debug", "进入界面设置");
 
             uiScaleInput = findViewById(R.id.ui_scale_input);
             uiScaleInput.setText(String.valueOf(SharedPreferencesUtil.getFloat("dpi", 1.0F)));

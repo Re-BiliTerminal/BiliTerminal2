@@ -20,7 +20,6 @@ public class SettingPrefActivity extends RefreshListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setPageName("偏好设置");
-        Log.e("debug", "进入偏好设置");
 
         final List<SettingSection> sectionList = new ArrayList<>() {{
             add(new SettingSection("switch", "禁用返回键", "back_disable", getString(R.string.desc_back_disable), "false"));

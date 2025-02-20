@@ -25,7 +25,6 @@ public class SettingMenuActivity extends BaseActivity {
         new AsyncLayoutInflaterX(this).inflate(R.layout.activity_setting_menu, null, (layoutView, resId, parent) -> {
             setContentView(R.layout.activity_setting_menu);
             setTopbarExit();
-            Log.e("debug", "进入菜单设置");
 
             menu_popular = findViewById(R.id.menu_popular);
             menu_popular.setChecked(SharedPreferencesUtil.getBoolean("menu_popular", true));

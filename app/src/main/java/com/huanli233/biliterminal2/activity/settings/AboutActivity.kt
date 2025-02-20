@@ -41,7 +41,6 @@ class AboutActivity : BaseActivity() {
             R.layout.activity_setting_about, null
         ) { layoutView: View?, _: Int, _: ViewGroup? ->
             setContentView(layoutView)
-            Log.e("debug", "进入关于页面")
             setTopbarExit()
 
             try {

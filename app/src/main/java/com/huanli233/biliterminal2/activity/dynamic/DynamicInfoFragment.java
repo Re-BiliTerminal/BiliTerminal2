@@ -88,7 +88,6 @@ public class DynamicInfoFragment extends Fragment {
                 if (dynamic.canDelete) holder.item_dynamic_delete.setVisibility(View.VISIBLE);
 
                 if (dynamic.dynamic_forward != null) {
-                    Log.e("debug", "有子动态！");
                     View childCard = holder.cell_dynamic_child;
                     DynamicHolder childHolder = new DynamicHolder(childCard, (BaseActivity) getActivity(), true);
                     childHolder.showDynamic(dynamic.dynamic_forward, requireContext(), true);

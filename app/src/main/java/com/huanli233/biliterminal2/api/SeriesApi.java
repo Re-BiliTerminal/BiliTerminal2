@@ -28,7 +28,6 @@ public class SeriesApi {
     public static int getUserSeries(long mid, int page, List<Series> seasonList) throws IOException, JSONException {
         String url = "https://api.bilibili.com/x/polymer/web-space/seasons_series_list?";
         url += "mid=" + mid + "&page_num=" + page + "&page_size=20";
-        Log.e("debug", url);
         JSONObject all = NetWorkUtil.getJson(ConfInfoApi.signWBI(url), NetWorkUtil.webHeaders);
         if (all.has("data") && !all.isNull("data")) {
             JSONObject data = all.getJSONObject("data");

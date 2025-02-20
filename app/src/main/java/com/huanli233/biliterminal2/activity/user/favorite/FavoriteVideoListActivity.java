@@ -67,7 +67,6 @@ public class FavoriteVideoListActivity extends RefreshListActivity {
                             });
                         } else {
                             longClickPosition = position;
-                            MsgUtil.showMsg("再次长按删除");
                         }
                     });
 
@@ -76,7 +75,6 @@ public class FavoriteVideoListActivity extends RefreshListActivity {
                     setRefreshing(false);
 
                     if (result == 1) {
-                        Log.e("debug", "到底了");
                         setBottom(true);
                     }
                 }
@@ -94,10 +92,8 @@ public class FavoriteVideoListActivity extends RefreshListActivity {
                 int lastSize = videoList.size();
                 int result = FavoriteApi.getFolderVideos(mid, fid, page, videoList);
                 if (result != -1) {
-                    Log.e("debug", "下一页");
                     runOnUiThread(() -> videoCardAdapter.notifyItemRangeInserted(lastSize, videoList.size() - lastSize));
                     if (result == 1) {
-                        Log.e("debug", "到底了");
                         setBottom(true);
                     }
                 }

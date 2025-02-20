@@ -59,7 +59,6 @@ public class ConfInfoApi {
 
         String wts = String.valueOf(System.currentTimeMillis() / 1000);
         String calc_str = sortUrlParams(Uri.encode(url_query, "@#&=*+-_.,:!?()/~'%") + "&wts=" + wts) + mixin_key;
-        Log.e("calc_str", calc_str);
 
         String w_rid = md5(calc_str);
 

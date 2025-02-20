@@ -48,14 +48,13 @@ public class SearchArticleFragment extends SearchFragment {
 
     private void continueLoading(int page) {
         CenterThreadPool.run(() -> {
-            Log.e("debug", "加载下一页");
             try {
                 JSONArray result = (JSONArray) SearchApi.searchType(keyword, page, "article");
                 if (result != null) {
                     if (page == 1) showEmptyView(false);
                     ArrayList<ArticleCard> list = new ArrayList<>();
                     SearchApi.getArticlesFromSearchResult(result, list);
-                    if (list.size() == 0) setBottom(true);
+                    if (list.isEmpty()) setBottom(true);
                     CenterThreadPool.runOnUiThread(() -> {
                         int lastSize = articleCardList.size();
                         articleCardList.addAll(list);

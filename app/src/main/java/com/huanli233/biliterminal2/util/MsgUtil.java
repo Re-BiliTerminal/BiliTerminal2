@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.elvishew.xlog.XLog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.snackbar.SnackbarContentLayout;
 import com.huanli233.biliterminal2.BiliTerminal;
@@ -40,7 +41,6 @@ public class MsgUtil {
         } else {
             toast(str);
         }
-        Log.d("debug-msg", str);
     }
 
     public static void showMsgLong(String str) {
@@ -49,7 +49,6 @@ public class MsgUtil {
         } else {
             toastLong(str);
         }
-        Log.d("debug-msg-long", str);
     }
 
     public static void toast(String str) {
@@ -144,7 +143,7 @@ public class MsgUtil {
     }
 
     public static void err(String desc, Throwable e) {
-        if (desc != null) Log.e("debug-error", desc);
+        if (desc != null) XLog.e(desc);
         e.printStackTrace();
 
         StringBuilder output = new StringBuilder(desc == null ? "" : desc);
@@ -158,11 +157,12 @@ public class MsgUtil {
                 PrintWriter printWriter = new PrintWriter(writer);
                 e.printStackTrace(printWriter);
                 showText(desc + "数据解析错误", writer.toString());
+                XLog.e(writer.toString());
                 return;
             } else if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0) == 0) {
                 output.append("数据解析错误\n建议登陆后再尝试");
             } else if (e_str.contains("-352") || e_str.contains("22015") || e_str.contains("65056"))
-                output.append(context.getString(R.string.err_rejected));
+                output.append(context != null ? context.getString(R.string.err_rejected) : null);
             else {
                 output.append("数据解析错误：\n");
                 output.append(e_str.replace("org.json.JSONException:", ""));

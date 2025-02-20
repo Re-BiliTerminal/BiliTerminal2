@@ -75,8 +75,6 @@ public class TextClock extends TextView {
 
             long next = 60000 - now % 60000;
             postDelayed(this, next);
-            //Log.i("debug-clock-tick","now:" + SystemClock.uptimeMillis() + " | next:" + next);
-            //再次修改，原先的handler容易被系统杀…
         }
     };
 

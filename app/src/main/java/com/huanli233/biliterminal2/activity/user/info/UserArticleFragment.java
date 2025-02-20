@@ -16,10 +16,6 @@ import com.huanli233.biliterminal2.util.CenterThreadPool;
 import java.util.ArrayList;
 import java.util.List;
 
-//用户专栏
-//2023-09-30
-//2024-05-03
-
 public class UserArticleFragment extends RefreshListFragment {
 
     private long mid;
@@ -74,13 +70,11 @@ public class UserArticleFragment extends RefreshListFragment {
                 List<ArticleCard> list = new ArrayList<>();
                 int result = UserInfoApi.getUserArticles(mid, page, list);
                 if (result != -1) {
-                    Log.e("debug", "下一页");
                     if (isAdded()) requireActivity().runOnUiThread(() -> {
                         articleList.addAll(list);
                         adapter.notifyItemRangeInserted(articleList.size() - list.size(), list.size());
                     });
                     if (result == 1) {
-                        Log.e("debug", "到底了");
                         bottom = true;
                     }
                 }

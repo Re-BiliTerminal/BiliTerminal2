@@ -95,7 +95,7 @@ public class PlayerApi {
      */
     public static Pair<String, String> getVideo(long aid, long cid, int qn, boolean download) throws JSONException, IOException {
         boolean html5 = !download && SharedPreferencesUtil.getString(SharedPreferencesUtil.PLAYER, "").equals("mtvPlayer");
-        //html5方式现在已经仅对小电视播放器保留了
+        // html5方式现在已经仅对小电视播放器保留了
 
         String url = "https://api.bilibili.com/x/player/wbi/playurl?"
                 + "avid=" + aid
@@ -108,7 +108,6 @@ public class PlayerApi {
         Response response = NetWorkUtil.get(url, NetWorkUtil.webHeaders);
 
         String body = Objects.requireNonNull(response.body()).string();
-        Log.e("debug-body", body);
         JSONObject body1 = new JSONObject(body);
         JSONObject data = body1.getJSONObject("data");
         JSONArray durl = data.getJSONArray("durl");
@@ -118,13 +117,6 @@ public class PlayerApi {
     }
 
     public static Intent jumpToPlayer(Context context, String videourl, String danmakuurl, String subtitleurl, String title, boolean local, long aid, String bvid, long cid, long mid, int progress, boolean live_mode) {
-        Log.e("debug-准备跳转", "--------");
-        Log.e("debug-视频标题", title);
-        Log.e("debug-视频地址", videourl);
-        Log.e("debug-弹幕地址", danmakuurl);
-        Log.e("debug-字幕地址", subtitleurl);
-        Log.e("debug-准备跳转", "--------");
-
         Intent intent = new Intent();
         switch (SharedPreferencesUtil.getString(SharedPreferencesUtil.PLAYER, "null")) {
             case "terminalPlayer":
@@ -209,7 +201,6 @@ public class PlayerApi {
         JSONObject data = NetWorkUtil.getJson(url).getJSONObject("data");
 
         JSONArray subtitles = data.getJSONObject("subtitle").getJSONArray("subtitles");
-        Log.d("debug-subtitle", subtitles.toString());
 
         SubtitleLink[] links = new SubtitleLink[subtitles.length() + 1];
         for (int i = 0; i < subtitles.length(); i++) {

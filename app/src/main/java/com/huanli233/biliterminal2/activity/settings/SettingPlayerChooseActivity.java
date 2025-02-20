@@ -98,7 +98,6 @@ public class SettingPlayerChooseActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         SharedPreferencesUtil.putString("player", playerList[checkPosition + 1]);
-        Log.e("debug-选择", playerList[checkPosition + 1]);
 
         super.onDestroy();
     }
@@ -108,7 +107,6 @@ public class SettingPlayerChooseActivity extends BaseActivity {
             int finalI = i;
             cardViewList.get(i).setOnClickListener(view -> {
                 setChecked(finalI);
-                Log.e("debug", "点击了" + finalI);
             });
         }
     }

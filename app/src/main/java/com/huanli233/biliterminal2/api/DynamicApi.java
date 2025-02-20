@@ -6,6 +6,7 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
+import com.elvishew.xlog.XLog;
 import com.huanli233.biliterminal2.model.ArticleCard;
 import com.huanli233.biliterminal2.model.At;
 import com.huanli233.biliterminal2.model.Dynamic;
@@ -96,14 +97,12 @@ public class DynamicApi {
                 reqBody.put(key, val);
             }
         }
-        Log.d("debug", "publishComplex reqBody=" + reqBody);
         Response resp = Objects.requireNonNull(NetWorkUtil.postJson(url, reqBody.toString()));
         try {
             JSONObject respBody = new JSONObject(resp.body().string());
             if (respBody.getString("code").equals("0") && respBody.has("data"))
                 return respBody.getJSONObject("data").getLong("dyn_id");
         } catch (JSONException e) {
-            Log.e("debug", "publishComplex", e);
             return -1;
         }
         return -1;
@@ -320,15 +319,12 @@ public class DynamicApi {
     }
 
     public static Dynamic analyzeDynamic(JSONObject dynamic_json) throws JSONException {
-        Log.e("debug-dynamic", "--------------");
         Dynamic dynamic = new Dynamic();
 
         if (!dynamic_json.isNull("id_str"))
             dynamic.dynamicId = Long.parseLong(dynamic_json.getString("id_str"));
         else dynamic.dynamicId = 0;
-        Log.e("debug-dynamic-id", String.valueOf(dynamic.dynamicId));
         dynamic.type = dynamic_json.getString("type");
-        Log.e("debug-dynamic-type", dynamic.type);
 
         JSONObject basic = dynamic_json.getJSONObject("basic");
         String comment_id_str = basic.getString("comment_id_str");
@@ -351,7 +347,6 @@ public class DynamicApi {
             if (vipJson != null) {
                 userInfo.vip_nickname_color = vipJson.optString("nickname_color", "");
             }
-            Log.e("debug-dynamic-sender", userInfo.name);
             dynamic.pubTime = module_author.getString("pub_time");
         }
         dynamic.userInfo = userInfo;
@@ -396,7 +391,6 @@ public class DynamicApi {
                     }
                 }
                 dynamic.content = dynamic_content.toString();
-                Log.e("debug-dynamic-content", dynamic.content);
                 dynamic.emotes = dynamic_emotes;
                 dynamic.ats = ats;
             } else dynamic.content = "";
@@ -479,7 +473,7 @@ public class DynamicApi {
                 if (module_additional.getString("type").equals("ADDITIONAL_TYPE_UGC")) {
                     dynamic.major_type = "MAJOR_TYPE_ARCHIVE";
                     dynamic.major_object = analyzeVideoCard(module_additional.getJSONObject("ugc"));
-                } else Log.e("debug-dynamic-addi", module_additional.getString("type"));
+                } else XLog.e(module_additional.getString("type"));
             }
         }
 

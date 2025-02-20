@@ -45,15 +45,13 @@ public class SearchVideoFragment extends SearchFragment {
 
     private void continueLoading(int page) {
         CenterThreadPool.run(() -> {
-            Log.e("debug", "加载下一页");
             try {
                 JSONArray result = SearchApi.search(keyword, page);
                 if (result != null) {
                     if (page == 1) showEmptyView(false);
                     ArrayList<VideoCard> list = new ArrayList<>();
                     SearchApi.getVideosFromSearchResult(result, list, page == 1);
-                    Log.d("debug-size", String.valueOf(list.size()));
-                    if (list.size() == 0) setBottom(true);
+                    if (list.isEmpty()) setBottom(true);
                     else CenterThreadPool.runOnUiThread(() -> {
                         int lastSize = videoCardList.size();
                         videoCardList.addAll(list);

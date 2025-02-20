@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.elvishew.xlog.XLog;
 import com.huanli233.biliterminal2.util.NetWorkUtil;
 import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
 import com.netease.hearttouch.brotlij.Brotli;
@@ -39,11 +40,9 @@ public class PlayerDanmuClientListener extends WebSocketListener {
     @Override
     public void onOpen(@NonNull WebSocket webSocket, @NonNull Response response) {
         super.onOpen(webSocket, response);
-        Log.e("debug", "WebSocket已连接");
 
         if (heartTimer != null) heartTimer.cancel();
 
-        //发送认证包
         try {
             JSONObject object = new JSONObject();
             if (SharedPreferencesUtil.getBoolean("live_by_guest", false)) object.put("uid", 0);
@@ -113,12 +112,12 @@ public class PlayerDanmuClientListener extends WebSocketListener {
         int actionCode = bytes.getByte(11);
         switch (actionCode) {
             case 8:
-                Log.e("debug", "弹幕流认证成功");
+                XLog.d("弹幕流认证成功");
                 heartTimer = new Timer();
                 TimerTask heartTimerTask = new TimerTask() {
                     @Override
                     public void run() {
-                        Log.e("debug", "发送心跳包");
+                        XLog.d("发送心跳包");
                         try {
                             webSocket.send(messageData.getData(1, 2, "".getBytes(Charset.forName("UTF-8"))));
                         } catch (Exception e) {
@@ -141,7 +140,6 @@ public class PlayerDanmuClientListener extends WebSocketListener {
     @Override
     public void onClosed(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
         super.onClosed(webSocket, code, reason);
-        Log.e("debug", "WebSocket连接关闭：" + reason + "(" + code + ")");
 
         if (heartTimer != null) heartTimer.cancel();
     }
@@ -154,21 +152,17 @@ public class PlayerDanmuClientListener extends WebSocketListener {
         PrintWriter printWriter = new PrintWriter(writer);
         t.printStackTrace(printWriter);
 
-        Log.e("debug", "WebSocket连接失败：" + writer);
-
         if (heartTimer != null) heartTimer.cancel();
     }
 
-    //处理普通包
     private void plainPackage(ByteString bytes) {
         try {
             JSONObject result;
 
-            //有些包不会压缩，要判断一下，虽然方式有点（
             ByteString bytes2 = bytes.substring(bytes.getByte(5));
             if (Brotli.decompress(bytes2.toByteArray()).length > 5) {
                 ByteString bytes3 = ByteString.of(Brotli.decompress(bytes2.toByteArray()));
-                result = new JSONObject(bytes3.substring(bytes3.getByte(5)).utf8()); //问就是懒得用别的方式sub
+                result = new JSONObject(bytes3.substring(bytes3.getByte(5)).utf8());
             } else if (bytes2.utf8().contains("{"))
                 result = new JSONObject(bytes2.utf8().substring(bytes2.utf8().indexOf("{")));
             else return;
@@ -176,7 +170,7 @@ public class PlayerDanmuClientListener extends WebSocketListener {
             JSONObject data;
             switch (result.getString("cmd")) {
 
-                //聊天弹幕
+                // 聊天弹幕
                 case "DANMU_MSG":
                     JSONArray info = result.getJSONArray("info");
                     String nickname = info.getJSONArray(0).getJSONObject(15).getJSONObject("user").getJSONObject("base").getString("name");
@@ -185,10 +179,9 @@ public class PlayerDanmuClientListener extends WebSocketListener {
                         playerActivity.adddanmaku(nickname + "：" + content, Color.WHITE);
                     else playerActivity.adddanmaku(content, Color.WHITE);
 
-                    Log.e("debug", "pkg_dm");
                     break;
 
-                //看过的人数
+                // 看过的人数
                 case "WATCHED_CHANGE":
                     data = result.getJSONObject("data");
                     playerActivity.online_number = data.getString("text_large");
@@ -197,31 +190,31 @@ public class PlayerDanmuClientListener extends WebSocketListener {
                 case "INTERACT_WORD":
                     data = result.getJSONObject("data");
 
-                    //进入直播间
+                    // 进入直播间
                     if (data.getInt("msg_type") == 1)
                         playerActivity.adddanmaku(data.getString("uname") + " 进入了直播间", Color.CYAN, 12, 4, 0);
 
                     break;
 
-                //送礼弹幕
+                // 送礼弹幕
                 case "SEND_GIFT":
                     data = result.getJSONObject("data");
                     String content2 = data.getString("uname") + " " + data.getString("action") + data.getInt("num") + "个" + data.getString("giftName");
                     playerActivity.adddanmaku(content2, Color.WHITE, 25, 1, Color.argb(160, 255, 80, 80));
                     break;
 
-                //特殊入场
+                // 特殊入场
                 case "ENTRY_EFFECT":
                     data = result.getJSONObject("data");
                     playerActivity.adddanmaku(data.getString("copy_writing").replace("<%", "").replace("%>", ""), Color.WHITE, 25, 1, Color.argb(160, 80, 80, 255));
                     break;
 
-                //通知消息
+                // 通知消息
                 case "NOTICE_MSG":
                     playerActivity.adddanmaku(result.getString("msg_common"), Color.RED, 25, 1, Color.argb(60, 255, 255, 255));
                     break;
 
-                //直播间消息修改
+                // 直播间消息修改
                 case "ROOM_CHANGE":
                     data = result.getJSONObject("data");
                     playerActivity.runOnUiThread(() -> {
@@ -240,8 +233,7 @@ public class PlayerDanmuClientListener extends WebSocketListener {
             Writer writer = new StringWriter();
             PrintWriter printWriter = new PrintWriter(writer);
             e.printStackTrace(printWriter);
-
-            Log.e("debug", "解析普通包时错误：" + writer);
+            XLog.e(printWriter.toString());
         }
     }
 }

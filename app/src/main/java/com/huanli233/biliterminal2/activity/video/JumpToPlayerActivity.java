@@ -50,7 +50,6 @@ public class JumpToPlayerActivity extends BaseActivity {
             Intent result = o.getData();
             if (code == RESULT_OK && result != null) {
                 int progress = result.getIntExtra("progress", 0);
-                Log.d("debug-进度回调", String.valueOf(progress));
 
                 CenterThreadPool.run(() -> {
                     if (mid != 0 && aid != 0) try {
@@ -72,8 +71,7 @@ public class JumpToPlayerActivity extends BaseActivity {
         textView = findViewById(R.id.text_title);
 
         Intent intent = getIntent();
-        Log.e("debug-哔哩终端-跳转页", "已接收数据");
-        bvid = intent.getStringExtra("bvid");    //不能删，播放器靠bvid获取在线人数（但我估计aid也行
+        bvid = intent.getStringExtra("bvid");
         aid = intent.getLongExtra("aid", 0);
         cid = intent.getLongExtra("cid", 0);
         mid = intent.getLongExtra("mid", 0);
@@ -84,7 +82,6 @@ public class JumpToPlayerActivity extends BaseActivity {
 
         qn = intent.getIntExtra("qn", -1);
 
-        Log.e("debug-哔哩终端-跳转页", "cid=" + cid);
         danmakuurl = "https://comment.bilibili.com/" + cid + ".xml";
 
         requestVideo(qn != -1 ? qn : SharedPreferencesUtil.getInt("play_qn", 16));

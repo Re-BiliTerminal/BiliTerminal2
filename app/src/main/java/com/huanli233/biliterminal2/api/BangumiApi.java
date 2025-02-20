@@ -59,8 +59,6 @@ public class BangumiApi {
             String url = "https://api.bilibili.com/pgc/view/web/season?ep_id=" + epid;
             JSONObject all = NetWorkUtil.getJson(url);
 
-            Log.e("debug-epid", String.valueOf(epid));
-
             int code = all.getInt("code");
             if (code != 0) return 0L;
 

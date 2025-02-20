@@ -27,7 +27,6 @@ public class LikeCoinFavApi {
         String per = "aid=" + aid + "&multiply=" + multiply + "&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
 
         JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, per, NetWorkUtil.webHeaders).body()).string());
-        Log.e("debug-投币", result.toString());
         return result.getInt("code");
     }
 
@@ -38,7 +37,6 @@ public class LikeCoinFavApi {
         String per = "rid=" + aid + "&type=2&add_media_ids=" + addFid + "&del_media_ids=&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
 
         JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, per, NetWorkUtil.webHeaders).body()).string());
-        Log.e("debug-添加收藏", result.toString());
         return result.getInt("code");
     }
 

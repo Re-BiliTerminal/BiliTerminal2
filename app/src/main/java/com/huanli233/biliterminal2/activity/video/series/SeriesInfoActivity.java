@@ -47,10 +47,7 @@ public class SeriesInfoActivity extends RefreshListActivity {
                     setOnLoadMoreListener(this::continueLoading);
                     setAdapter(videoCardAdapter);
 
-                    Log.e("debug", "return=" + pageInfo.return_ps + "require=" + pageInfo.require_ps);
-
                     if (pageInfo.return_ps < pageInfo.require_ps) {
-                        Log.e("debug", "到底了");
                         setBottom(true);
                     }
                 } else showEmptyView();
@@ -65,13 +62,11 @@ public class SeriesInfoActivity extends RefreshListActivity {
     private void continueLoading(int page) {
         CenterThreadPool.run(() -> {
             try {
-                Log.e("debug", "下一页");
                 int lastSize = videoList.size();
                 PageInfo pageInfo = SeriesApi.getSeriesInfo(type, mid, sid, page, videoList);
                 runOnUiThread(() -> videoCardAdapter.notifyItemRangeInserted(lastSize, pageInfo.return_ps));
 
                 if (pageInfo.return_ps < pageInfo.require_ps || pageInfo.return_ps == 0) {
-                    Log.e("debug", "到底了");
                     setBottom(true);
                 }
                 setRefreshing(false);

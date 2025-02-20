@@ -50,14 +50,13 @@ public class SearchUserFragment extends SearchFragment {
 
     private void continueLoading(int page) {
         CenterThreadPool.run(() -> {
-            Log.e("debug", "加载下一页");
             try {
                 JSONArray result = (JSONArray) SearchApi.searchType(keyword, page, "bili_user");
                 if (result != null) {
                     if (page == 1) showEmptyView(false);
                     List<UserInfo> list = new ArrayList<>();
                     SearchApi.getUsersFromSearchResult(result, list);
-                    if (list.size() == 0) setBottom(true);
+                    if (list.isEmpty()) setBottom(true);
                     CenterThreadPool.runOnUiThread(() -> {
                         int lastSize = userInfoList.size();
                         userInfoList.addAll(list);

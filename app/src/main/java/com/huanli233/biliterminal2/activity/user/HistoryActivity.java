@@ -41,7 +41,6 @@ public class HistoryActivity extends RefreshListActivity {
                     setAdapter(videoCardAdapter);
 
                     if (result == 1) {
-                        Log.e("debug", "到底了");
                         setBottom(true);
                     }
                 }
@@ -58,13 +57,11 @@ public class HistoryActivity extends RefreshListActivity {
                 List<VideoCard> list = new ArrayList<>();
                 int result = HistoryApi.getHistory(page, list);
                 if (result != -1) {
-                    Log.e("debug", "下一页");
                     runOnUiThread(() -> {
                         videoList.addAll(list);
                         videoCardAdapter.notifyItemRangeInserted(videoList.size() - list.size(), list.size());
                     });
                     if (result == 1) {
-                        Log.e("debug", "到底了");
                         setBottom(true);
                     }
                 }

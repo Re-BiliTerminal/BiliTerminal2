@@ -35,7 +35,7 @@ public class FollowLiveActivity extends RefreshListActivity {
                 setOnLoadMoreListener(this::continueLoading);
                 setRefreshing(false);
                 setAdapter(adapter);
-                if (roomList.size() < 1) showEmptyView();
+                if (roomList.isEmpty()) showEmptyView();
             } catch (Exception e) {
                 loadFail(e);
             }
@@ -47,15 +47,13 @@ public class FollowLiveActivity extends RefreshListActivity {
             try {
                 List<LiveRoom> list;
                 list = LiveApi.getFollowed(page);
-                Log.e("debug", "下一页");
                 runOnUiThread(() -> {
                     if (list != null) {
                         roomList.addAll(list);
                         adapter.notifyItemRangeInserted(roomList.size() - list.size(), list.size());
                     }
                 });
-                if (list != null && list.size() < 1) {
-                    Log.e("debug", "到底了");
+                if (list != null && list.isEmpty()) {
                     setBottom(true);
                 }
                 setRefreshing(false);

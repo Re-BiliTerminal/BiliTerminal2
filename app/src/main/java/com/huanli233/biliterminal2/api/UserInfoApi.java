@@ -2,6 +2,7 @@ package com.huanli233.biliterminal2.api;
 
 import android.util.Log;
 
+import com.elvishew.xlog.XLog;
 import com.huanli233.biliterminal2.model.ArticleCard;
 import com.huanli233.biliterminal2.model.LiveRoom;
 import com.huanli233.biliterminal2.model.UserInfo;
@@ -137,6 +138,7 @@ public class UserInfoApi {
         url += "keyword=" + searchKeyword + "&mid=" + mid + "&order_avoided=true&order=pubdate&pn=" + page
                 + "&ps=30&tid=0&web_location=333.999";
         JSONObject all = NetWorkUtil.getJson(ConfInfoApi.signWBI(DmImgParamUtil.getDmImgParamsUrl(url)));
+        XLog.d(all);
         if (all.has("data") && !all.isNull("data")) {
             JSONObject data = all.getJSONObject("data");
             JSONObject list = data.getJSONObject("list");
@@ -165,7 +167,6 @@ public class UserInfoApi {
         String url = "https://api.bilibili.com/x/space/wbi/article?";
         url += "mid=" + mid + "&order_avoided=true&order=pubdate&pn=" + page
                 + "&ps=30&tid=0";
-        Log.e("debug", url);
         JSONObject all = NetWorkUtil.getJson(ConfInfoApi.signWBI(url), NetWorkUtil.webHeaders);
         if (all.has("data") && !all.isNull("data")) {
             JSONObject data = all.getJSONObject("data");

@@ -62,7 +62,6 @@ public class DownloadListActivity extends RefreshListActivity {
     public void refreshList(boolean fromOutside) {
         if (this.isDestroyed() || !created) return;
         if (fromOutside && !started) return;
-        Log.d("debug", "刷新下载列表");
 
         boolean downloading = DownloadService.downloadingSection != null;
 
@@ -75,10 +74,6 @@ public class DownloadListActivity extends RefreshListActivity {
                 emptyTipShown = true;
             }
         } else {
-            if (sections != null) for (DownloadSection s : sections) {
-                Log.d("debug-download", s.name_short);
-            }
-
             if (emptyTipShown) {
                 emptyTipShown = false;
                 hideEmptyView();
@@ -87,7 +82,6 @@ public class DownloadListActivity extends RefreshListActivity {
             if (firstRefresh) {
                 adapter = new DownloadAdapter(DownloadListActivity.this, sections);
                 adapter.setOnClickListener(position -> CenterThreadPool.run(() -> {
-                    Log.d("debug-download", "click:" + position);
                     if (position == -1) {
                         if (DownloadService.started) {
                             stopService(new Intent(this, DownloadService.class));
@@ -142,7 +136,6 @@ public class DownloadListActivity extends RefreshListActivity {
             } else {
                 adapter.downloadList = sections;
                 runOnUiThread(() -> adapter.notifyDataSetChanged());
-                Log.d("debug-adapter", String.valueOf(adapter.getItemCount()));
             }
         }
 

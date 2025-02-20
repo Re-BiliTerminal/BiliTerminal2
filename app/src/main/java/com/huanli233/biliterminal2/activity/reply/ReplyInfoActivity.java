@@ -120,7 +120,6 @@ public class ReplyInfoActivity extends BaseActivity {
                         });
                         refreshLayout.setRefreshing(false);
                         if (result == 1) {
-                            Log.e("debug", "到底了");
                             bottom = true;
                         }
                     }
@@ -143,15 +142,12 @@ public class ReplyInfoActivity extends BaseActivity {
             List<Reply> list = new ArrayList<>();
             int result = ReplyApi.getReplies(oid, rpid, page, type, sort, list);
             if (result != -1) {
-                Log.e("debug", "下一页");
                 runOnUiThread(() -> {
                     replyList.addAll(list);
                     replyAdapter.notifyItemRangeInserted(replyList.size() - list.size() + 2, list.size());  //顶上有两个固定项
                     refreshLayout.setRefreshing(false);
                 });
                 if (result == 1) {
-                    //runOnUiThread(()-> MsgUtil.showMsg("到底啦QwQ",this));
-                    Log.e("debug", "到底了");
                     bottom = true;
                 }
             }
@@ -190,7 +186,6 @@ public class ReplyInfoActivity extends BaseActivity {
                             refreshLayout.setRefreshing(false);
                         });
                         if (result == 1) {
-                            Log.e("debug", "到底了");
                             bottom = true;
                         } else bottom = false;
                     }

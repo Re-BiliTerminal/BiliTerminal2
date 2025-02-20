@@ -53,7 +53,6 @@ public class FollowUsersActivity extends RefreshListActivity {
                 setAdapter(adapter);
 
                 if (result == 1) {
-                    Log.e("debug", "到底了");
                     setBottom(true);
                 }
             } catch (Exception e) {
@@ -72,13 +71,11 @@ public class FollowUsersActivity extends RefreshListActivity {
             try {
                 List<UserInfo> list = new ArrayList<>();
                 int result = mode == 0 ? FollowApi.getFollowingList(mid, page, list) : FollowApi.getFollowerList(mid, page, list);
-                Log.e("debug", "下一页");
                 runOnUiThread(() -> {
                     userList.addAll(list);
                     adapter.notifyItemRangeInserted(userList.size() - list.size(), list.size());
                 });
                 if (result == 1) {
-                    Log.e("debug", "到底了");
                     setBottom(true);
                 }
                 setRefreshing(false);

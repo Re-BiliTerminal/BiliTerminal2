@@ -51,7 +51,6 @@ public class SearchLiveFragment extends SearchFragment {
 
     private void continueLoading(int page) {
         CenterThreadPool.run(() -> {
-            Log.e("debug", "加载下一页");
             try {
                 Object result = SearchApi.searchType(keyword, page, "live");
                 if (result != null) {
@@ -63,7 +62,7 @@ public class SearchLiveFragment extends SearchFragment {
 
                     List<LiveRoom> list = new ArrayList<>();
                     if (jsonArray != null) list.addAll(LiveApi.analyzeLiveRooms(jsonArray));
-                    if (list.size() == 0) setBottom(true);
+                    if (list.isEmpty()) setBottom(true);
                     else CenterThreadPool.runOnUiThread(() -> {
                         int lastSize = roomList.size();
                         roomList.addAll(list);

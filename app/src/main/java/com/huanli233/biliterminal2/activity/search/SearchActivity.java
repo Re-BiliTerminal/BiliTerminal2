@@ -67,7 +67,6 @@ public class SearchActivity extends InstanceActivity {
         new AsyncLayoutInflaterX(this).inflate(R.layout.activity_search, null, (layoutView, id, parent) -> {
             setContentView(layoutView);
             setMenuClick();
-            Log.e("debug", "进入搜索页");
 
             TutorialHelper.showTutorialList(this, R.array.tutorial_search, 4);
 

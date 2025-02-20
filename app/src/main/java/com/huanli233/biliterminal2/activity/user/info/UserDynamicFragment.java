@@ -68,12 +68,10 @@ public class UserDynamicFragment extends RefreshListFragment {
                     });
                     return;
                 }
-                Log.e("debug", "获取到用户信息");
 
                 try {
                     offset = DynamicApi.getDynamicList(dynamicList, offset, mid, null);
                     bottom = (offset == -1);
-                    Log.e("debug", "获取到用户动态");
                 } catch (Exception e) {
                     loadFail(e);
                 }

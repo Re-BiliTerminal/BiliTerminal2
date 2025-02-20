@@ -73,8 +73,6 @@ public class WriteReplyActivity extends BaseActivity {
         editText = findViewById(R.id.editText);
         MaterialCardView send = findViewById(R.id.send);
 
-        Log.e("debug-发送评论", String.valueOf(rpid));
-
         if (parentSender != null && !parentSender.isEmpty()) {
             editText.setText("回复 @" + parentSender + " :");
             editText.setSelection(editText.getText().length());
@@ -87,8 +85,6 @@ public class WriteReplyActivity extends BaseActivity {
                         String text = editText.getText().toString();
                         if (!text.isEmpty()) {
                             try {
-                                Log.e("debug-评论内容", text);
-
                                 Pair<Integer, Reply> result = ReplyApi.sendReply(oid, rpid, parent, text, replyType);
                                 int resultCode = result.first;
                                 Reply resultReply = result.second;

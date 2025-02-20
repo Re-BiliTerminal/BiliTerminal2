@@ -26,10 +26,6 @@ public class UserVideoFragment extends RefreshListFragment {
     private ArrayList<VideoCard> videoList;
     private UserVideoAdapter adapter;
 
-    public UserVideoFragment() {
-
-    }
-
     public static UserVideoFragment newInstance(long mid) {
         UserVideoFragment fragment = new UserVideoFragment();
         Bundle args = new Bundle();
@@ -75,13 +71,11 @@ public class UserVideoFragment extends RefreshListFragment {
                 List<VideoCard> list = new ArrayList<>();
                 int result = UserInfoApi.getUserVideos(mid, page, "", list);
                 if (result != -1) {
-                    Log.e("debug", "下一页");
                     runOnUiThread(() -> {
                         videoList.addAll(list);
                         adapter.notifyItemRangeInserted(videoList.size() - list.size(), list.size());
                     });
                     if (result == 1) {
-                        Log.e("debug", "到底了");
                         bottom = true;
                     }
                 }
