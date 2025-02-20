@@ -18,7 +18,7 @@ open class BiliWebApi(
     internal val wbiDataManager: WbiDataManager
 ) {
 
-    val client: OkHttpClient by lazy { createHttpClient() }
+    val client: OkHttpClient by lazy { createHttpClient().build() }
     protected val retrofit: Retrofit by lazy {
         Retrofit.Builder()
             .client(client)
@@ -28,7 +28,7 @@ open class BiliWebApi(
     }
     private val apiObjectsMap = mutableMapOf<Class<*>, Any>()
 
-    protected open fun createHttpClient(): OkHttpClient {
+    protected open fun createHttpClient(): OkHttpClient.Builder {
         return OkHttpClient.Builder()
             .cookieJar(
                 object : CookieJar {
@@ -42,7 +42,6 @@ open class BiliWebApi(
                 }
             )
             .addInterceptor(BilibiliApiInterceptor(this))
-            .build()
     }
 
     protected fun <T> createApi(clazz: Class<T>): T =

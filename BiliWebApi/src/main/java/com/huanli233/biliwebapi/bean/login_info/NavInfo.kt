@@ -11,7 +11,7 @@ data class NavInfo(
     @SerializedName("level_info") @Expose val levelInfo: LevelInfo,
     @Expose val mid: Long,
     @SerializedName("mobile_verified") @Expose val mobileVerified: Int,
-    @Expose val money: Int,
+    @Expose val money: Double,
     @Expose val moral: Int,
     @Expose val official: Official,
     @Expose val officialVerify: OfficialVerify,

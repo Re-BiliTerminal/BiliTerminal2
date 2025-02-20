@@ -19,7 +19,6 @@ public class LikeCoinFavApi {
         String per = "aid=" + aid + "&like=" + likeState + "&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
 
         JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, per, NetWorkUtil.webHeaders).body()).string());
-        Log.e("debug-点赞", result.toString());
         return result.getInt("code");
     }
 

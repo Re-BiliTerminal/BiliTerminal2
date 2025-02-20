@@ -29,7 +29,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BiliTerminal2"
         android:usesCleartextTraffic="true"
-        tools:ignore="LockedOrientationActivity,RtlEnabled"
+        tools:ignore="LockedOrientationActivity,RtlEnabled,DiscouragedApi"
         tools:targetApi="m">
         <service
             android:name=".service.DownloadService"
@@ -399,9 +399,9 @@
         <activity
             android:name=".activity.SplashActivity"
             android:exported="true"
-            android:label="哔哩终端"
             android:screenOrientation="locked"
-            android:theme="@style/Theme.BiliTerminal2.Splash">
+            android:theme="@style/Theme.BiliTerminal2.Splash"
+            tools:ignore="DiscouragedApi">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

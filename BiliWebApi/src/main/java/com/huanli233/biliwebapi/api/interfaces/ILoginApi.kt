@@ -2,6 +2,7 @@ package com.huanli233.biliwebapi.api.interfaces
 
 import com.huanli233.biliwebapi.bean.ApiResponse
 import com.huanli233.biliwebapi.bean.login.Captcha
+import com.huanli233.biliwebapi.bean.login.CookieActivePayload
 import com.huanli233.biliwebapi.bean.login.CountryList
 import com.huanli233.biliwebapi.bean.login.Password
 import com.huanli233.biliwebapi.bean.login.Password.KeyAndHash
@@ -27,7 +28,7 @@ interface ILoginApi {
     suspend fun requestQrCode(): ApiResponse<QrCode>
 
     @GET("/x/passport-login/web/qrcode/poll")
-    suspend fun qrCodeLogin(@Query("qrcode_key") qrcodeKey: String?): ApiResponse<QrCode.LoginResult>
+    suspend fun qrCodeLogin(@Query("qrcode_key") qrcodeKey: String): ApiResponse<QrCode.LoginResult>
 
     @GET("/web/generic/country/list")
     suspend fun getCountryList(): ApiResponse<CountryList>
@@ -71,5 +72,5 @@ interface ILoginApi {
 
     @API(Domains.BASE_API_URL)
     @POST("/x/internal/gaia-gateway/ExClimbWuzhi")
-    suspend fun activeCookie(@Body payload: String): ApiResponse<Void>
+    suspend fun activeCookie(@Body payload: CookieActivePayload): ApiResponse<Void>
 }

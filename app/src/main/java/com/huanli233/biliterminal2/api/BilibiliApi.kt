@@ -15,8 +15,8 @@ val bilibiliApi = object : BiliWebApi(
     cookieManager = CookieManager,
     wbiDataManager = WbiDataManager
 ) {
-    override fun createHttpClient(): OkHttpClient {
-        return NetWorkUtil.setOkHttpSsl(super.createHttpClient().newBuilder()).build()
+    override fun createHttpClient(): OkHttpClient.Builder {
+        return NetWorkUtil.setOkHttpSsl(super.createHttpClient())
     }
 }
 
