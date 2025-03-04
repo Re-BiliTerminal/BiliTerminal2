@@ -1,0 +1,177 @@
+<resources>
+    <string name="app_name">BiliTerminal2</string>
+    <string name="about_description">Lightweight Third-Party Bilibili Client</string>
+    <string name="about_attention">Note: This software only uses WearBili's legacy interface design and is not affiliated with WearBili in any way.\nAlso: Please refrain from submitting issues about this project to the original project (BiliTerminal).</string>
+    <string name="about_opensource">This program is fully open-source: the code follows the GNU GPL-V3.0 license,\nand the UI (layout) complies with the CC BY-NC-SA license.</string>
+    <string name="about_source">This program utilizes or references portions of code and collected APIs from the following projects: \nWearBili：https://github.com/SpaceXC/WearBili\nWristBilibili：https://github.com/luern0313/WristBilibili\nBAC Document：https://socialsisteryi.github.io/bilibili-API-collect\nWearBili Player：https://github.com/xinxiangshiicheng/xinxiangshicheng_wearbili_player\nThe program's interface references WearBili's UI components,\ndesigned by @JesseGary_ (authorized usage)\n\nThird-party libraries used in this program:\nOkHttp：https://github.com/square/okhttp\nGlide：https://github.com/bumptech/glide\nPhotoView：https://github.com/Baseflow/PhotoView\nJsoup：https://jsoup.org/\nEventBus：https://github.com/greenrobot/EventBus\nGson：https://github.com/google/gson\nretrofit：https://github.com/square/retrofit\nIjkPlayer：https://github.com/bilibili/ijkplayer\nDanmakuFlameMaster：com.github.ctiao:DanmakuFlameMaster\nGeetest：com.geetest.sensebot:sensebot\nAOSP：https://source.android.google.cn/\n\nSoftware icon provider: 银狐enlab (original assets from Bilibili)\nAdditional icons sourced from the web with modifications,\nall rights reserved by original creators.</string>
+    <string name="about_to_uncle">The purpose of this software is to enable low-configuration Android watches\nand older mobile phones to access basic Bilibili web features. \n\nOperating through Bilibili's web interface, this app will neither overload\nany APIs nor collect user privacy data. It contains no paid functions,\nand its code is fully open-source. If you still believe it infringes your rights,\nplease reach out (let's talk it out!)\n\nWe also disclaim responsibility for property loss (device confiscation)\nor mental distress (really?) caused by student users accessing the app\nat inappropriate times or locations. Please stay mindful and don't let\nit interfere with your studies or daily rhythm! Keep it balanced!</string>
+
+    <string name="setup_ui_desc">For first-time use, we highly recommend tweaking the interface!\nAdjust the options below and check the preview\nuntil you're fully satisfied with the layout.</string>
+    <string name="setting_ui_desc">The valid range is 0.25~5.00 times. We recommend making small adjustments each time.\nAfter tweaking, preview the page and confirm the display is normal before saving changes.\nThe new settings will take effect when you open a fresh page.\n\nNote: Avoid pushing values to the extremes—you might regret it!\nIf reckless adjustments break the app, clear app data or reinstall to fix the chaos!</string>
+    <string name="setting_ui_density_desc">Minimum: 72. We recommend making minor tweaks each time.\nAfter adjusting, preview the page and confirm the display is normal before saving changes.\nSettings will activate when you open a new page.\n\nIf reckless adjustments break the app,\nclear app data or reinstall to reset the chaos!\n\nNote: This option may have hidden quirks—\nmodify only if absolutely necessary. Best left untouched!</string>
+    <string name="setting_ui_round_desc">When this option is activated, the interface margins will adjust to fit round screens,\nand the built-in player will switch to a round screen layout.\nThis reduces the display area, but it's currently the best\nand least resource-intensive solution available.</string>
+    <string name="setting_player_desc">*You can also long-press the "Play" button to quickly access this page.\nIf the redirect fails, ensure you have the corresponding player installed\nand that both the player and BiliTerminal2 are updated to the latest versions.</string>
+    <string name="setup_introduction">This is a Fork project of Bili Terminal.\n\nMay you find your own small joys within this little screen!\n\nNo discussion group available yet.\nTo report issues or suggest improvements, please visit the open-source repository to submit an Issue!\nOpen-source address:https://github.com/huanli233/BiliTerminal2\n\nPlease note:\nThis software is permanently free and open-source and does not collect any of your account or personal information. Use it with peace of mind!\nIf you paid to download Bili Terminal on any platform, you’ve been scammed!\n\nClick the button below to get started!</string>
+
+    <string name="egg_warmwords_warmworld">Keep in mind: If you encounter mental health-related concerns,\n24/7 National Psychological Support Hotline(China only): 010-82951332\nOr open the official Bilibili app, go to My Profile → scroll down to Recommended Services → Energy Station.\n\nIf you need this, we hope this Easter egg can offer some support.\nIf someone else might benefit, feel free to share it with them.</string>
+
+    <string name="special_login_desc">This feature allows quick account login using existing credentials.\n\nHow to use:\nInstall BiliTerminal on another device, scan the QR code to log in,\nthen go to Settings → View Login Info on that device.\nCopy the displayed login details into the text box below,\nand click Login after verifying the information.\n\nTip: Save the login details to a .txt file and transfer it via USB from your computer.\nIf errors occur, check for extra/missing characters in the text.\n\nImportant: After completing login on this device,\nClear App Data or Uninstall BiliTerminal on the other device—\nDO NOT manually log out via the "Exit Login" option!</string>
+    <string name="special_login_export">Here’s your login info for special access on other devices—\nclick the button at the bottom to copy it.\n\nThis info expires quickly, so use it immediately after retrieval.\nOnce imported, clear BiliTerminal’s data on this device\n(DO NOT manually log out via "Exit Login"!).\n\nDo NOT share this info with others\nto prevent account theft!</string>
+
+    <string name="setting_lab_ui_landscape">! This feature will no longer receive updates unless the dev finds time!\n\nEnabling it switches the app to landscape mode,\nwith some lists displaying three columns—ideal for tablets\nor devices that default to horizontal screens.\n\n*Note: Certain pages remain single-column,\nand some layouts may be poorly optimized.\nTV users should switch to the official TV version\nor third-party apps for better compatibility.</string>
+    <string name="setting_lab_ui_rotatory">Set to 0 to disable the adaptation scheme.\nNon-zero values will multiply the scroll distance by this factor.\n\nTip: Start at 1.0 and tweak up/down\nuntil you hit the sweet spot.\nChanges take effect after opening a new page.</string>
+    <string name="setting_lab_path_video">Cached videos will be saved to this location.\nIf the folder doesn't exist, it'll be automatically created.\n\nFor previously cached videos, manually move them\nto the new folder using a file manager.\n\nNo guarantees on whether quirky issues might pop up.</string>
+    <string name="setting_lab_path_pictures">Cached videos will be saved to this location.\nIf the folder doesn't exist, it'll be automatically created.\n\nFor previously cached videos, manually move them\nto the new folder using a file manager.\n\nNo guarantees on whether quirky issues might pop up.</string>
+    <string name="setting_lab_download_old">If background downloads aren't working properly on your device,\nturn on this option to revert to the older foreground downloader.</string>
+    <string name="setting_lab_splashtext">As the name suggests, this lets you modify the splash screen text—\nline breaks are supported.\nThe text will be interrupted automatically\nafter the network request completes.</string>
+    <string name="setting_lab_jsonerr_detailed">If you hit a snag with API hiccups,\ntoggle this on—it helps devs\nserve up juicier error details.\n\nP.S. They might also flip this switch\nwhile tinkering under the hood.</string>
+    <string name="setting_lab_recyclererr_detailed">Due to the dev's questionable coding chops (let's call it... creative),\nrandom errors might flicker in app lists—rare but unavoidable.\n\nThough occasional, they’re irritating enough.\nSo the dev (now clinging to sanity) trapped the error,\nreplaced it with a “No need to report this” toast,\nand tossed in this debug toggle as a truce flag.</string>
+
+    <string-array name="eggs">
+        <item>Long live Furry enthusiasts—fluffiness reigns supreme!\n\n#Contributor: 红豆（君）爱福瑞\nRobin: Though I'm not a Furry fan,\nI have to say—they're irresistibly cute!</item>
+        <item>Don't be afraid of the long way because you have the ability to write a long story.\nWhen facing hurdles or setbacks, don’t feel defeated.\nKeep your heart open, stay optimistic, and look forward—\nthe future holds countless beautiful moments waiting for you.\n\nSincere apologies! Robin found this in old notes\nand can’t remember who originally shared it!!!TAT\nIf this belongs to you, come claim it!</item>
+        <item>In your hands, every page chronicles my victories.\n\n#Contributor: MOSS</item>
+        <item>Let this moonlit radiance illuminate every peak and stream!\n\n#Contributor: Anonymous\n#To: 镜流</item>
+        <item>Don’t regret or blame—your own life.\nDon’t deny—the desire for happiness.\nDon’t speak—those sorrowful words of abandoning life\nor seeking escape from pain.\nDon’t believe—you were born to suffer.\nThat notion—\nit’s utterly untrue.\n\n#Contributor: huanli233</item>
+        <item>Android 3.0 — The world may have forgotten it,\nbut never abandoned it.\n\n#Contributor: 船魔苏心</item>
+        <item>May the Mother Goddess thrice close Her eyes upon you,\nLet your veins surge eternal,\nYour journey stay unshaken,\nAnd schemes stay veiled forever.\n\n#Contributor: 白什盘</item>
+        <item>"Phonk is the real music!" (personal opinion)\n\n#Contributor: DICK</item>
+        <item>"I want everyone to know I'm a bottom!\n\n#Contributor: 零星さま"</item>
+        <item>"Gen above, Dui below, with the Third Yin Line...\nHmm... Bet someone's slacking off on the job!\n\n#Contributor: 符玄"</item>
+        <item>There will always be mortal beings who dare to confront\nthe radiant might of thunder.\n\n#Submitter: Anonymous\n#To: Kazuha</item>
+        <item>If we only focus on rushing straight to the destination,\nwe might squander the opportunities and wonders along the journey.\n\n#Submitter: Stargazing Yoimiya</item>
+        <item>Five centuries of history flashed by,\nand the liberation of the caged bird marks a fresh beginning.\n\n#Submitter: Moxie\n#To: Nahida</item>
+        <item>History is written by the victors.\n\n#Contributor: 曲名真楠</item>
+        <item>Battle electronic crickets\nBecome a Cyber Prince\nTease virtual catgirls\nSavor the digital life\n\n#Source: Internet\n#Contributor: RobinNotBad</item>
+        <item>Lower expectations to the bare minimum,\nand every encounter becomes a gift.\n\n#Source: Internet\n#Contributor: RobinNotBad</item>
+        <item>The seemingly cold 'binary data'\nsometimes holds the power to warm hearts.\n\n#Contributed by: RobinNotBad</item>
+        <item>Vapor meets lips, seven parts transform into snow leopards,\nThe remaining three roar as frosted gleam—\nA breath exhales half of Litang's mystique.\n\nStrolling with stars through dreams, four-leaf clover weaves ballads,\nFeet treading blossoms dispel sorrows—\nA flick of tiny hands unveils skies of fantasies.\n\n#First half from Bilibili, latter half by Robin（\n#Contributed by: RobinNotBad</item>
+        <item>She is an ephemeral strand of code, I am a disordered mass of organic matter. We're the perfect pair!\n\nShe isn't just code—A symphony of monitor, processor, memory, controller;\nI'm not merely matter—Dances between nucleic acids, proteins, minerals, carbohydrates;\n—I mean, when we pour emotions into lifeless things, life begins to flow.\n\nWhen I imbue code with every ounce of feeling, she transcends being mere code!\n\n#Source: Internet\n#Contributed by: RobinNotBad</item>
+        <item>May I rest upon starlit rivers in slumber,\nMay I embrace the lunar glow in shared dreams.\n\n#Source: Interne\n #Contributed by... RobinNotBad &amp; Nahida?\n\nSurely a Nahida enthusiast can sneak in a little easter egg here (since no one's watching anyway\n\nIf anyone actually sees this, try typing "Robin Nahida" in the search bar!</item>
+
+        <item>"Hmm? Looks like no more easter eggs here~\n\nFeel free to share yours~"</item>
+    </string-array>
+
+    <string name="player_aliang_package">com.aliangmaker.media</string>
+    <string name="player_mtv_package">com.xinxiangshicheng.wearbiliplayer.cn</string>
+
+    <string name="desc_back_disable">Some watches (e.g. MiTu) enable swipe-right-to-go-back by simulating the back button. Enable this switch if accidental swipes exit pages during left/right navigation.\n\nNote: Enabling will disable back-button exits on other devices, and may cause interface freezes after swipe-back gestures.\nUse the Exit button at the bottom menu to close the app.\nMost users can keep this off.</string>
+    <string name="desc_fav_single">Enable this option: Adding to favorites exits the page, Canceling favorites keeps you on the page.</string>
+    <string name="desc_fav_notice">Enable this option: Exiting the favorites page will show a success message.    \n(Though your selection was saved the moment you picked a folder—This switch exists just for that warm fuzzy feeling（</string>
+    <string name="desc_tags_enable">Enabling this option will display video tags like "原神UP主激励计划/原神/纳西妲/手机游戏" on the video details page.</string>
+    <string name="desc_new_rcmd_param_enable">Enabling this option will switch to the new homepage recommendation API, which closely mirrors the web version. Please test it out yourself and decide whether to enable it based on your experience.</string>
+    <string name="desc_related_enable">Enabling this option will display related video recommendations on the right side of the comments section in the video details page.</string>
+    <string name="desc_creative_enable">Enabling this option will display the Creator Center on the "My" page (where you can view data trends for your posted videos).</string>
+    <string name="desc_copy_enable">Enabling this option allows long-pressing text (e.g., video descriptions or comments) to bring up a copy interface for text duplication.</string>
+    <string name="desc_cover_play_enable">Enabling this option changes tapping the cover on the video details page from viewing the image to starting playback. By default, the setting is determined by whether you first tapped the video cover or the play button during initial use.</string>
+    <string name="desc_img_no_load_onscroll">Enable this option to prevent images from loading during list scrolling—they'll only load after you stop.\nThis may affect visual smoothness but could improve scrolling performance.</string>
+    <string name="desc_img_request_jpg">Some generic-brand watches and devices with extremely low Android versions lack WEBP format support,\nwhich could lead to unloaded images.\nEnabling this option forces JPG format requests to resolve this,\nthough loading may take slightly longer.</string>
+    <string name="desc_link_enable">Enabling this option will detect links/BV/AV/CV numbers in text content and automatically convert them into clickable links that can be opened with a tap.</string>
+    <string name="desc_async_inflate_enable">Enabling this option will implement asynchronous loading for specific pages\n(displaying a loading animation until content fully renders).\n\nNote: Activating asynchronous loading may occasionally trigger crashes,\nwhile disabling it could make some pages appear frozen during loading,\nresulting in suboptimal experience. Please configure according to your needs!</string>
+    <string name="desc_load_transition">Enabling this option will apply fade-in/fade-out animations\nwhen images and specific pages finish loading.</string>
+    <string name="desc_strict_url_match">Enabling this option will enforce stricter matching rules\nwhen identifying links (excluding codes like AV/BV/CV)\nto prevent entire paragraphs from being mistakenly recognized as URLs.</string>
+    <string name="tutorial_pager">Tip\n\n← Swipe left/right to flip pages meow →\n\n(Total: many many pages. This prompt will hide after your first swipe!)</string>
+    <string name="desc_fromlast">During video playback, if there's existing viewing history exceeding 5 seconds,\nthe video will automatically resume from the historical position.</string>
+    <string name="desc_showonline">The built-in player's bottom-right corner displays the real-time viewer count\nfor videos, or shows historical viewers and entry alerts during live streams.\n\nIf playback crashes midway, you can try toggling off this feature.\n\nThis functionality is exclusive to the built-in player.</string>
+    <string name="desc_scale">During video playback, use photo-viewing gestures to zoom and pan,\ndouble-tap the screen to reset size.\n\nFor single-touch devices: Double-tap and keep holding on the second press,\nthen drag vertically to zoom.\n\n! If zooming fails, toggle the [Display Mode] option below! \n\nSpecial thanks: Liangwan Player</string>
+    <string name="desc_doublemove">Optimized for large-screen devices,\nwhile potentially causing usability issues on smartwatches.</string>
+    <string name="desc_display">! If encountering video playback glitches/crashes/unresponsiveness/zoom failure,\ntry toggling this option!\n\nKnown issues: KidoX3 works only with Surface mode,\nXiaotiancai requires Texture mode,\nand some devices need Texture mode for zoom functionality.</string>
+    <string name="desc_videocodec">Hardware Decoding: GPU-powered processing,\nfast speeds with minimal energy consumption\n\nSoftware Decoding: CPU-driven computation,\nbroader compatibility &amp; winter hand-warming bonus</string>
+    <string name="desc_audiocodec">Stick with AudioTrack for regular use.\nIf encountering audio delay or playback failure, try switching modes.</string>
+    <string name="desc_danmaku_force_r2l">All danmaku except Advanced Danmaku are forced to display as scrolling types\nto prevent top and bottom layers from blocking the view.</string>
+    <string name="desc_danmaku_showsender">Display sender names in live chat danmaku during live streams.</string>
+    <string name="desc_subtitle_autoshow">Enabling this feature will automatically prompt the subtitle selection dialog\nwhen playing videos with available subtitles.</string>
+    <string name="desc_subtitle_ai_allowed">Enabling this option will make the player display subtitle selection prompts\n even if a video only has Chinese AI subtitles. This might get a bit annoying, so enable with caution.</string>
+    <string name="desc_no_vip_color">Enabling this option will hide the exclusive red username\nfor Big Member users in comment sections.</string>
+    <string name="desc_no_medal">Enabling this option will hide users' fans badges in comment sections.</string>
+    <string name="desc_reply_marquee_name">Enabling this option will display usernames in comment sections as a marquee instead of line breaks.</string>
+    <string name="desc_live_by_guest">Enabling this option will make you enter live rooms as a guest identity.\n\nNote: Missed bullet chat situations will become more frequent after enabling.</string>
+
+    <string name="err_rejected">Blocked by Bilibili's risk control system\n(No solution available)</string>
+
+    <string name="desc_icon_license">Here are the known open-source license information for the icons:</string>
+    <string name="login_qrcode_wating">Please use the official Bilibili mobile app to scan and log in\nClick the QR code to zoom in or out</string>
+    <string name="login_qrcode_reuesting">Fetching QR code</string>
+    <string name="login_qrcode_expired">QR code has expired, click above to refresh</string>
+    <string name="login_qrcode_logining">Logging in...</string>
+    <string name="login_qrcode_unknown_code">The QR code login API may undergo changes,\nbut you can still try scanning to log in.\nRecommend reporting this to the developers</string>
+    <string name="login_qrcode_scanned">Scanned, please tap on the mobile client to log in.</string>
+    <string name="first_meeting">First time meeting...</string>
+    <string name="restore_defaults">Restore defaults</string>
+    <string name="round_screen_adaptation">Round screen adaptation</string>
+    <string name="interface_size">Interface size</string>
+    <string name="please_enter_multiple">Please enter the multiple</string>
+    <string name="interface_size_tip">Valid range: 0.25x-5.00x.\nWe recommend making incremental adjustments for optimal results.</string>
+    <string name="interface_margins">Interface margin</string>
+    <string name="horizontal">Horizontal</string>
+    <string name="percent">%</string>
+    <string name="vertical">Vertical</string>
+    <string name="ui_margins_tip">The first input field controls horizontal margins, the second adjusts vertical margins (Unit: Percentage).\nFor security purposes, values exceeding 30 will not be saved.</string>
+    <string name="view_preview">View Preview</string>
+    <string name="confirm_setting">Confirm Settings</string>
+    <string name="enter_app">Bili Terminal, Launch!</string>
+    <string name="restore_success">Restoration completed.</string>
+    <string name="info_open_source_icons">Informations for open source icons.</string>
+    <string name="about">About</string>
+    <string name="version_name">Version Name</string>
+    <string name="version_code">Version Number</string>
+    <string name="debug_tip">The current version is a beta release\nand does not reflect the final official version.</string>
+    <string name="name_robin_not_bad">RobinNotBad</string>
+    <string name="desc_robin_not_bad">and his Nahida (Project Initiator | Shit Code Pioneer)</string>
+    <string name="name_huanli233">huanli233</string>
+    <string name="desc_huanli233">Creator of this branch</string>
+    <string name="disclaimer">Disclaimer</string>
+    <string name="recommend">Recommendation</string>
+    <string name="precious">Bilibili Must-Watch Classics</string>
+    <string name="popular">Trending</string>
+    <string name="prefix_live">[LIVE]</string>
+    <string name="prefix_series">[Series]</string>
+    <string-array name="icon_license">
+        <item>Interface Settings:Newicons | MIT License</item>
+        <item>Anime:hicon | MIT License</item>
+        <item>Log Out:scarlab | MIT License</item>
+    </string-array>
+
+    <array name="tutorial_space">
+        <item>xml/tutorial_space_2</item>
+        <item>xml/tutorial_space</item>
+    </array>
+    <array name="tutorial_video">
+        <item>xml/tutorial_video_2</item>
+        <item>xml/tutorial_video</item>
+    </array>
+    <array name="tutorial_search">
+        <item>xml/tutorial_search</item>
+    </array>
+    <array name="tutorial_update_install">
+        <item>xml/tutorial_update_install</item>
+    </array>
+    <array name="tutorial_recommend">
+        <item>xml/tutorial_recommend</item>
+    </array>
+    <array name="tutorial_message">
+        <item>xml/tutorial_message</item>
+    </array>
+    <array name="tutorial_article">
+        <item>xml/tutorial_article</item>
+    </array>
+    <array name="tutorial_dynamic">
+        <item>xml/tutorial_dynamic</item>
+    </array>
+    <array name="tutorial_dynamic_info">
+        <item>xml/tutorial_dynamic_info</item>
+    </array>
+
+    <array name="tutorial_list">
+        <item>recommend</item>
+        <item>video</item>
+        <item>space</item>
+        <item>update_install</item>
+        <item>search</item>
+        <item>message</item>
+        <item>dynamic</item>
+        <item>dynamic_info</item>
+        <item>article</item>
+    </array>
+
+</resources>
