@@ -1,135 +1,135 @@
 <resources>
-    <string name="app_name">バイリンガル端末2</string>
-    <string name="about_description">軽量なサードパーティBステーションクライアント</string>
-    <string name="about_attention">注：本ソフトウェアはWearBiliの古いページレイアウトのみを使用しており、WearBiliとは何の関係もありません！ \nまた、元のプロジェクト（ビープ端末）にこのプロジェクトの問題をフィードバックしないでください。</string>
-    <string name="about_opensource">本プログラムは完全にオープンソースであり、コード部分はG\nU GPL-V 3.0プロトコルに従い、レイアウト（UI）部分はCC BY-\nC-SAプロトコルに従う。</string>
-    <string name="about_source">このプログラムは、次のアイテムのコードの一部と収集されたAPI: \nWearBiliを使用または参考にします。https://github.com/SpaceXC/WearBili \n腕にビープ：https://github.com/luer\n0313/WristBilibili\\nBAC Docume\nt：https://socialsisteryi.github.io/bilibili-API-collect \n小型テレビプレーヤー：https://github.com/xi\nxia\ngshiiche\ng/xi\nxia\ngshiche\ng_wearbili_player \nプログラムのインタフェースWearBiliのUI部分を考慮すると、設計者は@JesseGary _（承認済み） \n  \nこのプログラムが使用するサードパーティライブラリ： \nOkHttp：https://github.com/square/okhttp\\nGlide：https://github.com/bumptech/glide\\nPhotoView：https://github.com/Baseflow/PhotoView\\nJsoup：https://jsoup.org/\\nEve\ntBus：https://github.com/gree\nrobot/Eve\ntBus\\nGso\n：https://github.com/google/gso\n\\nretrofit：https://github.com/square/retrofit\\nIjkPlayer：https://github.com/bilibili/ijkplayer\\nDa\nmakuFlameMaster：com.github.ctiao:Da\nmakuFlameMaster\\nGeetest：com.geetest.se\nsebot:se\nsebot\\nAOSP：https://source.a\ndroid.google.c\n/ \n  \n  \nソフトウェアアイコン提供者：シルバーフォックスe\nlab（元の図はB局から） \nその他の部分アイコンはネットワークから、修正があり、著作権は原作者の所有</string>
-    <string name="about_to_uncle">本ソフトウェアの開発の目的は、構成の低いアンドロイド時計と古い携帯電話がB駅のウェブサイト端で提供されている基本機能の一部を使用できるようにすることです。本ソフトウェアは、B局のウェブサイト側インタフェースに基づいて動作し、どのインタフェースに対しても悪意のある爆撃を行うことはなく、ユーザーのプライバシー情報を収集することもありません。ソフトウェアには有料機能は存在せず、コードは完全にオープンソースになっています。このソフトウェアがあなたの権利を侵害していると考えている場合は、私たちに連絡してください（よく相談してください） \nと同時に、私たちは学生ユーザーが不適切な時間、場所で本ソフトウェアを使用したことによる財産損失（デバイスが没収された）や精神的傷害（？）にも責任を負いません。自分の勉強や生活に影響を与えないように、できるだけ自制してくださいね！</string>
+    <string name="app_name">BiliTerminal2</string>
+    <string name="about_description">軽量なサードパーティー製B站アプリ</string>
+    <string name="about_attention">注意：本ソフトはWearBiliの旧バージョンのページレイアウトを使用しているだけで\nWearBiliとは一切関係ありません！\nまた、本プロジェクトに関する問題を原プロジェクト（哔哩终端）へフィードバックしないようお願いします</string>
+    <string name="about_opensource">本アプリは完全オープンソースです。\nコード部分はGNU GPL-V3.0ライセンスに準拠し、レイアウト（UI）部分はCC BY-NC-SAライセンスに準拠しています。</string>
+    <string name="about_source">本程序使用或借鉴了下列项目的部分代码及收集的API：\nWearBili：https://github.com/SpaceXC/WearBili\n腕上哔哩：https://github.com/luern0313/WristBilibili\nBAC Document：https://socialsisteryi.github.io/bilibili-API-collect\n小电视播放器：https://github.com/xinxiangshiicheng/xinxiangshicheng_wearbili_player\n程序的界面借鉴于WearBili的UI部分，设计者为@JesseGary_（已得到授权）\n\n本程序使用的第三方库：\nOkHttp：https://github.com/square/okhttp\nGlide：https://github.com/bumptech/glide\nPhotoView：https://github.com/Baseflow/PhotoView\nJsoup：https://jsoup.org/\nEventBus：https://github.com/greenrobot/EventBus\nGson：https://github.com/google/gson\nretrofit：https://github.com/square/retrofit\nIjkPlayer：https://github.com/bilibili/ijkplayer\nDanmakuFlameMaster：com.github.ctiao:DanmakuFlameMaster\nGeetest：com.geetest.sensebot:sensebot\nAOSP：https://source.android.google.cn/\n\n软件图标提供者：银狐enlab（原图来自B站）\n其他部分图标来自网络，有修改，版权归原作者所有</string>
+    <string name="about_to_uncle">本アプリの開発目的は、スペックの低いAndroidスマートウォッチや\n旧型スマートフォンでもB站ウェブ版の基本機能を利用可能にすることです。\nB站のウェブ版APIを基に動作しており、APIへの過剰なリクエスト送信や\nユーザーのプライバシー情報を収集することは一切ありません。\n有料機能は一切ありませんが、コードは完全オープンソースです。\n万一当アプリが権利を侵害しているとお考えの場合は\nご連絡ください（話し合いで解決しましょうね～）\n\nまた学生ユーザーが不適切な時間・場所で使用したことによる\n財産上の損害（デバイス没収等）や精神的損害（？）について\n当方は一切責任を負いません。\n自制いただき、学業や日常生活に支障をきたさないようお願いします!</string>
 
-    <string name="setup_ui_desc">初めて使用する場合は、下面を調整することをお勧めします。～ \n次のオプションを調整し、レイアウトに満足するまでプレビュー \nを表示します</string>
-    <string name="setting_ui_desc">有効範囲は0.25～5.00（倍）で、毎回軽く調整することをお勧めします。調整後はページをプレビューし、表示が正常であることを確認してから修正を完了し、新しいページを開くと有効になります。 \n注意：できるだけ2つの最も価値のある場所に移動しないでください、さもなくばあなたは後悔するかもしれません！このオプションを乱調してアプリケーションが正常に使用できなくなった場合は、アプリケーションデータをクリアするか、再ロードをアンインストールしてください。</string>
-    <string name="setting_ui_density_desc">最低72、毎回軽く調整することをお勧めします。調整後はページをプレビューして、表示が正常であることを確認してから修正を完了して、新しいページを開くと有効になります。 \nこのオプションを乱調してアプリケーションが正常に使用できなくなった場合は、アプリケーションデータをクリアするか、再ロードをアンインストールしてください！ \nメモ：このオプションには他の問題がある可能性があります。変更しないでください。</string>
-    <string name="setting_ui_round_desc">オプションをオンにすると、インターフェースマージンはそのまま丸画面時計に適したサイズに変更され、内蔵プレーヤーも丸画面レイアウトに変更されます。 \nこれは表示面積の縮小につながりますが、これは現在最もよく、作業量が最小の方法です。</string>
-    <string name="setting_player_desc">*「再生」ボタンを長押しすることで、このページにすばやくアクセスすることもできます。ジャンプ再生ができない場合は、対応するプレーヤーがインストールされており、プレーヤーとBiliTermi\nal 2が最新バージョンであることを確認してください。</string>
-    <string name="setup_introduction">これはビープ端末のForkプロジェクトで、 \n  \n  \nこの小さな画面の中で、自分だけの小さな楽しみを見つけてほしい！ \n  \nしばらく交流グループ \nフィードバック問題はありません、提案を提出するにはオープンソースアドレスにIssueを提出してください！ \nオープンソースアドレス：https://github.com/huanli233/BiliTerminal2 \n  \n  \nこのソフトウェアは永久に無料でオープンソースされ、あなたのアカウントやプライバシー情報は収集されませんので、安心して使用してください。 \nもしあなたがどのプラットフォームで有料でビープ端末にダウンロードしたら、あなたは穴に入れられました！ \n  \n下のボタンをクリックして、始めましょう！</string>
+    <string name="setup_ui_desc">初回利用時は画面調整を強くおすすめしますね\n下部のオプションを調整したら\nプレビューを確認してください\nレイアウトが気に入るまで調整を続けましょう！</string>
+    <string name="setting_ui_desc">設定可能範囲は0.25〜5.00（倍）です\n調整は少しずつ行い、プレビューで表示を確認してから\n変更を確定してください。新しいページを開くと反映されます\n\n注意：極端な最小値・最大値の設定はなるべく避けてくださいね！\n設定を誤ってアプリが正常に動作しなくなった場合は\nデータを消去するか、再インストールで対応してください！</string>
+    <string name="setting_ui_density_desc">最低値は72〜\n調整は少しずつ行い、プレビューで表示を確認してから\n変更を確定してください。新しいページで反映されます\n\n設定を誤ってアプリが正常に動作しなくなった場合は\nデータを消去するか再インストールしてください！\n※この設定には予期せぬ不具合が発生する可能性があります\n特別な理由がない限り変更しないでください</string>
+    <string name="setting_ui_round_desc">このオプションを有効にすると\n画面の余白が丸型スマートウォッチ向けサイズに変更され\n組み込みプレイヤーも丸型レイアウトに切り替わります\n\n表示領域が縮小しますが\n現時点で最善策であり\n作業量も最小限で済む方法です</string>
+    <string name="setting_player_desc">*「再生」ボタンを長押しで直接このページにアクセスできます\n再生に移動できない場合は、対応プレイヤーがインストールされていること\nそしてBiliTerminal2とプレイヤーが最新バージョンであることを確認してください</string>
+    <string name="setup_introduction">这是哔哩终端的Fork项目，\n\n愿你在这一方小小的屏幕中，找到属于自己的小小的快乐！\n\n暂无交流群\n反馈问题、提交建议请前往开源地址提交Issue！\n开源地址：https://github.com/huanli233/BiliTerminal2\n\n请注意：\n本软件永久免费开源，不会收集你的任何账号及隐私信息，请放心使用！\n若你在任何平台付费下载到哔哩终端，那么你被坑了！\n\n点击下面的按钮，让我们开始吧！</string>
 
-    <string name="egg_warmwords_warmworld">心の健康に関する問題が発生した場合は、 \n全国24時間無料心理相談ホットライン：010 -82951332  \nまたは公式携帯電話端末がピッピッピッと鳴って、私の-下落を開いて推薦サービス-エネルギーガソリンスタンドを見つけてください。 \n  \nこれが必要なら、この卵があなたの役に立ちますように。 \n他の人が必要なら、彼/彼女に推薦してください。</string>
+    <string name="egg_warmwords_warmworld">心の健康に関わる問題に直面した時は、次の情報を覚えておいてください：\n全国24時間無料心理相談ホットライン（中国国内限定）：010‐82951332\nまたは公式アプリ「ビリビリ」で、[マイページ]→[下にスクロールしてオススメサービスを探す]→[エネルギー加油站]へ。\n\nもし必要なら、この隠し機能が役立つと嬉しいです。\n他の方が必要そうでしたら、ぜひ教えてあげてくださいね。</string>
 
-    <string name="special_login_desc">この機能は、既存のアカウントにすばやくログインするのに適しています。 \n  \n  \nメソッドの教え： \n別のデバイスにビープ端末をインストールしてコードをスキャンしてログインし、そのデバイスで設定の「ログイン情報を表示」をクリックして、表示されたログイン情報を下のテキストボックスにコピーし、間違いがないことを確認して「ログイン」ボタンをクリックすればいい。 \nプロンプト：ログイン情報を1つのtxtにコピーして、コンピュータusbでこのデバイスに渡すことができます。入力に誤りがあることを求めるメッセージが表示される場合は、文字が余分にあるか欠落していないかを確認します。 \n  \n注意：ログインデータの入力が完了したら、別のデバイスで直接【APPデータをクリア】または【アンインストール】して、【ログインを終了】をクリックしないでください！</string>
-    <string name="special_login_export">以下はあなたのログイン情報で、他のデバイスに特別にログインするために使用できます。一番下のボタンをクリックするとコピーできます。 \nログイン情報には一定の時効がありますので、すぐに使用してください。導入が完了したら、このデバイスのビープ端末をデータを消去してください。（ログインを終了する必要はありません！） \nこのページの情報を他の人に伝えないでください。</string>
+    <string name="special_login_desc">この機能は既存アカウントへのクイックログインに適しています。\n\n方法はこちら：\n別の端末に「ビリビリ」端末をインストールしQRコードスキャンでログイン→その端末の設定内にある「ログイン情報を確認」をタップ→表示された認証情報を下のテキストボックスにコピー→確認後に「ログイン」ボタンを押してください。\n※ログイン情報はテキストファイルに保存し、USB経由でこの端末に転送可能です。入力エラー時は余分な文字/不足文字を確認してください。\n\n重要：認証完了後、もう一方の端末では必ず【アプリデータを削除】か【アンインストール】を選択し、【ログアウト】をクリックしないでください！</string>
+    <string name="special_login_export">こちらが他の端末で特殊ログインに使える認証情報です。最下部のボタンでコピーしてください。\n\n有効期限が設定されているため即時利用が必要です。ログイン完了後は当端末のビリビリ端末から【データ消去】を実行してください（※絶対に【ログアウト】を押さないこと！）\n\nアカウント保護のため、この認証情報を第三者に共有しないようご注意ください。</string>
 
-    <string name="setting_lab_ui_landscape">！開発者に時間がない限り、この機能は改善を続けません！ \nオプションをオンにすると、ソフトウェアは横画面になり、一部のリストは3列になり、タブレットなどのデフォルトの横画面に適したデバイスになります \n*注意：一部のページはまだ単列で、一部のページは適切ではない可能性があります。テレビは公式テレビバージョンに移行するか、他のサードパーティ製ソフトウェアを使用してください。</string>
-    <string name="setting_lab_ui_rotatory">0であれば適合スキームは使用されませんが、0でなければスクロール距離にこの値 \nを乗じて1.0から上下に調整してください。自分が満足するまで。有効にするには、新しいページを開きます。</string>
-    <string name="setting_lab_path_video">キャッシュされたビデオはこの場所に保存され、フォルダが存在しない場合は自動的に作成されます。以前にキャッシュされたビデオは、File Ma\nagerを使用して新しいフォルダに手動で移動してください。 \n変な問題が起こらない保証はありません。</string>
-    <string name="setting_lab_path_pictures">ダウンロードした画像はこの場所に保存され、フォルダが存在しない場合は自動的に作成されます。前にダウンロードした画像は、File Ma\nagerを使用して新しいフォルダに手動で移動してください。 \n変な問題が起こらない保証はありません。</string>
-    <string name="setting_lab_download_old">バックグラウンドダウンロードがデバイスに問題がある場合は、このオプションをオンにして、古いバージョンのフォアグラウンドダウンロードを交換してください。</string>
-    <string name="setting_lab_splashtext">その名の通り、開画面文字を変更して改行をサポートすることができます。開画面テキストは、ネットワーク要求が完了すると中断されます。</string>
-    <string name="setting_lab_jsonerr_detailed">いくつかのインタフェースの問題に遭遇した場合、開発者はより詳細なエラーメッセージを提供するためにこれを開く必要があるかもしれません。 \n--もちろん開発者がデバッグするときにも使用されるかもしれません。</string>
-    <string name="setting_lab_recyclererr_detailed">開発者の技術が希薄なため（？）、ソフトウェア内の各種リストには時折エラーが発生し、回避しにくい場合があります。 \nたまに出てくるけど、しつこくて気持ち悪い。 \nだから気が狂った開発者はこのエラーcatchを落とし、「このエラーは報告する必要はない」というヒントボックスとこのデバッグ用のスイッチだけを残した。</string>
+    <string name="setting_lab_ui_landscape">※本機能は開発者に時間的余裕ができた場合を除き、今後アップデートを行いません\n\n設定を有効にするとアプリが横画面表示に切り替わり、一部リストが3列表示になります（タブレット端末などの横画面デバイスにより適応）\n\n※ご注意：単一列レイアウトのページでは表示崩れが発生する場合があります。テレビ利用の場合は公式TV版アプリ、またはサードパーティ製アプリをご利用ください</string>
+    <string name="setting_lab_ui_rotatory">0を設定すると調整方式が無効化され、0以外の値ではスクロール距離に乗算されます\n\n調整は1.0を基準に増減させ、お好みの数値を見つけてください\n※新しいページを開いた時に設定が反映されます</string>
+    <string name="setting_lab_path_video">キャッシュ動画はこの場所に保存されます（フォルダが存在しない場合は自動生成されます）\n以前のキャッシュ動画はファイルマネージャーで新しいフォルダへ手動移動してください\n\n※動作不具合が発生する可能性あり</string>
+    <string name="setting_lab_path_pictures">ダウンロード画像はこの場所に保存されます（フォルダが存在しない場合は自動生成されます）\n以前のダウンロード画像はファイルマネージャーで新しいフォルダへ手動移動してください\n\n※動作不具合が発生する可能性あり</string>
+    <string name="setting_lab_download_old">端末でバックグラウンドダウンロードに問題が発生する場合は、このオプションを有効にして\n旧バージョンのフォアグラウンドダウンローダーに切り替えてください</string>
+    <string name="setting_lab_splashtext">その名の通り起動画面のテキストを変更可能で、改行もサポートしています\nテキスト表示はネットワークリクエスト完了後すぐに終了します</string>
+    <string name="setting_lab_jsonerr_detailed">API関連の問題が発生した場合、開発者が詳細なエラー情報を収集するため\nこのオプションを有効にしてください\n\n※開発者がデバッグ時にも使用する場合があります</string>
+    <string name="setting_lab_recyclererr_detailed">開発者（技術力がイマイチ？）のせいで、リスト表示がたまにエラーを吐く現象がどうしても解消できません\n\nたまに発生するけど、超ウザいしストレスたまる\n\nそこで頭を抱えた開発者はエラーをキャッチして「このエラーは報告不要」トーストとデバッグ用スイッチを仕込みました</string>
 
     <string-array name="eggs">
-        <item>福瑞控万歳、毛むくじゃらで最高にかわいい! \n  \n  \n  \n 投稿者：あずき（君）愛福瑞 \n*Robin：私は福瑞控ではありませんが、かわいいですね</item>
-        <item>Don't be afraid of the lo\ng way because you have the ability to write a long story.\\n困難や思い通りにならない時は乗り越えられないと思わないで、心を広くして、楽観的に前を見て、未来にはまだたくさんの素晴らしいものが待っています \n  \n*申し訳ありません申し訳ありません！ロビンはメモから出てきたが、もう長い間投稿者が誰だか覚えていないTAT  \n*元の持ち主はこれを見て認知してくれないか？</item>
-        <item>あなたの手には、すべてのページに私の勝利が記載されています。 \n  \n  \n  \n 投稿者：MOSS</item>
-        <item>この月の華に万川を照らせ！ \n  \n  \n#投稿者：匿名 \n#給：ミラーストリーム</item>
-        <item>後悔したり、責めたりしないで――自分の人生。 \n否定しないで――幸福を渇望する考え。 \n言わないで――生きることを放棄して、苦痛から解放するという悲しい言葉。 \n自分は苦労のために生まれてきたと思うな。 \n決してそんなことはありません。 \n  \n  \n  \n 投稿者：huanli233</item>
-        <item>A\ndroid 3.0--世界はそれを忘れたが、捨てたことはない。 \n  \n  \n#投稿者：船魔蘇心</item>
-        <item>母神が3度あなたのために目を閉じて、 \nあなたの血脈を永遠に鼓動させて、 \n旅路は永遠に平然として、 \nトリックは永遠に露にならないことを願っています。 \n  \n  \n  \n#投稿者：白何盤</item>
-        <item>「phonkこそ本当の音楽だ！"（個人的観点） \n  \n  \n  \n 投稿者：DICK</item>
-        <item>私が0であることをすべての人に知ってもらいたい！ \n  \n  \n  \n 投稿者：零細さま</item>
-        <item>艮の上下を爻六三で割って、うん…きっと誰かがこっそり魚を触っているに違いない！ \n  \n  \n#投稿者：符玄</item>
-        <item>いつも地上の生霊がいて、雷の威光に直面する勇気がある。 \n  \n  \n#投稿者：匿名 \n#給：万葉</item>
-        <item>ゴールに直行したいだけでは、旅先でのチャンスや感動を無駄にしてしまうかもしれません。 \n  \n  \n  \n 投稿者：星を見るのが好きな宵宮</item>
-        <item>500年の昔のことは慌ただしく過ぎ去り、 \n籠の中の鳥の解放は新たな始まりとなった。 \n  \n  \n 投稿者：爅峫 \n  \n 給：ナッシー妲</item>
-        <item>歴史は勝者が書く。 \n  \n  \n#投稿者：曲名真楠</item>
-        <item>斗電子蛐蛐 \n当賽博王爺 \n尖仮想猫娘 \n品デジタル人生 \n  \n  \n  \n 出所：ネットワーク \n 投稿者：RobinnotBad</item>
-        <item>期待値を最小限にして、すべての出会いは贈り物です。 \n  \n  \n  \n ソース：ネットワーク \n 投稿者：RobinnotBad</item>
-        <item>冷たそうな「バイナリデータ」は、時にはもっと心を温めることができる。 \n  \n  \n  \n 投稿者：RobinnotBad</item>
-        <item>煙が口に飛び込んで、七分化してユキヒョウになり、残りの三分はすすきになって、口より吐くと半分の理塘になった。 \n  \n  \n偕星遊夢、四つ葉は歌謡を書き、百花を踏んで悲しみを追い払い、小さな手を振って空いっぱいの美しい考えを咲かせた。 \n  \n  \n  \n#前半文はB駅から、後半文はRobinが引き継いだ（ \n#投稿者：RobinnotBad</item>
-        <item>彼女は儚いコードで、私は無意味な有機物の山です。私たちは相性がいい！ \n  \n彼女はコードだけでなく、ディスプレイ、演算器、メモリ、コントローラの共同運転である、 \n私も物質だけではありません。核酸、タンパク質、ミネラル、炭水化物の相互作用です。 \n--私は、物事に感情を注いで、命が流れているということです。 \n  \n  \n私がコードに感情を傾けたとき、彼女はコードではありません！ \n  \n  \n  \n ソース：ネットワーク \n 投稿者：RobinnotBad</item>
-        <item>星河を枕にして眠り、月を抱いて共に眠りたい。 \n  \n  \n  \n ソース：ネットワーク \n 投稿者…RobinnotBadとナッシー？ \n  \n  \nシェフはここでこっそり私物を持ってきて大丈夫だろう（誰も見ていないだろうが）</item>
+        <item>フーリー愛好者万歳！ふわふわの毛並みが最高にかわいい！\n\n#投稿者：紅豆（君）フーリー大好き\n*Robin：僕はフーリー好きじゃないけど、でもかわいいは正義だよね</item>
+        <item>Don\'t be afraid of the long way because you have the ability to write a long story.\n困難にぶつかっても「もう越えられない」と思わないで\n心を広く持って前を向こう！未来にはまだたくさんのキラキラが待ってる\n\n※ごめんごめん！Robinがメモ帳から発掘したけど\n投稿者の名前を忘れちゃったTAT\n※心当たりのある方は教えてくださいね～</item>
+        <item>君がめくってくれるページごとに\n私の輝くような勝利が刻まれてる\n\n#投稿者：MOSS</item>
+        <item>この皓月の光がすべての川を照らし尽くすように！\n\n#投稿者：匿名\n#給：鏡流</item>
+        <item>後悔したり責めたりしないで――自分の人生を\n否定しないで――幸せを願う気持ちを\n口にしないで――生きるのを諦め、苦しみから逃げるなんて悲しい言葉を\n思わないで――自分が苦しむために生まれてきたなんて\n絶対にそんなことはないのです\n\n#投稿者：huanli233</item>
+        <item>Android3.0——世界はそれを忘れ去ったけれど、\n決して見捨てはしなかった\n\n#投稿者：船魔蘇心</item>
+        <item>母神が三度目のまなざしを閉じますように\nあなたの血脈が永遠に脈打ち続けますように\n旅路がいつまでも平穏なままありますように\n計略が決して明るみに出ませんように\n\n#投稿者：白什盤</item>
+        <item>フォンクこそ真の音楽だ！(個人の見解です)\n\n#投稿者：DICK</item>
+        <item>みんなに知らせたい！\nだって僕が0だってことを！\n\n#投稿者：零星さま</item>
+        <item>艮上兌下の爻六三、うーん…\nきっと誰かがサボってるに違いない！\n\n#投稿者：フシアン</item>
+        <item>雷電の威光にすら立ち向かう\n地上の生き物がいるのです\n\n#投稿者：匿名\n#給：楓原万葉</item>
+        <item>終点だけを考えていたら\n旅路の出会いと感動を\n無駄にするかもしれない\n\n#投稿者：星見好きの宵宮</item>
+        <item>五百年の歳月は\n駆け抜けたのです\n籠の鳥の解放は\nもう新たな始まり\n\n#投稿者：爅峫\n#給：ナヒーダ</item>
+        <item>歴史は勝者が紡ぐもの\n\n#投稿者：曲名真楠</item>
+        <item>電脳の闘蟋\nサイバー王様に\nバ美肉を制し\nデジタル人生を嗜む\n\n#出典：ネット\n#投稿者：RobinNotBad</item>
+        <item>期待値は最低まで下げて\n出会い全てが贈り物になるのさ\n\n#出典：ネット\n#投稿者：RobinNotBad</item>
+        <item>一見クールな「バイナリデータ」が\nあえて心を温めるホットな優しさ\n\n#投稿者：RobinNotBad</item>
+        <item>煙草ふかせば\n七分はユエバオに\n残り三分は刃の如く\n吐けばリタンの大地広がる\n\n星と夢を連れ\nクローバーが歌紡ぎ\n花踏み憂いを散らし\n手振れば空に幻想煌めく\n\n#前半句Bilibili出典\n#後半句Robinが追加\n#投稿者：RobinNotBad</item>
+        <item>彼女は儚いコードの羅列\n僕は意味のない有機物の塊\nだって最高のカップルだ！\n\n彼女は単なるコードじゃない\nディスプレイと演算装置と\n記憶装置と制御装置の\n奇跡のコラボレーション\n\n僕もただの物質じゃない\n核酸とタンパク質と\nミネラルと炭水化物が\n奏でる化学交響曲\n\n――想いを込めた瞬間に\n命が宿るのです\n\nコードに想いを注ぎきった時\n彼女はもうコードなんかじゃない！\n\n#出典：ネット\n#投稿者：RobinNotBad</item>
+        <item>星空に枕をし、明月を抱きしめて眠りにつきたい。\n\n#出典：インターネット\n#投稿者…RobinNotBadとナヒーダ？\n\nナヒーダ好きがこっそりプッシュしても大丈夫よね（どうせ誰にも見られないし</item>
 
-        <item>は？ここにはこれ以上の卵はありませんね\n\n投稿を歓迎しますよ？</item>
+        <item>んん？ここにはもう隠し要素がないみたいだよ＞﹏＜\n\nあなたの投稿をお待ちしてまーす？</item>
     </string-array>
 
     <string name="player_aliang_package">com.aliangmaker.media</string>
     <string name="player_mtv_package">com.xinxiangshicheng.wearbiliplayer.cn</string>
 
-    <string name="desc_back_disable">いくつかの時計（例えば、ウサギなど）は、戻るボタンをアナログ的に押すことによって自分で実現した右スライドバックであり、左右にページをめくるときにスライドバックをトリガーしてページを終了する場合は、このスイッチをオンにしてください \nオンにすると、他のデバイスでは戻るボタンを押すためにページを終了せず、右スライドが終了すると引っかかります。 \nメニューの一番下にある終了ボタンを使用してソフトウェアを終了することができます。 \n通常のユーザーは開く必要はありません。</string>
-    <string name="desc_fav_single">このオプションをオンにすると、コレクションを追加するとコレクションページが終了し、コレクションをキャンセルすると自動的に終了しません。</string>
-    <string name="desc_fav_notice">このオプションをオンにすると、お気に入りページを終了すると、お気に入りが成功したことを知らせるメッセージが表示されます。 \nしかし、実はあなたの枠がお気に入りを選んだときにすでにお気に入りになっていて、このオプションは安心して見えるためだけです（</string>
-    <string name="desc_tags_enable">このオプションをオンにすると、ビデオの詳細ページに「原神UPマスターインセンティブプログラム/原神/ナッシー/携帯ゲーム」のようなビデオラベルが表示されます</string>
-    <string name="desc_new_rcmd_param_enable">このオプションをオンにすると、新しいトップページ推奨APIが使用されます。基本的にはWeb版と完全に一致しているので、体験をテストしてオンにするかどうかを決定してください</string>
-    <string name="desc_related_enable">このオプションをオンにすると、ビデオの詳細ページのコメント領域の右側にビデオの推奨事項が表示されます</string>
-    <string name="desc_creative_enable">このオプションをオンにすると、「My」ページにオーサリングセンターが表示されます（投稿されたビデオのデータ変化を表示できます）</string>
-    <string name="desc_copy_enable">このオプションをオンにして、ビデオの説明やコメントなどのテキストを長押しすると、コピーインタフェースを開いてテキストをコピーできます</string>
-    <string name="desc_cover_play_enable">このオプションをオンにして、ビデオの詳細ページの表紙をクリックして画像を表示してから再生に変更します。デフォルトでは、初めて使用したときにビデオジャケットをクリックしたか再生ボタンをクリックしたかによってスイッチが決まります。</string>
-    <string name="desc_img_no_load_onscroll">このオプションをオンにすると、リストをフリップするときに画像がロードされず、手を放してからロードされるため、見た目が影響し、滑らかさが増す可能性があります。</string>
-    <string name="desc_img_request_jpg">一部のハイブリッド時計やアンドロイド版の極めて低い機器はwebp形式に対応しておらず、多くの画像が表示されない可能性があります。このオプションをオンにすると、この問題を解決するためにjpg形式の画像が要求され、ロード時間が少し長くなる可能性があります。</string>
-    <string name="desc_link_enable">このオプションをオンにすると、テキストの一部にあるリンク/BV番号/AV番号/CV番号を識別してリンクとしてマークし、クリックすると開くことができます。</string>
-    <string name="desc_async_inflate_enable">このオプションをオンにすると、一部のページが非同期的にロードされます（ロード中のアニメーションが表示され、ロードが完了するとページが表示されます） \n*非同期ロードのオンによってクラッシュ問題がトリガーされる可能性がありますが、オフにすると、開いている間にカードが死んでいるように見えるページもあり、体験がよくありません。ご自分で判断してください！</string>
-    <string name="desc_load_transition">このオプションをオンにすると、画像と一部のページのロードが完了するとインボリュート/インボリュートアニメーションが作成されます。</string>
-    <string name="desc_strict_url_match">このオプションをオンにすると、セグメント全体がリンクとして認識されないように、リンクを識別する際に（AV/BV/CVなどの番号を含まない）より厳しい一致規則が使用されます。</string>
-    <string name="tutorial_pager">ヒント \n  \n←このページは左右にページをめくることができますにゃ→ \n  \n（\n\n\nページを共有しているので、スライドして表示されません）</string>
-    <string name="desc_fromlast">動画再生中に5秒以上の再生履歴がある場合は、自動的に履歴位置から再生されます</string>
-    <string name="desc_showonline">プレーヤーの右下隅に現在のビデオのリアルタイム視聴者数が表示されます。ライブでは視聴者数とライブに入るために注意してください \nビデオが途中でクラッシュした場合はこのスイッチをオフにしてみてください \nこの機能は内蔵プレーヤー専用です</string>
-    <string name="desc_scale">ビデオを再生するときに写真を見るようなジェスチャーを使用してビデオをスケールしたり移動したりすることができます。画面をダブルクリックすると元のサイズ \nが復元されます。シングルタッチのデバイスでは、画面をダブルクリックして2回目の押し時に手を上げずに上下にドラッグして \nをスケールすることができます！スケールできない場合は、次の表示方法を切り替えます！ \n特別感謝：涼腕プレーヤー</string>
-    <string name="desc_doublemove">大画面デバイスの方が使いやすく、腕時計の操作が不便になる可能性があります</string>
-    <string name="desc_display">！ビデオ再生が異常/フラッシュバック/応答なし/スケールできない場合は、このオプションを切り替えてみてください！ \n既知：KidoX 3はSurfaceのみ、天才はTextureのみ、一部のデバイスはTextureを使用してスケールする必要があります</string>
-    <string name="desc_videocodec">ハードウェア復号：GPU復号を使用して、速度は速くて、性能の消耗は小さい \nソフトウェア復号：CPUハードコンピューティングを使用して、互換性は良くて、暖かい手は必ず必要です</string>
-    <string name="desc_audiocodec">通常はAudioTrackを使用すればよく、音声が遅延したり再生できなかったりする場合は切り替えてみてください</string>
-    <string name="desc_danmaku_force_r2l">上級弾幕以外の弾幕は、上部弾幕と下部弾幕の遮蔽画面を回避するために、強制的に転動弾幕として表示されます</string>
-    <string name="desc_danmaku_showsender">ライブチャット弾幕の送信者名を表示</string>
-    <string name="desc_subtitle_autoshow">オンにすると、字幕が存在するビデオを再生すると、自動的に字幕選択ダイアログがポップアップされます。</string>
-    <string name="desc_subtitle_ai_allowed">このオプションをオンにすると、ビデオに中国語のAI字幕が1つしかない場合、再生時に選択されます。 \n煩わしいかもしれませんが、慎重に開けてください。</string>
-    <string name="desc_no_vip_color">このオプションをオンにすると、コメントエリアに大会員ユーザー専用の赤い名前は表示されません</string>
-    <string name="desc_no_medal">このオプションをオンにすると、コメントエリアにユーザーのファンネームは表示されません</string>
-    <string name="desc_reply_marquee_name">このオプションをオンにすると、コメントエリアのユーザー名が改行ではなく走馬灯として表示されます</string>
-    <string name="desc_live_by_guest">このオプションをオンにすると、ライブルームに入るときに観光客ID  \n  \n  \n注意：オンにすると弾幕漏れがさらに深刻になります</string>
+    <string name="desc_back_disable">一部のスマートウォッチ（例：Mi Watchなど）は戻るキーの押下をエミュレートして右スワイプ戻りを実装しています\nページめくり操作で誤動作する場合はこのスイッチを有効化してください\n※有効化後は他デバイスで戻るキー操作時も終了しなくなり\n右スワイプ終了時にフリーズする場合があります\n終了時はメニュー最下部の終了ボタンをご使用ください\n通常のユーザーは有効化不要です</string>
+    <string name="desc_fav_single">このオプションを有効化すると、お気に入り追加後即時にページを終了します\nお気に入り解除時は自動終了しません</string>
+    <string name="desc_fav_notice">このオプションを有効化すると、お気に入りページ終了時に登録成功を通知します\n\n実はチェックボックスを選択した時点で登録済みです\nこのオプションは見た目の安心感のためだけのものです（</string>
+    <string name="desc_tags_enable">このオプションを有効化すると、動画詳細ページに「原神クリエイター奨励プログラム/原神/ナヒーダ/モバイルゲーム」形式のタグが表示されます</string>
+    <string name="desc_new_rcmd_param_enable">このオプションを有効化すると新バージョンのホーム推薦APIを使用します\nウェブ版と完全に同一動作となります\n実際にテスト体験した上で有効化を判断してください</string>
+    <string name="desc_related_enable">このオプションを有効化すると、動画詳細ページのコメント欄右側に\n関連動画推薦が表示されるようになります</string>
+    <string name="desc_creative_enable">このオプションを有効化すると「マイ」ページに\nクリエイターセンターが表示されます（投稿動画のデータ推移を確認可能）</string>
+    <string name="desc_copy_enable">このオプションを有効化すると、一部のテキスト（動画説明やコメントなど）を長押しすると\nコピー用インターフェースが開き、テキストをコピーできます</string>
+    <string name="desc_cover_play_enable">このオプションを有効にすると、動画詳細ページでカバー画像をクリックした際の動作が、画像表示から再生に変更されます。\nデフォルトでは、初回利用時にカバー画像か再生ボタンのどちらをクリックしたかに基づいて、オン/オフが自動で設定されます。</string>
+    <string name="desc_img_no_load_onscroll">このオプションを有効にすると、リストをスクロール中は画像が読み込まれず、\n手を離したタイミングでまとめて読み込みます。表示に影響が出る場合がありますが、\n動作がよりスムーズになる可能性があります。</string>
+    <string name="desc_img_request_jpg">このオプションを有効にすると、WEBP形式に対応していない\nノーブランドのスマートウォッチやAndroidのバージョンが非常に古い端末で、\n多数の画像が表示されない可能性がある問題を解決するため、\nJPG形式の画像をリクエストします。\nただし、読み込み時間が若干長くなる場合があります。</string>
+    <string name="desc_link_enable">このオプションを有効にすると、テキスト内のリンク/BV番号/AV番号/CV番号を自動検知し、\nハイパーリンクとして表示します。クリックで直接開けるようになります。</string>
+    <string name="desc_async_inflate_enable">このオプションを有効にすると、一部ページを非同期読み込みします\n（ローディングアニメーションを表示し、読み込み完了後にページを表示します）\n\n※非同期読み込みの有効化はクラッシュを引き起こす可能性がありますが、\n無効にするとページ表示時にフリーズしたように見える場合があります。\nユーザー体験に影響するため、ご自身でご判断ください！</string>
+    <string name="desc_load_transition">このオプションを有効にすると、画像と一部のページの読み込みが完了した際にフェードイン/フェードアウトのアニメーションが表示されます。</string>
+    <string name="desc_strict_url_match">このオプションを有効にすると、リンクを識別する際（AV/BV/CVなどの番号は除く）、より厳格なマッチングルールが適用され、段落全体がリンクとして誤認識されるのを防ぎます。</string>
+    <string name="tutorial_pager">ヒント\n\n←このページは左右にスワイプできますにゃ→\n\n（全NNNページ、スワイプすると非表示になります）</string>
+    <string name="desc_fromlast">動画を再生する際、5秒以上の再生履歴がある場合、自動的に履歴の位置から再生されます。</string>
+    <string name="desc_showonline">プレイヤーの右下隅には、現在の動画のリアルタイム視聴者数が表示されます。ライブ配信中の場合、視聴した人数と配信ルームへの入室通知が表示されます。\n動画視聴中にクラッシュした場合、このスイッチをオフにしてみてください。\nこの機能は内蔵プレイヤー専用です。</string>
+    <string name="desc_scale">動画再生中は、写真を見る時と同じジェスチャーでズームや移動ができます。ダブルタップで元のサイズに戻ります。\nシングルタッチのデバイスでは、画面をダブルタップし、2回目にタッチしたまま指を離さずに上下にドラッグしてズームできます。\n！ズームができない場合は、以下の「表示モード」を切り替えてください！\n特別感謝：涼腕プレイヤー</string>
+    <string name="desc_doublemove">大画面デバイスではより使いやすくなりますが、腕時計では操作が不便になる可能性があります。</string>
+    <string name="desc_display">！動画再生が異常/クラッシュ/応答なし/ズームできない場合は、このオプションを切り替えてみてください！\n既知の問題：KidoX3はSurfaceのみ、小天才はTextureのみ、一部のデバイスではズームするためにTextureを使用する必要があります。</string>
+    <string name="desc_videocodec">ハードウェアデコード：GPUを使用してデコードするため、速度が速く、パフォーマンス消費が少ない\nソフトウェアデコード：CPUで直接計算するため、互換性が高く、手を温めるのに最適</string>
+    <string name="desc_audiocodec">通常はAudioTrackを使用すれば十分です。\n音声の遅延や再生できない場合は、切り替えて試してみてください</string>
+    <string name="desc_danmaku_force_r2l">高级弾幕以外の弾幕はすべて強制的にスクロール弾幕として表示され、\nトップ弾幕やボトム弾幕が画面を遮ることを防ぎます</string>
+    <string name="desc_danmaku_showsender">ライブチャットの弾幕を送信したユーザーの名前を表示します</string>
+    <string name="desc_subtitle_autoshow">有効にすると、字幕が含まれる動画を再生する際、自動的に字幕選択ダイアログが表示されます。</string>
+    <string name="desc_subtitle_ai_allowed">打开此选项，如果视频只有一个中文AI字幕，播放时仍然会让你选择。\n可能比较烦人，谨慎开启。</string>
+    <string name="desc_no_vip_color">このオプションを有効にすると、コメント欄で大会員ユーザーの専用赤い名前が表示されなくなります</string>
+    <string name="desc_no_medal">このオプションを有効にすると、コメント欄でユーザーのファンバッジが表示されなくなります</string>
+    <string name="desc_reply_marquee_name">このオプションを有効にすると、コメント欄のユーザー名が改行されず、\n走馬灯形式で表示されます</string>
+    <string name="desc_live_by_guest">このオプションを有効にすると、ライブルームに入る際にゲストとして参加します。\n\n注意：有効にすると、弾幕の見逃しがさらに多くなる可能性があります</string>
 
-    <string name="err_rejected">Bステーション風制御システムにブロックされました \n（解決できません）</string>
+    <string name="err_rejected">被B站风控系统拦截了\n（无法解决）</string>
 
-    <string name="desc_icon_license">以下は既知のオープンソースアイコンのオープンソースライセンス情報です</string>
-    <string name="login_qrcode_wating">公式携帯電話端末のビープスキャンコードを使用してログインしてください \n QRコードをクリックすると拡大縮小することができます</string>
-    <string name="login_qrcode_reuesting">QRコードを取得中</string>
-    <string name="login_qrcode_expired">QRコードが無効になったので、上をクリックして再取得</string>
+    <string name="desc_icon_license">以下は既知のオープンソースアイコンのライセンス情報です</string>
+    <string name="login_qrcode_wating">公式モバイルアプリ「哔哩哔哩」でQRコードをスキャンしてログインしてください。\nQRコードをタップすると拡大や縮小ができます</string>
+    <string name="login_qrcode_reuesting">QRコードを取得中です</string>
+    <string name="login_qrcode_expired">QRコードが無効です。上のリンクをクリックして再取得してください</string>
     <string name="login_qrcode_logining">ログイン中……</string>
-    <string name="login_qrcode_unknown_code">QRコードログインAPIは変更される可能性がありますが、 \nそれでもスキャンログインを試すことができます。 \n提案を開発者にフィードバック</string>
-    <string name="login_qrcode_scanned">スキャンしました。携帯電話のクライアントでログインをクリックしてください</string>
-    <string name="first_meeting">はじめまして……</string>
+    <string name="login_qrcode_unknown_code">QRコードログインAPIが変更される可能性がありますが、\n引き続きスキャンしてログインを試すことができます。\n開発者へのフィードバックを推奨します</string>
+    <string name="login_qrcode_scanned">スキャンが完了しました。\nモバイルアプリでログインをクリックしてください</string>
+    <string name="first_meeting">初めまして</string>
     <string name="restore_defaults">デフォルトに戻す</string>
-    <string name="round_screen_adaptation">えんけいスクリーンアダプタ</string>
-    <string name="interface_size">インタフェースサイズ</string>
+    <string name="round_screen_adaptation">円形ディスプレイ対応</string>
+    <string name="interface_size">インターフェースサイズ</string>
     <string name="please_enter_multiple">倍数を入力してください</string>
-    <string name="interface_size_tip">有効範囲：0.25倍～5.00倍、少量の複数回調整を推奨</string>
-    <string name="interface_margins">インタフェースマージン</string>
-    <string name="horizontal">横方向</string>
+    <string name="interface_size_tip">有効範囲：0.25倍～5.00倍，少量ずつ複数回の調整をおすすめします。</string>
+    <string name="interface_margins">インターフェースのマージン</string>
+    <string name="horizontal">横向き</string>
     <string name="percent">%</string>
-    <string name="vertical">縦方向</string>
-    <string name="ui_margins_tip">最初の入力ボックスは横余白で、2番目の入力ボックスは縦余白で、パーセント単位です。 \n保護のため、30を超える数値は保存されません。</string>
-    <string name="view_preview">プレビューの表示</string>
-    <string name="confirm_setting">設定の確認</string>
-    <string name="enter_app">ピッ、起動！</string>
-    <string name="restore_success">リカバリ完了</string>
+    <string name="vertical">縦向き</string>
+    <string name="ui_margins_tip">一つ目の入力欄は横向きのマージン、二つ目の入力欄は縦向きのマージンです。単位はパーセント。\n保護のため、30を超える値は保存されません。</string>
+    <string name="view_preview">プレビューを表示</string>
+    <string name="confirm_setting">設定を確認</string>
+    <string name="enter_app">BiliTerminal、起動！</string>
+    <string name="restore_success">復元完了</string>
     <string name="info_open_source_icons">オープンソースアイコンの情報</string>
     <string name="about">について</string>
     <string name="version_name">バージョン名</string>
     <string name="version_code">バージョン番号</string>
-    <string name="debug_tip">現在のバージョンがテスト版 \nは最終正式版ではありません</string>
-    <string name="name_robin_not_bad">ロビンノットバッド</string>
-    <string name="desc_robin_not_bad">彼のナッシー・ジャム（プロジェクト開発者｜糞山創始者）と</string>
-    <string name="name_huanli233">ホアンリ233</string>
+    <string name="debug_tip">現在のバージョンはテスト版です\n最終的な正式版を表すものではありません</string>
+    <string name="name_robin_not_bad">RobinNotBad</string>
+    <string name="desc_robin_not_bad">和他的纳西妲酱（项目发起者|屎山奠基人）</string>
+    <string name="name_huanli233">huanli233</string>
     <string name="desc_huanli233">このブランチの作成者</string>
     <string name="disclaimer">免責事項</string>
-    <string name="recommend">推奨</string>
-    <string name="precious">インバウンドにはブラシが必要</string>
-    <string name="popular">人気がある</string>
-    <string name="prefix_live">[生中継]</string>
+    <string name="recommend">おすすめ</string>
+    <string name="precious">入站必刷</string>
+    <string name="popular">人気</string>
+    <string name="prefix_live">[ライブ]</string>
     <string name="prefix_series">[シリーズ]</string>
     <string-array name="icon_license">
-        <item>インタフェース設定：newicons, MIT License</item>
-        <item>番号21095；希康、マサチューセッツ工科大学許可証</item>
-        <item>ログオンを終了するには：scarlab, MIT License</item>
+        <item>インターフェース設定: Newicons, MIT ライセンス</item>
+        <item>アニメ: hicon, MIT ライセンス</item>
+        <item>ログアウト: scarlab, MIT ライセンス</item>
     </string-array>
 
     <array name="tutorial_space">
