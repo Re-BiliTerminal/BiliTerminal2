@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">BiliTerminal2</string>
     <string name="about_description">軽量なサードパーティー製B站アプリ</string>
-    <string name="about_attention">注意：本ソフトはWearBiliの旧バージョンのページレイアウトを使用しているだけで\nWearBiliとは一切関係ありません！\nまた、本プロジェクトに関する問題を原プロジェクト（哔哩终端）へフィードバックしないようお願いします</string>
+    <string name="about_attention">注意：本ソフトはWearBiliの旧バージョンのページレイアウトを使用しているだけで\nWearBiliとは一切関係ありません！\nまた、本プロジェクトに関する問題を原プロジェクト(BiliClient)へフィードバックしないようお願いします</string>
     <string name="about_opensource">本アプリは完全オープンソースです。\nコード部分はGNU GPL-V3.0ライセンスに準拠し、レイアウト（UI）部分はCC BY-NC-SAライセンスに準拠しています。</string>
-    <string name="about_source">本程序使用或借鉴了下列项目的部分代码及收集的API：\nWearBili：https://github.com/SpaceXC/WearBili\n腕上哔哩：https://github.com/luern0313/WristBilibili\nBAC Document：https://socialsisteryi.github.io/bilibili-API-collect\n小电视播放器：https://github.com/xinxiangshiicheng/xinxiangshicheng_wearbili_player\n程序的界面借鉴于WearBili的UI部分，设计者为@JesseGary_（已得到授权）\n\n本程序使用的第三方库：\nOkHttp：https://github.com/square/okhttp\nGlide：https://github.com/bumptech/glide\nPhotoView：https://github.com/Baseflow/PhotoView\nJsoup：https://jsoup.org/\nEventBus：https://github.com/greenrobot/EventBus\nGson：https://github.com/google/gson\nretrofit：https://github.com/square/retrofit\nIjkPlayer：https://github.com/bilibili/ijkplayer\nDanmakuFlameMaster：com.github.ctiao:DanmakuFlameMaster\nGeetest：com.geetest.sensebot:sensebot\nAOSP：https://source.android.google.cn/\n\n软件图标提供者：银狐enlab（原图来自B站）\n其他部分图标来自网络，有修改，版权归原作者所有</string>
+    <string name="about_source">本プログラムは以下のプロジェクトの一部コード及び収集したAPIを使用または参考にしています：\nWearBili：https://github.com/SpaceXC/WearBili\nWristBilibili：https://github.com/luern0313/WristBilibili\nBAC Document：https://socialsisteryi.github.io/bilibili-API-collect\nWearBili Player：https://github.com/xinxiangshiicheng/xinxiangshicheng_wearbili_player\nプログラムのインターフェースはWearBiliのUI部分を参考にしています。\nデザインは@JesseGary_によるものです（許可済み）。\n\n本プログラムで使用しているサードパーティライブラリ：\nOkHttp：https://github.com/square/okhttp\nGlide：https://github.com/bumptech/glide\nPhotoView：https://github.com/Baseflow/PhotoView\nJsoup：https://jsoup.org/\nEventBus：https://github.com/greenrobot/EventBus\nGson：https://github.com/google/gson\nretrofit：https://github.com/square/retrofit\nIjkPlayer：https://github.com/bilibili/ijkplayer\nDanmakuFlameMaster：com.github.ctiao:DanmakuFlameMaster\nGeetest：com.geetest.sensebot:sensebot\nAOSP：https://source.android.google.cn/\n\nソフトウェアアイコンの提供者：銀狐enlab（原図はB站より）\nその他のアイコンはネットから取得し、修正を加えています。\n著作権は原作者に帰属します。</string>
     <string name="about_to_uncle">本アプリの開発目的は、スペックの低いAndroidスマートウォッチや\n旧型スマートフォンでもB站ウェブ版の基本機能を利用可能にすることです。\nB站のウェブ版APIを基に動作しており、APIへの過剰なリクエスト送信や\nユーザーのプライバシー情報を収集することは一切ありません。\n有料機能は一切ありませんが、コードは完全オープンソースです。\n万一当アプリが権利を侵害しているとお考えの場合は\nご連絡ください（話し合いで解決しましょうね～）\n\nまた学生ユーザーが不適切な時間・場所で使用したことによる\n財産上の損害（デバイス没収等）や精神的損害（？）について\n当方は一切責任を負いません。\n自制いただき、学業や日常生活に支障をきたさないようお願いします!</string>
 
     <string name="setup_ui_desc">初回利用時は画面調整を強くおすすめしますね\n下部のオプションを調整したら\nプレビューを確認してください\nレイアウトが気に入るまで調整を続けましょう！</string>
@@ -11,12 +11,12 @@
     <string name="setting_ui_density_desc">最低値は72〜\n調整は少しずつ行い、プレビューで表示を確認してから\n変更を確定してください。新しいページで反映されます\n\n設定を誤ってアプリが正常に動作しなくなった場合は\nデータを消去するか再インストールしてください！\n※この設定には予期せぬ不具合が発生する可能性があります\n特別な理由がない限り変更しないでください</string>
     <string name="setting_ui_round_desc">このオプションを有効にすると\n画面の余白が丸型スマートウォッチ向けサイズに変更され\n組み込みプレイヤーも丸型レイアウトに切り替わります\n\n表示領域が縮小しますが\n現時点で最善策であり\n作業量も最小限で済む方法です</string>
     <string name="setting_player_desc">*「再生」ボタンを長押しで直接このページにアクセスできます\n再生に移動できない場合は、対応プレイヤーがインストールされていること\nそしてBiliTerminal2とプレイヤーが最新バージョンであることを確認してください</string>
-    <string name="setup_introduction">这是哔哩终端的Fork项目，\n\n愿你在这一方小小的屏幕中，找到属于自己的小小的快乐！\n\n暂无交流群\n反馈问题、提交建议请前往开源地址提交Issue！\n开源地址：https://github.com/huanli233/BiliTerminal2\n\n请注意：\n本软件永久免费开源，不会收集你的任何账号及隐私信息，请放心使用！\n若你在任何平台付费下载到哔哩终端，那么你被坑了！\n\n点击下面的按钮，让我们开始吧！</string>
+    <string name="setup_introduction">これはBiliClientのForkプロジェクトです。\n\nこの小さな画面の中で、あなただけの小さな楽しみを見つけられますように！\n\n現在、交流グループはありません。\n問題の報告や提案は、オープンソースのアドレスにてIssueを提出してください！\nオープンソースアドレス：https://github.com/huanli233/BiliTerminal2\n\nご注意ください：\n本ソフトウェアは永久に無料かつオープンソースで、\nあなたのアカウントやプライバシー情報を一切収集しませんので、\n安心してお使いください！\nもしあなたがどのプラットフォームでも有料でBiliTerminalをダウンロードした場合、\nそれは詐欺に遭っています！\n\n下のボタンをクリックして、始めましょう！</string>
 
     <string name="egg_warmwords_warmworld">心の健康に関わる問題に直面した時は、次の情報を覚えておいてください：\n全国24時間無料心理相談ホットライン（中国国内限定）：010‐82951332\nまたは公式アプリ「ビリビリ」で、[マイページ]→[下にスクロールしてオススメサービスを探す]→[エネルギー加油站]へ。\n\nもし必要なら、この隠し機能が役立つと嬉しいです。\n他の方が必要そうでしたら、ぜひ教えてあげてくださいね。</string>
 
-    <string name="special_login_desc">この機能は既存アカウントへのクイックログインに適しています。\n\n方法はこちら：\n別の端末に「ビリビリ」端末をインストールしQRコードスキャンでログイン→その端末の設定内にある「ログイン情報を確認」をタップ→表示された認証情報を下のテキストボックスにコピー→確認後に「ログイン」ボタンを押してください。\n※ログイン情報はテキストファイルに保存し、USB経由でこの端末に転送可能です。入力エラー時は余分な文字/不足文字を確認してください。\n\n重要：認証完了後、もう一方の端末では必ず【アプリデータを削除】か【アンインストール】を選択し、【ログアウト】をクリックしないでください！</string>
-    <string name="special_login_export">こちらが他の端末で特殊ログインに使える認証情報です。最下部のボタンでコピーしてください。\n\n有効期限が設定されているため即時利用が必要です。ログイン完了後は当端末のビリビリ端末から【データ消去】を実行してください（※絶対に【ログアウト】を押さないこと！）\n\nアカウント保護のため、この認証情報を第三者に共有しないようご注意ください。</string>
+    <string name="special_login_desc">この機能は既存のアカウントに素早くログインするためのものです。\n\n方法説明：\n別のデバイスにBiliTerminalをインストールし、QRコードをスキャンしてログインします。その後、そのデバイスの設定にある「ログイン情報を確認」をタップし、表示されたログイン情報を下のテキストボックスにコピーします。確認後に「ログイン」ボタンをクリックしてください。\nヒント：ログイン情報をtxtファイルにコピーし、USB経由でこのデバイスに転送することもできます。入力エラーが表示された場合は、余分な文字や不足している文字がないか確認してください。\n\n注意：ログインデータの入力が完了したら、もう一方のデバイスで直接【アプリデータを削除】するか【アンインストール】してください。【ログアウト】をクリックしないでください！</string>
+    <string name="special_login_export">以下があなたのログイン情報です。他のデバイスで特別ログインする際に使用できます。一番下のボタンをクリックするとコピーできます。\nログイン情報には有効期限がありますので、取得後すぐに使用し、インポートが完了したら、このデバイスの哔哩终端のデータを削除してください。（ログアウトはクリックしないでください！）\nこのページの情報を他人に伝えないよう注意し、アカウントの不正利用を防ぎましょう！</string>
 
     <string name="setting_lab_ui_landscape">※本機能は開発者に時間的余裕ができた場合を除き、今後アップデートを行いません\n\n設定を有効にするとアプリが横画面表示に切り替わり、一部リストが3列表示になります（タブレット端末などの横画面デバイスにより適応）\n\n※ご注意：単一列レイアウトのページでは表示崩れが発生する場合があります。テレビ利用の場合は公式TV版アプリ、またはサードパーティ製アプリをご利用ください</string>
     <string name="setting_lab_ui_rotatory">0を設定すると調整方式が無効化され、0以外の値ではスクロール距離に乗算されます\n\n調整は1.0を基準に増減させ、お好みの数値を見つけてください\n※新しいページを開いた時に設定が反映されます</string>
@@ -81,13 +81,13 @@
     <string name="desc_danmaku_force_r2l">高级弾幕以外の弾幕はすべて強制的にスクロール弾幕として表示され、\nトップ弾幕やボトム弾幕が画面を遮ることを防ぎます</string>
     <string name="desc_danmaku_showsender">ライブチャットの弾幕を送信したユーザーの名前を表示します</string>
     <string name="desc_subtitle_autoshow">有効にすると、字幕が含まれる動画を再生する際、自動的に字幕選択ダイアログが表示されます。</string>
-    <string name="desc_subtitle_ai_allowed">打开此选项，如果视频只有一个中文AI字幕，播放时仍然会让你选择。\n可能比较烦人，谨慎开启。</string>
+    <string name="desc_subtitle_ai_allowed">このオプションを有効にすると、ビデオに中国語のAI字幕しかない場合でも、再生時に選択を求められます。\n少し煩わしいかもしれませんので、注意してご利用ください。</string>
     <string name="desc_no_vip_color">このオプションを有効にすると、コメント欄で大会員ユーザーの専用赤い名前が表示されなくなります</string>
     <string name="desc_no_medal">このオプションを有効にすると、コメント欄でユーザーのファンバッジが表示されなくなります</string>
     <string name="desc_reply_marquee_name">このオプションを有効にすると、コメント欄のユーザー名が改行されず、\n走馬灯形式で表示されます</string>
     <string name="desc_live_by_guest">このオプションを有効にすると、ライブルームに入る際にゲストとして参加します。\n\n注意：有効にすると、弾幕の見逃しがさらに多くなる可能性があります</string>
 
-    <string name="err_rejected">被B站风控系统拦截了\n（无法解决）</string>
+    <string name="err_rejected">B站の風検システムに引っかかりました\n（解決不可）</string>
 
     <string name="desc_icon_license">以下は既知のオープンソースアイコンのライセンス情報です</string>
     <string name="login_qrcode_wating">公式モバイルアプリ「哔哩哔哩」でQRコードをスキャンしてログインしてください。\nQRコードをタップすると拡大や縮小ができます</string>
@@ -117,12 +117,12 @@
     <string name="version_code">バージョン番号</string>
     <string name="debug_tip">現在のバージョンはテスト版です\n最終的な正式版を表すものではありません</string>
     <string name="name_robin_not_bad">RobinNotBad</string>
-    <string name="desc_robin_not_bad">和他的纳西妲酱（项目发起者|屎山奠基人）</string>
+    <string name="desc_robin_not_bad">Robinと彼のナヒーダちゃん（プロジェクト発起者｜クソコードの礎）</string>
     <string name="name_huanli233">huanli233</string>
     <string name="desc_huanli233">このブランチの作成者</string>
     <string name="disclaimer">免責事項</string>
     <string name="recommend">おすすめ</string>
-    <string name="precious">入站必刷</string>
+    <string name="precious">入站必見のコンテンツ</string>
     <string name="popular">人気</string>
     <string name="prefix_live">[ライブ]</string>
     <string name="prefix_series">[シリーズ]</string>
