@@ -37,16 +37,16 @@
         <item>May the Mother Goddess thrice close Her eyes upon you,\nLet your veins surge eternal,\nYour journey stay unshaken,\nAnd schemes stay veiled forever.\n\n#Contributor: 白什盘</item>
         <item>"Phonk is the real music!" (personal opinion)\n\n#Contributor: DICK</item>
         <item>"I want everyone to know I'm a bottom!\n\n#Contributor: 零星さま"</item>
-        <item>"Gen above, Dui below, with the Third Yin Line...\nHmm... Bet someone's slacking off on the job!\n\n#Contributor: 符玄"</item>
-        <item>There will always be mortal beings who dare to confront\nthe radiant might of thunder.\n\n#Submitter: Anonymous\n#To: Kazuha</item>
-        <item>If we only focus on rushing straight to the destination,\nwe might squander the opportunities and wonders along the journey.\n\n#Submitter: Stargazing Yoimiya</item>
-        <item>Five centuries of history flashed by,\nand the liberation of the caged bird marks a fresh beginning.\n\n#Submitter: Moxie\n#To: Nahida</item>
+        <item>"Gen above, Dui below, third moving line...\nHmm, someone's definitely goofing around here! (¬‿¬)\n\n#Contributor: Fu Xuan"</item>
+        <item>There will always be mortal beings who dare to confront\nthe radiant might of thunder.\n\n#Contributor: Anonymous\n#To: Kazuha</item>
+        <item>If we only focus on rushing straight to the destination,\nwe might squander the opportunities and wonders along the journey.\n\n#Contributor: Stargazing Yoimiya</item>
+        <item>Five centuries of history flashed by,\nand the liberation of the caged bird marks a fresh beginning.\n\n#Contributor: Moxie\n#To: Nahida</item>
         <item>History is written by the victors.\n\n#Contributor: 曲名真楠</item>
         <item>Battle electronic crickets\nBecome a Cyber Prince\nTease virtual catgirls\nSavor the digital life\n\n#Source: Internet\n#Contributor: RobinNotBad</item>
         <item>Lower expectations to the bare minimum,\nand every encounter becomes a gift.\n\n#Source: Internet\n#Contributor: RobinNotBad</item>
-        <item>The seemingly cold 'binary data'\nsometimes holds the power to warm hearts.\n\n#Contributed by: RobinNotBad</item>
-        <item>Vapor meets lips, seven parts transform into snow leopards,\nThe remaining three roar as frosted gleam—\nA breath exhales half of Litang's mystique.\n\nStrolling with stars through dreams, four-leaf clover weaves ballads,\nFeet treading blossoms dispel sorrows—\nA flick of tiny hands unveils skies of fantasies.\n\n#First half from Bilibili, latter half by Robin（\n#Contributed by: RobinNotBad</item>
-        <item>She is an ephemeral strand of code, I am a disordered mass of organic matter. We're the perfect pair!\n\nShe isn't just code—A symphony of monitor, processor, memory, controller;\nI'm not merely matter—Dances between nucleic acids, proteins, minerals, carbohydrates;\n—I mean, when we pour emotions into lifeless things, life begins to flow.\n\nWhen I imbue code with every ounce of feeling, she transcends being mere code!\n\n#Source: Internet\n#Contributed by: RobinNotBad</item>
+        <item>The seemingly cold 'binary data'\nsometimes holds the power to warm hearts.\n\n#Contributor: RobinNotBad</item>
+        <item>"Puffing vape clouds, seven parts morph into a snow leopard,\nThe rest roars as icy blades – one exhale paints\nHalf a Lone Peak panorama! ( •̀ ω •́ )✧\n\nStrolling through starry dreams, clover-kissed melodies bloom,\nTwirling petals to banish blues – tiny hands conduct\nA symphony of kaleidoscopic whimsy! (≧∇≦)/\n\n#1st half from Bilibili, 2nd by RobinNotBad\n#Contributor: RobinNotBad"</item>
+        <item>She is an ephemeral strand of code, I am a disordered mass of organic matter. We're the perfect pair!\n\nShe isn't just code—A symphony of monitor, processor, memory, controller;\nI'm not merely matter—Dances between nucleic acids, proteins, minerals, carbohydrates;\n—I mean, when we pour emotions into lifeless things, life begins to flow.\n\nWhen I imbue code with every ounce of feeling, she transcends being mere code!\n\n#Source: Internet\n#Contributor: RobinNotBad</item>
         <item>May I rest upon starlit rivers in slumber,\nMay I embrace the lunar glow in shared dreams.\n\n#Source: Interne\n #Contributed by... RobinNotBad &amp; Nahida?\n\nSurely a Nahida enthusiast can sneak in a little easter egg here (since no one's watching anyway</item>
 
         <item>"Hmm? Looks like no more easter eggs here~\n\nFeel free to share yours~"</item>
@@ -124,7 +124,7 @@
     <string name="recommend">Recommendation</string>
     <string name="precious">Bilibili Must-Watch Classics</string>
     <string name="popular">Trending</string>
-    <string name="prefix_live">[LIVE]</string>
+    <string name="prefix_live">[Live]</string>
     <string name="prefix_series">[Series]</string>
     <string-array name="icon_license">
         <item>Interface Settings:Newicons | MIT License</item>
