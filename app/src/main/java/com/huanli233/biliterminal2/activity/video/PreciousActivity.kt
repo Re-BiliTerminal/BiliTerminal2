@@ -12,7 +12,6 @@ import com.huanli233.biliterminal2.activity.base.InstanceActivity
 import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter
 import com.huanli233.biliterminal2.api.apiResultNonNull
 import com.huanli233.biliterminal2.api.bilibiliApi
-import com.huanli233.biliterminal2.api.toResultNonNull
 import com.huanli233.biliterminal2.model.VideoCard
 import com.huanli233.biliterminal2.model.toVideoCard
 import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager
@@ -62,7 +61,7 @@ class PreciousActivity : InstanceActivity() {
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
         swipeRefreshLayout.setOnRefreshListener { this.loadPrecious() }
 
-        val title = findViewById<TextView>(R.id.pageName)
+        val title = findViewById<TextView>(R.id.page_name)
         title.setText(R.string.precious)
 
         loadPrecious()

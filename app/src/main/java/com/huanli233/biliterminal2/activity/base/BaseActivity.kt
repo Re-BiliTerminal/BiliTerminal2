@@ -100,7 +100,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun setPageName(name: String?) {
-        val textView: TextView? = findViewById(R.id.pageName)
+        val textView: TextView? = findViewById(R.id.page_name)
         if (textView != null) {
             textView.text = name
             textView.maxLines = 1

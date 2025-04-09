@@ -52,9 +52,6 @@
         <item>吶吶？這裡沒有更多彩蛋了呢＞﹏＜\n\n歡迎你的投稿哦？</item>
     </string-array>
 
-    <string name="player_aliang_package">com.aliangmaker.media</string>
-    <string name="player_mtv_package">com.xinxiangshicheng.wearbiliplayer.cn</string>
-
     <string name="desc_back_disable">有一些手錶（例如米兔等）是通過模擬按下返回鍵自行實現的右滑返回，若你在左右翻頁時因觸發滑動返回而退出頁面，請開啟此開關\n開啟後，其他設備上則為按下返回鍵也不退出頁面，並且右滑退出後會卡住。\n你可以使用菜單最下方的退出按鈕結束本軟件。\n正常用戶無需打開。</string>
     <string name="desc_fav_single">打開此選項，添加收藏後即退出收藏頁面，取消收藏不自動退出。</string>
     <string name="desc_fav_notice">打開此選項，退出收藏頁面會提示收藏成功。\n但其實在你框選了收藏夾的時候就已經收藏了，這個選項只是為了看上去放心（</string>

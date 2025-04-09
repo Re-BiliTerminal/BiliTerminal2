@@ -52,9 +52,6 @@
         <item>んん？ここにはもう隠し要素がないみたいだよ＞﹏＜\n\nあなたの投稿をお待ちしてまーす？</item>
     </string-array>
 
-    <string name="player_aliang_package">com.aliangmaker.media</string>
-    <string name="player_mtv_package">com.xinxiangshicheng.wearbiliplayer.cn</string>
-
     <string name="desc_back_disable">一部のスマートウォッチ（例：Mi Watchなど）は戻るキーの押下をエミュレートして右スワイプ戻りを実装しています\nページめくり操作で誤動作する場合はこのスイッチを有効化してください\n※有効化後は他デバイスで戻るキー操作時も終了しなくなり\n右スワイプ終了時にフリーズする場合があります\n終了時はメニュー最下部の終了ボタンをご使用ください\n通常のユーザーは有効化不要です</string>
     <string name="desc_fav_single">このオプションを有効化すると、お気に入り追加後即時にページを終了します\nお気に入り解除時は自動終了しません</string>
     <string name="desc_fav_notice">このオプションを有効化すると、お気に入りページ終了時に登録成功を通知します\n\n実はチェックボックスを選択した時点で登録済みです\nこのオプションは見た目の安心感のためだけのものです（</string>

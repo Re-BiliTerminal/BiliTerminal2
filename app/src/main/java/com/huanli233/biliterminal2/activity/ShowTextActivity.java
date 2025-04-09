@@ -26,7 +26,7 @@ public class ShowTextActivity extends BaseActivity {
         Intent intent = getIntent();
         String content = intent.getStringExtra("content");
 
-        TextView pagename = findViewById(R.id.pageName);
+        TextView pagename = findViewById(R.id.page_name);
         pagename.setText(intent.getStringExtra("title"));
 
 

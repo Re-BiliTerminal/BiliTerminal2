@@ -52,8 +52,8 @@
         <item>呐呐？这里没有更多彩蛋了呢＞﹏＜\n\n欢迎你的投稿哦？</item>
     </string-array>
 
-    <string name="player_aliang_package">com.aliangmaker.media</string>
-    <string name="player_mtv_package">com.xinxiangshicheng.wearbiliplayer.cn</string>
+    <string name="player_aliang_package" translatable="false">com.aliangmaker.media</string>
+    <string name="player_mtv_package" translatable="false">com.xinxiangshicheng.wearbiliplayer.cn</string>
 
     <string name="desc_back_disable">有一些手表（例如米兔等）是通过模拟按下返回键自行实现的右滑返回，若你在左右翻页时因触发滑动返回而退出页面，请开启此开关\n开启后，其他设备上则为按下返回键也不退出页面，并且右滑退出后会卡住。\n你可以使用菜单最下方的退出按钮结束本软件。\n正常用户无需打开。</string>
     <string name="desc_fav_single">打开此选项，添加收藏后即退出收藏页面，取消收藏不自动退出。</string>
@@ -164,6 +164,9 @@
     <string name="article_detail">专栏详情</string>
     <string name="opus_favorite_collection">图文收藏夹</string>
     <string name="operation_failed">操作失败：%1$s</string>
+    <string name="live">直播</string>
+    <string name="choose_quality">选择清晰度</string>
+    <string name="choose_play_host">选择播放路线</string>
     <string-array name="icon_license">
         <item>界面设置: Newicons, MIT License</item>
         <item>番剧: hicon, MIT License</item>

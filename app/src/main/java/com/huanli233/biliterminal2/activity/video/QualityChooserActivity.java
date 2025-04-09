@@ -37,7 +37,7 @@ public class QualityChooserActivity extends BaseActivity {
             finish();
         });
 
-        ((TextView) findViewById(R.id.pageName)).setText("请选择清晰度");
+        ((TextView) findViewById(R.id.page_name)).setText("请选择清晰度");
 
         long aid = getIntent().getLongExtra("aid", 0);
         String bvid = getIntent().getStringExtra("bvid");

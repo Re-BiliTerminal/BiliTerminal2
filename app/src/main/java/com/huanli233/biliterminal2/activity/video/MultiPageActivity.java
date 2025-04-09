@@ -36,7 +36,7 @@ public class MultiPageActivity extends BaseActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         findViewById(R.id.top).setOnClickListener(view -> finish());
 
-        TextView textView = findViewById(R.id.pageName);
+        TextView textView = findViewById(R.id.page_name);
         textView.setText("请选择分页");
 
         Intent intent = getIntent();

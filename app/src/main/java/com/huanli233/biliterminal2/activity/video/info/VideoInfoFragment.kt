@@ -50,7 +50,6 @@ import com.huanli233.biliterminal2.api.VideoInfoApi
 import com.huanli233.biliterminal2.api.WatchLaterApi
 import com.huanli233.biliterminal2.api.apiResultNonNull
 import com.huanli233.biliterminal2.api.bilibiliApi
-import com.huanli233.biliterminal2.api.toResultNonNull
 import com.huanli233.biliterminal2.ui.widget.RadiusBackgroundSpan
 import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager
 import com.huanli233.biliterminal2.util.ThreadManager
@@ -206,7 +205,7 @@ class VideoInfoFragment : Fragment() {
         description = rootview.findViewById(R.id.description)
         tagsText = rootview.findViewById(R.id.tags)
         val exclusiveTip = rootview.findViewById<MaterialCardView>(R.id.exclusiveTip)
-        val upRecyclerview = rootview.findViewById<RecyclerView>(R.id.up_recyclerView)
+        val upRecyclerview = rootview.findViewById<RecyclerView>(R.id.uploader_list)
         val exclusiveTipLabel = rootview.findViewById<TextView>(R.id.exclusiveTipLabel)
         val viewCount = rootview.findViewById<TextView>(R.id.views_count)
         val timeText = rootview.findViewById<TextView>(R.id.time_text)

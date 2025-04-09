@@ -39,9 +39,9 @@ public class ListChooseActivity extends BaseActivity {
 
         Intent intent = getIntent();
         if (intent.getStringExtra("title") != null) {
-            ((TextView) findViewById(R.id.pageName)).setText(intent.getStringExtra("title"));
+            ((TextView) findViewById(R.id.page_name)).setText(intent.getStringExtra("title"));
         } else {
-            ((TextView) findViewById(R.id.pageName)).setText("请选择");
+            ((TextView) findViewById(R.id.page_name)).setText("请选择");
         }
         if (intent.getSerializableExtra("items") == null) {
             finish();

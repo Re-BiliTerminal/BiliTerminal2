@@ -23,7 +23,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginStart="8dp"
-            android:id="@+id/pageName"
+            android:id="@+id/page_name"
             android:text="表情"
             android:textStyle="bold"
             app:drawableStartCompat="@drawable/arrow_back" />

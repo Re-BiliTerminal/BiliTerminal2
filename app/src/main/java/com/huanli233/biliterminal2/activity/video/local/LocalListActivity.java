@@ -48,7 +48,7 @@ public class LocalListActivity extends InstanceActivity {
 
         emptyTip = findViewById(R.id.emptyTip);
 
-        TextView pageName = findViewById(R.id.pageName);
+        TextView pageName = findViewById(R.id.page_name);
         pageName.setText("缓存");
 
         if (!FileUtil.checkStoragePermission()) {

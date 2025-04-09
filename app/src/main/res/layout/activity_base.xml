@@ -11,7 +11,7 @@
         android:layout_alignParentTop="true">
 
         <TextView
-            android:id="@+id/pageName"
+            android:id="@+id/page_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
