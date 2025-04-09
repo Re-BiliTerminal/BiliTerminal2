@@ -1,0 +1,44 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.BiliTerminal2" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@color/bgblack</item>
+        <item name="statusBarBackground">@color/pink</item>
+        <item name="android:colorForeground">@color/textwhite</item>
+        <item name="colorOnPrimary">@color/textwhite</item>
+        <item name="colorPrimary">@color/textwhite</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowSwipeToDismiss" tools:ignore="NewApi">true</item>
+
+        <item name="android:textViewStyle">@style/TextViewSytle</item>
+        <item name="editTextStyle">@style/EditTextStyle</item>
+        <item name="materialCardViewStyle">@style/CardStyle</item>
+        <item name="materialButtonStyle">@style/ButtonStyle</item>
+        <item name="switchStyle">@style/SwitchCompatStyle</item>
+        <item name="radioButtonStyle">@style/RadioButtonStyle</item>
+        <item name="recyclerViewStyle">@style/ListStyle</item>
+
+        <item name="colorSwitchThumbNormal">@color/textwhite</item>
+        <item name="colorControlActivated">@color/textwhite</item>
+        <item name="colorControlNormal">@color/color_ripple</item>
+        <item name="android:textColor">@color/textwhite</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Theme.BiliTerminal2.Splash" parent="Theme.BiliTerminal2">
+        <item name="android:windowBackground">@drawable/splash_text</item>
+    </style>
+
+    <style name="Theme.NoSwipe" parent="android:Theme.Black">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowSwipeToDismiss" tools:ignore="NewApi">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@color/bgblack</item>
+        <item name="statusBarBackground">@color/pink</item>
+        <item name="colorOnPrimary">@color/textwhite</item>
+    </style>
+
+    <style name="Theme.NoSwipe.AppCompat" parent="Theme.BiliTerminal2">
+        <item name="android:windowSwipeToDismiss" tools:ignore="NewApi">false</item>
+    </style>
+</resources>
