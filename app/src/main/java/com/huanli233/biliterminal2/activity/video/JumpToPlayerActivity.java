@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
 import android.widget.TextView;
 
@@ -19,9 +18,9 @@ import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.api.HistoryApi;
 import com.huanli233.biliterminal2.api.PlayerApi;
 import com.huanli233.biliterminal2.api.VideoInfoApi;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 
 import org.json.JSONException;
 
@@ -51,11 +50,11 @@ public class JumpToPlayerActivity extends BaseActivity {
             if (code == RESULT_OK && result != null) {
                 int progress = result.getIntExtra("progress", 0);
 
-                CenterThreadPool.run(() -> {
+                ThreadManager.run(() -> {
                     if (mid != 0 && aid != 0) try {
                         HistoryApi.reportHistory(aid, cid, mid, progress / 1000);
                     } catch (Exception e) {
-                        MsgUtil.err("进度上报：", e);
+                        MsgUtil.error("进度上报：", e);
                     }
                 });
             }
@@ -84,12 +83,12 @@ public class JumpToPlayerActivity extends BaseActivity {
 
         danmakuurl = "https://comment.bilibili.com/" + cid + ".xml";
 
-        requestVideo(qn != -1 ? qn : SharedPreferencesUtil.getInt("play_qn", 16));
+        requestVideo(qn != -1 ? qn : Preferences.getInt("play_qn", 16));
     }
 
     @SuppressLint("SetTextI18n")
     private void requestVideo(int qn) {
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 if (download == 0 && progress == -1) {
                     Pair<Long, Integer> progressPair = VideoInfoApi.getWatchProgress(aid);

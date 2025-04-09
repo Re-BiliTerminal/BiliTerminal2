@@ -13,17 +13,11 @@ import com.huanli233.biliterminal2.listener.OnLoadMoreListener;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.view.ImageAutoLoadScrollListener;
 
-
-/*
-尝试造轮子以减少代码量
-2024-05-02
- */
-
 public class RefreshMainActivity extends InstanceActivity {
     public SwipeRefreshLayout swipeRefreshLayout;
     public RecyclerView recyclerView;
     public OnLoadMoreListener listener;
-    public boolean bottom = false;
+    public boolean bottomReached = false;
     public int page = 1;
     public long lastLoadTimestamp;
     protected boolean isRefreshing;
@@ -41,7 +35,7 @@ public class RefreshMainActivity extends InstanceActivity {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (listener != null && !recyclerView.canScrollVertically(1) && !swipeRefreshLayout.isRefreshing() && newState == RecyclerView.SCROLL_STATE_DRAGGING && !bottom) {
+                if (listener != null && !recyclerView.canScrollVertically(1) && !swipeRefreshLayout.isRefreshing() && newState == RecyclerView.SCROLL_STATE_DRAGGING && !bottomReached) {
                     goOnLoad();
                 }
             }
@@ -54,7 +48,7 @@ public class RefreshMainActivity extends InstanceActivity {
                     assert manager != null;
                     int lastItemPosition = manager.findLastCompletelyVisibleItemPosition();  //获取最后一个完全显示的itemPosition
                     int itemCount = manager.getItemCount();
-                    if (lastItemPosition >= (itemCount - 3) && dy > 0 && !swipeRefreshLayout.isRefreshing() && !isRefreshing && !bottom) {// 滑动到倒数第三个就可以刷新了
+                    if (lastItemPosition >= (itemCount - 3) && dy > 0 && !swipeRefreshLayout.isRefreshing() && !isRefreshing && !bottomReached) {// 滑动到倒数第三个就可以刷新了
                         goOnLoad();
                     }
                 }
@@ -93,8 +87,8 @@ public class RefreshMainActivity extends InstanceActivity {
         }
     }
 
-    public void setBottom(boolean bool) {
-        bottom = bool;
+    public void setBottomReached(boolean bool) {
+        bottomReached = bool;
     }
 
     public void loadFail() {

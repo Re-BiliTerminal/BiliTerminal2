@@ -17,8 +17,8 @@ import com.huanli233.biliterminal2.adapter.viewpager.ViewPagerFragmentAdapter;
 import com.huanli233.biliterminal2.api.ReplyApi;
 import com.huanli233.biliterminal2.event.ReplyEvent;
 import com.huanli233.biliterminal2.helper.TutorialHelper;
-import com.huanli233.biliterminal2.util.AnimationUtils;
-import com.huanli233.biliterminal2.util.AsyncLayoutInflaterX;
+import com.huanli233.biliterminal2.util.view.AnimationUtils;
+import com.huanli233.biliterminal2.util.view.AsyncLayoutInflaterX;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.TerminalContext;
 
@@ -73,7 +73,7 @@ public class DynamicInfoActivity extends BaseActivity {
                             TutorialHelper.showPagerTutorial(this, 2);
                         });
                     }).onFailure((e) -> {
-                        MsgUtil.err(e);
+                        MsgUtil.error(e);
                         ((ImageView) findViewById(R.id.loading)).setImageResource(R.mipmap.loading_2233_error);
                     }));
         });

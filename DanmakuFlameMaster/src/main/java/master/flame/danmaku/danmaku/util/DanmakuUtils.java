@@ -16,6 +16,7 @@
 
 package master.flame.danmaku.danmaku.util;
 
+import android.graphics.Canvas;
 import android.text.TextUtils;
 
 import master.flame.danmaku.danmaku.model.AbsDisplayer;
@@ -92,7 +93,7 @@ public class DanmakuUtils {
         cache.build((int) Math.ceil(danmaku.paintWidth), (int) Math.ceil(danmaku.paintHeight), disp.getDensityDpi(), false);
         DrawingCacheHolder holder = cache.get();
         if (holder != null) {
-            ((AbsDisplayer) disp).drawDanmaku(danmaku, holder.canvas, 0, 0, true);
+            ((AbsDisplayer<Canvas, ?>) disp).drawDanmaku(danmaku, holder.canvas, 0, 0, true);
             if(disp.isHardwareAccelerated()) {
                 holder.splitWith(disp.getWidth(), disp.getHeight(), disp.getMaximumCacheWidth(),
                         disp.getMaximumCacheHeight());
@@ -119,10 +120,7 @@ public class DanmakuUtils {
         if (obj1.text == obj2.text) {
             return true;
         }
-        if (obj1.text != null && obj1.text.equals(obj2.text)) {
-            return true;
-        }
-        return false;
+        return obj1.text != null && obj1.text.equals(obj2.text);
     }
 
     public static int compare(BaseDanmaku obj1, BaseDanmaku obj2) {

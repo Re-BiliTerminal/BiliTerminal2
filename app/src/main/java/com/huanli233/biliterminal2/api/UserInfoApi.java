@@ -1,16 +1,14 @@
 package com.huanli233.biliterminal2.api;
 
-import android.util.Log;
-
 import com.elvishew.xlog.XLog;
 import com.huanli233.biliterminal2.model.ArticleCard;
 import com.huanli233.biliterminal2.model.LiveRoom;
 import com.huanli233.biliterminal2.model.UserInfo;
 import com.huanli233.biliterminal2.model.VideoCard;
-import com.huanli233.biliterminal2.util.DmImgParamUtil;
-import com.huanli233.biliterminal2.util.NetWorkUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.huanli233.biliterminal2.util.ToolsUtil;
+import com.huanli233.biliterminal2.util.api.DmImgParamUtil;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
+import com.huanli233.biliterminal2.util.Preferences;
+import com.huanli233.biliterminal2.util.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -75,7 +73,7 @@ public class UserInfoApi {
             JSONObject vip = card.getJSONObject("vip");
             if (vip.getInt("status") == 1) {
                 UserInfo result = new UserInfo(mid, name, avatar, sign, fans, attention, level, followed, notice, official, officialDesc, vip.getInt("role"), sys_notice, liveroom, card.getInt("is_senior_member"));
-                result.vip_nickname_color = vip.optString("nickname_color", "");
+                result.vipNicknameColor = vip.optString("nickname_color", "");
                 return result;
             } else
                 return new UserInfo(mid, name, avatar, sign, fans, attention, level, followed, notice, official, officialDesc, sys_notice, liveroom, card.getInt("is_senior_member"));
@@ -149,7 +147,7 @@ public class UserInfoApi {
                     JSONObject card = vlist.getJSONObject(i);
                     String cover = card.getString("pic");
                     long play = card.getLong("play");
-                    String playStr = ToolsUtil.toWan(play) + "观看";
+                    String playStr = Utils.toWan(play) + "观看";
                     long aid = card.getLong("aid");
                     String bvid = card.getString("bvid");
                     String upName = card.getString("author");
@@ -180,7 +178,7 @@ public class UserInfoApi {
                     articleCard.id = card.getLong("id");
                     articleCard.title = card.getString("title");
                     JSONObject stats = card.getJSONObject("stats");
-                    articleCard.view = ToolsUtil.toWan(stats.getInt("view")) + "阅读";
+                    articleCard.view = Utils.toWan(stats.getInt("view")) + "阅读";
                     articleCard.cover = card.getString("banner_url");
                     JSONObject author = card.getJSONObject("author");
                     articleCard.upName = author.getString("name");
@@ -193,7 +191,7 @@ public class UserInfoApi {
 
     public static int followUser(long mid, boolean isFollow) throws IOException, JSONException {
         String url = "https://api.bilibili.com/x/relation/modify?";
-        String arg = "fid=" + mid + "&csrf=" + NetWorkUtil.getInfoFromCookie("bili_jct", SharedPreferencesUtil.getString(SharedPreferencesUtil.COOKIES, ""));
+        String arg = "fid=" + mid + "&csrf=" + NetWorkUtil.getInfoFromCookie("bili_jct", Preferences.getString(Preferences.COOKIES, ""));
         if (isFollow) arg += "&act=1"; //关注
         else arg += "&act=2"; //取消关注
         JSONObject all = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, arg, NetWorkUtil.webHeaders).body()).string());

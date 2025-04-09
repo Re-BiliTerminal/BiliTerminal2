@@ -14,23 +14,16 @@ import com.huanli233.biliterminal2.activity.article.ArticleInfoActivity;
 import com.huanli233.biliterminal2.activity.dynamic.DynamicInfoActivity;
 import com.huanli233.biliterminal2.activity.live.LiveInfoActivity;
 import com.huanli233.biliterminal2.activity.video.info.VideoInfoActivity;
-import com.huanli233.biliterminal2.api.ArticleApi;
 import com.huanli233.biliterminal2.api.DynamicApi;
 import com.huanli233.biliterminal2.api.LiveApi;
 import com.huanli233.biliterminal2.api.ReplyApi;
 import com.huanli233.biliterminal2.api.UserInfoApi;
-import com.huanli233.biliterminal2.api.VideoInfoApi;
 import com.huanli233.biliterminal2.model.ArticleInfo;
 import com.huanli233.biliterminal2.model.ContentType;
 import com.huanli233.biliterminal2.model.Dynamic;
 import com.huanli233.biliterminal2.model.LiveInfo;
 import com.huanli233.biliterminal2.model.LivePlayInfo;
 import com.huanli233.biliterminal2.model.LiveRoom;
-import com.huanli233.biliterminal2.model.Reply;
-import com.huanli233.biliterminal2.model.UserInfo;
-import com.huanli233.biliterminal2.model.VideoInfo;
-
-import org.json.JSONObject;
 
 import java.util.concurrent.Future;
 
@@ -85,7 +78,6 @@ public class TerminalContext {
     }
 
     public void enterVideoDetailPage(Context context, long aid, String bvid, String type, long seekReply) {
-        //创建intent并填充信息
         Intent intent = new Intent(context, VideoInfoActivity.class);
         intent.putExtra("aid", aid);
         if (!TextUtils.isEmpty(bvid)) {
@@ -95,61 +87,9 @@ public class TerminalContext {
             intent.putExtra("type", type);
         }
         intent.putExtra("seekReply", seekReply);
-        //启动activity
         context.startActivity(intent);
     }
 
-    private Result<VideoInfo> fetchVideoInfoByAid(long aid, boolean saveToCache) {
-        JSONObject object;
-        try {
-            object = VideoInfoApi.getJsonByAid(aid);
-        } catch (Exception t) {
-            return Result.failure(t);
-        }
-        if (object != null) {
-            try {
-                VideoInfo info = VideoInfoApi.getInfoByJson(object);
-                if (saveToCache) {
-                    contentLruCache.put(ContentType.Video.getTypeCode() + "_" + aid, info);
-                }
-                return Result.success(info);
-            } catch (Exception e) {
-                return Result.failure(e);
-            }
-        }
-        return Result.failure(new IllegalTerminalStateException("video object is null"));
-    }
-
-    private Result<VideoInfo> fetchVideoInfoByBvId(String bvid, boolean saveToCache) {
-        JSONObject object;
-        try {
-            object = VideoInfoApi.getJsonByBvid(bvid);
-        } catch (Exception t) {
-            return Result.failure(t);
-        }
-        if (object != null) {
-            try {
-                VideoInfo info = VideoInfoApi.getInfoByJson(object);
-                if (saveToCache) {
-                    contentLruCache.put(ContentType.Video.getTypeCode() + "_" + bvid, info);
-                }
-                return Result.success(info);
-            } catch (Exception t) {
-                return Result.failure(t);
-            }
-        }
-        return Result.failure(new IllegalTerminalStateException("video object is null"));
-    }
-
-    private Result<VideoInfo> fetchVideoInfoByAidOrBvId(long aid, String bvid, boolean saveToCache) {
-        if (TextUtils.isEmpty(bvid)) {
-            return fetchVideoInfoByAid(aid, saveToCache);
-        } else {
-            return fetchVideoInfoByBvId(bvid, saveToCache);
-        }
-    }
-
-    //专栏详情页跳转
     public void enterArticleDetailPage(Context context, long cvid) {
         enterArticleDetailPage(context, cvid, -1);
     }
@@ -159,18 +99,6 @@ public class TerminalContext {
         intent.putExtra("cvid", cvid);
         intent.putExtra("seekReply", seekReply);
         context.startActivity(intent);
-    }
-
-    private Result<ArticleInfo> fetchArticleInfo(long cvid, boolean saveToCache) {
-        try {
-            ArticleInfo article = ArticleApi.getArticle(cvid);
-            if (article != null && saveToCache) {
-                contentLruCache.put(ContentType.Article.getTypeCode() + "_" + cvid, article);
-            }
-            return Result.success(article);
-        } catch (Exception t) {
-            return Result.failure(t);
-        }
     }
 
     // 动态详情页跳转
@@ -224,125 +152,16 @@ public class TerminalContext {
         context.startActivity(intent);
     }
 
-    public Result<LiveInfo> fetchLiveInfo(long roomId, boolean saveToCache) {
-        Future<LivePlayInfo> livePlayInfoFuture = CenterThreadPool.supplyAsyncWithFuture(() -> LiveApi.getRoomPlayInfo(roomId, 80));
-        //利用future的特性让UserInfo在后面慢慢下着，同时开始下载LiveRoom，这里要等待LiveRoom下载完成。
-        try {
-            LiveRoom liveRoom = LiveApi.getRoomInfo(roomId);
-            if (liveRoom == null) {
-                return Result.failure(new IllegalTerminalStateException("liveRoom is null"));
-            }
-            //LiveRoom下载完成后下UserInfo
-            UserInfo userInfo = UserInfoApi.getUserInfo(liveRoom.uid);
-            LivePlayInfo playInfo = livePlayInfoFuture.get();
-            LiveInfo liveInfo = new LiveInfo(userInfo, liveRoom, playInfo);
-            if (saveToCache) {
-                contentLruCache.put(ContentType.Live.getTypeCode() + "_" + roomId, liveInfo);
-            }
-            return Result.success(liveInfo);
-        } catch (Exception t) {
-            return Result.failure(t);
-        }
-    }
-    // ---------------------------详情页跳转功能 end---------------------------------------
-
-    /**
-     * 退出详情页的调用，所有启动详情页的Activity中需要再onDestroy的回调中调用该方法，释放自己的上下文对象
-     */
-    public void leaveDetailPage() {
-    }
-
-    public Result<Reply> fetchReply(ContentType contentType, long contentId, long replyId, boolean saveToCache) {
-        Result<Reply> replyResult = ReplyApi.getRootReply(contentType, contentId, replyId);
-        if (replyResult.isSuccess() && saveToCache) {
-            Reply reply = replyResult.getOrNull();
-            if (reply != null) {
-                contentLruCache.put(contentType.getTypeCode() + "_" + contentId + "_" + replyId, reply);
-            }
-        }
-        return replyResult;
-    }
-
-    // ---------------------------- 数据源上下文 ----------------------------------------
-    public LiveData<Result<VideoInfo>> getVideoInfoByAidOrBvId(long aid, String bvid) {
-        String key;
-        if (TextUtils.isEmpty(bvid)) {
-            key = ContentType.Video.getTypeCode() + "_" + aid;
-        } else {
-            key = ContentType.Video.getTypeCode() + "_" + bvid;
-        }
-        Object obj = contentLruCache.get(key);
-        if (!(obj instanceof VideoInfo)) {
-            return CenterThreadPool.supplyAsyncWithLiveData(() -> fetchVideoInfoByAidOrBvId(aid, bvid, true).getOrThrow());
-        } else {
-            return new MutableLiveData<>(Result.success((VideoInfo) obj));
-        }
-    }
-
-    public LiveData<Result<ArticleInfo>> getArticleInfoByCvId(long cvid) {
-        String key = ContentType.Article.getTypeCode() + "_" + cvid;
-        Object obj = contentLruCache.get(key);
-        if (!(obj instanceof ArticleInfo)) {
-            return CenterThreadPool.supplyAsyncWithLiveData(() -> fetchArticleInfo(cvid, true).getOrThrow());
-        } else {
-            return new MutableLiveData<>(Result.success((ArticleInfo) obj));
-        }
-    }
-
     public LiveData<Result<Dynamic>> getDynamicById(long id) {
         String key = ContentType.Dynamic.getTypeCode() + "_" + id;
         Object obj = contentLruCache.get(key);
         if (!(obj instanceof Dynamic)) {
-            return CenterThreadPool.supplyAsyncWithLiveData(() -> fetchDynamic(id, true).getOrThrow());
+            return ThreadManager.supplyAsyncWithLiveData(() -> fetchDynamic(id, true).getOrThrow());
         } else {
             return new MutableLiveData<>(Result.success((Dynamic) obj));
         }
     }
 
-    public LiveData<Result<LiveInfo>> getLiveInfoByRoomId(long roomId) {
-        String key = ContentType.Live.getTypeCode() + "_" + roomId;
-        Object obj = contentLruCache.get(key);
-        if (!(obj instanceof LiveInfo)) {
-            return CenterThreadPool.supplyAsyncWithLiveData(() -> fetchLiveInfo(roomId, true).getOrThrow());
-        } else {
-            return new MutableLiveData<>(Result.success((LiveInfo) obj));
-        }
-    }
-
-    public LiveData<Result<Reply>> getReply(ContentType contentType, long contentId, long replyId) {
-        String key = contentType.getTypeCode() + "_" + contentId + "_" + replyId;
-        Object obj = contentLruCache.get(key);
-        if (obj instanceof Reply) {
-            return new MutableLiveData<>(Result.success((Reply) obj));
-        } else {
-            return CenterThreadPool.supplyAsyncWithLiveData(() -> fetchReply(contentType, contentId, replyId, true).getOrThrow());
-        }
-    }
-
-
-    public String getTerminalKey(Object item) {
-        if (item instanceof VideoInfo) {
-            VideoInfo videoInfo = (VideoInfo) item;
-            if (TextUtils.isEmpty(videoInfo.bvid)) {
-                return ContentType.Video.getTypeCode() + "_" + videoInfo.aid;
-            } else {
-                return ContentType.Video.getTypeCode() + "_" + videoInfo.bvid;
-            }
-        } else if (item instanceof ArticleInfo) {
-            return ContentType.Article.getTypeCode() + "_" + ((ArticleInfo) item).id;
-        } else if (item instanceof Dynamic) {
-            return ContentType.Dynamic.getTypeCode() + "_" + ((Dynamic) item).dynamicId;
-        } else if (item instanceof LiveInfo) {
-            return ContentType.Live.getTypeCode() + "_" + ((LiveInfo) item).getLiveRoom().roomid;
-        } else if (item instanceof Reply) {
-            Reply reply = (Reply) item;
-        }
-        return null;
-    }
-    // ------------------------- 数据源上下文 end ------------------------------------
-
-
-    //----------------------------------私有函数区----------------------------------------
     private static final class InstanceHolder {
         static final TerminalContext INSTANCE = new TerminalContext();
     }

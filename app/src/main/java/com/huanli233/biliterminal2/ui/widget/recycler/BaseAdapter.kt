@@ -1,136 +1,125 @@
-package com.huanli233.biliterminal2.ui.widget.recycler;
+package com.huanli233.biliterminal2.ui.widget.recycler
 
-import android.annotation.SuppressLint;
-import android.content.Context;
+import android.annotation.SuppressLint
+import android.content.Context
 
-import androidx.annotation.Nullable;
+abstract class BaseAdapter<M, VH : BaseHolder> : AbstractAdapter<VH> {
+    private val dataList: MutableList<M>
 
-import java.util.ArrayList;
-import java.util.List;
-
-public abstract class BaseAdapter<M, VH extends BaseHolder> extends AbstractAdapter<VH> {
-    private final List<M> dataList;
-
-    public int getViewType(int position) {
-        return 0;
+    fun getViewType(): Int {
+        return 0
     }
 
-    public BaseAdapter(Context context) {
-        super(context);
-        this.dataList = new ArrayList<>();
+    constructor(context: Context) : super(context) {
+        this.dataList = mutableListOf()
     }
 
-    public BaseAdapter(Context context, List<M> dataList) {
-        super(context);
-        this.dataList = new ArrayList<>();
-        this.dataList.addAll(dataList);
+    constructor(context: Context, dataList: List<M>) : super(context) {
+        this.dataList = dataList.toMutableList()
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public boolean fillList(List<M> list) {
-        this.dataList.clear();
-        boolean result = this.dataList.addAll(list);
-        notifyDataSetChanged();
-        return result;
+    fun fillList(list: List<M>): Boolean {
+        dataList.clear()
+        val result = dataList.addAll(list)
+        notifyDataSetChanged()
+        return result
     }
 
-    public boolean appendItem(M item) {
-        int size = this.dataList.size();
-        boolean result = this.dataList.add(item);
-        notifyItemInserted(size + getHeaderViewCount());
-        return result;
+    fun appendItem(item: M): Boolean {
+        val size = dataList.size
+        val result = dataList.add(item)
+        notifyItemInserted(size + headerViewCount)
+        return result
     }
 
-    public boolean appendList(List<M> list) {
-        int size = this.dataList.size();
-        boolean result = this.dataList.addAll(list);
-        notifyItemRangeInserted(size, list.size());
-        return result;
+    fun appendList(list: List<M>): Boolean {
+        val size = dataList.size
+        val result = dataList.addAll(list)
+        notifyItemRangeInserted(size, list.size)
+        return result
     }
 
-    public void preposeItem(M item) {
-        this.dataList.add(0, item);
-        notifyItemInserted(0);
-        notifyItemRangeChanged(0, getItemCount());
+    fun preposeItem(item: M) {
+        dataList.add(0, item)
+        notifyItemInserted(0)
+        notifyItemRangeChanged(0, itemCount)
     }
 
-    public void preposeList(List<M> list) {
-        this.dataList.addAll(0, list);
-        notifyItemRangeInserted(0, list.size());
+    fun preposeList(list: List<M>) {
+        dataList.addAll(0, list)
+        notifyItemRangeInserted(0, list.size)
     }
 
-    public void updateItem(int position, M item) {
-        this.dataList.set(position, item);
-        notifyItemChanged(getHeaderViewCount() + position);
+    fun updateItem(position: Int, item: M) {
+        dataList[position] = item
+        notifyItemChanged(headerViewCount + position)
     }
 
-    public void updateItem(M originalItem, M newItem) {
-        int index = this.dataList.indexOf(originalItem);
+    fun updateItem(originalItem: M, newItem: M) {
+        val index = dataList.indexOf(originalItem)
         if (index >= 0) {
-            this.dataList.set(index, newItem);
-            notifyItemChanged(index);
+            dataList[index] = newItem
+            notifyItemChanged(index)
         }
     }
 
-    public void removeItem(int position) {
-        if (this.headerView == null) {
-            this.dataList.remove(position);
-            notifyItemRemoved(position);
+    fun removeItem(position: Int) {
+        if (this.headerViewCreator == null) {
+            dataList.removeAt(position)
+            notifyItemRemoved(position)
         } else {
-            this.dataList.remove(position - 1);
-            notifyItemRemoved(position - 1);
+            dataList.removeAt(position - 1)
+            notifyItemRemoved(position - 1)
         }
     }
 
-    public void removeItem(M item) {
-        int index = this.dataList.indexOf(item);
+    fun removeItem(item: M) {
+        val index = dataList.indexOf(item)
         if (index >= 0) {
-            this.dataList.remove(index);
-            notifyItemRemoved(index);
+            dataList.removeAt(index)
+            notifyItemRemoved(index)
         }
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void clearData() {
-        this.dataList.clear();
-        notifyDataSetChanged();
+    fun clearData() {
+        dataList.clear()
+        notifyDataSetChanged()
     }
 
-    @Override
-    public final int getItemViewType(int position) {
-        if (this.headerView != null && position == 0) {
-            return VIEW_TYPE_HEADER;
-        } else if (this.footerView != null && position == this.dataList.size() + getHeaderViewCount()) {
-            return VIEW_TYPE_FOOTER;
+    override fun getItemViewType(position: Int): Int {
+        if (this.headerViewCreator != null && position == 0) {
+            return VIEW_TYPE_HEADER
+        } else if (this.footerViewCreator != null && position == dataList.size + headerViewCount) {
+            return VIEW_TYPE_FOOTER
         }
-        return getViewType(position);
+        return getViewType()
     }
 
-    @Override
-    public int getItemCount() {
-        return this.dataList.size() + getExtraViewCount();
+    override fun getItemCount(): Int {
+        return dataList.size + extraViewCount
     }
 
-    @Nullable
-    public M getItem(int i) {
-        List<M> list;
-        if ((this.headerView == null || i != 0) && i < this.dataList.size() + getHeaderViewCount()) {
-            if (this.headerView == null) {
-                list = this.dataList;
+    fun getItem(i: Int): M? {
+        var pos = i
+        val list: List<M>
+        if ((this.headerViewCreator == null || pos != 0) && pos < dataList.size + headerViewCount) {
+            if (this.headerViewCreator == null) {
+                list = this.dataList
             } else {
-                list = this.dataList;
-                i--;
+                list = this.dataList
+                pos--
             }
-            return list.get(i);
+            return list[pos]
         }
-        return null;
+        return null
     }
 
-    public M getItem(VH vh) {
-        return getItem(vh.getAdapterPosition());
+    fun getItem(vh: VH): M? {
+        return getItem(vh.adapterPosition)
     }
 
-    public List<M> getAllData() {
-        return this.dataList;
-    }
+    val allData: List<M>
+        get() = this.dataList
 }

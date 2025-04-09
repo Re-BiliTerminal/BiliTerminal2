@@ -72,8 +72,7 @@ public class DanmakuFilters {
         }
 
         public void disableType(Integer type) {
-            if (mFilterTypes.contains(type))
-                mFilterTypes.remove(type);
+            mFilterTypes.remove(type);
         }
 
         @Override
@@ -181,10 +180,7 @@ public class DanmakuFilters {
             }
 
             long elapsedTime = SystemClock.uptimeMillis() - timer.currMillisecond;
-            if (elapsedTime >= mMaxTime) {
-                return true;
-            }
-            return false;
+            return elapsedTime >= mMaxTime;
         }
 
         @Override
@@ -597,26 +593,37 @@ public class DanmakuFilters {
         }
         IDanmakuFilter<?> filter = filters.get(tag);
         if (filter == null) {
-            if (TAG_TYPE_DANMAKU_FILTER.equals(tag)) {
-                filter = new TypeDanmakuFilter();
-            } else if (TAG_QUANTITY_DANMAKU_FILTER.equals(tag)) {
-                filter = new QuantityDanmakuFilter();
-            } else if (TAG_ELAPSED_TIME_FILTER.equals(tag)) {
-                filter = new ElapsedTimeFilter();
-            } else if (TAG_TEXT_COLOR_DANMAKU_FILTER.equals(tag)) {
-                filter = new TextColorFilter();
-            } else if (TAG_USER_ID_FILTER.equals(tag)) {
-                filter = new UserIdFilter();
-            } else if (TAG_USER_HASH_FILTER.equals(tag)) {
-                filter = new UserHashFilter();
-            } else if (TAG_GUEST_FILTER.equals(tag)) {
-                filter = new GuestFilter();
-            } else if (TAG_DUPLICATE_FILTER.equals(tag)) {
-                filter = new DuplicateMergingFilter();
-            } else if (TAG_MAXIMUN_LINES_FILTER.equals(tag)) {
-                filter = new MaximumLinesFilter();
-            } else if (TAG_OVERLAPPING_FILTER.equals(tag)) {
-                filter = new OverlappingFilter();
+            switch (tag) {
+                case TAG_TYPE_DANMAKU_FILTER:
+                    filter = new TypeDanmakuFilter();
+                    break;
+                case TAG_QUANTITY_DANMAKU_FILTER:
+                    filter = new QuantityDanmakuFilter();
+                    break;
+                case TAG_ELAPSED_TIME_FILTER:
+                    filter = new ElapsedTimeFilter();
+                    break;
+                case TAG_TEXT_COLOR_DANMAKU_FILTER:
+                    filter = new TextColorFilter();
+                    break;
+                case TAG_USER_ID_FILTER:
+                    filter = new UserIdFilter();
+                    break;
+                case TAG_USER_HASH_FILTER:
+                    filter = new UserHashFilter();
+                    break;
+                case TAG_GUEST_FILTER:
+                    filter = new GuestFilter();
+                    break;
+                case TAG_DUPLICATE_FILTER:
+                    filter = new DuplicateMergingFilter();
+                    break;
+                case TAG_MAXIMUN_LINES_FILTER:
+                    filter = new MaximumLinesFilter();
+                    break;
+                case TAG_OVERLAPPING_FILTER:
+                    filter = new OverlappingFilter();
+                    break;
             }
         }
         if (filter == null) {
@@ -683,7 +690,7 @@ public class DanmakuFilters {
     private void throwFilterException() {
         try {
             throw filterException;
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 

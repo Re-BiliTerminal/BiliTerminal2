@@ -1,13 +1,12 @@
 package com.huanli233.biliterminal2.activity.video.series;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.video.SeriesCardAdapter;
 import com.huanli233.biliterminal2.api.SeriesApi;
 import com.huanli233.biliterminal2.model.Series;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 
 import java.util.ArrayList;
 
@@ -28,7 +27,7 @@ public class UserSeriesActivity extends RefreshListActivity {
 
         setOnLoadMoreListener(this::continueLoading);
 
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 bottom = (SeriesApi.getUserSeries(mid, page, seriesList) == 1);
                 setRefreshing(false);
@@ -42,7 +41,7 @@ public class UserSeriesActivity extends RefreshListActivity {
     }
 
     private void continueLoading(int page) {
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 int last = seriesList.size();
                 int result = SeriesApi.getUserSeries(mid, page, seriesList);

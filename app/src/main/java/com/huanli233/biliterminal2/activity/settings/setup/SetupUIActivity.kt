@@ -12,7 +12,7 @@ import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.activity.base.BaseActivity
 import com.huanli233.biliterminal2.activity.settings.UIPreviewActivity
 import com.huanli233.biliterminal2.util.MsgUtil
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil
+import com.huanli233.biliterminal2.util.Preferences
 
 class SetupUIActivity : BaseActivity() {
     private lateinit var uiScaleInput: EditText
@@ -25,24 +25,24 @@ class SetupUIActivity : BaseActivity() {
         setContentView(R.layout.activity_setup_ui)
 
         uiScaleInput = findViewById(R.id.ui_scale_input)
-        uiScaleInput.setText(SharedPreferencesUtil.getFloat("dpi", 1.0f).toString())
+        uiScaleInput.setText(Preferences.getFloat("dpi", 1.0f).toString())
 
         uiPaddingH = findViewById(R.id.ui_padding_horizontal)
-        uiPaddingH.setText(SharedPreferencesUtil.getInt("paddingH_percent", 0).toString())
+        uiPaddingH.setText(Preferences.getInt("paddingH_percent", 0).toString())
         uiPaddingV = findViewById(R.id.ui_padding_vertical)
-        uiPaddingV.setText(SharedPreferencesUtil.getInt("paddingV_percent", 0).toString())
+        uiPaddingV.setText(Preferences.getInt("paddingV_percent", 0).toString())
 
         val round = findViewById<SwitchMaterial>(R.id.switch_round)
-        round.isChecked = SharedPreferencesUtil.getBoolean("player_ui_round", false)
+        round.isChecked = Preferences.getBoolean("player_ui_round", false)
         round.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
             if (isChecked) {
                 uiPaddingH.setText("11")
                 uiPaddingV.setText("11")
-                SharedPreferencesUtil.putBoolean("player_ui_round", true)
+                Preferences.putBoolean("player_ui_round", true)
             } else {
                 uiPaddingH.setText("0")
                 uiPaddingV.setText("0")
-                SharedPreferencesUtil.putBoolean("player_ui_round", false)
+                Preferences.putBoolean("player_ui_round", false)
             }
         }
 
@@ -62,10 +62,10 @@ class SetupUIActivity : BaseActivity() {
         }
 
         findViewById<View>(R.id.reset).setOnClickListener { view: View? ->
-            SharedPreferencesUtil.putInt("paddingH_percent", 0)
-            SharedPreferencesUtil.putInt("paddingV_percent", 0)
-            SharedPreferencesUtil.putFloat("dpi", 1.0f)
-            SharedPreferencesUtil.putBoolean("player_ui_round", false)
+            Preferences.putInt("paddingH_percent", 0)
+            Preferences.putInt("paddingV_percent", 0)
+            Preferences.putFloat("dpi", 1.0f)
+            Preferences.putBoolean("player_ui_round", false)
             uiScaleInput.setText("1.0")
             uiPaddingH.setText("0")
             uiPaddingV.setText("0")
@@ -77,7 +77,7 @@ class SetupUIActivity : BaseActivity() {
     private fun save() {
         if (uiScaleInput.text.toString().isNotEmpty()) {
             val dpiTimes = uiScaleInput.text.toString().toFloat()
-            if (dpiTimes in 0.1f..10.0f) SharedPreferencesUtil.putFloat(
+            if (dpiTimes in 0.1f..10.0f) Preferences.putFloat(
                 "dpi",
                 dpiTimes
             )
@@ -86,13 +86,13 @@ class SetupUIActivity : BaseActivity() {
 
         if (uiPaddingH.text.toString().isNotEmpty()) {
             val paddingH = uiPaddingH.text.toString().toInt()
-            if (paddingH <= 30) SharedPreferencesUtil.putInt("paddingH_percent", paddingH)
+            if (paddingH <= 30) Preferences.putInt("paddingH_percent", paddingH)
             Log.e("paddingH", uiPaddingH.text.toString())
         }
 
         if (uiPaddingV.text.toString().isNotEmpty()) {
             val paddingV = uiPaddingV.text.toString().toInt()
-            if (paddingV <= 30) SharedPreferencesUtil.putInt("paddingV_percent", paddingV)
+            if (paddingV <= 30) Preferences.putInt("paddingV_percent", paddingV)
             Log.e("paddingV", uiPaddingV.text.toString())
         }
     }

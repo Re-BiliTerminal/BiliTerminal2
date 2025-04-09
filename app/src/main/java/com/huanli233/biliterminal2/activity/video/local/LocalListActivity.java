@@ -12,7 +12,7 @@ import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.InstanceActivity;
 import com.huanli233.biliterminal2.adapter.video.LocalVideoAdapter;
 import com.huanli233.biliterminal2.model.LocalVideo;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.FileUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
 
@@ -55,7 +55,7 @@ public class LocalListActivity extends InstanceActivity {
             FileUtil.requestStoragePermission(this);
         }
 
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             runOnUiThread(() -> swipeRefreshLayout.setRefreshing(true));
             scan(FileUtil.getDownloadPath());
             adapter = new LocalVideoAdapter(this, videoList);
@@ -63,7 +63,7 @@ public class LocalListActivity extends InstanceActivity {
             adapter.setOnLongClickListener(position -> {
                 if (longClickPosition == position) {
                     File file = new File(FileUtil.getDownloadPath(), videoList.get(position).title);
-                    CenterThreadPool.run(() -> FileUtil.deleteFolder(file));
+                    ThreadManager.run(() -> FileUtil.deleteFolder(file));
                     MsgUtil.showMsg("删除成功");
                     videoList.remove(position);
                     adapter.notifyItemRemoved(position + 1);
@@ -126,7 +126,7 @@ public class LocalListActivity extends InstanceActivity {
                                 }
                             }
                         }
-                        if (localVideo.videoFileList.size() > 0) videoList.add(localVideo);
+                        if (!localVideo.videoFileList.isEmpty()) videoList.add(localVideo);
                     }
                 }
 
@@ -148,7 +148,7 @@ public class LocalListActivity extends InstanceActivity {
     }
 
     public void refresh() {
-        if (started) CenterThreadPool.run(() -> {
+        if (started) ThreadManager.run(() -> {
             runOnUiThread(() -> swipeRefreshLayout.setRefreshing(true));
             int oldSize = videoList.size();
             videoList.clear();

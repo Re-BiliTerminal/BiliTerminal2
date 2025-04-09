@@ -1,12 +1,10 @@
 package com.huanli233.biliterminal2.api;
 
-import android.util.Log;
-
 import com.huanli233.biliterminal2.model.PageInfo;
 import com.huanli233.biliterminal2.model.Series;
 import com.huanli233.biliterminal2.model.VideoCard;
-import com.huanli233.biliterminal2.util.NetWorkUtil;
-import com.huanli233.biliterminal2.util.ToolsUtil;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
+import com.huanli233.biliterminal2.util.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -115,7 +113,7 @@ public class SeriesApi {
                     videoCard.setAid(archive.optLong("aid", 0));
                     videoCard.setBvid(archive.optString("bvid", ""));
                     videoCard.setCover(archive.optString("pic", ""));
-                    videoCard.setView(ToolsUtil.toWan(archive.getJSONObject("stat").optInt("view", -1)));
+                    videoCard.setView(Utils.toWan(archive.getJSONObject("stat").optInt("view", -1)));
                     videoCard.setTitle(archive.optString("title", ""));
                     videoList.add(videoCard);
                 }

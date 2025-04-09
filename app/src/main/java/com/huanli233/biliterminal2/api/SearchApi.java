@@ -3,8 +3,8 @@ package com.huanli233.biliterminal2.api;
 import com.huanli233.biliterminal2.model.ArticleCard;
 import com.huanli233.biliterminal2.model.UserInfo;
 import com.huanli233.biliterminal2.model.VideoCard;
-import com.huanli233.biliterminal2.util.NetWorkUtil;
-import com.huanli233.biliterminal2.util.ToolsUtil;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
+import com.huanli233.biliterminal2.util.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,7 +80,7 @@ public class SearchApi {
 
                     String title = card.getString("title");
                     title = title.replace("<em class=\"keyword\">", "").replace("</em>", "");
-                    title = ToolsUtil.htmlToString(title);
+                    title = Utils.htmlToString(title);
 
                     String bvid = card.getString("bvid");
                     long aid = card.getLong("aid");
@@ -88,7 +88,7 @@ public class SearchApi {
                     String upName = card.getString("author");
 
                     long play = card.getLong("play");
-                    String playTimesStr = ToolsUtil.toWan(play) + "观看";
+                    String playTimesStr = Utils.toWan(play) + "观看";
 
                     videoCardList.add(VideoCard.of(title, upName, playTimesStr, cover, aid, bvid));
                 }
@@ -99,7 +99,7 @@ public class SearchApi {
 
                     String title = card.getString("title");
                     title = title.replace("<em class=\"keyword\">", "").replace("</em>", "");
-                    title = ToolsUtil.htmlToString(title);
+                    title = Utils.htmlToString(title);
                     String cover = card.getString("cover");
                     String upName = card.getString("areas");
                     long aid = card.getLong("media_id");
@@ -136,8 +136,8 @@ public class SearchApi {
                 articleCard.cover = "http:" + card.getJSONArray("image_urls").getString(0);
             else articleCard.cover = "";
             articleCard.upName = card.getString("category_name");
-            articleCard.title = ToolsUtil.htmlReString(card.getString("title"));
-            articleCard.view = ToolsUtil.toWan(card.getInt("view")) + "阅读";
+            articleCard.title = Utils.htmlReString(card.getString("title"));
+            articleCard.view = Utils.toWan(card.getInt("view")) + "阅读";
 
             articleCardList.add(articleCard);
         }

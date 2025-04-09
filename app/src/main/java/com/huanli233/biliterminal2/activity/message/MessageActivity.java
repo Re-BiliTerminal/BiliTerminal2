@@ -18,8 +18,8 @@ import com.huanli233.biliterminal2.helper.TutorialHelper;
 import com.huanli233.biliterminal2.model.PrivateMsgSession;
 import com.huanli233.biliterminal2.model.UserInfo;
 import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager;
-import com.huanli233.biliterminal2.util.AsyncLayoutInflaterX;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.view.AsyncLayoutInflaterX;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.MsgUtil;
 
 import org.json.JSONObject;
@@ -83,7 +83,7 @@ public class MessageActivity extends InstanceActivity {
             sessionsView = findViewById(R.id.sessions_list);
             sessionsView.setNestedScrollingEnabled(false);
 
-            CenterThreadPool.run(() -> {
+            ThreadManager.run(() -> {
                 try {
                     JSONObject stats = MessageApi.getUnread();
                     ArrayList<PrivateMsgSession> sessionsList = PrivateMsgApi.getSessionsList(20);
@@ -102,11 +102,11 @@ public class MessageActivity extends InstanceActivity {
                             sessionsView.setLayoutManager(new CustomLinearManager(this));
                             sessionsView.setAdapter(adapter);
                         } catch (Exception e) {
-                            MsgUtil.err(e);
+                            MsgUtil.error(e);
                         }
                     });
                 } catch (Exception e) {
-                    runOnUiThread(() -> MsgUtil.err(e));
+                    runOnUiThread(() -> MsgUtil.error(e));
                 }
             });
 

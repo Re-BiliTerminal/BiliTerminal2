@@ -30,7 +30,7 @@ import com.huanli233.biliterminal2.api.EmoteApi;
 import com.huanli233.biliterminal2.model.Emote;
 import com.huanli233.biliterminal2.model.EmotePackage;
 import com.huanli233.biliterminal2.ui.widget.recycler.CustomGridManager;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.GlideUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
 
@@ -56,7 +56,7 @@ public class EmoteActivity extends BaseActivity {
             }
         };
 
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 String from = getIntent().getStringExtra("from");
                 if (from == null) from = EmoteApi.BUSINESS_REPLY;
@@ -89,7 +89,7 @@ public class EmoteActivity extends BaseActivity {
                     tabLayout.setTabIconTint(null);
                     int count = tabLayout.getTabCount();
 
-                    CenterThreadPool.run(() -> {
+                    ThreadManager.run(() -> {
                         for (int i = 0; i < count; i++) {
                             int finalI = i;
                             Objects.requireNonNull(packages);
@@ -107,7 +107,7 @@ public class EmoteActivity extends BaseActivity {
                                         .submit().get();
                                 runOnUiThread(() -> Objects.requireNonNull(tabLayout.getTabAt(finalI)).setIcon(drawable));
                             } catch (ExecutionException e) {
-                                MsgUtil.err("加载表情列表图标时出现错误：", e);
+                                MsgUtil.error("加载表情列表图标时出现错误：", e);
                                 e.printStackTrace();
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
@@ -116,7 +116,7 @@ public class EmoteActivity extends BaseActivity {
                     });
                 });
             } catch (Exception e) {
-                runOnUiThread(() -> MsgUtil.err(e));
+                runOnUiThread(() -> MsgUtil.error(e));
             }
         });
     }

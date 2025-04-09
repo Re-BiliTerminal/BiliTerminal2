@@ -3,14 +3,13 @@ package com.huanli233.biliterminal2.activity.settings;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
-import com.huanli233.biliterminal2.util.AsyncLayoutInflaterX;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.view.AsyncLayoutInflaterX;
+import com.huanli233.biliterminal2.util.Preferences;
 
 public class SettingMenuActivity extends BaseActivity {
 
@@ -27,13 +26,13 @@ public class SettingMenuActivity extends BaseActivity {
             setTopbarExit();
 
             menu_popular = findViewById(R.id.menu_popular);
-            menu_popular.setChecked(SharedPreferencesUtil.getBoolean("menu_popular", true));
+            menu_popular.setChecked(Preferences.getBoolean("menu_popular", true));
 
             menu_live = findViewById(R.id.menu_live);
-            menu_live.setChecked(SharedPreferencesUtil.getBoolean("menu_live", false));
+            menu_live.setChecked(Preferences.getBoolean("menu_live", false));
 
             menu_precious = findViewById(R.id.menu_precious);
-            menu_precious.setChecked(SharedPreferencesUtil.getBoolean("menu_precious", false));
+            menu_precious.setChecked(Preferences.getBoolean("menu_precious", false));
 
             MaterialButton sort_btn = findViewById(R.id.sort);
             sort_btn.setOnClickListener(view -> {
@@ -44,9 +43,9 @@ public class SettingMenuActivity extends BaseActivity {
     }
 
     private void save() {
-        SharedPreferencesUtil.putBoolean("menu_popular", menu_popular.isChecked());
-        SharedPreferencesUtil.putBoolean("menu_precious", menu_precious.isChecked());
-        SharedPreferencesUtil.putBoolean("menu_live", menu_live.isChecked());
+        Preferences.putBoolean("menu_popular", menu_popular.isChecked());
+        Preferences.putBoolean("menu_precious", menu_precious.isChecked());
+        Preferences.putBoolean("menu_live", menu_live.isChecked());
     }
 
     @Override

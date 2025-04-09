@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.util.Pair;
 
 import com.huanli233.biliterminal2.activity.user.info.UserInfoActivity;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,7 +35,6 @@ public class LinkUrlUtil {
     public static void handleWebURL(Context context, String text) {
         try {
             text = (text.startsWith("http://") || text.startsWith("https://") ? text : "http://" + text);
-            // 很傻逼的一系列解析
             URL url = new URL(text);
             String path = url.getPath();
             int index = path.indexOf('?');
@@ -74,14 +74,14 @@ public class LinkUrlUtil {
                 }
             }
         } catch (Exception e) {
-            MsgUtil.err(e);
+            MsgUtil.error(e);
         }
         try {
             context.startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(text)));
         } catch (ActivityNotFoundException e) {
             MsgUtil.showMsg("没有可处理此链接的应用！");
         } catch (Throwable th) {
-            MsgUtil.err(th);
+            MsgUtil.error(th);
         }
     }
 
@@ -111,7 +111,7 @@ public class LinkUrlUtil {
     }
 
     private static void handleShortUrl(Context context, String url) {
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 Response response = NetWorkUtil.get(url, NetWorkUtil.webHeaders, location -> handleWebURL(context, location));
                 ResponseBody body;

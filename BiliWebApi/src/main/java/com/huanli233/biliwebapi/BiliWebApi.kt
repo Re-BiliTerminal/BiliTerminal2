@@ -1,5 +1,7 @@
 package com.huanli233.biliwebapi
 
+import com.google.gson.Gson
+import com.huanli233.biliwebapi.bean.ApiResponse
 import com.huanli233.biliwebapi.httplib.BilibiliApiInterceptor
 import com.huanli233.biliwebapi.httplib.CookieManager
 import com.huanli233.biliwebapi.httplib.Domains
@@ -12,11 +14,15 @@ import okhttp3.CookieJar
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import kotlin.reflect.KClass
 
 open class BiliWebApi(
     internal val cookieManager: CookieManager,
     internal val wbiDataManager: WbiDataManager
 ) {
+
+    val gson: Gson
+        get() = com.huanli233.biliwebapi.util.gson
 
     val client: OkHttpClient by lazy { createHttpClient().build() }
     protected val retrofit: Retrofit by lazy {
@@ -48,8 +54,28 @@ open class BiliWebApi(
         retrofit.create(clazz)
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : Any> getApi(clazz: Class<T>): T {
+    fun <T: Any> getApi(clazz: Class<T>): T {
         return apiObjectsMap.getOrPut(clazz) { createApi(clazz) } as T
     }
+
+    inline fun <reified T: Any> api(): T = getApi(T::class.java)
+
+    suspend inline fun <T: Any, R> api(
+        service: Class<T>,
+        action: suspend T.() -> ApiResponse<R>
+    ): Result<ApiResponse<R>> = runCatching {
+        getApi(service).action()
+    }
+
+    suspend inline fun <T: Any, R> api(
+        service: KClass<T>,
+        action: suspend T.() -> ApiResponse<R>
+    ): Result<ApiResponse<R>> = api(service.java, action)
+
+//    suspend inline fun <reified T: Any, R> api(
+//        action: suspend T.() -> ApiResponse<R>
+//    ): Result<ApiResponse<R>> = runCatching {
+//        api<T>().action()
+//    }
 
 }

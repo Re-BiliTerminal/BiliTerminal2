@@ -2,13 +2,12 @@ package com.huanli233.biliterminal2.activity.live;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.huanli233.biliterminal2.activity.base.RefreshMainActivity;
 import com.huanli233.biliterminal2.adapter.LiveCardAdapter;
 import com.huanli233.biliterminal2.api.LiveApi;
 import com.huanli233.biliterminal2.model.LiveRoom;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +29,7 @@ public class RecommendLiveActivity extends RefreshMainActivity {
 
         setMenuClick();
 
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 roomList = LiveApi.getRecommend(page);
                 adapter = new LiveCardAdapter(this, roomList);
@@ -44,7 +43,7 @@ public class RecommendLiveActivity extends RefreshMainActivity {
     }
 
     private void continueLoading(int page) {
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 List<LiveRoom> list;
                 list = LiveApi.getRecommend(page);
@@ -55,7 +54,7 @@ public class RecommendLiveActivity extends RefreshMainActivity {
                     }
                 });
                 if (list != null && list.isEmpty()) {
-                    setBottom(true);
+                    setBottomReached(true);
                 }
                 setRefreshing(false);
             } catch (Exception e) {

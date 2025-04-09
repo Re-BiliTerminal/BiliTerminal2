@@ -1,19 +1,22 @@
 package com.huanli233.biliwebapi.bean.login
 
-import com.google.gson.annotations.Expose
+import android.os.Parcelable
 import com.huanli233.biliwebapi.BiliWebApi
 import com.huanli233.biliwebapi.api.interfaces.ILoginApi
 import com.huanli233.biliwebapi.bean.ApiResponse
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Captcha(
-    @Expose val type: String,
-    @Expose val token: String,
-    @Expose val geetest: Geetest
-) {
+    val type: String,
+    val token: String,
+    val geetest: Geetest
+) : Parcelable {
+    @Parcelize
     data class Geetest(
-        @Expose val challenge: String,
-        @Expose val gt: String
-    )
+        val challenge: String,
+        val gt: String
+    ) : Parcelable
 
     companion object {
         suspend fun getCaptcha(api: BiliWebApi): ApiResponse<Captcha> {
@@ -21,3 +24,9 @@ data class Captcha(
         }
     }
 }
+
+@Parcelize
+data class CaptchaResult(
+    val validate: String,
+    val seccode: String
+) : Parcelable

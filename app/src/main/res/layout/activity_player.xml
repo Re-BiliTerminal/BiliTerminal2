@@ -108,7 +108,8 @@
                     android:format12Hour="hh:mm"
                     android:format24Hour="HH:mm"
                     android:text="彩蛋"
-                    android:textSize="8sp" />
+                    android:textSize="8sp"
+                    tools:ignore="UnusedAttribute" />
             </LinearLayout>
         </RelativeLayout>
 
@@ -122,7 +123,7 @@
             android:orientation="vertical">
 
             <SeekBar
-                android:id="@+id/videoprogress"
+                android:id="@+id/video_progress"
                 style="@style/Widget.AppCompat.SeekBar"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
@@ -132,7 +133,8 @@
                 android:progressTint="#00A4DA"
                 android:secondaryProgressTint="#eeFEFEFE"
                 android:thumb="@drawable/player_selector_progress"
-                android:thumbOffset="8dp" />
+                android:thumbOffset="8dp"
+                tools:ignore="UnusedAttribute" />
 
             <LinearLayout
                 android:id="@+id/bottom_buttons"
@@ -149,7 +151,8 @@
                     android:adjustViewBounds="true"
                     android:background="?android:attr/selectableItemBackground"
                     android:scaleType="fitCenter"
-                    android:src="@mipmap/soundcut" />
+                    android:src="@mipmap/soundcut"
+                    tools:ignore="ContentDescription" />
 
                 <ImageButton
                     android:id="@+id/button_video"
@@ -158,7 +161,8 @@
                     android:adjustViewBounds="true"
                     android:background="?android:attr/selectableItemBackground"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/btn_player_play" />
+                    android:src="@drawable/btn_player_play"
+                    tools:ignore="ContentDescription" />
 
                 <ImageButton
                     android:id="@+id/button_sound_add"
@@ -168,7 +172,8 @@
                     android:adjustViewBounds="true"
                     android:background="?android:attr/selectableItemBackground"
                     android:scaleType="fitCenter"
-                    android:src="@mipmap/soundadd" />
+                    android:src="@mipmap/soundadd"
+                    tools:ignore="ContentDescription" />
             </LinearLayout>
 
         </LinearLayout>
@@ -182,7 +187,8 @@
             android:layout_below="@+id/top"
             android:layout_alignParentRight="true"
             android:layout_marginEnd="4dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            tools:ignore="RtlHardcoded">
 
 
             <LinearLayout
@@ -203,7 +209,8 @@
                     android:adjustViewBounds="true"
                     android:background="?android:attr/selectableItemBackground"
                     android:scaleType="fitXY"
-                    android:src="@drawable/send" />
+                    android:src="@drawable/send"
+                    tools:ignore="ContentDescription" />
 
                 <ImageButton
                     android:id="@+id/subtitle_btn"
@@ -212,7 +219,8 @@
                     android:adjustViewBounds="true"
                     android:background="?android:attr/selectableItemBackground"
                     android:scaleType="fitXY"
-                    android:src="@mipmap/subtitle_off" />
+                    android:src="@mipmap/subtitle_off"
+                    tools:ignore="ContentDescription" />
 
                 <ImageButton
                     android:id="@+id/loop_btn"
@@ -221,7 +229,8 @@
                     android:adjustViewBounds="true"
                     android:background="?android:attr/selectableItemBackground"
                     android:scaleType="fitXY"
-                    android:src="@mipmap/loopoff" />
+                    android:src="@mipmap/loopoff"
+                    tools:ignore="ContentDescription" />
 
             </LinearLayout>
 
@@ -237,7 +246,8 @@
                     android:adjustViewBounds="true"
                     android:background="?android:attr/selectableItemBackground"
                     android:scaleType="fitXY"
-                    android:src="@mipmap/danmakuoff" />
+                    android:src="@mipmap/danmakuoff"
+                    tools:ignore="ContentDescription" />
 
                 <ImageButton
                     android:id="@+id/rotate_btn"
@@ -246,7 +256,8 @@
                     android:adjustViewBounds="true"
                     android:background="?android:attr/selectableItemBackground"
                     android:scaleType="fitXY"
-                    android:src="@mipmap/rotate" />
+                    android:src="@mipmap/rotate"
+                    tools:ignore="ContentDescription" />
 
                 <ImageButton
                     android:id="@+id/menu_btn"
@@ -255,7 +266,8 @@
                     android:adjustViewBounds="true"
                     android:background="?android:attr/selectableItemBackground"
                     android:scaleType="fitXY"
-                    android:src="@mipmap/morehide" />
+                    android:src="@mipmap/morehide"
+                    tools:ignore="ContentDescription" />
             </LinearLayout>
 
         </LinearLayout>
@@ -278,7 +290,8 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="RtlHardcoded" />
 
         <LinearLayout
             android:id="@+id/loading_info"
@@ -296,7 +309,8 @@
 
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/loading_text0"
@@ -307,10 +321,11 @@
                 android:shadowDx="2.0"
                 android:shadowDy="0.0"
                 android:shadowRadius="3.0"
-                android:text="加载中"
+                android:text="@string/loading"
                 android:textAlignment="center"
                 android:textColor="#DDDDDD"
-                android:textSize="10sp" />
+                android:textSize="10sp"
+                tools:ignore="SmallSp" />
 
             <TextView
                 android:id="@+id/loading_text1"
@@ -321,10 +336,11 @@
                 android:shadowDx="2.0"
                 android:shadowDy="0.0"
                 android:shadowRadius="3.0"
-                android:text="OwO"
+                android:text="@string/player_loading_text"
                 android:textAlignment="center"
                 android:textColor="#DDDDDD"
-                android:textSize="10sp" />
+                android:textSize="10sp"
+                tools:ignore="SmallSp" />
 
         </LinearLayout>
 
@@ -348,7 +364,7 @@
                 android:shadowDx="2.0"
                 android:shadowDy="0.0"
                 android:shadowRadius="3.0"
-                android:text="倍速调节"
+                android:text="@string/speed_adjustment"
                 android:textAlignment="center"
                 android:textColor="#DDDDDD"
                 android:textSize="14sp"
@@ -380,7 +396,8 @@
                 android:textAlignment="center"
                 android:textColor="#DDDDDD"
                 android:textSize="14sp"
-                app:layout_constraintTop_toBottomOf="@id/seekbar_speed" />
+                app:layout_constraintTop_toBottomOf="@id/seekbar_speed"
+                tools:ignore="HardcodedText" />
 
         </LinearLayout>
 
@@ -389,7 +406,7 @@
 
 
     <TextView
-        android:id="@+id/showsound"
+        android:id="@+id/show_sound"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -397,7 +414,7 @@
         android:shadowDx="2.0"
         android:shadowDy="0.0"
         android:shadowRadius="3.0"
-        android:text="音量：100%"
+        tools:text="音量：100%"
         android:textColor="#fff"
         android:textSize="13sp"
         android:visibility="gone" />

@@ -99,7 +99,7 @@ public class BiliDanmukuParser extends BaseDanmakuParser {
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) {
-            String tagName = localName.length() != 0 ? localName : qName;
+            String tagName = !localName.isEmpty() ? localName : qName;
             tagName = tagName.toLowerCase(Locale.getDefault()).trim();
             if (tagName.equals("d")) {
                 // <d p="23.826000213623,1,25,16777215,1422201084,0,057075e9,757076900">我从未见过如此厚颜无耻之猴</d>
@@ -128,7 +128,7 @@ public class BiliDanmukuParser extends BaseDanmakuParser {
                         item.time = time;
                         item.textSize = textSize * (mDispDensity - 0.6f);
                         item.textColor = color;
-                        item.textShadowColor = color <= Color.BLACK ? Color.WHITE : Color.BLACK;
+                        item.textShadowColor = color == Color.BLACK ? Color.WHITE : Color.BLACK;
                     }
                 }
             }
@@ -138,7 +138,7 @@ public class BiliDanmukuParser extends BaseDanmakuParser {
         public void endElement(String uri, String localName, String qName) {
             if (item != null) {
                 if (item.duration != null) {
-                    String tagName = localName.length() != 0 ? localName : qName;
+                    String tagName = !localName.isEmpty() ? localName : qName;
                     if (tagName.equalsIgnoreCase("d")) {
                         item.setTimer(mTimer);
                         result.addItem(item);

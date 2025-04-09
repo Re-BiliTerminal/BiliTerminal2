@@ -1,106 +1,134 @@
-package com.huanli233.biliterminal2.activity.dynamic;
+package com.huanli233.biliterminal2.activity.dynamic
 
-import android.content.Context;
-import android.os.Build;
-import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Display;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.ScrollView;
+import android.content.Context
+import android.os.Build
+import android.os.Bundle
+import android.util.DisplayMetrics
+import android.util.Log
+import android.view.*
+import android.widget.ScrollView
+import androidx.fragment.app.Fragment
+import com.huanli233.biliterminal2.R
+import com.huanli233.biliterminal2.activity.base.BaseActivity
+import com.huanli233.biliterminal2.adapter.dynamic.DynamicHolder
+import com.huanli233.biliterminal2.databinding.FragmentDynamicInfoBinding
+import com.huanli233.biliterminal2.model.Dynamic
+import com.huanli233.biliterminal2.util.*
+import java.lang.Exception
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
+class DynamicInfoFragment : Fragment() {
+    private var _binding: FragmentDynamicInfoBinding? = null
+    private val binding get() = _binding!!
 
-import com.huanli233.biliterminal2.R;
-import com.huanli233.biliterminal2.activity.base.BaseActivity;
-import com.huanli233.biliterminal2.adapter.dynamic.DynamicHolder;
-import com.huanli233.biliterminal2.model.Dynamic;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
-import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.huanli233.biliterminal2.util.TerminalContext;
+    private var dynamic: Dynamic? = null
+    private var onFinishLoad: Runnable? = null
 
-//真正的视频详情页
-//2023-07-17
+    companion object {
+        private const val TAG = "DynamicInfoFragment"
 
-public class DynamicInfoFragment extends Fragment {
-    private static final String TAG = "DynamicInfoFragment";
-
-    Dynamic dynamic;
-    Runnable onFinishLoad;
-
-
-    public DynamicInfoFragment() {
-    }
-
-    public static DynamicInfoFragment newInstance(long id) {
-        DynamicInfoFragment fragment = new DynamicInfoFragment();
-        Bundle args = new Bundle();
-        args.putLong("id", id);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        try {
-            long id = getArguments().getLong("id", 0);
-            dynamic = TerminalContext.getInstance().getDynamicById(id).getValue().getOrThrow();
-        } catch (Exception e) {
-            Log.wtf(TAG, e);
-            MsgUtil.showMsg("找不到动态信息QAQ");
+        fun newInstance(id: Long) = DynamicInfoFragment().apply {
+            arguments = Bundle().apply {
+                putLong("id", id)
+            }
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_empty, container, false);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.getLong("id")?.let { id ->
+            try {
+                dynamic = TerminalContext.getInstance()
+                    .getDynamicById(id)
+                    .getValue()
+                    .getOrThrow()
+            } catch (e: Exception) {
+                Log.wtf(TAG, e)
+                MsgUtil.showMsg("找不到动态信息QAQ")
+            }
+        }
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentDynamicInfoBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        ScrollView scrollView = view.findViewById(R.id.scrollView);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupScrollViewLayout()
+        loadDynamicContent()
+    }
 
-        if (SharedPreferencesUtil.getBoolean("ui_landscape", false)) {
-            WindowManager windowManager = (WindowManager) view.getContext().getSystemService(Context.WINDOW_SERVICE);
-            Display display = windowManager.getDefaultDisplay();
-            DisplayMetrics metrics = new DisplayMetrics();
-            if (Build.VERSION.SDK_INT >= 17) display.getRealMetrics(metrics);
-            else display.getMetrics(metrics);
-            int paddings = metrics.widthPixels / 6;
-            scrollView.setPadding(paddings, 0, paddings, 0);
+    private fun setupScrollViewLayout() {
+        if (Preferences.getBoolean("ui_landscape", false)) {
+            val metrics = getRealDisplayMetrics()
+            val paddings = metrics.widthPixels / 6
+            binding.scrollView.setPadding(paddings, 0, paddings, 0)
         }
+    }
 
-        CenterThreadPool.run(() -> {
-            if (isAdded()) requireActivity().runOnUiThread(() -> {
-                View dynamicView = View.inflate(requireContext(), R.layout.cell_dynamic, scrollView);
-                DynamicHolder holder = new DynamicHolder(dynamicView, (BaseActivity) getActivity(), false);
-                holder.showDynamic(dynamic, requireContext(), false);
-                View.OnLongClickListener onDeleteLongClick = DynamicHolder.getDeleteListener(requireActivity(), dynamic);
-                holder.item_dynamic_delete.setOnLongClickListener(onDeleteLongClick);
-                if (dynamic.canDelete) holder.item_dynamic_delete.setVisibility(View.VISIBLE);
+    private fun getRealDisplayMetrics(): DisplayMetrics {
+        return DisplayMetrics().also { metrics ->
+            val windowManager = requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                windowManager.defaultDisplay.getRealMetrics(metrics)
+            } else {
+                @Suppress("DEPRECATION")
+                windowManager.defaultDisplay.getMetrics(metrics)
+            }
+        }
+    }
 
-                if (dynamic.dynamic_forward != null) {
-                    View childCard = holder.cell_dynamic_child;
-                    DynamicHolder childHolder = new DynamicHolder(childCard, (BaseActivity) getActivity(), true);
-                    childHolder.showDynamic(dynamic.dynamic_forward, requireContext(), true);
-                    childCard.setVisibility(View.VISIBLE);
+    private fun loadDynamicContent() {
+        ThreadManager.execute {
+            if (!isAdded) return@execute
+
+            requireActivity().runOnUiThread {
+                dynamic?.let { dynamic ->
+                    inflateDynamicViews(dynamic)
+                    setupForwardDynamic(dynamic)
+                    onFinishLoad?.run()
                 }
-
-                if (onFinishLoad != null) onFinishLoad.run();
-            });
-        });
-
+            }
+        }
     }
 
-    public void setOnFinishLoad(Runnable runnable) {
-        this.onFinishLoad = runnable;
+    private fun inflateDynamicViews(dynamic: Dynamic) {
+        val dynamicView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.cell_dynamic, binding.scrollView)
+
+        DynamicHolder(dynamicView, requireActivity() as BaseActivity, isChild = false).apply {
+            showDynamic(dynamic, requireContext(), isChild = false)
+            setupDeleteButton(dynamic)
+        }
+    }
+
+    private fun DynamicHolder.setupDeleteButton(dynamic: Dynamic) {
+        item_dynamic_delete?.apply {
+            onLongClickListener = DynamicHolder.getDeleteListener(requireActivity(), dynamic)
+            visibility = if (dynamic.canDelete) View.VISIBLE else View.GONE
+        }
+    }
+
+    private fun setupForwardDynamic(dynamic: Dynamic) {
+        dynamic.dynamic_forward?.let { forwardDynamic ->
+            binding.cellDynamicChild.visibility = View.VISIBLE
+            DynamicHolder(binding.cellDynamicChild, requireActivity() as BaseActivity, true).apply {
+                showDynamic(forwardDynamic, requireContext(), isChild = true)
+            }
+        }
+    }
+
+    fun setOnFinishLoad(runnable: Runnable) {
+        this.onFinishLoad = runnable
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

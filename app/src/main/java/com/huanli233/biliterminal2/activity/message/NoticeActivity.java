@@ -8,7 +8,7 @@ import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.message.NoticeAdapter;
 import com.huanli233.biliterminal2.api.MessageApi;
 import com.huanli233.biliterminal2.model.MessageCard;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ public class NoticeActivity extends RefreshListActivity {
 
         messageList = new ArrayList<>();
 
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 Intent intent = getIntent();
                 String pageType = intent.getStringExtra("type");
@@ -65,7 +65,7 @@ public class NoticeActivity extends RefreshListActivity {
     }
 
     private void continueLoading(int i) {
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 int lastSize = messageList.size();
                 String pageType = getIntent().getStringExtra("type");

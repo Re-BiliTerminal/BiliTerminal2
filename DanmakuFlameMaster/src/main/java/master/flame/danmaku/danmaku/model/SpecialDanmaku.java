@@ -18,7 +18,7 @@ package master.flame.danmaku.danmaku.model;
 
 public class SpecialDanmaku extends BaseDanmaku {
     
-    private static class Point {
+    public static class Point {
         final float x;
         final float y;
 
@@ -34,7 +34,7 @@ public class SpecialDanmaku extends BaseDanmaku {
         }
     }
 
-    public class LinePath {
+    public static class LinePath {
         Point pBegin, pEnd;
         public long duration,beginTime,endTime;
         float delatX, deltaY;        

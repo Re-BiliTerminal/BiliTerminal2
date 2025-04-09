@@ -12,14 +12,11 @@ import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.helper.TutorialHelper;
 import com.huanli233.biliterminal2.model.Tutorial;
-import com.huanli233.biliterminal2.util.AsyncLayoutInflaterX;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.view.AsyncLayoutInflaterX;
+import com.huanli233.biliterminal2.util.Preferences;
 import com.google.android.material.button.MaterialButton;
 
-import java.util.Locale;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class TutorialActivity extends BaseActivity {
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -41,7 +38,7 @@ public class TutorialActivity extends BaseActivity {
 
             try {
                 if (tutorial.imgid != null) {
-                    int indentify = getResources().getIdentifier(getPackageName() + ":" + tutorial.imgid, null, null);
+                    @SuppressLint("DiscouragedApi") int indentify = getResources().getIdentifier(getPackageName() + ":" + tutorial.imgid, null, null);
                     if (indentify > 0)
                         ((ImageFilterView) findViewById(R.id.image_view)).setImageDrawable(getResources().getDrawable(indentify));
                 } else findViewById(R.id.image_view).setVisibility(View.GONE);
@@ -51,7 +48,7 @@ public class TutorialActivity extends BaseActivity {
 
             MaterialButton close_btn = findViewById(R.id.close_btn);
             close_btn.setOnClickListener(view -> {
-                SharedPreferencesUtil.putInt("tutorial_ver_" + intent.getStringExtra("tag"), intent.getIntExtra("version", -1));
+                Preferences.putInt("tutorial_ver_" + intent.getStringExtra("tag"), intent.getIntExtra("version", -1));
                 finish();
             });
         });

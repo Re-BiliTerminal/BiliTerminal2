@@ -25,7 +25,7 @@
             app:drawableStartCompat="@drawable/arrow_down" />
 
         <com.huanli233.biliterminal2.ui.widget.TextClock
-            android:id="@+id/timeText"
+            android:id="@+id/time_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -69,7 +69,8 @@
                         android:adjustViewBounds="true"
                         android:src="@mipmap/akari"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="ContentDescription" />
 
                     <com.huanli233.biliterminal2.ui.widget.MarqueeTextView
                         android:id="@+id/userName"
@@ -137,7 +138,8 @@
                         android:src="@drawable/arrow_forward"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="ContentDescription" />
 
                     <ImageView
                         android:id="@+id/follow_icon"
@@ -150,7 +152,8 @@
                         app:layout_constraintHeight_percent="0.4"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.5" />
+                        app:layout_constraintVertical_bias="0.5"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -187,7 +190,8 @@
                         android:src="@drawable/arrow_forward"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="ContentDescription" />
 
                     <ImageView
                         android:id="@+id/watchlater_icon"
@@ -200,7 +204,8 @@
                         app:layout_constraintHeight_percent="0.4"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.5" />
+                        app:layout_constraintVertical_bias="0.5"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -238,7 +243,8 @@
                         android:src="@drawable/arrow_forward"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="ContentDescription" />
 
                     <ImageView
                         android:id="@+id/favorite_icon"
@@ -251,7 +257,8 @@
                         app:layout_constraintHeight_percent="0.4"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.5" />
+                        app:layout_constraintVertical_bias="0.5"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -288,7 +295,8 @@
                         android:src="@drawable/arrow_forward"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="ContentDescription" />
 
                     <ImageView
                         android:id="@+id/bangumi_icon"
@@ -301,7 +309,8 @@
                         app:layout_constraintHeight_percent="0.4"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.5" />
+                        app:layout_constraintVertical_bias="0.5"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -338,7 +347,8 @@
                         android:src="@drawable/arrow_forward"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="ContentDescription" />
 
                     <ImageView
                         android:id="@+id/history_icon"
@@ -351,7 +361,8 @@
                         app:layout_constraintHeight_percent="0.4"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.5" />
+                        app:layout_constraintVertical_bias="0.5"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -388,7 +399,8 @@
                         android:src="@drawable/arrow_forward"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="ContentDescription" />
 
                     <ImageView
                         android:id="@+id/creative_icon"
@@ -401,7 +413,8 @@
                         app:layout_constraintHeight_percent="0.4"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.5" />
+                        app:layout_constraintVertical_bias="0.5"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -438,7 +451,8 @@
                         android:src="@drawable/arrow_forward"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="ContentDescription" />
 
                     <ImageView
                         android:id="@+id/logout_icon"
@@ -451,7 +465,8 @@
                         app:layout_constraintHeight_percent="0.4"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.5" />
+                        app:layout_constraintVertical_bias="0.5"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="0dp"

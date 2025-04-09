@@ -29,7 +29,7 @@ import com.huanli233.biliterminal2.adapter.video.MediaEpisodeAdapter;
 import com.huanli233.biliterminal2.api.BangumiApi;
 import com.huanli233.biliterminal2.model.Bangumi;
 import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.GlideUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
 
@@ -72,12 +72,12 @@ public class BangumiInfoFragment extends Fragment {
         view.setVisibility(View.GONE);
         episodeRecyclerView = rootView.findViewById(R.id.rv_episode_list);
         //拉数据
-        CenterThreadPool
+        ThreadManager
                 .supplyAsyncWithLiveData(() -> BangumiApi.getBangumi(mediaId))
                 .observe(getViewLifecycleOwner(), (result) -> result.onSuccess((bangumi) -> {
                     this.bangumi = bangumi;
                     initView();
-                }).onFailure((error) -> MsgUtil.err("番剧详情：", error)));
+                }).onFailure((error) -> MsgUtil.error("番剧详情：", error)));
     }
 
     @SuppressLint("SetTextI18n")

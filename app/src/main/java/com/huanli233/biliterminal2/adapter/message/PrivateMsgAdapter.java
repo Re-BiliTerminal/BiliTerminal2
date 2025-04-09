@@ -29,9 +29,9 @@ import com.huanli233.biliterminal2.activity.ImageViewerActivity;
 import com.huanli233.biliterminal2.api.PrivateMsgApi;
 import com.huanli233.biliterminal2.api.VideoInfoApi;
 import com.huanli233.biliterminal2.model.PrivateMessage;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.GlideUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 import com.huanli233.biliterminal2.util.TerminalContext;
 
 import org.json.JSONArray;
@@ -96,7 +96,7 @@ public class PrivateMsgAdapter extends RecyclerView.Adapter<PrivateMsgAdapter.Vi
         try {
             holder.nameTv.setText(msg.name);
             if (selfUid == -1) {
-                selfUid = SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, -1);
+                selfUid = Preferences.getLong(Preferences.MID, -1);
             }
             if (msg.uid == selfUid) {
                 holder.root.setGravity(Gravity.END);
@@ -116,7 +116,7 @@ public class PrivateMsgAdapter extends RecyclerView.Adapter<PrivateMsgAdapter.Vi
                     holder.videoCard.setVisibility(View.GONE);
                     holder.textContentCard.setVisibility(View.VISIBLE);
                     Log.e("", emoteArray.toString());
-                    CenterThreadPool.run(() -> {
+                    ThreadManager.run(() -> {
                         try {
                             SpannableString contentWithEmote = PrivateMsgApi.textReplaceEmote(msg.content.getString("content"), emoteArray, 1f, context);
                             ((Activity) context).runOnUiThread(() -> holder.textContentTv.setText(contentWithEmote));
@@ -180,7 +180,7 @@ public class PrivateMsgAdapter extends RecyclerView.Adapter<PrivateMsgAdapter.Vi
                             .into(holder.videoCover);
                     holder.upNameTv.setText(msg.content.getString("author"));
                     holder.videoTitleTv.setText(msg.content.getString("title"));
-                    holder.videoCard.setOnClickListener(view -> CenterThreadPool.run(() -> {
+                    holder.videoCard.setOnClickListener(view -> ThreadManager.run(() -> {
                         try {
                             long aid = msg.content.getLong("id");
                             String bvid = VideoInfoApi.getJsonByAid(aid).getString("bvid");

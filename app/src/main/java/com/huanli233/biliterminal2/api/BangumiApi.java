@@ -1,13 +1,11 @@
 package com.huanli233.biliterminal2.api;
 
-import android.util.Log;
-
 import com.elvishew.xlog.XLog;
 import com.huanli233.biliterminal2.model.Bangumi;
 import com.huanli233.biliterminal2.model.VideoCard;
-import com.huanli233.biliterminal2.util.NetWorkUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.huanli233.biliterminal2.util.ToolsUtil;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
+import com.huanli233.biliterminal2.util.Preferences;
+import com.huanli233.biliterminal2.util.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,7 +19,7 @@ import java.util.Objects;
 public class BangumiApi {
     public static int getFollowingList(int page, List<VideoCard> cardList) throws JSONException, IOException {
         String url = "https://api.bilibili.com/x/space/bangumi/follow/list?type=1&follow_status=0&pn=" + page
-                + "&ps=15&vmid=" + SharedPreferencesUtil.getLong("mid", 0);
+                + "&ps=15&vmid=" + Preferences.getLong("mid", 0);
 
         JSONObject all = NetWorkUtil.getJson(url);
         if (all.getInt("code") != 0) throw new JSONException(all.getString("message"));
@@ -39,7 +37,7 @@ public class BangumiApi {
             card.setAid(bangumi.getLong("media_id"));
             card.setTitle(bangumi.getString("title"));
             card.setCover(bangumi.getString("cover"));
-            card.setView(ToolsUtil.toWan(bangumi.getJSONObject("stat").optInt("view")));
+            card.setView(Utils.toWan(bangumi.getJSONObject("stat").optInt("view")));
 
             cardList.add(card);
         }

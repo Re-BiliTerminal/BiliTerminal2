@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.model.Reply;
-import com.huanli233.biliterminal2.util.ToolsUtil;
+import com.huanli233.biliterminal2.util.Utils;
 
 public class ReplyCardHolder extends RecyclerView.ViewHolder {
     final TextView content;
@@ -21,6 +21,6 @@ public class ReplyCardHolder extends RecyclerView.ViewHolder {
     }
 
     public void showReplyCard(Reply replyInfo) {
-        content.setText(ToolsUtil.htmlToString(replyInfo.message));
+        content.setText(Utils.htmlToString(replyInfo.message));
     }
 }

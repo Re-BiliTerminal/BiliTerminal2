@@ -81,6 +81,8 @@ public class NativeBitmapFactory {
         // Log.e("NativeBitmapFactory", "released");
     }
 
+    /** @noinspection JavaReflectionMemberAccess*/
+    @SuppressLint("PrivateApi")
     static void initField() {
         try {
             nativeIntField = Config.class.getDeclaredField("nativeInt");

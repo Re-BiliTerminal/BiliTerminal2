@@ -22,10 +22,10 @@ import com.huanli233.biliterminal2.activity.video.local.LocalListActivity;
 import com.huanli233.biliterminal2.api.PlayerApi;
 import com.huanli233.biliterminal2.helper.sql.DownloadSqlHelper;
 import com.huanli233.biliterminal2.model.DownloadSection;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.FileUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.NetWorkUtil;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 
 import org.json.JSONException;
 
@@ -126,7 +126,7 @@ public class DownloadService extends Service {
 
         if (serviceIntent != null) firstDown = serviceIntent.getLongExtra("first", -1);
 
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             boolean failed = false;
             while (!failed) {
                 downloadingSection = getFirst();
@@ -327,7 +327,7 @@ public class DownloadService extends Service {
         state = null;
         if (downloadingSection != null) {
             FileUtil.deleteFolder(downloadingSection.getPath());
-            CenterThreadPool.run(() -> {
+            ThreadManager.run(() -> {
                 if (downloadingSection != null) {
                     setState(downloadingSection.id, "none");
                     downloadingSection = null;
@@ -390,7 +390,7 @@ public class DownloadService extends Service {
             cursor.moveToFirst();
             return new DownloadSection(cursor);
         } catch (Exception e) {
-            MsgUtil.err(e);
+            MsgUtil.error(e);
             return null;
         } finally {
             if (cursor != null) cursor.close();
@@ -413,7 +413,7 @@ public class DownloadService extends Service {
             }
             return list;
         } catch (Exception e) {
-            MsgUtil.err(e);
+            MsgUtil.error(e);
             return new ArrayList<>();
         } finally {
             if (cursor != null) cursor.close();
@@ -438,7 +438,7 @@ public class DownloadService extends Service {
             database.close();
             return list;
         } catch (Exception e) {
-            MsgUtil.err(e);
+            MsgUtil.error(e);
             return new ArrayList<>();
         } finally {
             if (cursor != null) cursor.close();
@@ -454,7 +454,7 @@ public class DownloadService extends Service {
             database.execSQL("delete from download where id=?", new Object[]{id});
             database.close();
         } catch (Exception e) {
-            MsgUtil.err(e);
+            MsgUtil.error(e);
         } finally {
             if (database != null) database.close();
         }
@@ -468,7 +468,7 @@ public class DownloadService extends Service {
             database.execSQL("delete from download", new Object[]{});
             database.close();
         } catch (Exception e) {
-            MsgUtil.err(e);
+            MsgUtil.error(e);
         } finally {
             if (database != null) database.close();
         }
@@ -482,7 +482,7 @@ public class DownloadService extends Service {
             database.execSQL("update download set state=? where id=?", new Object[]{state, id});
             database.close();
         } catch (Exception e) {
-            MsgUtil.err(e);
+            MsgUtil.error(e);
         } finally {
             if (database != null) database.close();
         }
@@ -490,7 +490,7 @@ public class DownloadService extends Service {
 
     //以下为外部调用方法
     public static void startDownload(String title, long aid, long cid, String danmaku, String cover, int qn) {
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 DownloadSqlHelper helper = new DownloadSqlHelper(BiliTerminal.context);
                 SQLiteDatabase database = helper.getWritableDatabase();
@@ -509,13 +509,13 @@ public class DownloadService extends Service {
                 Context context = BiliTerminal.context;
                 context.startService(new Intent(context, DownloadService.class));
             } catch (Exception e) {
-                MsgUtil.err(e);
+                MsgUtil.error(e);
             }
         });
     }
 
     public static void startDownload(String parent, String child, long aid, long cid, String danmaku, String cover, int qn) {
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 DownloadSqlHelper helper = new DownloadSqlHelper(BiliTerminal.context);
                 SQLiteDatabase database = helper.getWritableDatabase();
@@ -535,7 +535,7 @@ public class DownloadService extends Service {
                 Context context = BiliTerminal.context;
                 context.startService(new Intent(context, DownloadService.class));
             } catch (Exception e) {
-                MsgUtil.err(e);
+                MsgUtil.error(e);
             }
         });
     }

@@ -11,9 +11,9 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.huanli233.biliterminal2.BiliTerminal;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
-import com.huanli233.biliterminal2.util.AsyncLayoutInflaterX;
+import com.huanli233.biliterminal2.util.view.AsyncLayoutInflaterX;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 
 public class SettingUIActivity extends BaseActivity {
 
@@ -30,30 +30,30 @@ public class SettingUIActivity extends BaseActivity {
             setTopbarExit();
 
             uiScaleInput = findViewById(R.id.ui_scale_input);
-            uiScaleInput.setText(String.valueOf(SharedPreferencesUtil.getFloat("dpi", 1.0F)));
+            uiScaleInput.setText(String.valueOf(Preferences.getFloat("dpi", 1.0F)));
 
             uiPaddingH = findViewById(R.id.ui_padding_horizontal);
-            uiPaddingH.setText(String.valueOf(SharedPreferencesUtil.getInt("paddingH_percent", 0)));
+            uiPaddingH.setText(String.valueOf(Preferences.getInt("paddingH_percent", 0)));
             uiPaddingV = findViewById(R.id.ui_padding_vertical);
-            uiPaddingV.setText(String.valueOf(SharedPreferencesUtil.getInt("paddingV_percent", 0)));
+            uiPaddingV.setText(String.valueOf(Preferences.getInt("paddingV_percent", 0)));
 
             density_input = findViewById(R.id.density_input);
-            int density = SharedPreferencesUtil.getInt("density", -1);
+            int density = Preferences.getInt("density", -1);
             DisplayMetrics displayMetrics = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
             density_input.setText(String.valueOf((density == -1 ? displayMetrics.densityDpi + "(默认)" : density)));
 
             SwitchMaterial round = findViewById(R.id.switch_round);
-            round.setChecked(SharedPreferencesUtil.getBoolean("player_ui_round", false));
+            round.setChecked(Preferences.getBoolean("player_ui_round", false));
             round.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (isChecked) {
                     uiPaddingH.setText("11");
                     uiPaddingV.setText("11");
-                    SharedPreferencesUtil.putBoolean("player_ui_round", true);
+                    Preferences.putBoolean("player_ui_round", true);
                 } else {
                     uiPaddingH.setText("0");
                     uiPaddingV.setText("0");
-                    SharedPreferencesUtil.putBoolean("player_ui_round", false);
+                    Preferences.putBoolean("player_ui_round", false);
                 }
             });
 
@@ -64,11 +64,11 @@ public class SettingUIActivity extends BaseActivity {
                 startActivity(intent);
             });
             findViewById(R.id.reset).setOnClickListener(view -> {
-                SharedPreferencesUtil.putInt("paddingH_percent", 0);
-                SharedPreferencesUtil.putInt("paddingV_percent", 0);
-                SharedPreferencesUtil.putFloat("dpi", 1.0f);
-                SharedPreferencesUtil.putInt("density", -1);
-                SharedPreferencesUtil.putBoolean("player_ui_round", false);
+                Preferences.putInt("paddingH_percent", 0);
+                Preferences.putInt("paddingV_percent", 0);
+                Preferences.putFloat("dpi", 1.0f);
+                Preferences.putInt("density", -1);
+                Preferences.putBoolean("player_ui_round", false);
                 uiScaleInput.setText("1.0");
                 uiPaddingH.setText("0");
                 uiPaddingV.setText("0");
@@ -84,7 +84,7 @@ public class SettingUIActivity extends BaseActivity {
         if (!uiScaleInput.getText().toString().isEmpty()) {
             float dpiScale = Float.parseFloat(uiScaleInput.getText().toString());
             if (dpiScale >= 0.25F && dpiScale <= 5.0F) {
-                SharedPreferencesUtil.putFloat("dpi", dpiScale);
+                Preferences.putFloat("dpi", dpiScale);
                 BiliTerminal.DPI_FORCE_CHANGE = true;
             }
             Log.e("dpi", uiScaleInput.getText().toString());
@@ -92,20 +92,20 @@ public class SettingUIActivity extends BaseActivity {
 
         if (!uiPaddingH.getText().toString().isEmpty()) {
             int paddingH = Integer.parseInt(uiPaddingH.getText().toString());
-            if (paddingH <= 30) SharedPreferencesUtil.putInt("paddingH_percent", paddingH);
+            if (paddingH <= 30) Preferences.putInt("paddingH_percent", paddingH);
             Log.e("paddingH", uiPaddingH.getText().toString());
         }
 
         if (!uiPaddingV.getText().toString().isEmpty()) {
             int paddingV = Integer.parseInt(uiPaddingV.getText().toString());
-            if (paddingV <= 30) SharedPreferencesUtil.putInt("paddingV_percent", paddingV);
+            if (paddingV <= 30) Preferences.putInt("paddingV_percent", paddingV);
             Log.e("paddingV", uiPaddingV.getText().toString());
         }
 
         if (!density_input.getText().toString().isEmpty()) {
             try {
                 int density = Integer.parseInt(density_input.getText().toString());
-                if (density >= 72) SharedPreferencesUtil.putInt("density", density);
+                if (density >= 72) Preferences.putInt("density", density);
             } catch (Throwable ignored) {
             }
         }

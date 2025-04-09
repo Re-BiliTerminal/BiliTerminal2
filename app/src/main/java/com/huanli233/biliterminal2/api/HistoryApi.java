@@ -1,9 +1,9 @@
 package com.huanli233.biliterminal2.api;
 
 import com.huanli233.biliterminal2.model.VideoCard;
-import com.huanli233.biliterminal2.util.NetWorkUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.huanli233.biliterminal2.util.ToolsUtil;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
+import com.huanli233.biliterminal2.util.Preferences;
+import com.huanli233.biliterminal2.util.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,7 +15,7 @@ import java.util.List;
 public class HistoryApi {
     public static void reportHistory(long aid, long cid, long mid, long progress) throws IOException {
         String url = "https://api.bilibili.com/x/report/web/heartbeat";
-        String per = "aid=" + aid + "&cid=" + cid + "&mid=" + mid + "&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "") + "&played_time=" + progress + "&realtime=0&start_ts=" + (System.currentTimeMillis() / 1000) + "&type=3&dt=2&play_type=1";
+        String per = "aid=" + aid + "&cid=" + cid + "&mid=" + mid + "&csrf=" + Preferences.getString(Preferences.CSRF, "") + "&played_time=" + progress + "&realtime=0&start_ts=" + (System.currentTimeMillis() / 1000) + "&type=3&dt=2&play_type=1";
         NetWorkUtil.post(url, per, NetWorkUtil.webHeaders);
     }
 
@@ -34,7 +34,7 @@ public class HistoryApi {
                 int progress = videoCard.getInt("progress");
                 String viewStr;
                 if (progress == 0) viewStr = "还没看过";
-                else viewStr = "看到" + ToolsUtil.toTime(videoCard.getInt("progress"));
+                else viewStr = "看到" + Utils.toTime(videoCard.getInt("progress"));
                 VideoCard card = new VideoCard();
                 card.setAid(aid);
                 card.setBvid(bvid);

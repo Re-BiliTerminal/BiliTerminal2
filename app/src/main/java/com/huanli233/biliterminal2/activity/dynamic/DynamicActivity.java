@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -18,7 +17,7 @@ import com.huanli233.biliterminal2.adapter.dynamic.DynamicHolder;
 import com.huanli233.biliterminal2.api.DynamicApi;
 import com.huanli233.biliterminal2.helper.TutorialHelper;
 import com.huanli233.biliterminal2.model.Dynamic;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.MsgUtil;
 
 import java.util.ArrayList;
@@ -66,7 +65,7 @@ public class DynamicActivity extends RefreshMainActivity {
         Intent data = result.getData();
         if (code == RESULT_OK && data != null) {
             String text = data.getStringExtra("text");
-            CenterThreadPool.run(() -> {
+            ThreadManager.run(() -> {
                 try {
                     long dynId;
                     Map<String, Long> atUids = new HashMap<>();
@@ -86,7 +85,7 @@ public class DynamicActivity extends RefreshMainActivity {
                     }
                     if (!(dynId == -1)) {
                         runOnUiThread(() -> MsgUtil.showMsg("发送成功~"));
-                        CenterThreadPool.run(() -> {
+                        ThreadManager.run(() -> {
                             try {
                                 Dynamic dynamic = DynamicApi.getDynamic(dynId);
                                 dynamicList.add(0, dynamic);
@@ -97,14 +96,14 @@ public class DynamicActivity extends RefreshMainActivity {
                                     }
                                 });
                             } catch (Exception e) {
-                                MsgUtil.err(e);
+                                MsgUtil.error(e);
                             }
                         });
                     } else {
                         runOnUiThread(() -> MsgUtil.showMsg("发送失败"));
                     }
                 } catch (Exception e) {
-                    runOnUiThread(() -> MsgUtil.err(e));
+                    runOnUiThread(() -> MsgUtil.error(e));
                 }
             });
         }
@@ -125,7 +124,7 @@ public class DynamicActivity extends RefreshMainActivity {
                 if (TextUtils.isEmpty(text)) text = "转发动态";
                 long dynamicId = data.getLongExtra("dynamicId", -1);
                 String finalText = text;
-                CenterThreadPool.run(() -> {
+                ThreadManager.run(() -> {
                     try {
                         long dynId;
                         Map<String, Long> atUids = new HashMap<>();
@@ -145,7 +144,7 @@ public class DynamicActivity extends RefreshMainActivity {
                             activity.runOnUiThread(() -> MsgUtil.showMsg("转发失败"));
                         }
                     } catch (Exception e) {
-                        activity.runOnUiThread(() -> MsgUtil.err(e));
+                        activity.runOnUiThread(() -> MsgUtil.error(e));
                     }
                 });
             }
@@ -175,7 +174,7 @@ public class DynamicActivity extends RefreshMainActivity {
             dynamicList = new ArrayList<>();
         } else {
             offset = 0;
-            bottom = false;
+            bottomReached = false;
             dynamicList.clear();
             dynamicAdapter.notifyDataSetChanged();
         }
@@ -189,11 +188,11 @@ public class DynamicActivity extends RefreshMainActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     private void addDynamic(String type, boolean refresh) {
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 List<Dynamic> list = new ArrayList<>();
                 offset = DynamicApi.getDynamicList(list, offset, 0, type);
-                bottom = (offset == -1);
+                bottomReached = (offset == -1);
                 setRefreshing(false);
 
                 runOnUiThread(() -> {

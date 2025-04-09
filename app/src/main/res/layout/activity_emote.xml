@@ -39,9 +39,10 @@
             app:layout_constraintTop_toTopOf="parent"
             android:format12Hour="hh:mm"
             app:layout_constraintEnd_toEndOf="parent"
-            android:id="@+id/timeText"
+            android:id="@+id/time_text"
             android:text="11:45"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="UnusedAttribute" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

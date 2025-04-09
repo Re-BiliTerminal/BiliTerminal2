@@ -54,7 +54,7 @@ public class LocalPageChooseActivity extends BaseActivity {
             } catch (ActivityNotFoundException e) {
                 MsgUtil.showMsg("没有找到播放器，请检查是否安装");
             } catch (Exception e) {
-                MsgUtil.err(e);
+                MsgUtil.error(e);
             }
         });
         adapter.setOnItemLongClickListener(position -> {

@@ -6,8 +6,8 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
-import android.util.Log;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -73,16 +73,18 @@ public class FileUtil {
     public static boolean checkStoragePermission() {
         int sdk = Build.VERSION.SDK_INT;
         if (sdk < 17) return true;
+        assert BiliTerminal.context != null;
         return ContextCompat.checkSelfPermission(BiliTerminal.context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(BiliTerminal.context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public static void requestStoragePermission(Activity activity) {
         ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
     }
 
     public static File getDownloadPath() {
-        File path = new File(SharedPreferencesUtil.getString("save_path_video", Environment.getExternalStorageDirectory() + "/Android/media/" + BiliTerminal.context.getPackageName() + "/"));
+        File path = new File(Preferences.getString("save_path_video", Environment.getExternalStorageDirectory() + "/Android/media/" + BiliTerminal.context.getPackageName() + "/"));
         try {
             File nomedia = new File(path, ".nomedia");    //为了防止系统扫描
             if (!nomedia.exists()) nomedia.createNewFile();
@@ -103,7 +105,7 @@ public class FileUtil {
     }
 
     public static File getDownloadPicturePath() {
-        return new File(SharedPreferencesUtil.getString("save_path_pictures", Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/哔哩终端/"));
+        return new File(Preferences.getString("save_path_pictures", Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/哔哩终端/"));
     }
 
     public static void requireTFCardPermission() {

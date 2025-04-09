@@ -1,6 +1,6 @@
 package com.huanli233.biliterminal2.api;
 
-import com.huanli233.biliterminal2.util.NetWorkUtil;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;

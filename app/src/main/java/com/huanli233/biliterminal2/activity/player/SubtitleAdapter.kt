@@ -1,93 +1,86 @@
-package com.huanli233.biliterminal2.activity.player;
+package com.huanli233.biliterminal2.activity.player
 
-import android.annotation.SuppressLint;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
+import android.annotation.SuppressLint
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.view.ViewCompat
+import androidx.recyclerview.widget.RecyclerView
+import com.huanli233.biliterminal2.R
+import com.huanli233.biliterminal2.listener.OnItemClickListener
+import com.huanli233.biliwebapi.bean.video.SubtitleInfoItem
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.view.ViewCompat;
-import androidx.recyclerview.widget.RecyclerView;
+class SubtitleAdapter : RecyclerView.Adapter<SubtitleAdapter.Holder>() {
+    private var list: List<SubtitleInfoItem> = listOf()
 
-import com.huanli233.biliterminal2.R;
-import com.huanli233.biliterminal2.listener.OnItemClickListener;
-import com.huanli233.biliterminal2.model.SubtitleLink;
+    var listener: OnItemClickListener? = null
+    var selectedItemIndex: Int = 0
+        set(value) {
+            notifyItemChanged(selectedItemIndex)
+            notifyItemChanged(value)
+            field = value
+        }
 
-public class SubtitleAdapter extends RecyclerView.Adapter<SubtitleAdapter.Holder> {
-    private SubtitleLink[] list;
-
-    public OnItemClickListener listener;
-    public int selectedItemIndex = 0;
-
-    public SubtitleAdapter() {
-    }
-
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener;
-    }
-
-    public void setSelectedItemIndex(int selectedItemIndex) {
-        // Cancel previous selected item and set current item
-        int previousSelectedIndex = this.selectedItemIndex;
-        this.selectedItemIndex = selectedItemIndex;
-        notifyItemChanged(previousSelectedIndex);
-        notifyItemChanged(selectedItemIndex);
+    fun setOnItemClickListener(listener: OnItemClickListener?) {
+        this.listener = listener
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setData(SubtitleLink[] episodeList) {
-        this.list = episodeList;
-        selectedItemIndex = 0;
-        notifyDataSetChanged();
+    fun setData(items: List<SubtitleInfoItem>) {
+        this.list = items
+        selectedItemIndex = 0
+        notifyDataSetChanged()
     }
 
-    @NonNull
-    @Override
-    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_subtitle, parent, false);
-        return new Holder(view);
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.cell_subtitle, parent, false)
+        return Holder(view)
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull Holder holder, int position) {
+    override fun onBindViewHolder(holder: Holder, position: Int) {
         if (listener != null) {
-            holder.listener = listener;
+            holder.listener = listener
         }
-        holder.bind(position, selectedItemIndex == position);
+        holder.bind(position, selectedItemIndex == position)
     }
 
-    @Override
-    public int getItemCount() {
-        return list.length;
+    override fun getItemCount(): Int {
+        return list.size
     }
 
-    public class Holder extends RecyclerView.ViewHolder {
+    inner class Holder(view: View) : RecyclerView.ViewHolder(view) {
+        internal var listener: OnItemClickListener? = null
+        private val button: Button =
+            itemView.findViewById(R.id.btn)
 
-        private OnItemClickListener listener;
-        private final Button button;
-
-        public Holder(View view) {
-            super(view);
-            button = itemView.findViewById(R.id.btn);
-        }
-
-        void bind(int currentIndex, boolean isSelected) {
-            button.setText(list[currentIndex].lang);
+        fun bind(currentIndex: Int, isSelected: Boolean) {
+            button.text = list[currentIndex].lan
             if (isSelected) {
-                button.setTextColor(0xcc262626);
-                ViewCompat.setBackgroundTintList(button, AppCompatResources.getColorStateList(itemView.getContext(), R.color.background_button_selected));
+                button.setTextColor(-0x33d9d9da)
+                ViewCompat.setBackgroundTintList(
+                    button,
+                    AppCompatResources.getColorStateList(
+                        itemView.context,
+                        R.color.background_button_selected
+                    )
+                )
             } else {
-                button.setTextColor(0xffebe0e2);
-                ViewCompat.setBackgroundTintList(button, AppCompatResources.getColorStateList(itemView.getContext(), R.color.background_button));
+                button.setTextColor(-0x141f1e)
+                ViewCompat.setBackgroundTintList(
+                    button,
+                    AppCompatResources.getColorStateList(
+                        itemView.context,
+                        R.color.background_button
+                    )
+                )
             }
-            button.setOnClickListener(v -> {
-                setSelectedItemIndex(currentIndex);
-                if (listener != null) {
-                    listener.onItemClick(currentIndex);
-                }
-            });
+            button.setOnClickListener {
+                selectedItemIndex = currentIndex
+                listener?.onItemClick(currentIndex)
+            }
         }
     }
 }

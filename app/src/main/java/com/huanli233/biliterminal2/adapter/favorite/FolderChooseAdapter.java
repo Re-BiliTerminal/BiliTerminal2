@@ -13,10 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.card.MaterialCardView;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.api.FavoriteApi;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.huanli233.biliterminal2.util.ToolsUtil;
+import com.huanli233.biliterminal2.util.Preferences;
+import com.huanli233.biliterminal2.util.Utils;
 
 import org.json.JSONException;
 
@@ -64,10 +64,10 @@ public class FolderChooseAdapter extends RecyclerView.Adapter<FolderChooseAdapte
             if (!adding) {
                 adding = true;
                 cardView.setStrokeColor(context.getResources().getColor(R.color.low_pink));
-                cardView.setStrokeWidth(ToolsUtil.dp2px(1f));
+                cardView.setStrokeWidth(Utils.dp2px(1f));
 
                 if (chooseState.get(position)) {
-                    CenterThreadPool.run(() -> {
+                    ThreadManager.run(() -> {
                         try {
                             int result = FavoriteApi.deleteFavorite(aid, fidList.get(position));
                             adding = false;
@@ -87,8 +87,8 @@ public class FolderChooseAdapter extends RecyclerView.Adapter<FolderChooseAdapte
                     });
                 } else {
                     cardView.setStrokeColor(context.getResources().getColor(R.color.gray));
-                    cardView.setStrokeWidth(ToolsUtil.dp2px(0.1f));
-                    CenterThreadPool.run(() -> {
+                    cardView.setStrokeWidth(Utils.dp2px(0.1f));
+                    ThreadManager.run(() -> {
                         try {
                             int result = FavoriteApi.addFavorite(aid, fidList.get(position));
                             adding = false;
@@ -101,7 +101,7 @@ public class FolderChooseAdapter extends RecyclerView.Adapter<FolderChooseAdapte
                                 MsgUtil.showMsg("添加失败！错误码：" + result);
                                 setCardView(cardView, false);
                             });
-                            if (SharedPreferencesUtil.getBoolean("fav_single", false))
+                            if (Preferences.getBoolean("fav_single", false))
                                 ((Activity) context).finish();
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -132,10 +132,10 @@ public class FolderChooseAdapter extends RecyclerView.Adapter<FolderChooseAdapte
     private void setCardView(MaterialCardView cardView, boolean bool) {
         if (bool) {
             cardView.setStrokeColor(context.getResources().getColor(R.color.pink));
-            cardView.setStrokeWidth(ToolsUtil.dp2px(1));
+            cardView.setStrokeWidth(Utils.dp2px(1));
         } else {
             cardView.setStrokeColor(context.getResources().getColor(R.color.gray));
-            cardView.setStrokeWidth(ToolsUtil.dp2px(0.1f));
+            cardView.setStrokeWidth(Utils.dp2px(0.1f));
         }
     }
 

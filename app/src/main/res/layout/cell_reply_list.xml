@@ -15,7 +15,8 @@
         android:src="@mipmap/akari"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <com.huanli233.biliterminal2.ui.widget.MarqueeTextView
         android:id="@+id/replyUsername"
@@ -78,7 +79,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/likes"
         app:layout_constraintStart_toEndOf="@+id/likes"
         app:layout_constraintTop_toTopOf="@+id/likes"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintVertical_bias="0.5"
+        tools:ignore="ContentDescription" />
 
     <!-- 过于使的布局 但是我不会写 -->
     <!-- Re:给你修了下 -->
@@ -110,7 +112,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/replyText"
-        app:round="@dimen/card_round" />
+        app:round="@dimen/card_round"
+        tools:ignore="UnusedAttribute" />
 
 
     <TextView

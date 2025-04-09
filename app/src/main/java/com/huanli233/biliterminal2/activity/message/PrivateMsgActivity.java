@@ -21,9 +21,9 @@ import com.huanli233.biliterminal2.adapter.message.PrivateMsgAdapter;
 import com.huanli233.biliterminal2.api.PrivateMsgApi;
 import com.huanli233.biliterminal2.model.PrivateMessage;
 import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -65,7 +65,7 @@ public class PrivateMsgActivity extends BaseActivity {
         uid = intent.getLongExtra("uid", 114514);
         Log.e("", String.valueOf(uid));
 
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 allMsg = PrivateMsgApi.getPrivateMsg(uid, 50, 0, 0);
                 list = PrivateMsgApi.getPrivateMsgList(allMsg);
@@ -122,16 +122,16 @@ public class PrivateMsgActivity extends BaseActivity {
                     }, 15000, 15000);
                 });
             } catch (Exception e) {
-                runOnUiThread(() -> MsgUtil.err(e));
+                runOnUiThread(() -> MsgUtil.error(e));
             }
         });
 
-        sendBtn.setOnClickListener(view -> CenterThreadPool.run(() -> {
+        sendBtn.setOnClickListener(view -> ThreadManager.run(() -> {
             try {
                 if (!contentEt.getText().toString().equals("")) {
                     String content = contentEt.getText().toString();
                     runOnUiThread(() -> contentEt.setText(""));
-                    JSONObject result = PrivateMsgApi.sendMsg(SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 114514), uid, PrivateMessage.TYPE_TEXT, System.currentTimeMillis() / 1000, "{\"content\":\"" + content + "\"}");
+                    JSONObject result = PrivateMsgApi.sendMsg(Preferences.getLong(Preferences.MID, 114514), uid, PrivateMessage.TYPE_TEXT, System.currentTimeMillis() / 1000, "{\"content\":\"" + content + "\"}");
                     runOnUiThread(() -> {
                         try {
                             if (result.getInt("code") == 0) {
@@ -153,7 +153,7 @@ public class PrivateMsgActivity extends BaseActivity {
                     runOnUiThread(() -> MsgUtil.showMsg("你还木有输入喵~"));
                 }
             } catch (Exception e) {
-                runOnUiThread(() -> MsgUtil.err(e));
+                runOnUiThread(() -> MsgUtil.error(e));
             }
         }));
     }
@@ -194,12 +194,12 @@ public class PrivateMsgActivity extends BaseActivity {
     }
 
     private void refresh() {
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 int oldListSize = list.size();
                 JSONObject msgResult = PrivateMsgApi.getPrivateMsg(uid, 50, list.get(list.size() - 1).msgSeqno, 0);
                 ArrayList<PrivateMessage> newList = PrivateMsgApi.getPrivateMsgList(msgResult);
-                if (newList.size() > 0) {
+                if (!newList.isEmpty()) {
                     for (int i = 0; i < PrivateMsgApi.getEmoteJsonArray(msgResult).length(); ++i) {
                         JSONObject emote = PrivateMsgApi.getEmoteJsonArray(msgResult).getJSONObject(i);
                         emoteArray.put(emote);
@@ -214,7 +214,7 @@ public class PrivateMsgActivity extends BaseActivity {
                     });
                 }
             } catch (Exception e) {
-                runOnUiThread(() -> MsgUtil.err(e));
+                runOnUiThread(() -> MsgUtil.error(e));
             }
         });
     }
@@ -223,7 +223,7 @@ public class PrivateMsgActivity extends BaseActivity {
     private void loadMore() {
         isLoadingMore = true;
         MsgUtil.showMsg("加载更多中...");
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 if (allMsg.getInt("has_more") == 1) {
                     allMsg = PrivateMsgApi.getPrivateMsg(uid, 15, 0, list.get(0).msgSeqno);
@@ -247,7 +247,7 @@ public class PrivateMsgActivity extends BaseActivity {
                     isLoadingMore = false;
                 } else runOnUiThread(() -> MsgUtil.showMsg("没有更多消息了"));
             } catch (Exception e) {
-                runOnUiThread(() -> MsgUtil.err(e));
+                runOnUiThread(() -> MsgUtil.error(e));
             }
         });
     }

@@ -1,7 +1,6 @@
 package com.huanli233.biliterminal2.activity.settings.login;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.fragment.app.Fragment;
@@ -10,8 +9,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.adapter.viewpager.ViewPagerFragmentAdapter;
-import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
 
 import java.util.ArrayList;
 import java.util.List;

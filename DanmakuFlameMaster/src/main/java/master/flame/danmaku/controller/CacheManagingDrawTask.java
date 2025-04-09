@@ -110,7 +110,7 @@ public class CacheManagingDrawTask extends DrawTask {
     }
 
     @Override
-    public RenderingState draw(AbsDisplayer displayer) {
+    public RenderingState draw(AbsDisplayer<?, ?> displayer) {
         RenderingState result = super.draw(displayer);
         synchronized (mDrawingNotify) {
             mDrawingNotify.notify();
@@ -313,7 +313,7 @@ public class CacheManagingDrawTask extends DrawTask {
                         it.remove();
                         continue;
                     }
-                    if (danmaku.hasDrawingCache() == false || danmaku.isOutside()) {
+                    if (!danmaku.hasDrawingCache() || danmaku.isOutside()) {
                         entryRemoved(true, danmaku, null);
                         it.remove();
                     }
@@ -331,7 +331,7 @@ public class CacheManagingDrawTask extends DrawTask {
                     mContext.getDisplayer().getCacheStuffer().releaseResource(oldValue);
                 }
                 if (releasedSize <= 0) return;
-                mRealSize -= releasedSize;
+                mRealSize -= (int) releasedSize;
                 mCachePool.release((DrawingCache) cache);
             }
         }
@@ -364,7 +364,7 @@ public class CacheManagingDrawTask extends DrawTask {
 
         private boolean push(BaseDanmaku item, int itemSize, boolean forcePush) {
             int size = itemSize; //sizeOf(item);
-            while (mRealSize + size > mMaxSize && mCaches.size() > 0) {
+            while (mRealSize + size > mMaxSize && !mCaches.isEmpty()) {
                 BaseDanmaku oldValue = mCaches.first();
                 if (oldValue.isTimeOut()) {
                     entryRemoved(false, oldValue, item);
@@ -557,7 +557,7 @@ public class CacheManagingDrawTask extends DrawTask {
                     case SEEK:
                         Long seekMills = (Long) msg.obj;
                         if (seekMills != null) {
-                            long seekCacheTime = seekMills.longValue();
+                            long seekCacheTime = seekMills;
                             long oldCacheTime = mCacheTimer.currMillisecond;
                             mCacheTimer.update(seekCacheTime);
                             mSeekedFlag = true;
@@ -709,7 +709,7 @@ public class CacheManagingDrawTask extends DrawTask {
                         continue;
                     }
 
-                    if (repositioned == false && (item.isTimeOut() || !item.isOutside())) {
+                    if (!repositioned && (item.isTimeOut() || !item.isOutside())) {
                         continue;
                     }
 
@@ -909,7 +909,7 @@ public class CacheManagingDrawTask extends DrawTask {
         }
 
         public long getFirstCacheTime() {
-            if (mCaches != null && mCaches.size() > 0) {
+            if (mCaches != null && !mCaches.isEmpty()) {
                 BaseDanmaku firstItem = mCaches.first();
                 if (firstItem == null)
                     return 0;
@@ -969,7 +969,7 @@ public class CacheManagingDrawTask extends DrawTask {
             requestClear();
         } else if (tag.isVisibilityRelatedTag()) {
             if (values != null && values.length > 0) {
-                if (values[0] != null && ((values[0] instanceof Boolean) == false || ((Boolean) values[0]).booleanValue())) {
+                if (values[0] != null && (!(values[0] instanceof Boolean) || (Boolean) values[0])) {
                     if (mCacheManager != null) {
                         mCacheManager.requestBuild(0L);
                     }

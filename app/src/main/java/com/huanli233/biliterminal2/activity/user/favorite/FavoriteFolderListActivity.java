@@ -7,8 +7,8 @@ import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.favorite.FavoriteFolderAdapter;
 import com.huanli233.biliterminal2.api.FavoriteApi;
 import com.huanli233.biliterminal2.model.FavoriteFolder;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.ThreadManager;
+import com.huanli233.biliterminal2.util.Preferences;
 
 import java.util.ArrayList;
 
@@ -24,9 +24,9 @@ public class FavoriteFolderListActivity extends RefreshListActivity {
         super.onCreate(savedInstanceState);
         setPageName("收藏");
 
-        long mid = SharedPreferencesUtil.getLong("mid", 0);
+        long mid = Preferences.getLong("mid", 0);
 
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 ArrayList<FavoriteFolder> folderList = FavoriteApi.getFavoriteFolders(mid);
                 FavoriteFolderAdapter adapter = new FavoriteFolderAdapter(this, folderList, mid);

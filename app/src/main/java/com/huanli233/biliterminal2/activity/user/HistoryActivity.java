@@ -1,13 +1,12 @@
 package com.huanli233.biliterminal2.activity.user;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter;
 import com.huanli233.biliterminal2.api.HistoryApi;
 import com.huanli233.biliterminal2.model.VideoCard;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,7 @@ public class HistoryActivity extends RefreshListActivity {
 
         videoList = new ArrayList<>();
 
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 int result = HistoryApi.getHistory(page, videoList);
                 if (result != -1) {
@@ -52,7 +51,7 @@ public class HistoryActivity extends RefreshListActivity {
     }
 
     private void continueLoading(int page) {
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 List<VideoCard> list = new ArrayList<>();
                 int result = HistoryApi.getHistory(page, list);

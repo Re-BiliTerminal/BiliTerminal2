@@ -20,10 +20,10 @@ import com.huanli233.biliterminal2.activity.video.RecommendActivity;
 import com.huanli233.biliterminal2.activity.video.local.LocalListActivity;
 import com.huanli233.biliterminal2.api.CookieRefreshApi;
 import com.huanli233.biliterminal2.api.CookiesApi;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.NetWorkUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,7 +59,7 @@ public class SplashActivity extends Activity {
 
         handler = new Handler(Looper.getMainLooper());
         splashTextView = findViewById(R.id.splashText);
-        splashText = SharedPreferencesUtil.getString("ui_splashtext", "欢迎使用\n哔哩终端");
+        splashText = Preferences.getString("ui_splashtext", "欢迎使用\n哔哩终端");
 
         splashTimer = new Timer();
         splashTimer.schedule(new TimerTask() {
@@ -71,15 +71,15 @@ public class SplashActivity extends Activity {
             }
         }, 100, 100);
 
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
 
             //FileUtil.clearCache(this);  //先清个缓存（为了防止占用过大）
             //不需要了，我把大部分图片的硬盘缓存都关闭了，只有表情包保留，这样既可以缩减缓存占用又能在一定程度上减少流量消耗
 
-            if (SharedPreferencesUtil.getBoolean(SharedPreferencesUtil.SETUP, false)) {//判断是否设置完成
+            if (Preferences.getBoolean(Preferences.SETUP, false)) {//判断是否设置完成
                 try {
                     // 未登录时请求bilibili.com
-                    if (SharedPreferencesUtil.getLong("mid", 0) != 0) {
+                    if (Preferences.getLong("mid", 0) != 0) {
                         checkCookieRefresh();
                     } else {
                         // [开发者]RobinNotBad: 如果提前不请求bilibili.com，未登录时的推荐有概率一直返回同样的内容
@@ -89,7 +89,7 @@ public class SplashActivity extends Activity {
                     CookiesApi.checkCookies();
 
                     String firstActivity = null;
-                    String sortConf = SharedPreferencesUtil.getString(SharedPreferencesUtil.MENU_SORT, "");
+                    String sortConf = Preferences.getString(Preferences.MENU_SORT, "");
                     if (!TextUtils.isEmpty(sortConf)) {
                         String[] splitName = sortConf.split(";");
                         for (String name : splitName) {
@@ -125,10 +125,10 @@ public class SplashActivity extends Activity {
 
                 } catch (IOException e) {
                     runOnUiThread(() -> {
-                        MsgUtil.err(e);
+                        MsgUtil.error(e);
                         interruptSplash();
                         splashTextView.setText("网络错误");
-                        if (SharedPreferencesUtil.getBoolean("setup", false)) {
+                        if (Preferences.getBoolean("setup", false)) {
                             handler.postDelayed(() -> {
                                 Intent intent = new Intent();
                                 intent.setClass(SplashActivity.this, LocalListActivity.class);
@@ -138,7 +138,7 @@ public class SplashActivity extends Activity {
                         }
                     });
                 } catch (JSONException e) {
-                    runOnUiThread(() -> MsgUtil.err(e));
+                    runOnUiThread(() -> MsgUtil.error(e));
                     Intent intent = new Intent();
                     intent.setClass(SplashActivity.this, LocalListActivity.class);
                     startActivity(intent);
@@ -161,7 +161,7 @@ public class SplashActivity extends Activity {
             JSONObject cookieInfo = CookieRefreshApi.cookieInfo();
             if (cookieInfo.getBoolean("refresh")) {
                 Log.e("Cookie", "需要刷新");
-                if (Objects.equals(SharedPreferencesUtil.getString(SharedPreferencesUtil.REFRESH_TOKEN, ""), ""))
+                if (Objects.equals(Preferences.getString(Preferences.REFRESH_TOKEN, ""), ""))
                     runOnUiThread(() -> MsgUtil.showMsgLong("无法刷新Cookie，请重新登录！"));
                 else {
                     String correspondPath = CookieRefreshApi.getCorrespondPath(cookieInfo.getLong("timestamp"));
@@ -184,10 +184,10 @@ public class SplashActivity extends Activity {
     }
 
     private void resetLogin() {
-        SharedPreferencesUtil.putLong(SharedPreferencesUtil.MID, 0L);
-        SharedPreferencesUtil.putString(SharedPreferencesUtil.CSRF, "");
-        SharedPreferencesUtil.putString(SharedPreferencesUtil.COOKIES, "");
-        SharedPreferencesUtil.putString(SharedPreferencesUtil.REFRESH_TOKEN, "");
+        Preferences.putLong(Preferences.MID, 0L);
+        Preferences.putString(Preferences.CSRF, "");
+        Preferences.putString(Preferences.COOKIES, "");
+        Preferences.putString(Preferences.REFRESH_TOKEN, "");
         NetWorkUtil.refreshHeaders();
     }
 

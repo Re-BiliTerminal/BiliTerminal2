@@ -2,13 +2,12 @@ package com.huanli233.biliterminal2.activity.settings;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.SettingsAdapter;
 import com.huanli233.biliterminal2.model.SettingSection;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +21,9 @@ public class SettingRepliesActivity extends RefreshListActivity {
         setPageName("评论区设置");
 
         final List<SettingSection> sectionList = new ArrayList<>() {{
-            add(new SettingSection("switch", "众生平等的名称颜色", SharedPreferencesUtil.NO_VIP_COLOR, getString(R.string.desc_no_vip_color), "false"));
-            add(new SettingSection("switch", "不想看见铭牌", SharedPreferencesUtil.NO_MEDAL, getString(R.string.desc_no_medal), "false"));
-            add(new SettingSection("switch", "跑马灯展示名称", SharedPreferencesUtil.REPLY_MARQUEE_NAME, getString(R.string.desc_reply_marquee_name), "false"));
+            add(new SettingSection("switch", "众生平等的名称颜色", Preferences.NO_VIP_COLOR, getString(R.string.desc_no_vip_color), "false"));
+            add(new SettingSection("switch", "不想看见铭牌", Preferences.NO_MEDAL, getString(R.string.desc_no_medal), "false"));
+            add(new SettingSection("switch", "跑马灯展示名称", Preferences.REPLY_MARQUEE_NAME, getString(R.string.desc_reply_marquee_name), "false"));
         }};
 
         recyclerView.setHasFixedSize(true);

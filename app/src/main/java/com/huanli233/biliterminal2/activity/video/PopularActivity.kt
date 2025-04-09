@@ -1,6 +1,5 @@
 package com.huanli233.biliterminal2.activity.video
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
@@ -10,12 +9,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.activity.base.InstanceActivity
 import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter
+import com.huanli233.biliterminal2.api.apiResultNonNull
 import com.huanli233.biliterminal2.api.bilibiliApi
 import com.huanli233.biliterminal2.api.toResultNonNull
 import com.huanli233.biliterminal2.model.VideoCard
 import com.huanli233.biliterminal2.model.toVideoCard
 import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager
-import com.huanli233.biliterminal2.util.CenterThreadPool
+import com.huanli233.biliterminal2.util.ThreadManager
 import com.huanli233.biliterminal2.util.MsgUtil
 import com.huanli233.biliterminal2.util.view.ImageAutoLoadScrollListener
 import com.huanli233.biliwebapi.api.interfaces.IRecommendApi
@@ -53,7 +53,7 @@ class PopularActivity : InstanceActivity() {
                     val itemCount = manager.itemCount
                     if (lastItemPosition >= (itemCount - 3) && dy > 0 && !refreshing) {
                         refreshing = true
-                        CenterThreadPool.run { addPopular() }
+                        ThreadManager.run { addPopular() }
                     }
                 }
             })
@@ -83,7 +83,9 @@ class PopularActivity : InstanceActivity() {
             swipeRefreshLayout.isRefreshing = true
         }
         lifecycleScope.launch {
-            bilibiliApi.getApi(IRecommendApi::class.java).getPopular(page).toResultNonNull().onSuccess { data ->
+            bilibiliApi.api(IRecommendApi::class) {
+                getPopular(page)
+            }.apiResultNonNull().onSuccess { data ->
                 page++
                 runOnUiThread {
                     videoCardList.addAll(data.items.map { it.toVideoCard() })
@@ -103,7 +105,7 @@ class PopularActivity : InstanceActivity() {
                 runOnUiThread {
                     swipeRefreshLayout.isRefreshing = true
                     refreshing = false
-                    MsgUtil.err(it)
+                    MsgUtil.error(it)
                 }
             }
         }

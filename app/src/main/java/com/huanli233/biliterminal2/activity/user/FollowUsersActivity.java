@@ -2,13 +2,12 @@ package com.huanli233.biliterminal2.activity.user;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.user.UserListAdapter;
 import com.huanli233.biliterminal2.api.FollowApi;
 import com.huanli233.biliterminal2.model.UserInfo;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.MsgUtil;
 
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ public class FollowUsersActivity extends RefreshListActivity {
 
         userList = new ArrayList<>();
 
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 int result = mode == 0 ? FollowApi.getFollowingList(mid, page, userList) : FollowApi.getFollowerList(mid, page, userList);
                 adapter = new UserListAdapter(this, userList);
@@ -67,7 +66,7 @@ public class FollowUsersActivity extends RefreshListActivity {
     }
 
     private void continueLoading(int page) {
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 List<UserInfo> list = new ArrayList<>();
                 int result = mode == 0 ? FollowApi.getFollowingList(mid, page, list) : FollowApi.getFollowerList(mid, page, list);

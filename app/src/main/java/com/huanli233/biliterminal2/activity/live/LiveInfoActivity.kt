@@ -1,233 +1,140 @@
-package com.huanli233.biliterminal2.activity.live;
+package com.huanli233.biliterminal2.activity.live
 
-import android.annotation.SuppressLint;
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import com.huanli233.biliterminal2.activity.base.BaseActivity
+import com.huanli233.biliterminal2.api.apiResultNonNull
+import com.huanli233.biliterminal2.api.bilibiliApi
+import com.huanli233.biliterminal2.api.onApiFailure
+import com.huanli233.biliterminal2.databinding.ActivityLiveInfoBinding
+import com.huanli233.biliterminal2.event.Event
+import com.huanli233.biliterminal2.event.event
+import com.huanli233.biliterminal2.util.extensions.LoadState
+import com.huanli233.biliterminal2.util.extensions.msg
+import com.huanli233.biliwebapi.api.interfaces.ILiveApi
+import com.huanli233.biliwebapi.api.interfaces.IUserApi
+import com.huanli233.biliwebapi.bean.live.LivePlayInfo
+import com.huanli233.biliwebapi.bean.live.LiveRoom
+import com.huanli233.biliwebapi.bean.user.UserCardInfo
+import com.huanli233.biliwebapi.bean.user.UserInfo
+import kotlinx.coroutines.launch
 
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+class LiveInfoActivity : BaseActivity() {
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.button.MaterialButton;
-import com.huanli233.biliterminal2.R;
-import com.huanli233.biliterminal2.activity.ImageViewerActivity;
-import com.huanli233.biliterminal2.activity.base.BaseActivity;
-import com.huanli233.biliterminal2.activity.settings.SettingPlayerChooseActivity;
-import com.huanli233.biliterminal2.adapter.user.UpListAdapter;
-import com.huanli233.biliterminal2.adapter.video.MediaEpisodeAdapter;
-import com.huanli233.biliterminal2.api.LiveApi;
-import com.huanli233.biliterminal2.api.PlayerApi;
-import com.huanli233.biliterminal2.model.Bangumi;
-import com.huanli233.biliterminal2.model.LivePlayInfo;
-import com.huanli233.biliterminal2.model.LiveRoom;
-import com.huanli233.biliterminal2.model.UserInfo;
-import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager;
-import com.huanli233.biliterminal2.util.AnimationUtils;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
-import com.huanli233.biliterminal2.util.GlideUtil;
-import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.huanli233.biliterminal2.util.TerminalContext;
-import com.huanli233.biliterminal2.util.ToolsUtil;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-public class LiveInfoActivity extends BaseActivity {
-    private long room_id;
-    private LiveRoom room;
-    private boolean desc_expand = false, tags_expand = false;
-
-    private RecyclerView host_list;
-    private int selectedHost = 0;
-    private MediaEpisodeAdapter hostAdapter;
-    private LivePlayInfo playInfo;
-
-    @SuppressLint("SetTextI18n")
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        room_id = getIntent().getLongExtra("room_id", 0);
-        if (room_id == 0) {
-            finish();
-            return;
-        }
-
-        asyncInflate(R.layout.activity_live_info, (layoutView, id) -> {
-            ImageView loading = findViewById(R.id.loading);
-            View scrollView = findViewById(R.id.scrollView);
-            ImageView cover = findViewById(R.id.img_cover);
-            TextView title = findViewById(R.id.text_title);
-            RecyclerView up_recyclerView = findViewById(R.id.up_recyclerView);
-            TextView viewsCount = findViewById(R.id.viewsCount);
-            MaterialButton play = findViewById(R.id.play);
-            TextView timeText = findViewById(R.id.timeText);
-            TextView idText = findViewById(R.id.idText);
-            TextView tags = findViewById(R.id.tags);
-            TextView description = findViewById(R.id.description);
-            host_list = findViewById(R.id.host_list);
-            RecyclerView quality_list = findViewById(R.id.quality_list);
-
-            AnimationUtils.crossFade(loading, scrollView);
-            TerminalContext.getInstance().getLiveInfoByRoomId(room_id).observe(this, (liveInfoResult) -> liveInfoResult.onSuccess((liveInfo) -> {
-                room = liveInfo.getLiveRoom();
-                UserInfo userInfo = liveInfo.getUserInfo();
-                playInfo = liveInfo.getLivePlayInfo();
-
-                Glide.with(this).asDrawable().load(GlideUtil.url(room.user_cover)).placeholder(R.mipmap.placeholder)
-                        .transition(GlideUtil.getTransitionOptions())
-                        .apply(RequestOptions.bitmapTransform(new RoundedCorners(ToolsUtil.dp2px(4))).sizeMultiplier(0.85f).skipMemoryCache(true).dontAnimate())
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .into(cover);
-
-                cover.setOnClickListener((view) -> startActivity(new Intent(view.getContext(), ImageViewerActivity.class).putExtra("imageList", new ArrayList<>(List.of(room.user_cover)))));
-
-                title.setText(ToolsUtil.removeHtml(room.title));
-
-                ArrayList<UserInfo> upList = new ArrayList<>();
-                if (userInfo != null) {
-                    UserInfo displayUserInfo = new UserInfo(userInfo.mid, userInfo.name, userInfo.avatar, "主播", 0, 0, 6, false, "", 0, "", 0);
-//                            displayUserInfo.vip_nickname_color = userInfo.vip_nickname_color;
-                    upList.add(displayUserInfo);
-                }
-                UpListAdapter upListAdapter = new UpListAdapter(this, upList);
-                up_recyclerView.setHasFixedSize(true);
-                up_recyclerView.setLayoutManager(new CustomLinearManager(this));
-                up_recyclerView.setAdapter(upListAdapter);
-
-                viewsCount.setText(ToolsUtil.toWan(room.online) + "人观看");
-                timeText.setText("直播开始于" + room.liveTime);
-
-                idText.setText(String.valueOf(room_id));
-                tags.setText("标签：" + room.tags);
-
-                tags.setOnClickListener(view1 -> {
-                    if (tags_expand) tags.setMaxLines(1);
-                    else tags.setMaxLines(233);
-                    tags_expand = !tags_expand;
-                });
-                ToolsUtil.setCopy(idText, tags, title);
-
-                description.setText(ToolsUtil.removeHtml(ToolsUtil.htmlToString(room.description)));
-                description.setOnClickListener(view1 -> {
-                    if (desc_expand) description.setMaxLines(3);
-                    else description.setMaxLines(512);
-                    desc_expand = !desc_expand;
-                });
-                play.setOnClickListener(view -> CenterThreadPool.run(() -> {
-                    try {
-                        LivePlayInfo.Codec codec;
-                        if (playInfo != null) {
-                            codec = playInfo.playUrl.stream.get(0).format.get(0).codec.get(0);
-                            LivePlayInfo.UrlInfo urlInfo = codec.url_info.get(selectedHost);
-                            String play_url = urlInfo.host + codec.base_url + urlInfo.extra;
-                            runOnUiThread(() -> {
-                                try {
-                                    long mid;
-                                    try {
-                                        mid = SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0);
-                                    } catch (Throwable ignored) {
-                                        mid = 0;
-                                    }
-                                    Intent player = PlayerApi.jumpToPlayer(this, play_url, "", "", "直播·" + room.title, false, room_id, "", 0, mid, 0, true);
-                                    startActivity(player);
-                                } catch (ActivityNotFoundException e) {
-                                    MsgUtil.showMsg("没有找到播放器，请检查是否安装");
-                                } catch (Exception e) {
-                                    MsgUtil.err(e);
-                                }
-                            });
-                        }
-                    } catch (Exception e) {
-                        runOnUiThread(() -> MsgUtil.err(e));
-                    }
-                }));
-                play.setOnLongClickListener(view -> {
-                    if (!SharedPreferencesUtil.getString(SharedPreferencesUtil.PLAYER, "null").equals("terminalPlayer"))
-                        MsgUtil.showMsgLong("若无法播放请更换为内置播放器");
-                    Intent intent = new Intent();
-                    intent.setClass(this, SettingPlayerChooseActivity.class);
-                    startActivity(intent);
-                    return true;
-                });
-                if (playInfo.playUrl == null) {
-                    MsgUtil.showMsg("直播已结束");
-                    play.setVisibility(View.GONE);
-                } else {
-                    //清晰度选择
-                    MediaEpisodeAdapter qualityAdapter = new MediaEpisodeAdapter();
-                    ArrayList<Bangumi.Episode> qualityList = new ArrayList<>();
-                    qualityAdapter.setOnItemClickListener(index -> {
-                        hostAdapter.setData(new ArrayList<>());
-                        play.setEnabled(false);
-                        CenterThreadPool.run(() -> {
-                            try {
-                                playInfo = LiveApi.getRoomPlayInfo(room_id, (int) qualityList.get(index).id);
-                                runOnUiThread(() -> {
-                                    refresh_host_list();
-                                    play.setEnabled(true);
-                                });
-                            } catch (Exception e) {
-                                runOnUiThread(() -> MsgUtil.err(e));
-                            }
-                        });
-                    });
-                    for (Map.Entry<String, Integer> entry : LiveApi.QualityMap.entrySet()) {
-                        Bangumi.Episode episode = new Bangumi.Episode();
-                        episode.id = entry.getValue();
-                        episode.title = entry.getKey();
-                        qualityList.add(episode);
-                    }
-                    qualityAdapter.setData(qualityList);
-                    quality_list.setLayoutManager(new CustomLinearManager(this, LinearLayoutManager.HORIZONTAL, false));
-                    quality_list.setAdapter(qualityAdapter);
-                    qualityAdapter.setSelectedItemIndex(0);
-
-                    //路线选择
-                    hostAdapter = new MediaEpisodeAdapter();
-                    hostAdapter.setOnItemClickListener(i -> selectedHost = i);
-                    hostAdapter.setData(new ArrayList<>());
-                    host_list.setLayoutManager(new CustomLinearManager(this, LinearLayoutManager.HORIZONTAL, false));
-                    runOnUiThread(() -> host_list.setAdapter(hostAdapter));
-                    refresh_host_list();
-                }
-                if (!SharedPreferencesUtil.getString(SharedPreferencesUtil.PLAYER, "null").equals("terminalPlayer"))
-                    MsgUtil.showMsgLong("直播可能只有内置播放器可以正常播放");
-
-            }).onFailure((e) -> {
-                runOnUiThread(() -> MsgUtil.showMsg("直播不存在"));
-                CenterThreadPool.runOnUIThreadAfter(1, TimeUnit.MINUTES, () -> MsgUtil.err(e));
-                finish();
-            }));
-        });
+    val roomId by lazy {
+        intent.getLongExtra("room_id", 0)
     }
 
-    private void refresh_host_list() {
-        ArrayList<Bangumi.Episode> hostList = new ArrayList<>();
-        for (int i = 0; i < playInfo.playUrl.stream.get(0).format.get(0).codec.get(0).url_info.size(); i++) {
-            Bangumi.Episode episode = new Bangumi.Episode();
-            episode.id = i;
-            episode.title = "路线" + (i + 1);
-            hostList.add(episode);
+    private lateinit var binding: ActivityLiveInfoBinding
+
+    override fun onCreate(savedInstanceState: android.os.Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (roomId == 0L) {
+            finish()
+            return
         }
-        hostAdapter.setData(hostList);
-        selectedHost = 0;
-        hostAdapter.setSelectedItemIndex(0);
+        binding = ActivityLiveInfoBinding.inflate(layoutInflater)
+    }
+}
+
+class LiveInfoViewModel(val liveRoomId: String): ViewModel() {
+
+    private val _creatorInfo = MutableLiveData<LoadState<UserCardInfo>>()
+    private val _liveRoom = MutableLiveData<LoadState<LiveRoom>>()
+    val loadState: LiveData<LoadState<LiveInfo>> = MediatorLiveData<LoadState<LiveInfo>>().apply {
+        var creatorState: LoadState<UserCardInfo>? = null
+        var roomState: LoadState<LiveRoom>? = null
+
+        fun update() {
+            val creator = creatorState
+            val room = roomState
+            if (creator == null || room == null) return
+
+            val newState = when {
+                creator.isLoading || room.isLoading -> LoadState.Loading()
+                creator.isError || room.isError -> {
+                    val error = room.takeIf { it is LoadState.Error } ?: creator
+                    LoadState.Error((error as LoadState.Error).error)
+                }
+                else -> LoadState.Success(
+                    LiveInfo(
+                        creatorInfo = (creator as LoadState.Success).data,
+                        room = (room as LoadState.Success).data
+                    )
+                )
+            }
+            value = newState
+        }
+
+        addSource(_creatorInfo) {
+            creatorState = it
+            update()
+        }
+        addSource(_liveRoom) {
+            roomState = it
+            update()
+        }
     }
 
-    @Override
-    protected void onDestroy() {
-        TerminalContext.getInstance().leaveDetailPage();
-        super.onDestroy();
+    private val _openPlayer = MutableLiveData<Event<LivePlayInfo>>()
+    val openPlayer: LiveData<Event<LivePlayInfo>> = _openPlayer
+
+    private val _showError = MutableLiveData<Event<String>>()
+    val showError: LiveData<Event<String>> = _showError
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    init {
+        fetchData()
+    }
+
+    fun fetchData() {
+        viewModelScope.launch {
+            bilibiliApi.api(ILiveApi::class) {
+                getRoomInfo(liveRoomId)
+            }.apiResultNonNull().onSuccess { liveRoom ->
+                _liveRoom.postValue(LoadState.Success(liveRoom))
+                bilibiliApi.api(IUserApi::class) {
+                    getCard(liveRoom.uid.toString())
+                }.apiResultNonNull().onSuccess {
+                    _creatorInfo.postValue(LoadState.Success(it))
+                }.onFailure {
+                    _creatorInfo.postValue(LoadState.Error(it))
+                }
+            }.onFailure {
+                _liveRoom.postValue(LoadState.Error(it))
+            }
+        }
+    }
+
+    fun play() {
+        if (isLoading.value != true) {
+            viewModelScope.launch {
+                bilibiliApi.api(ILiveApi::class) {
+                    getPlayInfo(roomId = liveRoomId, qn = TODO())
+                }.apiResultNonNull().onSuccess {
+                    _openPlayer.postValue(it.event())
+                }.onFailure {
+                    _showError.postValue(it.msg().event())
+                }
+            }
+        }
+    }
+}
+
+data class LiveInfo(
+    val creatorInfo: UserCardInfo,
+    val room: LiveRoom,
+)
+
+class LiveInfoViewModelFactory(val liveRoomId: String): ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return LiveInfoViewModel(liveRoomId) as T
     }
 }

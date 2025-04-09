@@ -27,7 +27,7 @@ import com.huanli233.biliterminal2.model.VideoCard;
 import com.huanli233.biliterminal2.util.GlideUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.TerminalContext;
-import com.huanli233.biliterminal2.util.ToolsUtil;
+import com.huanli233.biliterminal2.util.Utils;
 
 import java.text.SimpleDateFormat;
 
@@ -62,8 +62,8 @@ public class NoticeHolder extends RecyclerView.ViewHolder {
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .apply(RequestOptions.circleCropTransform())
                     .into(imageView);
-            imageView.setLayoutParams(new ViewGroup.LayoutParams(ToolsUtil.dp2px(32), ToolsUtil.dp2px(32)));
-            imageView.setLeft(ToolsUtil.dp2px(3));
+            imageView.setLayoutParams(new ViewGroup.LayoutParams(Utils.dp2px(32), Utils.dp2px(32)));
+            imageView.setLeft(Utils.dp2px(3));
             int finalI = i;
             imageView.setOnClickListener(view1 -> {
                 Intent intent = new Intent();
@@ -75,7 +75,7 @@ public class NoticeHolder extends RecyclerView.ViewHolder {
 
             //这个View什么都没有，用来当间隔的
             View view = new View(context);
-            view.setLayoutParams(new ViewGroup.LayoutParams(ToolsUtil.dp2px(3), ToolsUtil.dp2px(32)));
+            view.setLayoutParams(new ViewGroup.LayoutParams(Utils.dp2px(3), Utils.dp2px(32)));
             avaterList.addView(view);
         }
 
@@ -85,12 +85,12 @@ public class NoticeHolder extends RecyclerView.ViewHolder {
         } else pubdate.setText(message.timeDesc);
 
         action.setText(message.content);
-        ToolsUtil.setCopy(action);
+        Utils.copyable(action);
 
         if (message.videoCard != null) {
             VideoCard childVideoCard = message.videoCard;
             VideoCardHolder holder = new VideoCardHolder(View.inflate(context, R.layout.cell_dynamic_video, extraCard));
-            holder.showVideoCard(childVideoCard, context);
+            holder.bindData(childVideoCard, context);
             holder.itemView.findViewById(R.id.videoCardView).setOnClickListener(view ->
                     TerminalContext.getInstance().enterVideoDetailPage(context, 0, childVideoCard.getBvid())
             );

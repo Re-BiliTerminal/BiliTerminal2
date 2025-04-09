@@ -2,7 +2,6 @@ package com.huanli233.biliterminal2.activity.user.info;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -11,14 +10,10 @@ import com.huanli233.biliterminal2.activity.base.RefreshListFragment;
 import com.huanli233.biliterminal2.adapter.video.UserVideoAdapter;
 import com.huanli233.biliterminal2.api.UserInfoApi;
 import com.huanli233.biliterminal2.model.VideoCard;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 
 import java.util.ArrayList;
 import java.util.List;
-
-//用户视频
-//2023-09-30
-//2024-05-03
 
 public class UserVideoFragment extends RefreshListFragment {
 
@@ -47,16 +42,16 @@ public class UserVideoFragment extends RefreshListFragment {
         super.onViewCreated(view, savedInstanceState);
 
         videoList = new ArrayList<>();
-        setOnLoadMoreListener(this::continueLoading);
+        onLoadMore(this::continueLoading);
 
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
-                bottom = (UserInfoApi.getUserVideos(mid, page, "", videoList) == 1);
+                bottomReached = (UserInfoApi.getUserVideos(mid, page, "", videoList) == 1);
                 if (isAdded()) {
                     setRefreshing(false);
                     adapter = new UserVideoAdapter(requireContext(), mid, videoList);
                     setAdapter(adapter);
-                    if (bottom && videoList.isEmpty()) showEmptyView();
+                    if (bottomReached && videoList.isEmpty()) showEmptyView();
                 }
             } catch (Exception e) {
                 loadFail(e);
@@ -66,7 +61,7 @@ public class UserVideoFragment extends RefreshListFragment {
 
     @SuppressLint("NotifyDataSetChanged")
     private void continueLoading(int page) {
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 List<VideoCard> list = new ArrayList<>();
                 int result = UserInfoApi.getUserVideos(mid, page, "", list);
@@ -76,7 +71,7 @@ public class UserVideoFragment extends RefreshListFragment {
                         adapter.notifyItemRangeInserted(videoList.size() - list.size(), list.size());
                     });
                     if (result == 1) {
-                        bottom = true;
+                        bottomReached = true;
                     }
                 }
                 setRefreshing(false);

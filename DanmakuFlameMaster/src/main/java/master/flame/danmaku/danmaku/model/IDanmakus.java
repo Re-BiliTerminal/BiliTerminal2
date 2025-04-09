@@ -18,28 +18,28 @@ package master.flame.danmaku.danmaku.model;
 
 public interface IDanmakus {
 
-    public boolean addItem(BaseDanmaku item);
+    boolean addItem(BaseDanmaku item);
 
-    public boolean removeItem(BaseDanmaku item);
+    boolean removeItem(BaseDanmaku item);
     
-    public IDanmakus subnew(long startTime, long endTime);
+    IDanmakus subnew(long startTime, long endTime);
 
-    public IDanmakus sub(long startTime, long endTime);
+    IDanmakus sub(long startTime, long endTime);
 
-    public int size();
+    int size();
 
-    public void clear();
+    void clear();
     
-    public BaseDanmaku first();
+    BaseDanmaku first();
     
-    public BaseDanmaku last();
+    BaseDanmaku last();
     
-    public IDanmakuIterator iterator();
+    IDanmakuIterator iterator();
     
-    public boolean contains(BaseDanmaku item);
+    boolean contains(BaseDanmaku item);
 
-    public boolean isEmpty();
+    boolean isEmpty();
     
-    public void setSubItemsDuplicateMergingEnabled(boolean enable);
+    void setSubItemsDuplicateMergingEnabled(boolean enable);
 
 }

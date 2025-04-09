@@ -1,94 +1,66 @@
-package com.huanli233.biliterminal2.adapter.user;
+package com.huanli233.biliterminal2.adapter.user
 
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.content.Context
+import android.content.Intent
+import android.graphics.Color
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.huanli233.biliterminal2.R
+import com.huanli233.biliterminal2.activity.user.info.UserInfoActivity
+import com.huanli233.biliterminal2.util.GlideUtil
+import com.huanli233.biliterminal2.util.GlideUtil.loadFace
+import com.huanli233.biliwebapi.bean.user.UserInfo
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.huanli233.biliterminal2.R;
-import com.huanli233.biliterminal2.activity.user.info.UserInfoActivity;
-import com.huanli233.biliterminal2.model.UserInfo;
-import com.huanli233.biliterminal2.util.GlideUtil;
-
-import java.util.List;
-
-//关注列表
-//2023-08-29
-
-public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.Holder> {
-
-    final Context context;
-    final List<UserInfo> userList;
-
-    public UserListAdapter(Context context, List<UserInfo> userList) {
-        this.context = context;
-        this.userList = userList;
+open class UserListAdapter(@JvmField val context: Context, val userList: List<UserInfo>) :
+    RecyclerView.Adapter<UserListAdapter.Holder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
+        val view = LayoutInflater.from(this.context).inflate(R.layout.cell_user_list, parent, false)
+        return Holder(view)
     }
 
-    @NonNull
-    @Override
-    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(this.context).inflate(R.layout.cell_user_list, parent, false);
-        return new Holder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull Holder holder, int position) {
-        holder.name.setText(userList.get(position).name);
-        if (!userList.get(position).vip_nickname_color.isEmpty()) {
-            holder.name.setTextColor(Color.parseColor(userList.get(position).vip_nickname_color));
+    override fun onBindViewHolder(holder: Holder, position: Int) {
+        holder.name.text = userList[position].name
+        userList[position].vip.nicknameColor.let { color ->
+            if (color.isNotEmpty()) holder.name.setTextColor(Color.parseColor(color))
         }
-        holder.desc.setText(userList.get(position).sign);
+        holder.desc.text = userList[position].sign
 
-        if (userList.get(position).avatar.isEmpty()) {
-            holder.avatar.setVisibility(View.GONE);
-            holder.desc.setSingleLine(false);
+        if (userList[position].face.isEmpty()) {
+            holder.avatar.visibility = View.GONE
+            holder.desc.isSingleLine = false
         } else {
-            Glide.with(context).asDrawable().load(GlideUtil.url(userList.get(position).avatar))
-                    .transition(GlideUtil.getTransitionOptions())
-                    .placeholder(R.mipmap.akari)
-                    .apply(RequestOptions.circleCropTransform())
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .into(holder.avatar);
-            holder.avatar.setVisibility(View.VISIBLE);
-            holder.desc.setSingleLine(true);
+            holder.avatar.loadFace(userList[position].face)
+            holder.avatar.visibility = View.VISIBLE
+            holder.desc.isSingleLine = true
         }
 
-        if (userList.get(position).mid != -1) {
-            holder.itemView.setOnClickListener(view -> {
-                Intent intent = new Intent()
-                        .setClass(context, UserInfoActivity.class)
-                        .putExtra("mid", userList.get(position).mid);
-                context.startActivity(intent);
-            });
+        if (userList[position].mid != -1L) {
+            holder.itemView.setOnClickListener { view: View? ->
+                val intent = Intent()
+                    .setClass(context, UserInfoActivity::class.java)
+                    .putExtra("mid", userList[position].mid)
+                context.startActivity(intent)
+            }
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return userList.size();
+    override fun getItemCount(): Int {
+        return userList.size
     }
 
-    public static class Holder extends RecyclerView.ViewHolder {
-        final TextView name;
-        final TextView desc;
-        final ImageView avatar;
-
-        public Holder(@NonNull View itemView) {
-            super(itemView);
-            name = itemView.findViewById(R.id.userName);
-            desc = itemView.findViewById(R.id.userDesc);
-            avatar = itemView.findViewById(R.id.userAvatar);
-        }
+    class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val name: TextView =
+            itemView.findViewById(R.id.userName)
+        val desc: TextView =
+            itemView.findViewById(R.id.userDesc)
+        val avatar: ImageView =
+            itemView.findViewById(R.id.userAvatar)
     }
 }

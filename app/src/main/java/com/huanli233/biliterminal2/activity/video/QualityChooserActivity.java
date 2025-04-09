@@ -11,7 +11,7 @@ import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.adapter.QualityChooseAdapter;
 import com.huanli233.biliterminal2.api.PlayerApi;
 import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.TerminalContext;
 
@@ -46,7 +46,7 @@ public class QualityChooserActivity extends BaseActivity {
 
             QualityChooseAdapter adapter = new QualityChooseAdapter(this);
             int page = getIntent().getIntExtra("page", 0);
-            CenterThreadPool.run(() -> {
+            ThreadManager.run(() -> {
                 // 我只知道它返回可用清晰度列表
                 try {
                     String response = PlayerApi.getVideo(videoInfo.aid, videoInfo.cids.get(page), 16, true).second;

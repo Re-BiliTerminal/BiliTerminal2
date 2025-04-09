@@ -60,7 +60,7 @@ public interface IRenderer {
 
     }
 
-    public class RenderingState {
+    class RenderingState {
         public final static int UNKNOWN_TIME = -1;
         
         public int r2lDanmakuCount;

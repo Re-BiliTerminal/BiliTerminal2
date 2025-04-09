@@ -9,10 +9,10 @@ import android.widget.TextView;
 
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.FileUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.NetWorkUtil;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -77,7 +77,7 @@ public class DownloadActivity extends BaseActivity {
         scrHeight = windowHeight;
 
         timer.schedule(showText, 100, 100);
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             if (type == 0) {
                 rootPath = FileUtil.getDownloadPicturePath();
                 if (!rootPath.exists()) rootPath.mkdirs();

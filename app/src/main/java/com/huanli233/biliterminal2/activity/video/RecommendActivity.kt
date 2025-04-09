@@ -1,16 +1,17 @@
 package com.huanli233.biliterminal2.activity.video
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.activity.base.RefreshMainActivity
 import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter
+import com.huanli233.biliterminal2.api.apiResultNonNull
 import com.huanli233.biliterminal2.api.bilibiliApi
 import com.huanli233.biliterminal2.helper.TutorialHelper
 import com.huanli233.biliterminal2.model.VideoCard
 import com.huanli233.biliterminal2.model.toVideoCard
-import com.huanli233.biliterminal2.util.uniqId
+import com.huanli233.biliterminal2.util.api.uniqId
+import com.huanli233.biliwebapi.api.interfaces.IRecommendApi
 import com.huanli233.biliwebapi.bean.recommend.home.HomeRecommend
 import kotlinx.coroutines.launch
 
@@ -44,20 +45,23 @@ class RecommendActivity : RefreshMainActivity() {
     private fun addRecommend() {
         lifecycleScope.launch {
             runCatching {
-                val recommend = HomeRecommend.request(bilibiliApi, uniqId.toString())
-                setRefreshing(false)
-                val items = recommend.data!!.item.map { it.toVideoCard() }
+                val recommend = bilibiliApi.api(IRecommendApi::class) {
+                    getRecommend(uniqId.toString())
+                }.apiResultNonNull().onSuccess {
+                    val items = it.item.map { it.toVideoCard() }
+                    setRefreshing(false)
 
-                runOnUiThread {
-                    videoCardList.addAll(items)
-                    if (firstRefresh) {
-                        firstRefresh = false
-                        setAdapter(videoCardAdapter)
-                    } else {
-                        videoCardAdapter.notifyItemRangeInserted(
-                            videoCardList.size - items.size,
-                            items.size
-                        )
+                    runOnUiThread {
+                        videoCardList.addAll(items)
+                        if (firstRefresh) {
+                            firstRefresh = false
+                            setAdapter(videoCardAdapter)
+                        } else {
+                            videoCardAdapter.notifyItemRangeInserted(
+                                videoCardList.size - items.size,
+                                items.size
+                            )
+                        }
                     }
                 }
             }.onFailure {

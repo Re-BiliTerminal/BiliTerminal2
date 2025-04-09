@@ -5,8 +5,11 @@ import com.huanli233.biliwebapi.api.interfaces.IRequestParamApi
 import com.huanli233.biliwebapi.api.util.BiliTicketUtil
 import com.huanli233.biliwebapi.api.util.RequestParamUtil
 import com.huanli233.biliwebapi.api.util.WbiUtil
-import com.huanli233.biliwebapi.bean.request_param.Buvids
+import com.huanli233.biliwebapi.bean.requestParam.Buvids
+import com.huanli233.biliwebapi.httplib.HttpUtils.parseFormBody
 import com.huanli233.biliwebapi.httplib.annotation.API
+import com.huanli233.biliwebapi.httplib.annotation.Csrf
+import com.huanli233.biliwebapi.httplib.annotation.Fields
 import com.huanli233.biliwebapi.httplib.annotation.Queries
 import com.huanli233.biliwebapi.httplib.annotation.WbiSign
 import kotlinx.coroutines.runBlocking
@@ -15,7 +18,9 @@ import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
 import okhttp3.Request
+import okhttp3.RequestBody
 import okhttp3.Response
+import okhttp3.internal.http.HttpMethod
 import retrofit2.Invocation
 
 
@@ -23,7 +28,8 @@ private val otherCookiesMap = mapOf(
     "enable_web_push" to "DISABLE",
     "header_theme_version" to "undefined",
     "home_feed_column" to "4",
-    "browser_resolution" to "839-959"
+    "browser_resolution" to "839-959",
+    "fingerprint" to "12ce21cfd0c7d56f6f1d37ba3f15203b"
 )
 
 internal class BilibiliApiInterceptor(
@@ -42,6 +48,7 @@ internal class BilibiliApiInterceptor(
                 .addHeaders()
                 .overrideUrl(request, invocation)
                 .processUrlParam(request.url, invocation)
+                .processFormParams(request, invocation)
                 .wbiSign(request.url, invocation)
                 .build()
         )
@@ -162,7 +169,36 @@ internal class BilibiliApiInterceptor(
         this
     } ?: this
 
+    private fun Request.Builder.processFormParams(request: Request, invocation: Invocation?) = apply {
+        invocation?.method()?.let { method ->
+            val csrf = biliWebApi.cookieManager.loadForRequest(request.url).find { it.name == "bili_jct" }?.value.orEmpty()
+            if (HttpMethod.requiresRequestBody(request.method)) {
+                val formBody = request.body?.readString().orEmpty().parseFormBody()
+                method.getAnnotation(Fields::class.java)?.let {
+                    require(it.keys.size == it.values.size) { "@Fields keys and values size not match" }
+                    it.keys.forEachIndexed { index, key ->
+                        formBody.add(key, it.values[index])
+                    }
+                }
+                method.getAnnotation(Csrf::class.java)?.let {
+                    if (it.forceQuery) {
+                        url(request.url.newBuilder().addQueryParameter("csrf", csrf).build())
+                    } else {
+                        formBody.add("csrf", csrf)
+                    }
+                }
+                this@processFormParams.method(request.method, formBody.build())
+            } else {
+                url(request.url.newBuilder().addQueryParameter("csrf", csrf).build())
+            }
+        }
+    }
+
 }
+
+private fun RequestBody.readString(): String = okio.Buffer().also {
+    writeTo(it)
+}.readUtf8()
 
 private fun newCookie(name: String, value: String) =
     Cookie.Builder()

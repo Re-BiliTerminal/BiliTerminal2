@@ -9,9 +9,9 @@ import com.huanli233.biliterminal2.model.Collection;
 import com.huanli233.biliterminal2.model.Stats;
 import com.huanli233.biliterminal2.model.UserInfo;
 import com.huanli233.biliterminal2.model.VideoInfo;
-import com.huanli233.biliterminal2.util.NetWorkUtil;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 import com.huanli233.biliterminal2.util.StringUtil;
-import com.huanli233.biliterminal2.util.ToolsUtil;
+import com.huanli233.biliterminal2.util.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,7 +68,7 @@ public class VideoInfoApi {
         collection.intro = json.optString("intro");
         collection.cover = json.optString("cover");
         collection.mid = json.optLong("mid");
-        collection.view = ToolsUtil.toWan(json.getJSONObject("stat").optLong("view"));
+        collection.view = Utils.toWan(json.getJSONObject("stat").optLong("view"));
         JSONArray sections = json.optJSONArray("sections");
         if (sections != null) {
             List<Collection.Section> sectionList = new ArrayList<>();
@@ -108,11 +108,8 @@ public class VideoInfoApi {
 
     public static VideoInfo getInfoByJson(JSONObject data) throws JSONException {  //项目实在太多qwq 拆就完事了
         VideoInfo videoInfo = new VideoInfo();
-        Log.e("视频信息", "--------");
         videoInfo.title = data.getString("title");
-        Log.e("标题", videoInfo.title);
         videoInfo.cover = data.getString("pic");
-        Log.e("封面", videoInfo.cover);
         if (data.has("desc_v2") && !data.isNull("desc_v2")) {
             StringBuilder sb = new StringBuilder();
             JSONArray descArray = data.getJSONArray("desc_v2");
@@ -120,14 +117,11 @@ public class VideoInfoApi {
             for (int i = 0; i < descArray.length(); i++) {
                 JSONObject curObj = descArray.getJSONObject(i);
                 int type = curObj.getInt("type");
-                switch (type) {
-                    case 2:
-                        Pair<Integer, Integer> indexs = StringUtil.appendString(sb, "@" + curObj.getString("raw_text"));
-                        ats.add(new At(curObj.getLong("biz_id"), indexs.first, indexs.second));
-                        break;
-                    default:
-                        sb.append(curObj.getString("raw_text"));
-                        break;
+                if (type == 2) {
+                    Pair<Integer, Integer> indexs = StringUtil.appendString(sb, "@" + curObj.getString("raw_text"));
+                    ats.add(new At(curObj.getLong("biz_id"), indexs.first, indexs.second));
+                } else {
+                    sb.append(curObj.getString("raw_text"));
                 }
             }
             videoInfo.description = sb.toString();
@@ -135,7 +129,6 @@ public class VideoInfoApi {
         } else {
             videoInfo.description = data.getString("desc");
         }
-        Log.e("简介", videoInfo.description);
 
         videoInfo.bvid = data.optString("bvid");
         videoInfo.aid = data.getLong("aid");
@@ -144,7 +137,7 @@ public class VideoInfoApi {
         videoInfo.timeDesc = sdf.format(data.getLong("pubdate") * 1000);
         Log.e("发布时间", String.valueOf(videoInfo.timeDesc));
 
-        videoInfo.duration = ToolsUtil.toTime(data.getInt("duration"));
+        videoInfo.duration = Utils.toTime(data.getInt("duration"));
         Log.e("视频时长", videoInfo.duration);
 
         JSONObject stat = data.getJSONObject("stat");
@@ -165,10 +158,8 @@ public class VideoInfoApi {
                 JSONObject page = pages.getJSONObject(i);
                 String pagename = page.getString("part");
                 pagenames.add(pagename);
-                Log.e("第" + i + "个视频的标题", pagename);
                 long cid = page.getLong("cid");
                 cids.add(cid);
-                Log.e("第" + i + "个视频的cid", String.valueOf(cid));
             }
             videoInfo.pagenames = pagenames;
             videoInfo.cids = cids;
@@ -246,7 +237,7 @@ public class VideoInfoApi {
         if (result.has("data") && !result.isNull("data")) {
             JSONObject data = result.getJSONObject("data");
             if (data.has("total") && !data.isNull("total"))
-                return ToolsUtil.toWan(data.getLong("total"));
+                return Utils.toWan(data.getLong("total"));
         }
         return "";
     }
@@ -258,7 +249,7 @@ public class VideoInfoApi {
             JSONObject data = result.getJSONObject("data");
             if (data.has("total") && !data.isNull("total")) {
                 if (data.get("total") instanceof String) return data.getString("total");
-                else return ToolsUtil.toWan(data.getLong("total"));
+                else return Utils.toWan(data.getLong("total"));
             }
         }
         return "";

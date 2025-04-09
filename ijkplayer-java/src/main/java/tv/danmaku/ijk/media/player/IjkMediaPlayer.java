@@ -173,7 +173,7 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
      * Default library loader
      * Load them by yourself, if your libraries are not installed at default place.
      */
-    private static final IjkLibLoader sLocalLibLoader = libName -> System.loadLibrary(libName);
+    private static final IjkLibLoader sLocalLibLoader = System::loadLibrary;
 
     private static volatile boolean mIsLibLoaded = false;
     public static void loadLibrariesOnce(IjkLibLoader libLoader) {
@@ -443,7 +443,7 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR1) {
             int native_fd = -1;
             try {
-                Field f = fd.getClass().getDeclaredField("descriptor"); //NoSuchFieldException
+                Field f = fd.getClass().getDeclaredField("descriptor"); // NoSuchFieldException
                 f.setAccessible(true);
                 native_fd = f.getInt(fd); //IllegalAccessException
             } catch (NoSuchFieldException e) {
@@ -453,11 +453,8 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
             }
             _setDataSourceFd(native_fd);
         } else {
-            ParcelFileDescriptor pfd = ParcelFileDescriptor.dup(fd);
-            try {
+            try (ParcelFileDescriptor pfd = ParcelFileDescriptor.dup(fd)) {
                 _setDataSourceFd(pfd.getFd());
-            } finally {
-                pfd.close();
             }
         }
     }
@@ -859,7 +856,7 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
             if (nodes.length >= 2) {
                 mediaInfo.mVideoDecoder = nodes[0];
                 mediaInfo.mVideoDecoderImpl = nodes[1];
-            } else if (nodes.length >= 1) {
+            } else if (nodes.length == 1) {
                 mediaInfo.mVideoDecoder = nodes[0];
                 mediaInfo.mVideoDecoderImpl = "";
             }
@@ -871,7 +868,7 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
             if (nodes.length >= 2) {
                 mediaInfo.mAudioDecoder = nodes[0];
                 mediaInfo.mAudioDecoderImpl = nodes[1];
-            } else if (nodes.length >= 1) {
+            } else if (nodes.length == 1) {
                 mediaInfo.mAudioDecoder = nodes[0];
                 mediaInfo.mAudioDecoderImpl = "";
             }
@@ -1019,10 +1016,8 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
                 return;
 
             case MEDIA_INFO:
-                switch (msg.arg1) {
-                    case MEDIA_INFO_VIDEO_RENDERING_START:
-                        DebugLog.i(TAG, "Info: MEDIA_INFO_VIDEO_RENDERING_START\n");
-                        break;
+                if (msg.arg1 == MEDIA_INFO_VIDEO_RENDERING_START) {
+                    DebugLog.i(TAG, "Info: MEDIA_INFO_VIDEO_RENDERING_START\n");
                 }
                 player.notifyOnInfo(msg.arg1, msg.arg2);
                 // No real default action so far.
@@ -1131,7 +1126,7 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
         String ARG_HTTP_CODE = "http_code";
         String ARG_FILE_SIZE = "file_size";
 
-        /*
+        /**
          * @return true if invoke is handled
          * @throws Exception on any error
          */
@@ -1141,7 +1136,7 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
     @CalledByNative
     private static boolean onNativeInvoke(Object weakThiz, int what, Bundle args) {
         DebugLog.ifmt(TAG, "onNativeInvoke %d", what);
-        if (weakThiz == null || !(weakThiz instanceof WeakReference<?>))
+        if (!(weakThiz instanceof WeakReference<?>))
             throw new IllegalStateException("<null weakThiz>.onNativeInvoke()");
 
         @SuppressWarnings("unchecked")
@@ -1154,26 +1149,23 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
         if (listener != null && listener.onNativeInvoke(what, args))
             return true;
 
-        switch (what) {
-            case OnNativeInvokeListener.CTRL_WILL_CONCAT_RESOLVE_SEGMENT: {
-                OnControlMessageListener onControlMessageListener = player.mOnControlMessageListener;
-                if (onControlMessageListener == null)
-                    return false;
-
-                int segmentIndex = args.getInt(OnNativeInvokeListener.ARG_SEGMENT_INDEX, -1);
-                if (segmentIndex < 0)
-                    throw new InvalidParameterException("onNativeInvoke(invalid segment index)");
-
-                String newUrl = onControlMessageListener.onControlResolveSegmentUrl(segmentIndex);
-                if (newUrl == null)
-                    throw new RuntimeException(new IOException("onNativeInvoke() = <NULL newUrl>"));
-
-                args.putString(OnNativeInvokeListener.ARG_URL, newUrl);
-                return true;
-            }
-            default:
+        if (what == OnNativeInvokeListener.CTRL_WILL_CONCAT_RESOLVE_SEGMENT) {
+            OnControlMessageListener onControlMessageListener = player.mOnControlMessageListener;
+            if (onControlMessageListener == null)
                 return false;
+
+            int segmentIndex = args.getInt(OnNativeInvokeListener.ARG_SEGMENT_INDEX, -1);
+            if (segmentIndex < 0)
+                throw new InvalidParameterException("onNativeInvoke(invalid segment index)");
+
+            String newUrl = onControlMessageListener.onControlResolveSegmentUrl(segmentIndex);
+            if (newUrl == null)
+                throw new RuntimeException(new IOException("onNativeInvoke() = <NULL newUrl>"));
+
+            args.putString(OnNativeInvokeListener.ARG_URL, newUrl);
+            return true;
         }
+        return false;
     }
 
     /*
@@ -1195,7 +1187,7 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
 
     @CalledByNative
     private static String onSelectCodec(Object weakThiz, String mimeType, int profile, int level) {
-        if (weakThiz == null || !(weakThiz instanceof WeakReference<?>))
+        if (!(weakThiz instanceof WeakReference<?>))
             return null;
 
         @SuppressWarnings("unchecked")

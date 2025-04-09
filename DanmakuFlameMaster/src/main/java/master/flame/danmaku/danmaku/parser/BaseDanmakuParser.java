@@ -41,9 +41,9 @@ public abstract class BaseDanmakuParser {
     
     public SharedPreferences sharedPreferences = null;
     
-    public BaseDanmakuParser setDisplayer(IDisplayer disp){
+    public BaseDanmakuParser setDisplayer(IDisplayer disp) {
         mDisp = disp;
-    	mDispWidth = disp.getWidth();
+        mDispWidth = disp.getWidth();
         mDispHeight = disp.getHeight();
         mDispDensity = disp.getDensity();
         mScaledDensity = disp.getScaledDensity();

@@ -15,7 +15,8 @@
         android:src="@mipmap/akari"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <com.huanli233.biliterminal2.ui.widget.MarqueeTextView
         android:id="@+id/userName"
@@ -170,7 +171,8 @@
         android:src="@mipmap/icon_verified"
         app:layout_constraintBottom_toBottomOf="@id/userOfficial"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/userOfficial" />
+        app:layout_constraintTop_toTopOf="@+id/userOfficial"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/userOfficial"
@@ -193,7 +195,8 @@
         android:src="@drawable/icon_uid"
         app:layout_constraintBottom_toBottomOf="@id/uidText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/uidText" />
+        app:layout_constraintTop_toTopOf="@+id/uidText"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/uidText"
@@ -220,7 +223,8 @@
         android:text="关注"
         app:layout_constraintEnd_toStartOf="@+id/msgBtn"
         app:layout_constraintStart_toStartOf="@+id/userDesc"
-        app:layout_constraintTop_toBottomOf="@+id/uidText" />
+        app:layout_constraintTop_toBottomOf="@+id/uidText"
+        tools:ignore="UnusedAttribute" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/msgBtn"
@@ -234,7 +238,8 @@
         android:text="私信"
         app:layout_constraintEnd_toEndOf="@+id/userDesc"
         app:layout_constraintStart_toEndOf="@id/followBtn"
-        app:layout_constraintTop_toTopOf="@id/followBtn" />
+        app:layout_constraintTop_toTopOf="@id/followBtn"
+        tools:ignore="UnusedAttribute" />
 
     <View
         android:id="@+id/divider"

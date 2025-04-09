@@ -1,25 +1,27 @@
 package com.huanli233.biliwebapi.bean.video
 
-import com.google.gson.annotations.Expose
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Rights(
-    @Expose val bp: Int,
-    @Expose val elec: Int,
-    @Expose val download: Int,
-    @Expose val movie: Int,
-    @Expose val pay: Int,
-    @Expose val hd5: Int,
-    @Expose @SerializedName("no_reprint") val noReprint: Int,
-    @Expose val autoplay: Int,
-    @Expose @SerializedName("ugc_pay") val ugcPay: Int,
-    @Expose @SerializedName("is_cooperation") val isCooperation: Int,
-    @Expose @SerializedName("ugc_pay_preview") val ugcPayPreview: Int,
-    @Expose @SerializedName("no_background") val noBackground: Int,
-    @Expose @SerializedName("clean_mode") val cleanMode: Int,
-    @Expose @SerializedName("is_stein_gate") val isSteinGate: Int,
-    @Expose @SerializedName("is_360") val is360: Int,
-    @Expose @SerializedName("no_share") val noShare: Int,
-    @Expose @SerializedName("arc_pay") val arcPay: Int,
-    @Expose @SerializedName("free_watch") val freeWatch: Int
-)
+    val bp: Int,
+    val elec: Int,
+    val download: Int,
+    val movie: Int,
+    val pay: Int,
+    val hd5: Int,
+    @SerializedName("no_reprint") val noReprint: Int,
+    val autoplay: Int,
+    @SerializedName("ugc_pay") val ugcPay: Int,
+    @SerializedName("is_cooperation") val isCooperation: Int,
+    @SerializedName("ugc_pay_preview") val ugcPayPreview: Int,
+    @SerializedName("no_background") val noBackground: Int,
+    @SerializedName("clean_mode") val cleanMode: Int,
+    @SerializedName("is_stein_gate") val isSteinGate: Int,
+    @SerializedName("is_360") val is360: Int,
+    @SerializedName("no_share") val noShare: Int,
+    @SerializedName("arc_pay") val arcPay: Int,
+    @SerializedName("free_watch") val freeWatch: Int
+) : Parcelable

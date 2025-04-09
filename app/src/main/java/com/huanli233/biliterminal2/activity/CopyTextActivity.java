@@ -9,7 +9,7 @@ import android.widget.EditText;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.ToolsUtil;
+import com.huanli233.biliterminal2.util.Utils;
 
 public class CopyTextActivity extends BaseActivity {
     private String content = "";
@@ -65,12 +65,12 @@ public class CopyTextActivity extends BaseActivity {
         endEdit.addTextChangedListener(textWatcher);
 
         findViewById(R.id.copy_all).setOnClickListener(view -> {
-            ToolsUtil.copyText(this, content);
+            Utils.copyText(this, content);
             MsgUtil.showMsg("已复制");
         });
         findViewById(R.id.copy).setOnClickListener(view -> {
             try {
-                ToolsUtil.copyText(this, content.substring(Integer.parseInt(String.valueOf(beginEdit.getText()))
+                Utils.copyText(this, content.substring(Integer.parseInt(String.valueOf(beginEdit.getText()))
                         , Integer.parseInt(String.valueOf(endEdit.getText()))));   //我嘞个超级括号
                 MsgUtil.showMsg("已复制");
             } catch (Exception e) {

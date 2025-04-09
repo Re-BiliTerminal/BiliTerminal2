@@ -4,16 +4,15 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
-import com.huanli233.biliterminal2.util.AsyncLayoutInflaterX;
+import com.huanli233.biliterminal2.util.view.AsyncLayoutInflaterX;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.huanli233.biliterminal2.util.ToolsUtil;
+import com.huanli233.biliterminal2.util.Preferences;
+import com.huanli233.biliterminal2.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -22,7 +21,7 @@ import java.util.Map;
 
 public class SettingPlayerChooseActivity extends BaseActivity {
 
-    final String playerCurr = SharedPreferencesUtil.getString(SharedPreferencesUtil.PLAYER, "null");
+    final String playerCurr = Preferences.getString(Preferences.PLAYER, "null");
     MaterialCardView terminalPlayer, mtvPlayer, aliangPlayer, qn_choose;
     ArrayList<MaterialCardView> cardViewList;
     int checkPosition = -1;
@@ -80,7 +79,7 @@ public class SettingPlayerChooseActivity extends BaseActivity {
 
     private void updateQn() {
         if (findViewById(R.id.qn_tv) != null) {
-            int savedVal = SharedPreferencesUtil.getInt("play_qn", 16);
+            int savedVal = Preferences.getInt("play_qn", 16);
             for (Map.Entry<String, Integer> entry : SettingQualityActivity.qnMap.entrySet()) {
                 if (entry.getValue() == savedVal) {
                     ((TextView) findViewById(R.id.qn_tv)).setText(entry.getKey());
@@ -97,7 +96,7 @@ public class SettingPlayerChooseActivity extends BaseActivity {
     @SuppressLint("SuspiciousIndentation")
     @Override
     protected void onDestroy() {
-        SharedPreferencesUtil.putString("player", playerList[checkPosition + 1]);
+        Preferences.putString("player", playerList[checkPosition + 1]);
 
         super.onDestroy();
     }
@@ -105,9 +104,7 @@ public class SettingPlayerChooseActivity extends BaseActivity {
     private void setOnClick() {
         for (int i = 0; i < cardViewList.size(); i++) {
             int finalI = i;
-            cardViewList.get(i).setOnClickListener(view -> {
-                setChecked(finalI);
-            });
+            cardViewList.get(i).setOnClickListener(view -> setChecked(finalI));
         }
     }
 
@@ -116,16 +113,16 @@ public class SettingPlayerChooseActivity extends BaseActivity {
         for (int i = 0; i < cardViewList.size(); i++) {
             if (position == i) {
                 cardViewList.get(i).setStrokeColor(getResources().getColor(R.color.pink));
-                cardViewList.get(i).setStrokeWidth(ToolsUtil.dp2px(1));
+                cardViewList.get(i).setStrokeWidth(Utils.dp2px(1));
             } else {
                 cardViewList.get(i).setStrokeColor(getResources().getColor(R.color.gray));
-                cardViewList.get(i).setStrokeWidth(ToolsUtil.dp2px(0.1f));
+                cardViewList.get(i).setStrokeWidth(Utils.dp2px(0.1f));
             }
         }
         if (!just_create) switch (playerList[checkPosition + 1]) {
             case "terminalPlayer":
-                if (SharedPreferencesUtil.getBoolean("player_inside_firstchoose", true)) {
-                    SharedPreferencesUtil.putBoolean("player_inside_firstchoose", false);
+                if (Preferences.getBoolean("player_inside_firstchoose", true)) {
+                    Preferences.putBoolean("player_inside_firstchoose", false);
                     Intent intent = new Intent();
                     intent.setClass(this, SettingTerminalPlayerActivity.class);
                     startActivity(intent);

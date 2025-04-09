@@ -8,23 +8,19 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.card.MaterialCardView
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.activity.base.BaseActivity
 import com.huanli233.biliterminal2.activity.user.info.UserInfoActivity
-import com.huanli233.biliterminal2.util.AsyncLayoutInflaterX
-import com.huanli233.biliterminal2.util.GlideUtil
+import com.huanli233.biliterminal2.util.view.AsyncLayoutInflaterX
+import com.huanli233.biliterminal2.util.GlideUtil.loadResource
 import com.huanli233.biliterminal2.util.MsgUtil
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil
-import com.huanli233.biliterminal2.util.ToolsUtil
+import com.huanli233.biliterminal2.util.Utils
 
 class AboutActivity : BaseActivity() {
     var eggClickAuthorWords: Int = 0
@@ -74,22 +70,18 @@ class AboutActivity : BaseActivity() {
                 findViewById(R.id.robinAvatar),
                 findViewById(R.id.huanliAvatar)
             )
-            val developerAvaters: List<Int> = listOf(R.mipmap.avatar_robin, R.mipmap.avatar_huanli)
+            val developerAvatars: List<Int> = listOf(R.mipmap.avatar_robin, R.mipmap.avatar_huanli)
             val developerCardList: List<MaterialCardView> = listOf(findViewById(R.id.robin_card), findViewById(R.id.huanli_card))
             val developerUidList: List<Long> = listOf(646521226, 673815151)
 
             for (i in developerAvaterViews.indices) {
-                if (developerAvaters[i] != -1) kotlin.runCatching {
-                    Glide.with(this).load(developerAvaters[i])
-                        .transition(GlideUtil.getTransitionOptions())
-                        .placeholder(R.mipmap.akari)
-                        .apply(RequestOptions.circleCropTransform())
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .into(developerAvaterViews[i])
+                if (developerAvatars[i] != -1) kotlin.runCatching {
+                    developerAvaterViews[i].loadResource(developerAvatars[i]) {
+                        apply(RequestOptions.circleCropTransform())
+                    }
                 }
 
-
-                developerCardList[i].setOnClickListener { view: View? ->
+                developerCardList[i].setOnClickListener {
                     val intent = Intent()
                         .setClass(this, UserInfoActivity::class.java)
                         .putExtra("mid", developerUidList[i])
@@ -116,7 +108,7 @@ class AboutActivity : BaseActivity() {
                 MsgUtil.showText(getString(R.string.info_open_source_icons), str.toString())
             }
 
-            if (!ToolsUtil.isDebugBuild()) findViewById<View>(R.id.debug_tip).visibility =
+            if (!Utils.isDebugBuild) findViewById<View>(R.id.debug_tip).visibility =
                 View.GONE
         }
     }

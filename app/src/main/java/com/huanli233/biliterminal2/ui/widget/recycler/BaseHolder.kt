@@ -1,38 +1,36 @@
-package com.huanli233.biliterminal2.ui.widget.recycler;
+package com.huanli233.biliterminal2.ui.widget.recycler
 
-import android.content.Context;
-import android.util.SparseArray;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.content.Context
+import android.util.SparseArray
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 
-import androidx.recyclerview.widget.RecyclerView;
+open class BaseHolder : RecyclerView.ViewHolder {
+    private val viewArray: SparseArray<View>
 
-public class BaseHolder extends RecyclerView.ViewHolder {
-    private final SparseArray<View> viewArray;
-
-    public BaseHolder(ViewGroup viewGroup, int i) {
-        super(LayoutInflater.from(viewGroup.getContext()).inflate(i, viewGroup, false));
-        this.viewArray = new SparseArray<>();
+    constructor(viewGroup: ViewGroup, layoutId: Int) : super(
+        LayoutInflater.from(viewGroup.context).inflate(layoutId, viewGroup, false)
+    ) {
+        this.viewArray = SparseArray()
     }
 
-    public BaseHolder(View view) {
-        super(view);
-        this.viewArray = new SparseArray<>();
+    constructor(view: View) : super(view) {
+        this.viewArray = SparseArray()
     }
 
-    @SuppressWarnings("unchecked")
-    protected <T extends View> T getView(int i) {
-        T t = (T) this.viewArray.get(i);
+    @Suppress("UNCHECKED_CAST")
+    protected fun <T : View?> getView(id: Int): T {
+        val t: T? = viewArray[id] as T?
         if (t == null) {
-            T t2 = this.itemView.findViewById(i);
-            this.viewArray.put(i, t2);
-            return t2;
+            val t2 = itemView.findViewById<T>(id)
+            viewArray.put(id, t2)
+            return t2
         }
-        return t;
+        return t
     }
 
-    protected Context getContext() {
-        return this.itemView.getContext();
-    }
+    protected val context: Context
+        get() = itemView.context
 }

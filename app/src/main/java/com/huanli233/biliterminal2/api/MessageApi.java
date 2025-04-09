@@ -6,8 +6,8 @@ import com.huanli233.biliterminal2.model.MessageCard;
 import com.huanli233.biliterminal2.model.Reply;
 import com.huanli233.biliterminal2.model.UserInfo;
 import com.huanli233.biliterminal2.model.VideoCard;
-import com.huanli233.biliterminal2.util.NetWorkUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -292,7 +292,7 @@ public class MessageApi {
     }
 
     public static ArrayList<MessageCard> getSystemMsg() throws IOException, JSONException {
-        String url = "https://message.bilibili.com/x/sys-msg/query_user_notify?csrf=" + NetWorkUtil.getInfoFromCookie("bili_jct", SharedPreferencesUtil.getString(SharedPreferencesUtil.COOKIES, "")) + "&page_size=35&build=0&mobi_app=web";
+        String url = "https://message.bilibili.com/x/sys-msg/query_user_notify?csrf=" + NetWorkUtil.getInfoFromCookie("bili_jct", Preferences.getString(Preferences.COOKIES, "")) + "&page_size=35&build=0&mobi_app=web";
         JSONObject all = NetWorkUtil.getJson(url);
         if (all.has("data") && !all.isNull("data")) {
             JSONObject data = all.getJSONObject("data");

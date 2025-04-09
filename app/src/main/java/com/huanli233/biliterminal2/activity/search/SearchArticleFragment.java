@@ -2,7 +2,6 @@ package com.huanli233.biliterminal2.activity.search;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -10,7 +9,7 @@ import androidx.annotation.NonNull;
 import com.huanli233.biliterminal2.adapter.article.ArticleCardAdapter;
 import com.huanli233.biliterminal2.api.SearchApi;
 import com.huanli233.biliterminal2.model.ArticleCard;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 
 import org.json.JSONArray;
 
@@ -47,7 +46,7 @@ public class SearchArticleFragment extends SearchFragment {
     }
 
     private void continueLoading(int page) {
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 JSONArray result = (JSONArray) SearchApi.searchType(keyword, page, "article");
                 if (result != null) {
@@ -55,7 +54,7 @@ public class SearchArticleFragment extends SearchFragment {
                     ArrayList<ArticleCard> list = new ArrayList<>();
                     SearchApi.getArticlesFromSearchResult(result, list);
                     if (list.isEmpty()) setBottom(true);
-                    CenterThreadPool.runOnUiThread(() -> {
+                    ThreadManager.runOnUiThread(() -> {
                         int lastSize = articleCardList.size();
                         articleCardList.addAll(list);
                         articleCardAdapter.notifyItemRangeInserted(lastSize + 1, articleCardList.size() - lastSize);
@@ -69,14 +68,14 @@ public class SearchArticleFragment extends SearchFragment {
     }
 
     public void refreshInternal() {
-        CenterThreadPool.runOnUiThread(() -> {
+        ThreadManager.runOnUiThread(() -> {
             page = 1;
             if (this.articleCardAdapter == null)
                 this.articleCardAdapter = new ArticleCardAdapter(this.requireContext(), this.articleCardList);
             int size_old = this.articleCardList.size();
             this.articleCardList.clear();
             if (size_old != 0) this.articleCardAdapter.notifyItemRangeRemoved(0, size_old);
-            CenterThreadPool.run(() -> continueLoading(page));
+            ThreadManager.run(() -> continueLoading(page));
         });
     }
 }

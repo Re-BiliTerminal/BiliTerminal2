@@ -3,7 +3,6 @@ package com.huanli233.biliterminal2.activity.user;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,12 +18,12 @@ import com.huanli233.biliterminal2.activity.user.favorite.FavoriteFolderListActi
 import com.huanli233.biliterminal2.activity.user.info.UserInfoActivity;
 import com.huanli233.biliterminal2.api.UserInfoApi;
 import com.huanli233.biliterminal2.model.UserInfo;
-import com.huanli233.biliterminal2.util.AsyncLayoutInflaterX;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.view.AsyncLayoutInflaterX;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.GlideUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.huanli233.biliterminal2.util.ToolsUtil;
+import com.huanli233.biliterminal2.util.Preferences;
+import com.huanli233.biliterminal2.util.Utils;
 
 public class MySpaceActivity extends InstanceActivity {
 
@@ -59,7 +58,7 @@ public class MySpaceActivity extends InstanceActivity {
             logout = findViewById(R.id.logout);
 
 
-            CenterThreadPool.run(() -> {
+            ThreadManager.run(() -> {
                 try {
                     UserInfo userInfo = UserInfoApi.getCurrentUserInfo();
                     int userCoin = UserInfoApi.getCurrentUserCoin();
@@ -70,8 +69,8 @@ public class MySpaceActivity extends InstanceActivity {
                                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                                 .into(userAvatar);
                         userName.setText(userInfo.name);
-                        userFans.setText(ToolsUtil.toWan(userInfo.fans) + "粉丝 " + userCoin + "硬币");
-                        userExp.setText("EXP:" + userInfo.current_exp + (userInfo.level >= 6 ? "" : "/" + userInfo.next_exp));
+                        userFans.setText(Utils.toWan(userInfo.fans) + "粉丝 " + userCoin + "硬币");
+                        userExp.setText("EXP:" + userInfo.currentExp + (userInfo.level >= 6 ? "" : "/" + userInfo.nextExp));
 
                         myInfo.setOnClickListener(view -> {
                             Intent intent = new Intent();
@@ -117,17 +116,17 @@ public class MySpaceActivity extends InstanceActivity {
                             intent.setClass(MySpaceActivity.this, CreativeCenterActivity.class);
                             startActivity(intent);
                         });
-                        if (!SharedPreferencesUtil.getBoolean("creative_enable", true))
+                        if (!Preferences.getBoolean("creative_enable", true))
                             creative.setVisibility(View.GONE);
 
                         logout.setOnClickListener(view -> {
                             if (confirmLogout) {
-                                CenterThreadPool.run(UserInfoApi::exitLogin);
-                                SharedPreferencesUtil.removeValue(SharedPreferencesUtil.COOKIES);
-                                SharedPreferencesUtil.removeValue(SharedPreferencesUtil.MID);
-                                SharedPreferencesUtil.removeValue(SharedPreferencesUtil.CSRF);
-                                SharedPreferencesUtil.removeValue(SharedPreferencesUtil.REFRESH_TOKEN);
-                                SharedPreferencesUtil.removeValue(SharedPreferencesUtil.COOKIE_REFRESH);
+                                ThreadManager.run(UserInfoApi::exitLogin);
+                                Preferences.removeValue(Preferences.COOKIES);
+                                Preferences.removeValue(Preferences.MID);
+                                Preferences.removeValue(Preferences.CSRF);
+                                Preferences.removeValue(Preferences.REFRESH_TOKEN);
+                                Preferences.removeValue(Preferences.COOKIE_REFRESH);
                                 MsgUtil.showMsg("账号已退出");
                                 Intent intent = new Intent(this, LoginActivity.class);
                                 startActivity(intent);

@@ -24,46 +24,46 @@ import master.flame.danmaku.danmaku.renderer.IRenderer.RenderingState;
 
 public interface IDrawTask {
 
-    public void addDanmaku(BaseDanmaku item);
+    void addDanmaku(BaseDanmaku item);
 
-    public void removeAllDanmakus(boolean isClearDanmakusOnScreen);
+    void removeAllDanmakus(boolean isClearDanmakusOnScreen);
 
-    public void removeAllLiveDanmakus();
+    void removeAllLiveDanmakus();
 
-    public void clearDanmakusOnScreen(long currMillis);
+    void clearDanmakusOnScreen(long currMillis);
 
-	public IDanmakus getVisibleDanmakusOnTime(long time);
+	IDanmakus getVisibleDanmakusOnTime(long time);
 
-    public RenderingState draw(AbsDisplayer displayer);
+    RenderingState draw(AbsDisplayer<?, ?> displayer);
 
-    public void reset();
+    void reset();
 
-    public void seek(long mills);
+    void seek(long mills);
 
-    public void start();
+    void start();
 
-    public void quit();
+    void quit();
 
-    public void prepare();
+    void prepare();
 
-    public void requestClear();
+    void requestClear();
 
-    public void setParser(BaseDanmakuParser parser);
+    void setParser(BaseDanmakuParser parser);
 
     void invalidateDanmaku(BaseDanmaku item, boolean remeasure);
 
-    public interface TaskListener {
-        public void ready();
+    interface TaskListener {
+        void ready();
 
-        public void onDanmakuAdd(BaseDanmaku danmaku);
+        void onDanmakuAdd(BaseDanmaku danmaku);
 
-        public void onDanmakuShown(BaseDanmaku danmaku);
+        void onDanmakuShown(BaseDanmaku danmaku);
 
-        public void onDanmakuConfigChanged();
+        void onDanmakuConfigChanged();
 
-        public void onDanmakusDrawingFinished();
+        void onDanmakusDrawingFinished();
     }
 
-    public void requestHide();
+    void requestHide();
 
 }

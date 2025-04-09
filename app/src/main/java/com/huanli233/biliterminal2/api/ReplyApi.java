@@ -1,16 +1,15 @@
 package com.huanli233.biliterminal2.api;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
 import com.huanli233.biliterminal2.model.ContentType;
 import com.huanli233.biliterminal2.model.Reply;
-import com.huanli233.biliterminal2.util.NetWorkUtil;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 import com.huanli233.biliterminal2.util.Result;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -141,7 +140,7 @@ public class ReplyApi {
     public static Pair<Integer, Reply> sendReply(long oid, long root, long parent, String text, int type) throws IOException, JSONException {
         String url = "https://api.bilibili.com/x/v2/reply/add";
         String arg = "oid=" + oid + "&type=" + type + (root == 0 ? "" : ("&root=" + root + "&parent=" + parent))
-                + "&message=" + text + "&jsonp=jsonp&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
+                + "&message=" + text + "&jsonp=jsonp&csrf=" + Preferences.getString(Preferences.CSRF, "");
         JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, arg, NetWorkUtil.webHeaders).body()).string());
         JSONObject reply = null;
         if (result.has("data") && !result.isNull("data") && result.getJSONObject("data").has("reply") && !result.getJSONObject("data").isNull("reply")) {
@@ -160,7 +159,7 @@ public class ReplyApi {
 
     public static int likeReply(long oid, long root, boolean action) throws IOException, JSONException {
         String url = "https://api.bilibili.com/x/v2/reply/action";
-        String arg = "oid=" + oid + "&type=1&rpid=" + root + "&action=" + (action ? "1" : "0") + "&jsonp=jsonp&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
+        String arg = "oid=" + oid + "&type=1&rpid=" + root + "&action=" + (action ? "1" : "0") + "&jsonp=jsonp&csrf=" + Preferences.getString(Preferences.CSRF, "");
         JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, arg, NetWorkUtil.webHeaders).body()).string());
         return result.getInt("code");
     }
@@ -179,7 +178,7 @@ public class ReplyApi {
                 .put("type", type)
                 .put("oid", oid)
                 .put("rpid", rpid)
-                .put("csrf", SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, ""))
+                .put("csrf", Preferences.getString(Preferences.CSRF, ""))
                 .toString();
         JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, reqBody, NetWorkUtil.webHeaders).body()).string());
         return result.getInt("code");

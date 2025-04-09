@@ -8,12 +8,9 @@ import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter;
 import com.huanli233.biliterminal2.api.WatchLaterApi;
 import com.huanli233.biliterminal2.model.VideoCard;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.MsgUtil;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.util.ArrayList;
 
 //稍后再看
@@ -30,14 +27,14 @@ public class WatchLaterActivity extends RefreshListActivity {
         setPageName("稍后再看");
         recyclerView.setHasFixedSize(true);
 
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 ArrayList<VideoCard> videoCardList = WatchLaterApi.getWatchLaterList();
                 VideoCardAdapter adapter = new VideoCardAdapter(this, videoCardList);
 
                 adapter.setOnLongClickListener(position -> {
                     if (longClickPosition == position) {
-                        CenterThreadPool.run(() -> {
+                        ThreadManager.run(() -> {
                             try {
                                 int result = WatchLaterApi.delete(videoCardList.get(position).getAid());
                                 longClickPosition = -1;

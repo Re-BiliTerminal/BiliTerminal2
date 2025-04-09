@@ -1,10 +1,12 @@
 package com.huanli233.biliwebapi.bean.user
 
-import com.google.gson.annotations.Expose
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Official(
-    @Expose val role: Int,
-    @Expose val title: String,
-    @Expose val desc: String,
-    @Expose val type: Int
-)
+    val role: Int,
+    val title: String,
+    val desc: String,
+    val type: Int
+) : Parcelable

@@ -1,546 +1,583 @@
-package com.huanli233.biliterminal2.adapter;
+package com.huanli233.biliterminal2.adapter
 
-import static com.huanli233.biliterminal2.util.ToolsUtil.toWan;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.graphics.Color
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.TextUtils
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
+import com.huanli233.biliterminal2.R
+import com.huanli233.biliterminal2.activity.ImageViewerActivity
+import com.huanli233.biliterminal2.activity.reply.ReplyInfoActivity
+import com.huanli233.biliterminal2.activity.reply.WriteReplyActivity
+import com.huanli233.biliterminal2.api.ReplyApi
+import com.huanli233.biliterminal2.api.apiResult
+import com.huanli233.biliterminal2.api.apiResultNonNull
+import com.huanli233.biliterminal2.api.bilibiliApi
+import com.huanli233.biliterminal2.api.onApiFailure
+import com.huanli233.biliterminal2.api.toResult
+import com.huanli233.biliterminal2.api.toResultNonNull
+import com.huanli233.biliterminal2.databinding.CellReplyActionBinding
+import com.huanli233.biliterminal2.databinding.CellReplyListBinding
+import com.huanli233.biliterminal2.ui.widget.RadiusBackgroundSpan
+import com.huanli233.biliterminal2.util.EmoteUtil
+import com.huanli233.biliterminal2.util.GlideUtil.loadFace
+import com.huanli233.biliterminal2.util.GlideUtil.loadPicture
+import com.huanli233.biliterminal2.util.MsgUtil
+import com.huanli233.biliterminal2.util.Preferences
+import com.huanli233.biliterminal2.util.ThreadManager
+import com.huanli233.biliterminal2.util.Utils
+import com.huanli233.biliterminal2.util.extensions.addReturning
+import com.huanli233.biliterminal2.util.extensions.formatNumber
+import com.huanli233.biliterminal2.util.extensions.formatToDate
+import com.huanli233.biliterminal2.util.extensions.msg
+import com.huanli233.biliterminal2.util.htmlToString
+import com.huanli233.biliterminal2.util.requireLoggedIn
+import com.huanli233.biliterminal2.util.runOnUi
+import com.huanli233.biliwebapi.api.interfaces.IReplyApi
+import com.huanli233.biliwebapi.bean.content.EmoteContent
+import com.huanli233.biliwebapi.bean.reply.Reply
+import com.huanli233.biliwebapi.bean.user.UserInfo
+import kotlinx.coroutines.launch
+import java.io.Serializable
+import java.util.Locale
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.RelativeSizeSpan;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+class ReplyAdapter(
+    private val context: Context,
+    private val lifecycleOwner: LifecycleOwner,
+    private val replyList: MutableList<Reply>,
+    private val oid: Long,
+    private val root: Long,
+    private val type: Int,
+    var sort: Int,
+    private val exitDetail: () -> Unit,
+    var source: Any? = null,
+    private val upMid: Long = -1
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
+    var isDetail = false
+    var isManager = false
+    private val stateList = mutableListOf<ReplyState>()
+    var onSortChangeListener: ((Int) -> Unit)? = null
+    private val sorts = listOf("未知排序", "未知排序", "时间排序", "热度排序")
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.button.MaterialButton;
-import com.huanli233.biliterminal2.R;
-import com.huanli233.biliterminal2.activity.ImageViewerActivity;
-import com.huanli233.biliterminal2.activity.reply.ReplyInfoActivity;
-import com.huanli233.biliterminal2.activity.reply.WriteReplyActivity;
-import com.huanli233.biliterminal2.activity.user.info.UserInfoActivity;
-import com.huanli233.biliterminal2.api.ReplyApi;
-import com.huanli233.biliterminal2.listener.OnItemClickListener;
-import com.huanli233.biliterminal2.model.Reply;
-import com.huanli233.biliterminal2.model.UserInfo;
-import com.huanli233.biliterminal2.ui.widget.CustomListView;
-import com.huanli233.biliterminal2.ui.widget.RadiusBackgroundSpan;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
-import com.huanli233.biliterminal2.util.EmoteUtil;
-import com.huanli233.biliterminal2.util.GlideUtil;
-import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.huanli233.biliterminal2.util.ToolsUtil;
-
-import org.json.JSONException;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
-//评论Adapter
-//2023-07-22
-
-public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-    public boolean isDetail = false;
-    public boolean isManager = false;
-    final Context context;
-    final ArrayList<Reply> replyList;
-    final long oid;
-    final long up_mid;
-    final long root;
-    final int type;
-    public int sort;
-    public final int replyType;
-    OnItemClickListener listener;
-    public Object source;
-
-    public ReplyAdapter(Context context, ArrayList<Reply> replyList, long oid, long root, int type, int sort, Object source) {
-        this.context = context;
-        this.replyList = replyList;
-        this.oid = oid;
-        this.root = root;
-        this.type = type;
-        this.sort = sort;
-        this.replyType = type;
-        this.source = source;
-        this.up_mid = -1;
+    init {
+        checkManagerPermission()
     }
 
-    public ReplyAdapter(Context context, ArrayList<Reply> replyList, long oid, long root, int type, int sort, Object source, long up_mid) {
-        this.context = context;
-        this.replyList = replyList;
-        this.oid = oid;
-        this.root = root;
-        this.type = type;
-        this.sort = sort;
-        this.replyType = type;
-        this.source = source;
-        this.up_mid = up_mid;
-    }
-
-    public ReplyAdapter(Context context, ArrayList<Reply> replyList, long oid, long root, int type, int sort) {
-        this(context, replyList, oid, root, type, sort, null);
-    }
-
-    public void setOnSortSwitchListener(OnItemClickListener listener) {
-        this.listener = listener;
-    }
-
-    @NonNull
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == 0) {
-            View view = LayoutInflater.from(this.context).inflate(R.layout.cell_reply_action, parent, false);
-            return new WriteReply(view);
-        } else {
-            View view = LayoutInflater.from(this.context).inflate(R.layout.cell_reply_list, parent, false);
-            return new ReplyHolder(view);
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            0 -> WriteReplyViewHolder(
+                CellReplyActionBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            else -> ReplyViewHolder(
+                CellReplyListBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
         }
     }
 
     @SuppressLint("SetTextI18n")
-    @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        if (holder instanceof WriteReply) {
-            WriteReply writeReply = (WriteReply) holder;
-            writeReply.write_reply.setOnClickListener(view -> {
-                Intent intent = new Intent();
-                intent.setClass(context, WriteReplyActivity.class);
-                intent.putExtra("oid", oid);
-                intent.putExtra("rpid", root);
-                intent.putExtra("parent", root);
-                intent.putExtra("parentSender", "");
-                intent.putExtra("replyType", replyType);
-                context.startActivity(intent);
-            });
-            String[] sorts = {"未知排序", "未知排序", "时间排序", "热度排序"};
-            if (isDetail) {
-                writeReply.sort.setVisibility(View.GONE);
-                writeReply.count_label.setVisibility(View.GONE);
-            } else {
-                writeReply.sort.setText(sorts[sort]);
-                writeReply.sort.setOnClickListener(view -> {
-                    if (this.listener != null) listener.onItemClick(0);
-                    writeReply.sort.setText(sorts[sort]);
-                });
-
-                CenterThreadPool.run(() -> {
-                    try {
-                        long count = ReplyApi.getReplyCount(oid, type);
-                        CenterThreadPool.runOnUiThread(() -> writeReply.count_label.setText("共" + count + "条评论"));
-                    } catch (Exception ignore) {
-                    }
-                });
-            }
-        }
-        if (holder instanceof ReplyHolder) {
-            int realPosition;
-            if (isDetail) {
-                realPosition = position != 0 ? position - 1 : 0;
-            } else {
-                realPosition = position - 1;
-            }
-            ReplyHolder replyHolder = (ReplyHolder) holder;
-            Reply reply = replyList.get(realPosition);
-
-            Glide.with(context).asDrawable().load(GlideUtil.url(reply.sender.avatar))
-                    .transition(GlideUtil.getTransitionOptions())
-                    .placeholder(R.mipmap.akari)
-                    .apply(RequestOptions.circleCropTransform())
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .into(replyHolder.replyAvatar);
-
-            UserInfo sender = reply.sender;
-            SpannableStringBuilder name_str = new SpannableStringBuilder(reply.sender.name);
-
-            //大会员红字
-            if (!TextUtils.isEmpty(sender.vip_nickname_color) && !SharedPreferencesUtil.getBoolean(SharedPreferencesUtil.NO_VIP_COLOR, false))
-                replyHolder.userName.setTextColor(Color.parseColor(sender.vip_nickname_color));
-
-            //up主标识
-            if (sender.mid == up_mid) {
-                name_str = new SpannableStringBuilder(" UP " + reply.sender.name);
-                name_str.setSpan(new RadiusBackgroundSpan(2, (int) context.getResources().getDimension(R.dimen.round_small), Color.WHITE, Color.rgb(207, 75, 95)), 0, 4, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                name_str.setSpan(new RelativeSizeSpan(0.8f), 0, 4, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            }
-            int last_length = name_str.length();
-            name_str.append(" ").append(String.valueOf(sender.level));
-            if (sender.is_senior_member == 1) name_str.append("+");
-            name_str.setSpan(ToolsUtil.getLevelBadge(context, sender), last_length + 1, name_str.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-
-            //等级
-            if (!TextUtils.isEmpty(sender.medal_name)) {
-                last_length = name_str.length();
-                name_str.append("  ").append(sender.medal_name).append("Lv").append(String.valueOf(sender.medal_level)).append(" ");
-                name_str.setSpan(new RadiusBackgroundSpan(2, (int) context.getResources().getDimension(R.dimen.round_small), Color.WHITE, Color.argb(140, 158, 186, 232)), last_length + 1, name_str.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                name_str.setSpan(new RelativeSizeSpan(0.8f), last_length + 1, name_str.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            }
-
-            replyHolder.userName.setText(name_str);
-
-            if (SharedPreferencesUtil.getBoolean(SharedPreferencesUtil.REPLY_MARQUEE_NAME, false)) {
-                replyHolder.userName.setSingleLine(true);
-                replyHolder.userName.setMaxLines(1);
-            } else {
-                replyHolder.userName.setSingleLine(false);
-                replyHolder.userName.setMaxLines(3);
-            }
-
-
-            String text = reply.message;
-            replyHolder.message.setText(text);  //防止加载速度慢时露出鸡脚
-            ToolsUtil.setCopy(replyHolder.message);
-            if (reply.emotes != null) {
-                CenterThreadPool.run(() -> {
-                    try {
-                        SpannableString spannableString = EmoteUtil.textReplaceEmote(text, reply.emotes, 1.0f, context, replyHolder.message.getText());
-                        ((Activity) context).runOnUiThread(() -> {
-                            replyHolder.message.setText(spannableString);
-                            setTopSpan(reply, replyHolder);
-                            ToolsUtil.setLink(replyHolder.message);
-                            ToolsUtil.setAtLink(reply.atNameToMid, replyHolder.message);
-                        });
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                });
-            } else setTopSpan(reply, replyHolder);
-
-            ToolsUtil.setLink(replyHolder.message);
-            ToolsUtil.setAtLink(reply.atNameToMid, replyHolder.message);
-
-            replyHolder.likeCount.setText(toWan(reply.likeCount));
-
-            if (reply.liked) {
-                replyHolder.likeCount.setTextColor(Color.rgb(0xfe, 0x67, 0x9a));
-                replyHolder.likeCount.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(context, R.drawable.icon_reply_like1), null, null, null);
-            } else {
-                replyHolder.likeCount.setTextColor(Color.rgb(0xff, 0xff, 0xff));
-                replyHolder.likeCount.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(context, R.drawable.icon_reply_like0), null, null, null);
-            }
-
-            if (reply.childCount != 0 && !(realPosition == 0 && isDetail)) {
-                replyHolder.childReplyCard.setVisibility(View.VISIBLE);
-
-                if (reply.upReplied)
-                    replyHolder.childCount.setText("UP主在内 共" + reply.childCount + "条回复");
-                else
-                    replyHolder.childCount.setText("共" + reply.childCount + "条回复");
-
-                if (reply.childMsgList != null) {
-                    final String up_tip = "  UP  ";
-                    List<CharSequence> childMsgViewList = new ArrayList<>();
-                    for (Reply child : reply.childMsgList) {
-                        String senderName = child.sender.name;
-                        SpannableString content = new SpannableString(senderName + (child.sender.mid == up_mid ? up_tip : "") + "：" + child.message);
-                        if (child.sender.mid == up_mid) {
-                            float lineHeight = ToolsUtil.getTextHeightWithSize(context);
-                            content.setSpan(new RadiusBackgroundSpan(2, (int) context.getResources().getDimension(R.dimen.card_round), Color.WHITE, Color.rgb(207, 75, 95), (int) (lineHeight)), senderName.length(), senderName.length() + up_tip.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                            content.setSpan(new RelativeSizeSpan(0.8f), senderName.length(), senderName.length() + up_tip.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                        }
-                        if (child.emotes != null) {
-                            CenterThreadPool.run(() -> {
-                                try {
-                                    EmoteUtil.textReplaceEmote(content.toString(), child.emotes, 1.0f, context, content);
-                                } catch (ExecutionException ignored) {
-                                } catch (InterruptedException ignored) {
-                                }
-                            });
-                        }
-                        childMsgViewList.add(content);
-                    }
-                    replyHolder.childReplies.setVerticalScrollBarEnabled(false);
-                    ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(context, R.layout.cell_reply_child, childMsgViewList);
-                    replyHolder.childReplies.setAdapter(adapter);
-                }
-            } else replyHolder.childReplyCard.setVisibility(View.GONE);
-
-            if (reply.upLiked)
-                replyHolder.upLiked.setVisibility(View.VISIBLE);
-            else replyHolder.upLiked.setVisibility(View.GONE);
-            replyHolder.pubDate.setText(reply.pubTime);
-
-            if (reply.pictureList != null && !reply.pictureList.isEmpty()) {  //图片显示相关
-                replyHolder.imageCard.setVisibility(View.VISIBLE);
-                replyHolder.imageCount.setVisibility(View.VISIBLE);
-                Glide.with(context).asDrawable().load(GlideUtil.url(reply.pictureList.get(0)))
-                        .transition(GlideUtil.getTransitionOptions())
-                        .placeholder(R.mipmap.placeholder)
-                        .format(DecodeFormat.PREFER_RGB_565)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .into(replyHolder.imageCard);
-
-                replyHolder.imageCount.setText("共" + reply.pictureList.size() + "张图片");
-                replyHolder.imageCard.setOnClickListener(view -> {
-                    Intent intent = new Intent();
-                    intent.setClass(context, ImageViewerActivity.class);
-                    intent.putExtra("imageList", reply.pictureList);
-                    context.startActivity(intent);
-                });
-            } else {
-                replyHolder.imageCount.setVisibility(View.GONE);
-                replyHolder.imageCard.setVisibility(View.GONE);
-            }
-
-            replyHolder.childReplyCard.setOnClickListener(view -> startReplyInfoActivity(reply));
-            replyHolder.childReplies.setOnItemClickListener((adapterView, view, i, l) -> startReplyInfoActivity(reply));
-            if (!isDetail) {
-                replyHolder.itemView.setOnClickListener((view) -> startReplyInfoActivity(reply));
-                replyHolder.message.setOnClickListener((view) -> startReplyInfoActivity(reply));
-            }
-
-            replyHolder.replyAvatar.setOnClickListener(view -> {
-                Intent intent = new Intent();
-                intent.setClass(context, UserInfoActivity.class);
-                intent.putExtra("mid", reply.sender.mid);
-                context.startActivity(intent);
-            });
-
-            replyHolder.likeCount.setOnClickListener(view -> CenterThreadPool.run(() -> {
-                if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0) == 0) {
-                    ((Activity) context).runOnUiThread(() -> MsgUtil.showMsg("还没有登录喵~"));
-                    return;
-                }
-                if (!reply.liked) {
-                    try {
-                        if (ReplyApi.likeReply(oid, reply.rpid, true) == 0) {
-                            reply.liked = true;
-                            ((Activity) context).runOnUiThread(() -> {
-                                MsgUtil.showMsg("点赞成功");
-                                replyHolder.likeCount.setText(toWan(++reply.likeCount));
-                                replyHolder.likeCount.setTextColor(Color.rgb(0xfe, 0x67, 0x9a));
-                                replyHolder.likeCount.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(context, R.drawable.icon_reply_like1), null, null, null);
-                            });
-                        } else
-                            ((Activity) context).runOnUiThread(() -> MsgUtil.showMsg("点赞失败"));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    try {
-                        if (ReplyApi.likeReply(oid, reply.rpid, false) == 0) {
-                            reply.liked = false;
-                            ((Activity) context).runOnUiThread(() -> {
-                                MsgUtil.showMsg("取消成功");
-                                replyHolder.likeCount.setText(toWan(--reply.likeCount));
-                                replyHolder.likeCount.setTextColor(Color.rgb(0xff, 0xff, 0xff));
-                                replyHolder.likeCount.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(context, R.drawable.icon_reply_like0), null, null, null);
-                            });
-                        } else
-                            ((Activity) context).runOnUiThread(() -> MsgUtil.showMsg("取消失败"));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }));
-
-            //删除按钮
-            if (isManager || reply.sender.mid == SharedPreferencesUtil.getLong("mid", 0)) {
-                View.OnClickListener onDeleteClick = view -> MsgUtil.showMsg("长按删除");
-                replyHolder.item_reply_delete.setOnClickListener(onDeleteClick);
-                View.OnLongClickListener onDeleteLongClick = new View.OnLongClickListener() {
-                    private int longClickPosition = -1;
-                    private long longClickTime = -1;
-
-                    @Override
-                    public boolean onLongClick(View view) {
-                        long currentTime = System.currentTimeMillis();
-                        if (longClickPosition == realPosition && currentTime - longClickTime < 6000) {
-                            CenterThreadPool.run(() -> {
-                                try {
-                                    int result = ReplyApi.deleteReply(oid, reply.rpid, replyType);
-                                    if (result == 0) {
-                                        replyList.remove(realPosition);
-                                        ((Activity) context).runOnUiThread(() -> {
-                                            notifyItemRemoved(position);
-                                            notifyItemRangeChanged(position, replyList.size() - position);
-                                            longClickPosition = -1;
-                                            MsgUtil.showMsg("删除成功~");
-                                            if (realPosition == 0 && isDetail) {
-                                                ((Activity) context).finish();
-                                            }
-                                        });
-                                    } else {
-                                        String msg = "操作失败：" + result;
-                                        switch (result) {
-                                            case -404:
-                                                msg = "没有这条评论！";
-                                                break;
-                                            case -403:
-                                                msg = "权限不足！";
-                                                break;
-                                        }
-                                        String finalMsg = msg;
-                                        ((Activity) context).runOnUiThread(() -> MsgUtil.showMsg(finalMsg));
-                                    }
-                                } catch (Exception e) {
-                                    ((Activity) context).runOnUiThread(() -> MsgUtil.err(e));
-                                }
-                            });
-                        } else {
-                            longClickPosition = realPosition;
-                            longClickTime = currentTime;
-                            MsgUtil.showMsg("再次长按删除");
-                        }
-                        return true;
-                    }
-                };
-                replyHolder.item_reply_delete.setOnLongClickListener(onDeleteLongClick);
-                replyHolder.item_reply_delete.setVisibility(View.VISIBLE);
-            } else replyHolder.item_reply_delete.setVisibility(View.GONE);
-
-            //回复按钮
-            replyHolder.replyBtn.setOnClickListener(view -> {
-                boolean noParent = isDetail && realPosition == 0;
-                Intent intent = new Intent();
-                intent.setClass(context, WriteReplyActivity.class);
-                intent.putExtra("oid", oid);
-                intent.putExtra("rpid", noParent ? root : reply.rpid);
-                intent.putExtra("parent", noParent ? root : reply.rpid);
-                intent.putExtra("replyType", replyType);
-                intent.putExtra("pos", realPosition);
-                if (root != 0 && !noParent)
-                    intent.putExtra("parentSender", reply.sender.name);
-                else intent.putExtra("parentSender", "");
-                context.startActivity(intent);
-            });
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
+            is WriteReplyViewHolder -> bindWriteReply(holder.binding, position)
+            is ReplyViewHolder -> bindReply(holder.binding, position)
         }
     }
 
-    public void setSource(Object source) {   //传入并判断是否有删评论的权限  这种东西判断一次就够了，放onBindViewHolder里还开线程，神金啊
-        if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0) == 0) return;
+    private fun bindWriteReply(binding: CellReplyActionBinding, position: Int) {
+        binding.writeReply.setOnClickListener {
+            context.startActivity(Intent(context, WriteReplyActivity::class.java).apply {
+                putExtra("oid", oid)
+                putExtra("rpid", root)
+                putExtra("parent", root)
+                putExtra("parentSender", "")
+                putExtra("replyType", type)
+            })
+        }
+
+        if (isDetail) {
+            binding.sort.visibility = ViewGroup.GONE
+            binding.countLabel.visibility = ViewGroup.GONE
+        } else {
+            with(binding) {
+                sort.text = sorts[this@ReplyAdapter.sort]
+                sort.setOnClickListener {
+                    onSortChangeListener?.invoke(0)
+                    sort.text = sorts[this@ReplyAdapter.sort]
+                }
+
+                lifecycleOwner.lifecycleScope.launch {
+                    bilibiliApi.api(IReplyApi::class.java) { getReplyCount(oid, type) }
+                        .apiResultNonNull().onSuccess {
+                            runOnUi {
+                                countLabel.text = context.getString(R.string.reply_count, it.count.toString())
+                            }
+                        }
+                }
+                ThreadManager.run {
+                    try {
+
+
+                    } catch (e: Exception) {
+                        // Ignore
+                    }
+                }
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun bindReply(binding: CellReplyListBinding, position: Int) {
+        val realPosition = calculateRealPosition(position)
+        val reply = replyList[realPosition]
+
+        with(binding) {
+            loadAvatar(reply)
+            setupUserName(reply)
+            setupMessage(reply)
+            setupLikes(reply)
+            setupChildReplies(reply, realPosition)
+            setupImages(reply)
+            setupInteraction(reply, realPosition)
+        }
+    }
+
+    private fun calculateRealPosition(position: Int): Int {
+        return if (isDetail) if (position != 0) position - 1 else 0 else position - 1
+    }
+
+    private fun CellReplyListBinding.loadAvatar(reply: Reply) {
+        replyAvatar.loadFace(reply.member.face, reply.mid)
+    }
+
+    private fun CellReplyListBinding.setupUserName(reply: Reply) {
+        val sender = reply.member
+        val nameBuilder = SpannableStringBuilder(sender.name).apply {
+            applyVipColor(sender)
+            appendUpBadge(sender)
+            appendLevel(sender)
+            appendMedal(sender)
+        }
+
+        replyUsername.apply {
+            text = nameBuilder
+            marqueeSettings()
+        }
+    }
+
+    private fun SpannableStringBuilder.applyVipColor(sender: UserInfo) {
+        if (!TextUtils.isEmpty(sender.vip.nicknameColor) && !Preferences.getBoolean(
+                Preferences.NO_VIP_COLOR,
+                false
+            )
+        ) {
+            setSpan(
+                ForegroundColorSpan(Color.parseColor(sender.vip.nicknameColor)),
+                0,
+                length,
+                Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+            )
+        }
+    }
+
+    private fun SpannableStringBuilder.appendUpBadge(sender: UserInfo) {
+        if (sender.mid == upMid) {
+            insert(0, " UP ").apply {
+                setSpan(
+                    RadiusBackgroundSpan(
+                        2,
+                        context.resources.getDimension(R.dimen.round_small).toInt(),
+                        Color.WHITE,
+                        Color.rgb(207, 75, 95)
+                    ),
+                    0,
+                    4,
+                    Spanned.SPAN_INCLUSIVE_INCLUSIVE
+                )
+                setSpan(RelativeSizeSpan(0.8f), 0, 4, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            }
+        }
+    }
+
+    private fun SpannableStringBuilder.appendLevel(sender: UserInfo) {
+        val start = length
+        append(" ${sender.level}${if (sender.isSeniorMember == 1) "+" else ""}")
+        setSpan(
+            Utils.getLevelBadge(context, sender),
+            start + 1,
+            length,
+            Spanned.SPAN_INCLUSIVE_INCLUSIVE
+        )
+    }
+
+    private fun SpannableStringBuilder.appendMedal(sender: UserInfo) {
+        if (!TextUtils.isEmpty(sender.fansMedal.medal.medalName)) {
+            val start = length
+            append("  ${sender.fansMedal.medal.medalName}Lv${sender.fansMedal.medal.level} ")
+            setSpan(
+                RadiusBackgroundSpan(
+                    2,
+                    context.resources.getDimension(R.dimen.round_small).toInt(),
+                    Color.WHITE,
+                    Color.argb(140, 158, 186, 232)
+                ),
+                start + 1,
+                length,
+                Spanned.SPAN_INCLUSIVE_INCLUSIVE
+            )
+            setSpan(RelativeSizeSpan(0.8f), start + 1, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        }
+    }
+
+    private fun TextView.marqueeSettings() {
+        if (Preferences.getBoolean(Preferences.REPLY_MARQUEE_NAME, false)) {
+            setSingleLine(true)
+            maxLines = 1
+        } else {
+            setSingleLine(false)
+            maxLines = 3
+        }
+    }
+
+    private fun CellReplyListBinding.setupMessage(reply: Reply) {
+        val message = reply.content.message.htmlToString()
+        replyText.text = message
+        Utils.copyable(replyText)
+        reply.content.emote?.let { processEmotes(reply, it, message) } ?: setTopSpan(reply)
+        Utils.setLink(replyText)
+        Utils.setMentionLink(reply.content.atNameToMid, replyText)
+    }
+
+    private fun CellReplyListBinding.processEmotes(reply: Reply, emotes: Map<String, EmoteContent>, text: String) {
+        ThreadManager.run {
+            try {
+                val spannable = EmoteUtil.textReplaceEmote(
+                    text = text,
+                    emotes = emotes,
+                    scale = 1.0f,
+                    context = context,
+                    source = replyText.text
+                )
+                runOnUi {
+                    replyText.text = spannable
+                    setTopSpan(reply)
+                    Utils.setLink(replyText)
+                    Utils.setMentionLink(reply.content.atNameToMid, replyText)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun CellReplyListBinding.setTopSpan(reply: Reply) {
+        if (reply.replyTipControl.isUpTop) {
+            SpannableString(replyText.text).apply {
+                setSpan(
+                    ForegroundColorSpan(Color.rgb(207, 75, 95)),
+                    0,
+                    ReplyApi.TOP_TIP.length,
+                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+                )
+                replyText.text = this
+            }
+        }
+    }
+
+    private fun CellReplyListBinding.setupLikes(reply: Reply) {
+        likes.text = reply.like.formatNumber()
+        if (reply.actionState == 1) {
+            likes.setTextColor(Color.rgb(0xFE, 0x67, 0x9A))
+            likes.setCompoundDrawablesWithIntrinsicBounds(
+                ContextCompat.getDrawable(context, R.drawable.icon_reply_like1),
+                null,
+                null,
+                null
+            )
+        } else {
+            likes.setTextColor(Color.WHITE)
+            likes.setCompoundDrawablesWithIntrinsicBounds(
+                ContextCompat.getDrawable(context, R.drawable.icon_reply_like0),
+                null,
+                null,
+                null
+            )
+        }
+
+        likes.setOnClickListener { handleLikeClick(reply) }
+    }
+
+    private fun CellReplyListBinding.handleLikeClick(reply: Reply) {
+        val replyState = stateList.addReturning(
+            ReplyState(
+                liked = reply.actionState == 1,
+                likeCount = reply.like
+            )
+        )
+        lifecycleOwner.lifecycleScope.launch {
+            requireLoggedIn {
+                bilibiliApi.api(IReplyApi::class) {
+                    likeReply(
+                        oid = oid,
+                        replyId = reply.replyId,
+                        action = if (reply.actionState == 0) 1 else 0
+                    )
+                }.apiResult().onSuccess {
+                    replyState.liked = !replyState.liked
+                    replyState.likeCount += if (replyState.liked) 1 else -1
+                    runOnUi {
+                        likes.text = String.format(Locale.getDefault(), "%d", replyState.likeCount.toString())
+                        val (colorRes, drawableRes) = if (replyState.liked) {
+                            Color.rgb(0xFE, 0x67, 0x9A) to R.drawable.icon_reply_like1
+                        } else {
+                            Color.WHITE to R.drawable.icon_reply_like0
+                        }
+                        likes.setTextColor(colorRes)
+                        likes.setCompoundDrawablesWithIntrinsicBounds(
+                            ContextCompat.getDrawable(context, drawableRes),
+                            null,
+                            null,
+                            null
+                        )
+                        MsgUtil.showMsg(
+                            if (replyState.liked) context.getString(R.string.like_success)
+                            else context.getString(R.string.cancel_success)
+                        )
+                    }
+                }.onFailure {
+                    MsgUtil.showMsg(
+                        if (replyState.liked) context.getString(R.string.cancel_failed)
+                        else context.getString(R.string.like_failed)
+                    )
+                }
+            }
+        }
+    }
+
+    private fun CellReplyListBinding.setupChildReplies(reply: Reply, realPosition: Int) {
+        if (reply.rcount != 0 && !(isDetail && realPosition == 0)) {
+            repliesCard.visibility = View.VISIBLE
+            repliesControl.text = if (reply.upAction.like) context.getString(
+                R.string.reply_count_with_creator,
+                reply.rcount.toString()
+            )
+            else context.getString(R.string.reply_count_total, reply.rcount.toString())
+
+            reply.replies?.let { setupChildMessages(it) }
+        } else {
+            repliesCard.visibility = View.GONE
+        }
+
+        repliesCard.setOnClickListener { startReplyInfoActivity(reply) }
+        repliesList.setOnItemClickListener { _, _, position, _ ->
+            startReplyInfoActivity(reply.replies?.get(position) ?: reply)
+        }
+    }
+
+    private fun CellReplyListBinding.setupChildMessages(replies: List<Reply>) {
+        val upTip = "  UP  "
+        val items = replies.map { reply ->
+            SpannableString("${reply.member.name}${if (reply.member.mid == upMid) upTip else ""}：${reply.member}").apply {
+                if (reply.mid == upMid) {
+                    val start = reply.member.name.length
+                    val end = start + upTip.length
+                    val lineHeight = Utils.getTextHeightWithSize(context)
+                    setSpan(
+                        RadiusBackgroundSpan(
+                            2,
+                            context.resources.getDimension(R.dimen.card_round).toInt(),
+                            Color.WHITE,
+                            Color.rgb(207, 75, 95),
+                            lineHeight.toInt()
+                        ),
+                        start,
+                        end,
+                        Spanned.SPAN_INCLUSIVE_INCLUSIVE
+                    )
+                    setSpan(RelativeSizeSpan(0.8f), start, end, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                }
+                processChildEmotes(reply)
+            }
+        }
+
+        repliesList.apply {
+            isVerticalScrollBarEnabled = true
+            adapter = ArrayAdapter(context, R.layout.cell_reply_child, items)
+        }
+    }
+
+    private fun SpannableString.processChildEmotes(reply: Reply) {
+        reply.content.emote?.let {
+            ThreadManager.run {
+                try {
+                    EmoteUtil.textReplaceEmote(toString(), it, 1.0f, context, this@processChildEmotes)
+                } catch (e: Exception) {
+                    // Handle exception
+                }
+            }
+        }
+    }
+
+    private fun CellReplyListBinding.setupImages(reply: Reply) {
+        reply.content.pictures?.takeIf { it.isNotEmpty() }?.let { pictures ->
+            imageCard.visibility = View.VISIBLE
+            imageCount.visibility = View.VISIBLE
+            imageCount.text = context.getString(R.string.picture_count, pictures.size.toString())
+
+            imageCard.loadPicture(pictures[0].src)
+
+            imageCard.setOnClickListener {
+                context.startActivity(Intent(context, ImageViewerActivity::class.java).apply {
+                    putExtra("imageList", arrayListOf(pictures))
+                })
+            }
+        } ?: run {
+            imageCard.visibility = View.GONE
+            imageCount.visibility = View.GONE
+        }
+    }
+
+    private fun CellReplyListBinding.setupInteraction(reply: Reply, realPosition: Int) {
+        replyPubDate.text = if (reply.createTime == 0L) {
+            context.getString(R.string.just)
+        } else {
+            reply.replyTipControl.timeDesc ?: reply.createTime.formatToDate()
+        }
+        upLiked.visibility = if (reply.upAction.like) View.VISIBLE else View.GONE
+
+        if (!isDetail) {
+            root.setOnClickListener { startReplyInfoActivity(reply) }
+            replyText.setOnClickListener { startReplyInfoActivity(reply) }
+        }
+
+        setupDeleteButton(reply, realPosition)
+        setupReplyButton(reply, realPosition)
+    }
+
+    private fun CellReplyListBinding.setupDeleteButton(reply: Reply, realPosition: Int) {
+        itemReplyDelete.visibility = if (isManager || reply.mid == Preferences.getLong("mid", 0)) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
+
+        var longClickPosition = -1
+        var longClickTime = -1L
+
+        itemReplyDelete.setOnClickListener { MsgUtil.showMsg("长按删除") }
+        itemReplyDelete.setOnLongClickListener {
+            val currentTime = System.currentTimeMillis()
+            if (longClickPosition == realPosition && currentTime - longClickTime < 6000) {
+                deleteReply(reply, realPosition)
+                true
+            } else {
+                longClickPosition = realPosition
+                longClickTime = currentTime
+                MsgUtil.showMsg("再次长按删除")
+                true
+            }
+        }
+    }
+
+    private fun deleteReply(reply: Reply, position: Int) {
+        lifecycleOwner.lifecycleScope.launch {
+            bilibiliApi.api(IReplyApi::class) {
+                deleteReply(type, oid, reply.replyId)
+            }.apiResult().onSuccess {
+                replyList.removeAt(position)
+                runOnUi {
+                    notifyItemRemoved(position)
+                    notifyItemRangeChanged(position, replyList.size - position)
+                    if (position == 0 && isDetail) {
+                        exitDetail()
+                    }
+                }
+                MsgUtil.showMsg(context.getString(R.string.delete_success))
+            }.onApiFailure {
+                MsgUtil.showMsg(
+                    when (val result = it.code) {
+                        -404 -> context.getString(R.string.no_such_reply)
+                        -403 -> context.getString(R.string.no_permission)
+                        else -> context.getString(R.string.action_failed_with_msg, result.toString())
+                    }
+                )
+            }.onFailure {
+                MsgUtil.showMsg(it.msg())
+            }
+        }
+    }
+
+    private fun CellReplyListBinding.setupReplyButton(reply: Reply, position: Int) {
+        replyBtn.setOnClickListener {
+            val noParent = isDetail && position == 0
+            context.startActivity(Intent(context, WriteReplyActivity::class.java).apply {
+                putExtra("oid", oid)
+                putExtra("rpid", if (noParent) this@ReplyAdapter.root else reply.replyId)
+                putExtra("parent", if (noParent) this@ReplyAdapter.root else reply.replyId)
+                putExtra("replyType", type)
+                putExtra("pos", position)
+                putExtra("parentSender", if (this@ReplyAdapter.root != 0L && !noParent) reply.member.name else "")
+            })
+        }
+    }
+
+    private fun startReplyInfoActivity(reply: Reply) {
+        context.startActivity(Intent(context, ReplyInfoActivity::class.java).apply {
+            putExtra("rpid", reply.replyId)
+            putExtra("oid", reply.oid)
+            putExtra("type", type)
+            putExtra("up_mid", upMid)
+            if (source is Serializable) putExtra("source", source as Serializable)
+        })
+    }
+
+    private fun checkManagerPermission() {
+        if (Preferences.getLong(Preferences.MID, 0) == 0L) return
 
         try {
-            if (source != null) {
-                if (source instanceof List<?>) {
-                    List<UserInfo> staffs = (List<UserInfo>) source;
-                    for (UserInfo userInfo : staffs) {
-                        if (userInfo.mid == SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0)) {
-                            isManager = true;
-                            break;
-                        }
-                    }
-                } else if (source instanceof UserInfo) {
-                    isManager = ((UserInfo) source).mid == SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0);
-                }
+            when (source) {
+                is List<*> -> isManager =  @Suppress("UNCHECKED_CAST") (source as List<UserInfo>).any { it.mid == Preferences.getLong(Preferences.MID, 0) }
+                is UserInfo -> isManager = (source as UserInfo).mid == Preferences.getLong(Preferences.MID, 0)
             }
-        } catch (Exception e) {
-            MsgUtil.err(e);
-        }
-
-    }
-
-    public void setTopSpan(Reply reply, ReplyHolder replyHolder) {
-        if (reply.isTop && reply.message.startsWith(ReplyApi.TOP_TIP)) {
-            SpannableString spannableString = new SpannableString(replyHolder.message.getText());
-            spannableString.setSpan(new ForegroundColorSpan(Color.rgb(207, 75, 95)), 0, ReplyApi.TOP_TIP.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-            replyHolder.message.setText(spannableString);
+        } catch (e: Exception) {
+            MsgUtil.error(e)
         }
     }
 
-    public void startReplyInfoActivity(Reply reply) {
-        long rpid = reply.rpid;
-        long oid = reply.oid;
-        Intent intent = new Intent();
-        intent.setClass(context, ReplyInfoActivity.class);
-        intent.putExtra("rpid", rpid);
-        intent.putExtra("oid", oid);
-        intent.putExtra("type", replyType);
-        intent.putExtra("up_mid", up_mid);
-        if (source != null && source instanceof Serializable)
-            intent.putExtra("source", (Serializable) source);
-        context.startActivity(intent);
+    override fun getItemCount(): Int = replyList.size + 1
+
+    override fun getItemViewType(position: Int): Int = when {
+        isDetail && position == 1 -> 0
+        !isDetail && position == 0 -> 0
+        else -> 1
     }
 
-    @Override
-    public int getItemCount() {
-        return replyList.size() + 1;
-    }
+    class ReplyViewHolder(val binding: CellReplyListBinding) : RecyclerView.ViewHolder(binding.root)
+    class WriteReplyViewHolder(val binding: CellReplyActionBinding) : RecyclerView.ViewHolder(binding.root)
 
-    @Override
-    public int getItemViewType(int position) {
-        if (isDetail && position == 1) {
-            return 0;
-        } else if (!isDetail && position == 0) {
-            return 0;
-        }
-        return 1;
-    }
-
-    public static class ReplyHolder extends RecyclerView.ViewHolder {
-        final ImageView replyAvatar;
-        final ImageView dislikeBtn;
-        final CustomListView childReplies;
-        final TextView message;
-        final TextView userName;
-        final TextView pubDate;
-        final TextView childCount;
-        final TextView likeCount;
-        final TextView replyBtn;
-        final TextView upLiked;
-        final TextView imageCount;
-        final TextView item_reply_delete;
-        final LinearLayout childReplyCard;
-        final ImageView imageCard;
-
-
-        public ReplyHolder(@NonNull View itemView) {
-            super(itemView);
-
-            replyAvatar = itemView.findViewById(R.id.replyAvatar);
-            dislikeBtn = itemView.findViewById(R.id.dislikeBtn);
-            childReplies = itemView.findViewById(R.id.repliesList);
-            message = itemView.findViewById(R.id.replyText);
-            userName = itemView.findViewById(R.id.replyUsername);
-            pubDate = itemView.findViewById(R.id.replyPubDate);
-            childCount = itemView.findViewById(R.id.repliesControl);
-            likeCount = itemView.findViewById(R.id.likes);
-            replyBtn = itemView.findViewById(R.id.replyBtn);
-            upLiked = itemView.findViewById(R.id.upLiked);
-            childReplyCard = itemView.findViewById(R.id.repliesCard);
-            imageCount = itemView.findViewById(R.id.imageCount);
-            imageCard = itemView.findViewById(R.id.imageCard);
-            item_reply_delete = itemView.findViewById(R.id.item_reply_delete);
-        }
-    }
-
-    public static class WriteReply extends RecyclerView.ViewHolder {
-        final MaterialButton write_reply;
-        final MaterialButton sort;
-        final TextView count_label;
-
-        public WriteReply(@NonNull View itemView) {
-            super(itemView);
-
-            write_reply = itemView.findViewById(R.id.write_reply);
-            sort = itemView.findViewById(R.id.sort);
-            count_label = itemView.findViewById(R.id.count_label);
-        }
-    }
+    data class ReplyState(
+        var liked: Boolean = false,
+        var likeCount: Int
+    )
 }

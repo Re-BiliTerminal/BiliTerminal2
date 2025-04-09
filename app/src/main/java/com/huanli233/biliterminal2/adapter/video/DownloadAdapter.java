@@ -21,7 +21,7 @@ import com.huanli233.biliterminal2.listener.OnItemLongClickListener;
 import com.huanli233.biliterminal2.model.DownloadSection;
 import com.huanli233.biliterminal2.service.DownloadService;
 import com.huanli233.biliterminal2.util.GlideUtil;
-import com.huanli233.biliterminal2.util.ToolsUtil;
+import com.huanli233.biliterminal2.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -125,7 +125,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.Downlo
 
             Glide.with(context).asDrawable().load(section.url_cover)
                     .transition(GlideUtil.getTransitionOptions())
-                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(ToolsUtil.dp2px(5))))
+                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(Utils.dp2px(5))))
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(cover);
         }
