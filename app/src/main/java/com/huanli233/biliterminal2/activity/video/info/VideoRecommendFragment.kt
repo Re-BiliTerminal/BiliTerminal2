@@ -26,7 +26,7 @@ class VideoRecommendFragment : RefreshListFragment() {
 
         lifecycleScope.launch {
             VideoInfo.related(bilibiliApi, aid).toResultNonNull().also {
-                isRefreshing = false
+                refreshing = false
             }.onSuccess { data ->
                 runOnUiThread {
                     val adapter = VideoCardAdapter(requireContext(), data.map { it.toVideoCard() })

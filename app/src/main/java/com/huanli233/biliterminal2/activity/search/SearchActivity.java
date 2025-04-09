@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -24,12 +23,12 @@ import com.huanli233.biliterminal2.activity.base.InstanceActivity;
 import com.huanli233.biliterminal2.adapter.SearchHistoryAdapter;
 import com.huanli233.biliterminal2.helper.TutorialHelper;
 import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager;
-import com.huanli233.biliterminal2.util.AsyncLayoutInflaterX;
+import com.huanli233.biliterminal2.util.view.AsyncLayoutInflaterX;
 import com.huanli233.biliterminal2.util.JsonUtil;
 import com.huanli233.biliterminal2.util.LinkUrlUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.huanli233.biliterminal2.util.ToolsUtil;
+import com.huanli233.biliterminal2.util.Preferences;
+import com.huanli233.biliterminal2.util.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,7 +61,7 @@ public class SearchActivity extends InstanceActivity {
         setContentView(R.layout.activity_loading);
 
         classname = getClass().getSimpleName();
-        tutorial_show = SharedPreferencesUtil.getBoolean("tutorial_pager_" + classname, true);
+        tutorial_show = Preferences.getBoolean("tutorial_pager_" + classname, true);
 
         new AsyncLayoutInflaterX(this).inflate(R.layout.activity_search, null, (layoutView, id, parent) -> {
             setContentView(layoutView);
@@ -107,7 +106,7 @@ public class SearchActivity extends InstanceActivity {
                         if (tutorial_show) {
                             tutorial_show = false;
                             findViewById(R.id.text_tutorial_pager).setVisibility(View.GONE);
-                            SharedPreferencesUtil.putBoolean("tutorial_pager_" + classname, false);
+                            Preferences.putBoolean("tutorial_pager_" + classname, false);
                         }
                     }
 
@@ -129,9 +128,9 @@ public class SearchActivity extends InstanceActivity {
             });
 
             try {
-                searchHistory = JsonUtil.jsonToArrayList(new JSONArray(SharedPreferencesUtil.getString(SharedPreferencesUtil.SEARCH_HISTORY, "[]")), false);
+                searchHistory = JsonUtil.jsonToArrayList(new JSONArray(Preferences.getString(Preferences.SEARCH_HISTORY, "[]")), false);
             } catch (JSONException e) {
-                runOnUiThread(() -> MsgUtil.err(e));
+                runOnUiThread(() -> MsgUtil.error(e));
                 searchHistory = new ArrayList<>();
             }
             searchHistoryAdapter = new SearchHistoryAdapter(this, searchHistory);
@@ -141,7 +140,7 @@ public class SearchActivity extends InstanceActivity {
                 searchHistory.remove(position);
                 searchHistoryAdapter.notifyItemRemoved(position);
                 searchHistoryAdapter.notifyItemRangeChanged(position, searchHistory.size() - position);
-                SharedPreferencesUtil.putString(SharedPreferencesUtil.SEARCH_HISTORY, new JSONArray(searchHistory).toString());
+                Preferences.putString(Preferences.SEARCH_HISTORY, new JSONArray(searchHistory).toString());
             });
             historyRecyclerview.setLayoutManager(new CustomLinearManager(this));
             historyRecyclerview.setAdapter(searchHistoryAdapter);
@@ -197,28 +196,28 @@ public class SearchActivity extends InstanceActivity {
                 if (!searchHistory.contains(str)) {
                     try {
                         searchHistory.add(0, str);
-                        SharedPreferencesUtil.putString(SharedPreferencesUtil.SEARCH_HISTORY, new JSONArray(searchHistory).toString());
+                        Preferences.putString(Preferences.SEARCH_HISTORY, new JSONArray(searchHistory).toString());
                         runOnUiThread(() -> {
                             searchHistoryAdapter.notifyItemInserted(0);
                             searchHistoryAdapter.notifyItemRangeChanged(0, searchHistory.size());
                             historyRecyclerview.scrollToPosition(0);
                         });
                     } catch (Exception e) {
-                        runOnUiThread(() -> MsgUtil.err(e));
+                        runOnUiThread(() -> MsgUtil.error(e));
                     }
                 } else {
                     try {
                         int pos = searchHistory.indexOf(str);
                         searchHistory.remove(str);
                         searchHistory.add(0, str);
-                        SharedPreferencesUtil.putString(SharedPreferencesUtil.SEARCH_HISTORY, new JSONArray(searchHistory).toString());
+                        Preferences.putString(Preferences.SEARCH_HISTORY, new JSONArray(searchHistory).toString());
                         runOnUiThread(() -> {
                             searchHistoryAdapter.notifyItemMoved(pos, 0);
                             searchHistoryAdapter.notifyItemRangeChanged(0, searchHistory.size());
                             historyRecyclerview.scrollToPosition(0);
                         });
                     } catch (Exception e) {
-                        runOnUiThread(() -> MsgUtil.err(e));
+                        runOnUiThread(() -> MsgUtil.error(e));
                     }
                 }
 
@@ -241,7 +240,7 @@ public class SearchActivity extends InstanceActivity {
     }
 
     public void onScrolled(int dy) {
-        float height = searchBar.getHeight() + ToolsUtil.dp2px(2f);
+        float height = searchBar.getHeight() + Utils.dp2px(2f);
 
         if (System.currentTimeMillis() - animate_last > 200) {
             if (dy > 0 && searchBarVisible) {

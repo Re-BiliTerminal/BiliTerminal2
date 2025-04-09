@@ -34,12 +34,12 @@ import com.huanli233.biliterminal2.api.UserInfoApi;
 import com.huanli233.biliterminal2.model.Dynamic;
 import com.huanli233.biliterminal2.model.UserInfo;
 import com.huanli233.biliterminal2.ui.widget.RadiusBackgroundSpan;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.GlideUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 import com.huanli233.biliterminal2.util.TerminalContext;
-import com.huanli233.biliterminal2.util.ToolsUtil;
+import com.huanli233.biliterminal2.util.Utils;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -99,30 +99,30 @@ public class UserDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             UserInfoHolder userInfoHolder = (UserInfoHolder) holder;
 
             SpannableStringBuilder lvStr = new SpannableStringBuilder("Lv" + userInfo.level);
-            lvStr.setSpan(ToolsUtil.getLevelBadge(context, userInfo), 0, lvStr.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            if (userInfo.vip_role > 0) {
+            lvStr.setSpan(Utils.getLevelBadge(context, userInfo), 0, lvStr.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            if (userInfo.vipRole > 0) {
                 LinkedHashMap<Integer, String> vipTypeMap = new LinkedHashMap<>() {{
                     put(1, "月度大会员");
                     put(3, "年度大会员");
                     put(7, "十年大会员");
                     put(15, "百年大会员");
                 }};
-                lvStr.append("  ").append(vipTypeMap.get(userInfo.vip_role)).append(" ");
+                lvStr.append("  ").append(vipTypeMap.get(userInfo.vipRole)).append(" ");
                 lvStr.setSpan(new RadiusBackgroundSpan(1, (int) context.getResources().getDimension(R.dimen.card_round), Color.WHITE, Color.rgb(207, 75, 95)), ("Lv" + userInfo.level).length() + 1, lvStr.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             }
             userInfoHolder.userLevel.setText(lvStr);
-            if (!userInfo.vip_nickname_color.isEmpty())
-                userInfoHolder.userName.setTextColor(Color.parseColor(userInfo.vip_nickname_color));
+            if (!userInfo.vipNicknameColor.isEmpty())
+                userInfoHolder.userName.setTextColor(Color.parseColor(userInfo.vipNicknameColor));
             userInfoHolder.userName.setText(userInfo.name);
             userInfoHolder.userDesc.setText(userInfo.sign);
             if (!userInfo.notice.isEmpty()) userInfoHolder.userNotice.setText(userInfo.notice);
             else userInfoHolder.userNotice.setVisibility(View.GONE);
             userInfoHolder.uidTv.setText(String.valueOf(userInfo.mid));
-            ToolsUtil.setCopy(userInfoHolder.uidTv);
-            ToolsUtil.setLink(userInfoHolder.userDesc, userInfoHolder.userNotice);
-            userInfoHolder.userFans.setText(ToolsUtil.toWan(userInfo.fans) + "粉丝");
+            Utils.copyable(userInfoHolder.uidTv);
+            Utils.setLink(userInfoHolder.userDesc, userInfoHolder.userNotice);
+            userInfoHolder.userFans.setText(Utils.toWan(userInfo.fans) + "粉丝");
             userInfoHolder.userFans.setOnClickListener((view) -> view.getContext().startActivity(new Intent(view.getContext(), FollowUsersActivity.class).putExtra("mode", 1).putExtra("mid", userInfo.mid)));
-            userInfoHolder.userFollowings.setText(ToolsUtil.toWan(userInfo.following) + "关注");
+            userInfoHolder.userFollowings.setText(Utils.toWan(userInfo.following) + "关注");
             userInfoHolder.userFollowings.setOnClickListener((view) -> view.getContext().startActivity(new Intent(view.getContext(), FollowUsersActivity.class).putExtra("mode", 0).putExtra("mid", userInfo.mid)));
 
             if (userInfo.official != 0) {
@@ -152,29 +152,29 @@ public class UserDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 context.startActivity(intent);
             });
 
-            if (!userInfo.sys_notice.isEmpty()) {
+            if (!userInfo.sysNotice.isEmpty()) {
                 userInfoHolder.exclusiveTip.setVisibility(View.VISIBLE);
-                SpannableString spannableString = new SpannableString("!:" + userInfo.sys_notice);
-                Drawable drawable = ToolsUtil.getDrawable(context, R.drawable.icon_warning);
+                SpannableString spannableString = new SpannableString("!:" + userInfo.sysNotice);
+                Drawable drawable = Utils.getDrawable(context, R.drawable.icon_warning);
                 drawable.setBounds(0, 0, 30, 30);
                 spannableString.setSpan(new ImageSpan(drawable), 0, 2, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 userInfoHolder.exclusiveTipLabel.setText(spannableString);
             } else userInfoHolder.exclusiveTip.setVisibility(View.GONE);
 
-            if (userInfo.live_room != null) {
+            if (userInfo.liveRoom != null) {
                 userInfoHolder.liveRoom.setVisibility(View.VISIBLE);
-                userInfoHolder.liveRoomLabel.setText(userInfo.live_room.title);
-                userInfoHolder.liveRoom.setOnClickListener(view -> TerminalContext.getInstance().enterLiveDetailPage(context, userInfo.live_room.roomid));
+                userInfoHolder.liveRoomLabel.setText(userInfo.liveRoom.title);
+                userInfoHolder.liveRoom.setOnClickListener(view -> TerminalContext.getInstance().enterLiveDetailPage(context, userInfo.liveRoom.roomid));
             } else userInfoHolder.liveRoom.setVisibility(View.GONE);
 
-            if ((userInfo.mid == SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0)) || (SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0) == 0) || (userInfo.mid == 0))
+            if ((userInfo.mid == Preferences.getLong(Preferences.MID, 0)) || (Preferences.getLong(Preferences.MID, 0) == 0) || (userInfo.mid == 0))
                 userInfoHolder.followBtn.setVisibility(View.GONE);
             else userInfoHolder.followBtn.setChecked(userInfo.followed);
             userInfoHolder.followBtn.setOnClickListener(btn -> {
                 if (!follow_onprocess) {
                     follow_onprocess = true;
                     userInfoHolder.setFollowed(!(userInfo.followed));
-                    CenterThreadPool.run(() -> {
+                    ThreadManager.run(() -> {
                         try {
                             int result = UserInfoApi.followUser(userInfo.mid, !(userInfo.followed));
                             String msg;
@@ -182,13 +182,13 @@ public class UserDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                                 userInfo.followed = !(userInfo.followed);
                                 msg = "操作成功喵~";
                             } else {
-                                CenterThreadPool.runOnUiThread(() -> userInfoHolder.setFollowed(userInfo.followed));
+                                ThreadManager.runOnUiThread(() -> userInfoHolder.setFollowed(userInfo.followed));
                                 if (result == 25056) msg = "被B站风控系统拦截了\n（无法解决）";
                                 else msg = "操作失败（原因未知）：" + result;
                             }
                             MsgUtil.showMsg(msg);
                         } catch (Exception e) {
-                            MsgUtil.err(e);
+                            MsgUtil.error(e);
                         }
                         follow_onprocess = false;
                     });
@@ -270,7 +270,7 @@ public class UserDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             followBtn = itemView.findViewById(R.id.followBtn);
             msgBtn = itemView.findViewById(R.id.msgBtn);
             uidTv = itemView.findViewById(R.id.uidText);
-            ToolsUtil.setCopy(userDesc, userNotice);
+            Utils.copyable(userDesc, userNotice);
         }
 
         public void setFollowed(boolean followed) {

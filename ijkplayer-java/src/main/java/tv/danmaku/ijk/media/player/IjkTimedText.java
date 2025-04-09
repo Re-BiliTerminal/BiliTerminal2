@@ -17,7 +17,6 @@
 package tv.danmaku.ijk.media.player;
 
 import android.graphics.Rect;
-import java.lang.String;
 
 public final class IjkTimedText {
 

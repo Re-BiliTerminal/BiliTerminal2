@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Process;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
@@ -30,7 +29,7 @@ import com.huanli233.biliterminal2.activity.video.PopularActivity;
 import com.huanli233.biliterminal2.activity.video.PreciousActivity;
 import com.huanli233.biliterminal2.activity.video.RecommendActivity;
 import com.huanli233.biliterminal2.activity.video.local.LocalListActivity;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -85,7 +84,7 @@ public class MenuActivity extends BaseActivity {
 
         List<String> btnList;
 
-        String sortConf = SharedPreferencesUtil.getString(SharedPreferencesUtil.MENU_SORT, "");
+        String sortConf = Preferences.getString(Preferences.MENU_SORT, "");
 
         if (!TextUtils.isEmpty(sortConf)) {
             String[] splitName = sortConf.split(";");
@@ -106,16 +105,16 @@ public class MenuActivity extends BaseActivity {
             btnList = getDefaultSortList();
         }
 
-        if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0) == 0) {
+        if (Preferences.getLong(Preferences.MID, 0) == 0) {
             btnList.add(0, "login");
             btnList.remove("dynamic");
             btnList.remove("message");
             btnList.remove("myspace");
         }
 
-        if (!SharedPreferencesUtil.getBoolean("menu_popular", true)) btnList.remove("popular");
-        if (!SharedPreferencesUtil.getBoolean("menu_precious", false)) btnList.remove("precious");
-        if (!SharedPreferencesUtil.getBoolean("menu_live", false)) btnList.remove("live");
+        if (!Preferences.getBoolean("menu_popular", true)) btnList.remove("popular");
+        if (!Preferences.getBoolean("menu_precious", false)) btnList.remove("precious");
+        if (!Preferences.getBoolean("menu_live", false)) btnList.remove("live");
 
         btnList.add("exit");
 

@@ -61,7 +61,7 @@ public class UserVideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             int realPosition = position - 1;
             VideoCardHolder videoCardHolder = (VideoCardHolder) holder;
             VideoCard videoCard = videoCardList.get(realPosition);
-            videoCardHolder.showVideoCard(videoCard, context);    //此函数在VideoCardHolder里
+            videoCardHolder.bindData(videoCard, context);    //此函数在VideoCardHolder里
 
             holder.itemView.setOnClickListener(view -> TerminalContext.getInstance().enterVideoDetailPage(context, videoCard.getAid(), videoCard.getBvid()));
         }

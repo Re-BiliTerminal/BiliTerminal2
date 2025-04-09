@@ -270,7 +270,7 @@ public class DanmakuView extends View implements IDanmakuView, IDanmakuViewContr
     }
 
     private void lockCanvas() {
-        if(mDanmakuVisible == false) {
+        if(!mDanmakuVisible) {
             return;
         }
         postInvalidateCompat();
@@ -279,7 +279,7 @@ public class DanmakuView extends View implements IDanmakuView, IDanmakuViewContr
                 try {
                     mDrawMonitor.wait(200);
                 } catch (InterruptedException e) {
-                    if (mDanmakuVisible == false || handler == null || handler.isStop()) {
+                    if (!mDanmakuVisible || handler == null || handler.isStop()) {
                         break;
                     } else {
                         Thread.currentThread().interrupt();
@@ -366,7 +366,7 @@ public class DanmakuView extends View implements IDanmakuView, IDanmakuViewContr
             if (mResumeTryCount > 4 || DanmakuView.super.isShown()) {
                 handler.resume();
             } else {
-                handler.postDelayed(this, 100 * mResumeTryCount);
+                handler.postDelayed(this, 100L * mResumeTryCount);
             }
         }
     };
@@ -409,6 +409,7 @@ public class DanmakuView extends View implements IDanmakuView, IDanmakuViewContr
         handler.obtainMessage(DrawHandler.START, postion).sendToTarget();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (null != mTouchHelper) {

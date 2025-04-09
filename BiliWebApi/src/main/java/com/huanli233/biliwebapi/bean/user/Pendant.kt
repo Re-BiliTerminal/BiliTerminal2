@@ -1,10 +1,12 @@
 package com.huanli233.biliwebapi.bean.user
 
-import com.google.gson.annotations.Expose
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Pendant(
-    @Expose val pid: Int,
-    @Expose val name: String,
-    @Expose val image: String,
-    @Expose val expire: Int
-)
+    val pid: Int,
+    val name: String,
+    val image: String,
+    val expire: Int
+) : Parcelable

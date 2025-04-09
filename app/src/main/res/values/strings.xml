@@ -11,7 +11,7 @@
     <string name="setting_ui_density_desc">最低72，建议每次仅进行轻微调节，调节后请预览页面，确认显示正常后完成修改，打开新页面后将会生效。\n若乱调此选项，导致应用无法正常使用的，请清除应用数据或卸载重装！\n注：此选项可能有其他问题，没有必要请不要修改。</string>
     <string name="setting_ui_round_desc">开启选项后，界面边距会直接更改为适合圆屏手表的大小，同时内置播放器也会更换为圆屏布局。\n这会导致显示面积缩小，但这是目前最好且工作量最小的办法了。</string>
     <string name="setting_player_desc">*你也可以通过长按“播放”按钮快速进入此页面。若无法跳转播放，请确保你已经安装对应播放器且播放器和BiliTerminal2都是最新版本。</string>
-    <string name="setup_introduction">这是哔哩终端的Fork项目，\n\n愿你在这一方小小的屏幕中，找到属于自己的小小的快乐！\n\n暂无交流群\n反馈问题、提交建议请前往开源地址提交Issue！\n开源地址：https://github.com/huanli233/BiliTerminal2\n\n请注意：\n本软件永久免费开源，不会收集你的任何账号及隐私信息，请放心使用！\n若你在任何平台付费下载到哔哩终端，那么你被坑了！\n\n点击下面的按钮，让我们开始吧！</string>
+    <string name="setup_introduction">这是哔哩终端的Fork项目，\n\n愿你在这一方小小的屏幕中，找到属于自己的小小的快乐！\n\n暂无交流群\n反馈问题、提交建议请前往开源地址提交Issue！\n开源地址：https://github.com/Re-BiliTerminal/BiliTerminal2\n\n请注意：\n本软件永久免费开源，不会收集你的任何账号及隐私信息，请放心使用！\n若你在任何平台付费下载到哔哩终端，那么你被坑了！\n\n点击下面的按钮，让我们开始吧！</string>
 
     <string name="egg_warmwords_warmworld">请记住，如果遇到心理健康相关问题：\n全国24小时免费心理咨询热线：010\-82951332\n或官方手机端哔哩哔哩，打开 我的-下滑找到推荐服务-能量加油站。\n\n如果你需要这个，那么希望这个彩蛋能帮到你。\n如果其他人需要，那就请推荐给他/她吧。</string>
 
@@ -126,6 +126,44 @@
     <string name="popular">热门</string>
     <string name="prefix_live">[直播]</string>
     <string name="prefix_series">[系列]</string>
+    <string name="loading">加载中</string>
+    <string name="player_loading_text">OwO</string>
+    <string name="speed_adjustment">倍速调节</string>
+    <string name="quick_select">快速选择</string>
+    <string name="play">播放</string>
+    <string name="collection_detail">合集详情</string>
+    <string name="no_desc">这里没有简介哦</string>
+    <string name="total_count">共%1$s</string>
+    <string name="load_failed">加载失败</string>
+    <string name="thousand">万</string>
+    <string name="reply_count">共%1$s条评论</string>
+    <string name="million">亿</string>
+    <string name="picture_count">共%1$s张图片</string>
+    <string name="just">刚刚</string>
+    <string name="not_logged_in">还没有登录喵~</string>
+    <string name="like_success">点赞成功</string>
+    <string name="cancel_success">取消成功</string>
+    <string name="cancel_failed">取消失败</string>
+    <string name="like_failed">点赞失败</string>
+    <string name="reply_count_with_creator">UP主在内 共%1$s条回复</string>
+    <string name="reply_count_total">共%1$s条回复</string>
+    <string name="subtitle_option_not_available">无字幕可供选择</string>
+    <string name="live_viewer_count">%1$s人在看</string>
+    <string name="live_danmaku_connection_failed">直播弹幕连接失败</string>
+    <string name="init_player">初始化播放</string>
+    <string name="sending">正在发送~</string>
+    <string name="send_success">发送成功喵~</string>
+    <string name="send_failed_with_msg">发送失败：%1$s</string>
+    <string name="delete_success">删除成功~</string>
+    <string name="no_such_reply">没有这条评论！</string>
+    <string name="no_permission">权限不足！</string>
+    <string name="action_failed_with_msg">操作失败：%1$s</string>
+    <string name="favorite">收藏</string>
+    <string name="coin">投币</string>
+    <string name="like">点赞</string>
+    <string name="article_detail">专栏详情</string>
+    <string name="opus_favorite_collection">图文收藏夹</string>
+    <string name="operation_failed">操作失败：%1$s</string>
     <string-array name="icon_license">
         <item>界面设置: Newicons, MIT License</item>
         <item>番剧: hicon, MIT License</item>

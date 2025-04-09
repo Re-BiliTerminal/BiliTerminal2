@@ -2,7 +2,6 @@ package com.huanli233.biliterminal2.activity.search;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -10,7 +9,7 @@ import androidx.annotation.NonNull;
 import com.huanli233.biliterminal2.adapter.user.UserListAdapter;
 import com.huanli233.biliterminal2.api.SearchApi;
 import com.huanli233.biliterminal2.model.UserInfo;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 
 import org.json.JSONArray;
 
@@ -49,7 +48,7 @@ public class SearchUserFragment extends SearchFragment {
     }
 
     private void continueLoading(int page) {
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 JSONArray result = (JSONArray) SearchApi.searchType(keyword, page, "bili_user");
                 if (result != null) {
@@ -57,7 +56,7 @@ public class SearchUserFragment extends SearchFragment {
                     List<UserInfo> list = new ArrayList<>();
                     SearchApi.getUsersFromSearchResult(result, list);
                     if (list.isEmpty()) setBottom(true);
-                    CenterThreadPool.runOnUiThread(() -> {
+                    ThreadManager.runOnUiThread(() -> {
                         int lastSize = userInfoList.size();
                         userInfoList.addAll(list);
                         userInfoAdapter.notifyItemRangeInserted(lastSize + 1, userInfoList.size() - lastSize);
@@ -71,14 +70,14 @@ public class SearchUserFragment extends SearchFragment {
     }
 
     public void refreshInternal() {
-        CenterThreadPool.runOnUiThread(() -> {
+        ThreadManager.runOnUiThread(() -> {
             page = 1;
             if (this.userInfoAdapter == null)
                 this.userInfoAdapter = new UserListAdapter(this.requireContext(), this.userInfoList);
             int size_old = this.userInfoList.size();
             this.userInfoList.clear();
             if (size_old != 0) this.userInfoAdapter.notifyItemRangeRemoved(0, size_old);
-            CenterThreadPool.run(() -> continueLoading(page));
+            ThreadManager.run(() -> continueLoading(page));
         });
     }
 

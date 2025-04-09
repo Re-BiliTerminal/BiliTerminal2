@@ -1,0 +1,19 @@
+name: 新的功能 | Feature Request
+description:
+  关于新功能的想法。
+  Ideas for new features.
+type: Feature
+labels: ["type: feature", "status: needs triage"]
+body:
+  - type: textarea
+    id: feature
+    attributes:
+      label: 描述你希望添加的功能。 Describe the feature you'd like.
+      placeholder: e.g. 支持在直播间发送弹幕
+    validations:
+      required: true
+  - type: textarea
+    id: other
+    attributes:
+      label: 其他 Other
+      description: 添加其他的信息。 Add any other context or screenshots about the feature request below.

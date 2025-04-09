@@ -24,7 +24,7 @@ import com.huanli233.biliterminal2.listener.OnItemLongClickListener;
 import com.huanli233.biliterminal2.model.LocalVideo;
 import com.huanli233.biliterminal2.util.GlideUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.ToolsUtil;
+import com.huanli233.biliterminal2.util.Utils;
 
 import java.util.ArrayList;
 
@@ -134,7 +134,7 @@ public class LocalVideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             try {
                 Glide.with(context).asDrawable().load(videoCard.cover)
                         .transition(GlideUtil.getTransitionOptions())
-                        .apply(RequestOptions.bitmapTransform(new RoundedCorners(ToolsUtil.dp2px(5))))
+                        .apply(RequestOptions.bitmapTransform(new RoundedCorners(Utils.dp2px(5))))
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .into(cover);
             } catch (Exception ignored) {

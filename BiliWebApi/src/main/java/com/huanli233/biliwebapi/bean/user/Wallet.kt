@@ -1,11 +1,13 @@
 package com.huanli233.biliwebapi.bean.user
 
-import com.google.gson.annotations.Expose
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Wallet(
-    @Expose val mid: Long,
-    @SerializedName("bcoin_balance") @Expose val bcoinBalance: Int,
-    @SerializedName("coupon_balance") @Expose val couponBalance: Int,
-    @SerializedName("coupon_due_time") @Expose val couponDueTime: Long
-)
+    val mid: Long,
+    @SerializedName("bcoin_balance") val bcoinBalance: Int,
+    @SerializedName("coupon_balance") val couponBalance: Int,
+    @SerializedName("coupon_due_time") val couponDueTime: Long
+) : Parcelable

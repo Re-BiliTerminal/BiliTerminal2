@@ -2,7 +2,6 @@ package com.huanli233.biliterminal2.activity.user.info;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -14,7 +13,7 @@ import com.huanli233.biliterminal2.api.DynamicApi;
 import com.huanli233.biliterminal2.api.UserInfoApi;
 import com.huanli233.biliterminal2.model.Dynamic;
 import com.huanli233.biliterminal2.model.UserInfo;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.MsgUtil;
 
 import java.util.ArrayList;
@@ -56,9 +55,9 @@ public class UserDynamicFragment extends RefreshListFragment {
         super.onViewCreated(view, savedInstanceState);
 
         dynamicList = new ArrayList<>();
-        setOnLoadMoreListener(page -> continueLoading());
+        onLoadMore(page -> continueLoading());
 
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 UserInfo userInfo = UserInfoApi.getUserInfo(mid);
                 if (userInfo == null) {
@@ -71,7 +70,7 @@ public class UserDynamicFragment extends RefreshListFragment {
 
                 try {
                     offset = DynamicApi.getDynamicList(dynamicList, offset, mid, null);
-                    bottom = (offset == -1);
+                    bottomReached = (offset == -1);
                 } catch (Exception e) {
                     loadFail(e);
                 }
@@ -89,7 +88,7 @@ public class UserDynamicFragment extends RefreshListFragment {
 
     @SuppressLint("NotifyDataSetChanged")
     private void continueLoading() {
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 List<Dynamic> list = new ArrayList<>();
                 offset = DynamicApi.getDynamicList(list, offset, mid, null);
@@ -97,7 +96,7 @@ public class UserDynamicFragment extends RefreshListFragment {
                     dynamicList.addAll(list);
                     adapter.notifyItemRangeInserted(dynamicList.size() - list.size() + 1, list.size());
                 });
-                bottom = (offset == -1);
+                bottomReached = (offset == -1);
                 setRefreshing(false);
             } catch (Exception e) {
                 loadFail(e);

@@ -26,7 +26,7 @@ public class CustomGridManager extends GridLayoutManager {
         try {
             super.onLayoutChildren(recycler, state);
         } catch (Throwable e) {
-            MsgUtil.err("列表报错：", e);
+            MsgUtil.error("列表报错：", e);
         }
     }
 }

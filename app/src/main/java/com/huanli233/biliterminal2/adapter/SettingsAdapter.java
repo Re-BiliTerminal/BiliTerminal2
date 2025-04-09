@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.model.SettingSection;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 
 import java.util.HashMap;
 import java.util.List;
@@ -116,8 +116,8 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             switchMaterial.setText(settingSection.name);
             switchMaterial.setOnCheckedChangeListener((buttonView, isChecked) ->
-                    SharedPreferencesUtil.putBoolean(settingSection.id, isChecked));
-            switchMaterial.setChecked(SharedPreferencesUtil.getBoolean(settingSection.id, Boolean.parseBoolean(settingSection.defaultValue)));
+                    Preferences.putBoolean(settingSection.id, isChecked));
+            switchMaterial.setChecked(Preferences.getBoolean(settingSection.id, Boolean.parseBoolean(settingSection.defaultValue)));
         }
     }
 
@@ -147,12 +147,12 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             chocola.setText(strings[0]);
             vanilla.setText(strings[1]);
 
-            boolean value = SharedPreferencesUtil.getBoolean(settingSection.id, Boolean.parseBoolean(settingSection.defaultValue));
+            boolean value = Preferences.getBoolean(settingSection.id, Boolean.parseBoolean(settingSection.defaultValue));
             chocola.setChecked(value);
             vanilla.setChecked(!value);
 
             chocola.setOnCheckedChangeListener((buttonView, isChecked) ->
-                    SharedPreferencesUtil.putBoolean(settingSection.id, isChecked));  //有些选项的true和false不能改了，所以交换
+                    Preferences.putBoolean(settingSection.id, isChecked));  //有些选项的true和false不能改了，所以交换
         }
     }
 
@@ -178,7 +178,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             name.setText(settingSection.name);
             switch (settingSection.type) {
                 case "input_int":
-                    int intValue = SharedPreferencesUtil.getInt(settingSection.id, Integer.parseInt(settingSection.defaultValue));
+                    int intValue = Preferences.getInt(settingSection.id, Integer.parseInt(settingSection.defaultValue));
                     input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
                     input.setText(String.valueOf(intValue));
                     input.addTextChangedListener(new TextWatcher() {
@@ -193,14 +193,14 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         @Override
                         public void afterTextChanged(Editable editable) {
                             try {
-                                SharedPreferencesUtil.putInt(settingSection.id, Integer.parseInt(editable.toString()));
+                                Preferences.putInt(settingSection.id, Integer.parseInt(editable.toString()));
                             } catch (Exception ignored) {
                             }
                         }
                     });
                     break;
                 case "input_float":
-                    float floatValue = SharedPreferencesUtil.getFloat(settingSection.id, Float.parseFloat(settingSection.defaultValue));
+                    float floatValue = Preferences.getFloat(settingSection.id, Float.parseFloat(settingSection.defaultValue));
                     input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
                     input.setText(String.valueOf(floatValue));
                     input.addTextChangedListener(new TextWatcher() {
@@ -215,14 +215,14 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         @Override
                         public void afterTextChanged(Editable editable) {
                             try {
-                                SharedPreferencesUtil.putFloat(settingSection.id, Float.parseFloat(editable.toString()));
+                                Preferences.putFloat(settingSection.id, Float.parseFloat(editable.toString()));
                             } catch (Exception ignored) {
                             }
                         }
                     });
                     break;
                 default:
-                    String strValue = SharedPreferencesUtil.getString(settingSection.id, settingSection.defaultValue);
+                    String strValue = Preferences.getString(settingSection.id, settingSection.defaultValue);
                     input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
                     input.setText(strValue);
                     input.addTextChangedListener(new TextWatcher() {
@@ -236,7 +236,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                         @Override
                         public void afterTextChanged(Editable editable) {
-                            SharedPreferencesUtil.putString(settingSection.id, editable.toString());
+                            Preferences.putString(settingSection.id, editable.toString());
                         }
                     });
             }

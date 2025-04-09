@@ -4,8 +4,6 @@ pluginManagement {
         google()
         mavenCentral()
         maven { url = uri("https://www.jitpack.io") }
-        maven { url = uri("https://maven.aliyun.com/repositories/jcenter") }
-        maven { url = uri("https://maven.aliyun.com/repository/public") }
     }
 }
 
@@ -15,8 +13,6 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url = uri("https://www.jitpack.io") }
-        maven { url = uri("https://maven.aliyun.com/repositories/jcenter") }
-        maven { url = uri("https://maven.aliyun.com/repository/public") }
         mavenLocal()
     }
 }

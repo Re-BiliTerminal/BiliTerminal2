@@ -3,7 +3,6 @@ package com.huanli233.biliterminal2.activity.settings;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.google.android.material.card.MaterialCardView;
@@ -12,7 +11,7 @@ import com.huanli233.biliterminal2.activity.base.InstanceActivity;
 import com.huanli233.biliterminal2.activity.settings.login.LoginActivity;
 import com.huanli233.biliterminal2.activity.settings.login.SpecialLoginActivity;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 
 public class SettingMainActivity extends InstanceActivity {
 
@@ -36,7 +35,7 @@ public class SettingMainActivity extends InstanceActivity {
             });
 
             MaterialCardView login = findViewById(R.id.login);
-            if (SharedPreferencesUtil.getLong("mid", 0) == 0) {
+            if (Preferences.getLong("mid", 0) == 0) {
                 login_cookie.setVisibility(View.GONE);
                 login.setVisibility(View.VISIBLE);
                 login.setOnClickListener(view -> {
@@ -118,7 +117,7 @@ public class SettingMainActivity extends InstanceActivity {
                     refreshTutorialClick = 0;
 
                     for (int i = 0; i < getResources().getStringArray(R.array.tutorial_list).length; i++) {
-                        SharedPreferencesUtil.removeValue("tutorial_ver_" + getResources().getStringArray(R.array.tutorial_list)[i]);
+                        Preferences.removeValue("tutorial_ver_" + getResources().getStringArray(R.array.tutorial_list)[i]);
                     }
 
                     MsgUtil.showMsg("教程进度已清除");
@@ -126,7 +125,7 @@ public class SettingMainActivity extends InstanceActivity {
             });
 
             MaterialCardView test = findViewById(R.id.test);
-            test.setVisibility(SharedPreferencesUtil.getBoolean("developer", false) ? View.VISIBLE : View.GONE);
+            test.setVisibility(Preferences.getBoolean("developer", false) ? View.VISIBLE : View.GONE);
             test.setOnClickListener(view -> {
                 Intent intent = new Intent(this, TestActivity.class);
                 startActivity(intent);

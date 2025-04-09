@@ -157,7 +157,7 @@ public class Danmakus implements IDanmakus {
     }
 
     private Collection<BaseDanmaku> subset(long startTime, long endTime) {
-        if (mSortType == ST_BY_LIST || items == null || items.size() == 0) {
+        if (mSortType == ST_BY_LIST || items == null || items.isEmpty()) {
             return null;
         }
         if (subItems == null) {
@@ -187,7 +187,7 @@ public class Danmakus implements IDanmakus {
 
     @Override
     public IDanmakus sub(long startTime, long endTime) {
-        if (items == null || items.size() == 0) {
+        if (items == null || items.isEmpty()) {
             return null;
         }
         if (subItems == null) {
@@ -339,7 +339,7 @@ public class Danmakus implements IDanmakus {
 
     }
 
-    private class TimeComparator extends BaseComparator {
+    private static class TimeComparator extends BaseComparator {
 
         public TimeComparator(boolean duplicateMergingEnabled) {
             super(duplicateMergingEnabled);
@@ -351,7 +351,7 @@ public class Danmakus implements IDanmakus {
         }
     }
 
-    private class YPosComparator extends BaseComparator {
+    private static class YPosComparator extends BaseComparator {
 
         public YPosComparator(boolean duplicateMergingEnabled) {
             super(duplicateMergingEnabled);

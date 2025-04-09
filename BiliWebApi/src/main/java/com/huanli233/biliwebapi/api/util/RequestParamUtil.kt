@@ -61,7 +61,7 @@ object RequestParamUtil {
 
     fun genBuvidFp(key: String, seed: Long): String {
         val source: InputStream = ByteArrayInputStream(key.toByteArray(charset("ascii")))
-        val m = murmur3_x64_128(source, BigInteger.valueOf(seed))
+        val m = murmur3X64128(source, BigInteger.valueOf(seed))
         return String.format("%016x%016x", m.mod(MOD), m.shiftRight(64).mod(MOD))
     }
 
@@ -70,7 +70,7 @@ object RequestParamUtil {
     }
 
     @Throws(IOException::class)
-    private fun murmur3_x64_128(source: InputStream, seed: BigInteger): BigInteger {
+    private fun murmur3X64128(source: InputStream, seed: BigInteger): BigInteger {
         var h1 = seed
         var h2 = seed
         var processed: Long = 0

@@ -14,10 +14,10 @@ import com.huanli233.biliterminal2.activity.reply.ReplyFragment;
 import com.huanli233.biliterminal2.adapter.viewpager.ViewPagerFragmentAdapter;
 import com.huanli233.biliterminal2.event.ReplyEvent;
 import com.huanli233.biliterminal2.helper.TutorialHelper;
-import com.huanli233.biliterminal2.util.AnimationUtils;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.view.AnimationUtils;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 import com.huanli233.biliterminal2.util.TerminalContext;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -76,9 +76,9 @@ public class VideoInfoActivity extends BaseActivity {
         viewPager.setAdapter(vpfAdapter);
         if (seek_reply != -1) viewPager.setCurrentItem(1);
         bangumiInfoFragment.setOnFinishLoad(() -> AnimationUtils.crossFade(loading, bangumiInfoFragment.getView()));
-        if (SharedPreferencesUtil.getBoolean("first_videoinfo", true)) {
+        if (Preferences.getBoolean("first_videoinfo", true)) {
             MsgUtil.showMsgLong("提示：本页面可以左右滑动");
-            SharedPreferencesUtil.putBoolean("first_videoinfo", false);
+            Preferences.putBoolean("first_videoinfo", false);
         }
     }
 
@@ -94,7 +94,7 @@ public class VideoInfoActivity extends BaseActivity {
             replyFragment = ReplyFragment.newInstance(videoInfo.aid, 1, seek_reply, videoInfo.staff.get(0).mid);
             replyFragment.setSource(videoInfo);
             fragmentList.add(replyFragment);
-            if (SharedPreferencesUtil.getBoolean("related_enable", true)) {
+            if (Preferences.getBoolean("related_enable", true)) {
                 VideoRecommendFragment vrFragment = VideoRecommendFragment.newInstance(videoInfo.aid);
                 fragmentList.add(vrFragment);
             }
@@ -106,8 +106,8 @@ public class VideoInfoActivity extends BaseActivity {
         }).onFailure((error) -> {
             loading.setImageResource(R.mipmap.loading_2233_error);
             MsgUtil.showMsg("获取信息失败！\n可能是视频不存在？");
-            CenterThreadPool.runOnUIThreadAfter(5L, TimeUnit.SECONDS, () ->
-                    MsgUtil.err(error));
+            ThreadManager.runOnUIThreadAfter(5L, TimeUnit.SECONDS, () ->
+                    MsgUtil.error(error));
         }));
     }
 

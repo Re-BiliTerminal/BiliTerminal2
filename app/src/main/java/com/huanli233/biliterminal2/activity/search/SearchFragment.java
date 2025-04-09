@@ -17,7 +17,7 @@ import com.huanli233.biliterminal2.listener.OnLoadMoreListener;
 import com.huanli233.biliterminal2.ui.widget.recycler.CustomGridManager;
 import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 import com.huanli233.biliterminal2.util.view.ImageAutoLoadScrollListener;
 
 public class SearchFragment extends Fragment {
@@ -135,7 +135,7 @@ public class SearchFragment extends Fragment {
     }
 
     public void report(Throwable e) {
-        MsgUtil.err(e);
+        MsgUtil.error(e);
     }
 
     public void loadFail() {
@@ -151,7 +151,7 @@ public class SearchFragment extends Fragment {
     }
 
     public RecyclerView.LayoutManager getLayoutManager() {
-        return SharedPreferencesUtil.getBoolean("ui_landscape", false)
+        return Preferences.getBoolean("ui_landscape", false)
                 ? new CustomGridManager(requireContext(), 3)
                 : new CustomLinearManager(requireContext());
     }

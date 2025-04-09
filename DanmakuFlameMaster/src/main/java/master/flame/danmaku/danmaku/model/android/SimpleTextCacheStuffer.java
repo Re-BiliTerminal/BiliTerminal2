@@ -46,7 +46,7 @@ public class SimpleTextCacheStuffer extends BaseCacheStuffer {
         } else {
             textHeight = getCacheHeight(danmaku, paint);
             for (String tempStr : danmaku.lines) {
-                if (tempStr.length() > 0) {
+                if (!tempStr.isEmpty()) {
                     float tr = paint.measureText(tempStr);
                     w = Math.max(tr, w);
                 }

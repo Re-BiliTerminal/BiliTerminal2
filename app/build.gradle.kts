@@ -1,10 +1,23 @@
 import java.io.ByteArrayOutputStream
 import java.util.Properties
 import java.io.FileInputStream
+import org.eclipse.jgit.lib.Repository
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder
+import java.io.File
 
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-kapt")
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.eclipse.jgit:org.eclipse.jgit:7.2.0.202503040940-r")
+    }
 }
 
 val versionPropsFile = file("version.properties")
@@ -47,18 +60,18 @@ fun readVersion(): String {
 
 fun getGitHash(): String {
     return kotlin.runCatching {
-        val stdout = ByteArrayOutputStream()
-        exec {
-            commandLine("git", "rev-parse", "--short", "HEAD")
-            standardOutput = stdout
+        val gitDir = project.rootDir.resolve(".git")
+        val repository = FileRepositoryBuilder.create(gitDir)
+        repository.use { repo ->
+            val head = repo.resolve("HEAD")
+            head?.abbreviate(8)?.name()
         }
-        stdout.toString().trim()
     }.getOrNull() ?: "nogit"
 }
 
 android {
     namespace = "com.huanli233.biliterminal2"
-    compileSdk = 34
+    compileSdk = 35
 
     sourceSets {
         getByName("main") {
@@ -122,8 +135,8 @@ android {
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_1_9
-        targetCompatibility = JavaVersion.VERSION_1_9
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     packaging {
@@ -131,11 +144,13 @@ android {
     }
 
     buildFeatures {
-        viewBinding = false
+        viewBinding = true
+        dataBinding = true
         buildConfig = true
     }
+
     kotlinOptions {
-        jvmTarget = "9"
+        jvmTarget = "11"
     }
 
     applicationVariants.all variant@{
@@ -147,42 +162,62 @@ android {
 }
 
 dependencies {
-    //noinspection GradleDependency
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    val multidexVersion = "2.0.1"
+    implementation("androidx.multidex:multidex:$multidexVersion")
+
+    // noinspection GradleDependency
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+    // noinspection GradleDependency
     implementation("androidx.core:core-ktx:1.10.1")
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
-    //noinspection GradleDependency
+    // noinspection GradleDependency
+    implementation("androidx.activity:activity-ktx:1.8.2")
+    // noinspection GradleDependency
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
+    // noinspection GradleDependency
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    // noinspection GradleDependency
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    // noinspection GradleDependency
     implementation("com.google.zxing:core:3.3.0")
-    //noinspection GradleDependency
+    // noinspection GradleDependency
     implementation("androidx.appcompat:appcompat:1.5.1")
     //noinspection GradleDependency
     implementation("com.google.android.material:material:1.9.0")
+    // noinspection GradleDependency
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0")
+    implementation("androidx.asynclayoutinflater:asynclayoutinflater:1.0.0")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
+
+    implementation("com.drakeet.multitype:multitype:4.3.0")
+    //noinspection GradleDependency
+    implementation("org.jsoup:jsoup:1.10.2")
+    implementation("com.github.chrisbanes:PhotoView:2.3.0")
+
     implementation("com.huanli233.okhttp3-compat:okhttp:5.0.0-p2")
     implementation("com.huanli233.retrofit2-compat:retrofit:2.12.0-p2")
     implementation("com.huanli233.retrofit2-compat:converter-gson:2.12.0-p2") {
         exclude("com.google.code.gson", "gson")
     }
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-    implementation("com.github.bumptech.glide:glide:4.13.2")
     //noinspection GradleDependency
-    implementation("org.jsoup:jsoup:1.10.2")
-    implementation("com.github.chrisbanes:PhotoView:2.3.0")
+    implementation("com.google.code.gson:gson:2.9.1")
+    implementation("com.github.bumptech.glide:glide:4.13.2")
+
     implementation("org.greenrobot:eventbus:3.3.1")
     implementation("com.geetest.sensebot:sensebot:4.4.2.1") {
         exclude(group = "com.squareup.okhttp3")
     }
+
     implementation(project(":ijkplayer-java"))
     implementation(project(":DanmakuFlameMaster"))
     implementation(project(":brotlij"))
     implementation(project(":BiliWebApi"))
-    implementation("androidx.asynclayoutinflater:asynclayoutinflater:1.0.0")
-    //noinspection GradleDependency
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("com.google.code.gson:gson:2.9.1")
-    val multidexVersion = "2.0.1"
-    implementation("androidx.multidex:multidex:$multidexVersion")
+
     implementation("org.brotli:dec:0.1.2")
     implementation("com.aayushatharva.brotli4j:brotli4j:1.16.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0")
+
     implementation("com.elvishew:xlog:1.11.0")
+
 }

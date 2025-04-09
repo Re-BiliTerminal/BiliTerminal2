@@ -21,6 +21,7 @@
 
     <application
         android:name=".BiliTerminal"
+        android:enableOnBackInvokedCallback="true"
         android:allowBackup="true"
         android:icon="@mipmap/icon"
         android:label="@string/app_name"
@@ -135,9 +136,9 @@
             android:label="内置播放器"
             android:theme="@style/Theme.NoSwipe" />
         <activity
-            android:name=".activity.article.ArticleInfoActivity"
+            android:name=".activity.opus.OpusActivity"
             android:exported="false"
-            android:label="专栏详情"
+            android:label="图文"
             android:screenOrientation="locked" />
         <activity
             android:name=".activity.settings.SettingPrefActivity"

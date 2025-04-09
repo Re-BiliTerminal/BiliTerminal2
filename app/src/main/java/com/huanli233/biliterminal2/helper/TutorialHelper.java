@@ -1,5 +1,6 @@
 package com.huanli233.biliterminal2.helper;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +20,7 @@ import com.huanli233.biliterminal2.activity.TutorialActivity;
 import com.huanli233.biliterminal2.model.CustomText;
 import com.huanli233.biliterminal2.model.Tutorial;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -184,8 +185,8 @@ public class TutorialHelper {
      * @param tutorial_version 教程版本，用于保存浏览进度（大于0）
      */
     public static void show(int xml_res_id, Context context, String tutorial_tag, int tutorial_version) {
-        if (SharedPreferencesUtil.getInt("tutorial_ver_" + tutorial_tag, -1) < tutorial_version) {
-            if (SharedPreferencesUtil.getInt("tutorial_ver_" + tutorial_tag, 0) != 0)
+        if (Preferences.getInt("tutorial_ver_" + tutorial_tag, -1) < tutorial_version) {
+            if (Preferences.getInt("tutorial_ver_" + tutorial_tag, 0) != 0)
                 Toast.makeText(context.getApplicationContext(), "教程已更新", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(context, TutorialActivity.class);
             intent.putExtra("xml_id", xml_res_id);
@@ -207,7 +208,7 @@ public class TutorialHelper {
         try {
             int n = context.getResources().getStringArray(array_id).length; //用于修复version错误
             for (int i = 1; i <= context.getResources().getStringArray(array_id).length; i++) {
-                int indentify = context.getResources().getIdentifier(context.getPackageName() + ":" + context.getResources().getStringArray(array_id)[i - 1], null, null);
+                @SuppressLint("DiscouragedApi") int indentify = context.getResources().getIdentifier(context.getPackageName() + ":" + context.getResources().getStringArray(array_id)[i - 1], null, null);
                 if (indentify > 0)
                     show(indentify, context, context.getResources().getStringArray(R.array.tutorial_list)[tutorial_key], n--);
             }

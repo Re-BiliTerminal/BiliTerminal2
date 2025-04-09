@@ -37,18 +37,18 @@ import master.flame.danmaku.danmaku.util.AndroidUtils;
 import master.flame.danmaku.danmaku.util.SystemClock;
 import tv.cjump.jni.DeviceUtils;
 
-public class DrawHandler extends Handler {
+public class DrawHandler<Y> extends Handler {
 
     private DanmakuContext mContext;
 
     public interface Callback {
-        public void prepared();
+        void prepared();
 
-        public void updateTimer(DanmakuTimer timer);
+        void updateTimer(DanmakuTimer timer);
 
-        public void danmakuShown(BaseDanmaku danmaku);
+        void danmakuShown(BaseDanmaku danmaku);
 
-        public void drawingFinished();
+        void drawingFinished();
 
     }
 
@@ -100,7 +100,7 @@ public class DrawHandler extends Handler {
 
     private boolean mDanmakusVisible = true;
 
-    private AbsDisplayer mDisp;
+    private AbsDisplayer<Canvas, Y> mDisp;
 
     private final RenderingState mRenderingState = new RenderingState();
 
@@ -685,7 +685,7 @@ public class DrawHandler extends Handler {
 
     private synchronized long getAverageRenderingTime() {
         int frames = mDrawTimes.size();
-        if(frames <= 0)
+        if(frames == 0)
             return 0;
         try {
             long dtime = mDrawTimes.getLast() - mDrawTimes.getFirst();

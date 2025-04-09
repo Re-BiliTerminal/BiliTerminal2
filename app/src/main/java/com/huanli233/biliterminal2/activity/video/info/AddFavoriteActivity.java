@@ -6,9 +6,9 @@ import android.os.Bundle;
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.favorite.FolderChooseAdapter;
 import com.huanli233.biliterminal2.api.FavoriteApi;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 
 import java.util.ArrayList;
 
@@ -33,13 +33,13 @@ public class AddFavoriteActivity extends RefreshListActivity {
         Intent intent = getIntent();
         aid = intent.getLongExtra("aid", 0);
 
-        if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.MID, 0) == 0) {
+        if (Preferences.getLong(Preferences.MID, 0) == 0) {
             MsgUtil.showMsg("还没有登录喵~");
             finish();
             return;
         }
 
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 FavoriteApi.getFavoriteState(aid, folderList, fidList, stateList);
 
@@ -69,7 +69,7 @@ public class AddFavoriteActivity extends RefreshListActivity {
     @Override
     protected void onDestroy() {
         if (adapter != null) {
-            if (SharedPreferencesUtil.getBoolean("fav_notice", false)) {
+            if (Preferences.getBoolean("fav_notice", false)) {
                 if (adapter.added) MsgUtil.showMsg("添加成功");
                 else if (adapter.changed) MsgUtil.showMsg("更改成功");
             }

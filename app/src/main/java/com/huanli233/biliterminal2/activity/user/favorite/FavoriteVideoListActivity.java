@@ -3,13 +3,12 @@ package com.huanli233.biliterminal2.activity.user.favorite;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter;
 import com.huanli233.biliterminal2.api.FavoriteApi;
 import com.huanli233.biliterminal2.model.VideoCard;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.MsgUtil;
 
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ public class FavoriteVideoListActivity extends RefreshListActivity {
 
         videoList = new ArrayList<>();
 
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 int result = FavoriteApi.getFolderVideos(mid, fid, page, videoList);
                 if (result != -1) {
@@ -49,7 +48,7 @@ public class FavoriteVideoListActivity extends RefreshListActivity {
 
                     videoCardAdapter.setOnLongClickListener(position -> {
                         if (longClickPosition == position) {
-                            CenterThreadPool.run(() -> {
+                            ThreadManager.run(() -> {
                                 try {
                                     int delResult = FavoriteApi.deleteFavorite(videoList.get(position).getAid(), fid);
                                     longClickPosition = -1;
@@ -87,7 +86,7 @@ public class FavoriteVideoListActivity extends RefreshListActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     private void continueLoading(int page) {
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 int lastSize = videoList.size();
                 int result = FavoriteApi.getFolderVideos(mid, fid, page, videoList);

@@ -2,7 +2,6 @@ package com.huanli233.biliterminal2.adapter.video
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.huanli233.biliterminal2.R
@@ -26,7 +25,7 @@ class VideoCardAdapter(val context: Context, val videoCardList: List<VideoCard>)
 
     override fun onBindViewHolder(holder: VideoCardHolder, position: Int) {
         val videoCard = videoCardList[position]
-        holder.showVideoCard(videoCard, context)
+        holder.bindData(videoCard, context)
 
         holder.itemView.setOnClickListener {
             when (videoCard.type) {

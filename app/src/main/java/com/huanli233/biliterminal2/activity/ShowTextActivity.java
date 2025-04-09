@@ -10,7 +10,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.huanli233.biliterminal2.BiliTerminal;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
-import com.huanli233.biliterminal2.util.ToolsUtil;
+import com.huanli233.biliterminal2.util.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,7 +58,7 @@ public class ShowTextActivity extends BaseActivity {
         }
 
         textView.setText(content);
-        ToolsUtil.setCopy(textView);
+        Utils.copyable(textView);
 
 
     }

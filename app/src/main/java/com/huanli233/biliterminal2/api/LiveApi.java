@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.huanli233.biliterminal2.model.LivePlayInfo;
 import com.huanli233.biliterminal2.model.LiveRoom;
-import com.huanli233.biliterminal2.util.NetWorkUtil;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;

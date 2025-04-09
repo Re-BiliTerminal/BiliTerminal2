@@ -3,7 +3,6 @@ package com.huanli233.biliterminal2.activity.video.local;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -11,7 +10,7 @@ import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.video.DownloadAdapter;
 import com.huanli233.biliterminal2.model.DownloadSection;
 import com.huanli233.biliterminal2.service.DownloadService;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.FileUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
 
@@ -41,7 +40,7 @@ public class DownloadListActivity extends RefreshListActivity {
 
         MsgUtil.showMsg("提醒：能用就行\n此页面可能存在诸多问题");
 
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             created = true;
             refreshList(false);
 
@@ -81,7 +80,7 @@ public class DownloadListActivity extends RefreshListActivity {
 
             if (firstRefresh) {
                 adapter = new DownloadAdapter(DownloadListActivity.this, sections);
-                adapter.setOnClickListener(position -> CenterThreadPool.run(() -> {
+                adapter.setOnClickListener(position -> ThreadManager.run(() -> {
                     if (position == -1) {
                         if (DownloadService.started) {
                             stopService(new Intent(this, DownloadService.class));
@@ -100,7 +99,7 @@ public class DownloadListActivity extends RefreshListActivity {
                                     File sign = new File(folder, ".DOWNLOADING");
                                     sign.createNewFile();
                                 } catch (IOException e) {
-                                    MsgUtil.err("文件错误：", e);
+                                    MsgUtil.error("文件错误：", e);
                                 }
                             }
 
@@ -112,7 +111,7 @@ public class DownloadListActivity extends RefreshListActivity {
                     }
                 }));
 
-                adapter.setOnLongClickListener(position -> CenterThreadPool.run(() -> {
+                adapter.setOnLongClickListener(position -> ThreadManager.run(() -> {
                     try {
                         final DownloadSection delete;
                         if (position == -1) {
@@ -126,7 +125,7 @@ public class DownloadListActivity extends RefreshListActivity {
                         refreshList(false);
                         MsgUtil.showMsg("删除成功");
                     } catch (Exception e) {
-                        MsgUtil.err(e);
+                        MsgUtil.error(e);
                     }
                 }));
 

@@ -35,7 +35,7 @@ public class DownloadSqlHelper extends SQLiteOpenHelper {
                 onCreate(db);
             }
         } catch (Throwable e) {
-            MsgUtil.err(e);
+            MsgUtil.error(e);
         }
     }
 }

@@ -2,7 +2,6 @@ package com.huanli233.biliterminal2.activity.user.info;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -11,7 +10,7 @@ import com.huanli233.biliterminal2.activity.base.RefreshListFragment;
 import com.huanli233.biliterminal2.adapter.article.ArticleCardAdapter;
 import com.huanli233.biliterminal2.api.UserInfoApi;
 import com.huanli233.biliterminal2.model.ArticleCard;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,16 +45,16 @@ public class UserArticleFragment extends RefreshListFragment {
         super.onViewCreated(view, savedInstanceState);
 
         articleList = new ArrayList<>();
-        setOnLoadMoreListener(this::continueLoading);
+        onLoadMore(this::continueLoading);
 
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
-                bottom = (UserInfoApi.getUserArticles(mid, page, articleList) == 1);
+                bottomReached = (UserInfoApi.getUserArticles(mid, page, articleList) == 1);
                 if (isAdded()) {
                     adapter = new ArticleCardAdapter(requireContext(), articleList);
                     setAdapter(adapter);
                     setRefreshing(false);
-                    if (bottom && articleList.isEmpty()) showEmptyView();
+                    if (bottomReached && articleList.isEmpty()) showEmptyView();
                 }
             } catch (Exception e) {
                 loadFail(e);
@@ -65,7 +64,7 @@ public class UserArticleFragment extends RefreshListFragment {
 
     @SuppressLint("NotifyDataSetChanged")
     private void continueLoading(int page) {
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 List<ArticleCard> list = new ArrayList<>();
                 int result = UserInfoApi.getUserArticles(mid, page, list);
@@ -75,7 +74,7 @@ public class UserArticleFragment extends RefreshListFragment {
                         adapter.notifyItemRangeInserted(articleList.size() - list.size(), list.size());
                     });
                     if (result == 1) {
-                        bottom = true;
+                        bottomReached = true;
                     }
                 }
                 setRefreshing(false);

@@ -24,17 +24,17 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewConfigurationCompat
 import androidx.core.widget.NestedScrollView
-import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.huanli233.biliterminal2.BiliTerminal
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.activity.dynamic.DynamicActivity
+import com.huanli233.biliterminal2.contextNotNull
 import com.huanli233.biliterminal2.event.SnackEvent
 import com.huanli233.biliterminal2.ui.widget.recycler.CustomGridManager
 import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager
-import com.huanli233.biliterminal2.util.AsyncLayoutInflaterX
+import com.huanli233.biliterminal2.util.view.AsyncLayoutInflaterX
 import com.huanli233.biliterminal2.util.MsgUtil
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil
+import com.huanli233.biliterminal2.util.Preferences
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -58,15 +58,15 @@ open class BaseActivity : AppCompatActivity() {
 
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
-        requestedOrientation = if (SharedPreferencesUtil.getBoolean("ui_landscape", false))
+        requestedOrientation = if (Preferences.getBoolean("ui_landscape", false))
             ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
         else
             ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         super.onCreate(savedInstanceState)
 
-        val paddingHPercent: Int = SharedPreferencesUtil.getInt("paddingH_percent", 0)
-        val paddingVPercent: Int = SharedPreferencesUtil.getInt("paddingV_percent", 0)
+        val paddingHPercent: Int = Preferences.getInt("paddingH_percent", 0)
+        val paddingVPercent: Int = Preferences.getInt("paddingV_percent", 0)
 
         val rootView: View = this.window.decorView.rootView
         val windowManager: WindowManager = getSystemService(WINDOW_SERVICE) as WindowManager
@@ -89,13 +89,14 @@ open class BaseActivity : AppCompatActivity() {
         }
 
         var density: Int
-        if ((SharedPreferencesUtil.getInt("density", -1).also { density = it }) >= 72) {
+        if ((Preferences.getInt("density", -1).also { density = it }) >= 72) {
             setDensity(density)
         }
     }
 
+    @Suppress("DEPRECATION")
     override fun onBackPressed() {
-        if (!SharedPreferencesUtil.getBoolean("back_disable", false)) super.onBackPressed()
+        if (!Preferences.getBoolean("back_disable", false)) super.onBackPressed()
     }
 
     fun setPageName(name: String?) {
@@ -107,14 +108,13 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun setTopbarExit() {
-        val view: View? = findViewById(R.id.top)
-        if (view == null) return
+        val view: View = findViewById(R.id.top) ?: return
         if (Build.VERSION.SDK_INT > 17 && view.hasOnClickListeners()) return
-        view.setOnClickListener(View.OnClickListener { view1: View? ->
+        view.setOnClickListener {
             if (Build.VERSION.SDK_INT < 17 || !isDestroyed) {
                 finish()
             }
-        })
+        }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
@@ -127,7 +127,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun report(e: Throwable) {
-        runOnUiThread { MsgUtil.err(className, e) }
+        runOnUiThread { MsgUtil.error(className, e) }
     }
 
     private var eventBusInit: Boolean = false
@@ -166,7 +166,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     protected open fun eventBusEnabled(): Boolean {
-        return SharedPreferencesUtil.getBoolean(SharedPreferencesUtil.SNACKBAR_ENABLE, true)
+        return Preferences.getBoolean(Preferences.SNACKBAR_ENABLE, true)
     }
 
     @Suppress("DEPRECATION")
@@ -186,16 +186,16 @@ open class BaseActivity : AppCompatActivity() {
         setContentView(R.layout.activity_loading)
         AsyncLayoutInflaterX(this).inflate(
             id,
-            null,
-            { view: View?, layoutId: Int, parent: ViewGroup? ->
-                setContentView(view)
-                if (this is InstanceActivity) {
-                    this.setMenuClick()
-                } else {
-                    setTopbarExit()
-                }
-                callBack.finishInflate(view, layoutId)
-            })
+            null
+        ) { view: View?, layoutId: Int, parent: ViewGroup? ->
+            setContentView(view)
+            if (this is InstanceActivity) {
+                this.setMenuClick()
+            } else {
+                setTopbarExit()
+            }
+            callBack.finishInflate(view, layoutId)
+        }
     }
 
     protected interface InflateCallBack {
@@ -203,7 +203,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     val layoutManager: RecyclerView.LayoutManager
-        get() = if (SharedPreferencesUtil.getBoolean(
+        get() = if (Preferences.getBoolean(
                 "ui_landscape",
                 false
             ) && !forceSingleColumn
@@ -232,24 +232,24 @@ open class BaseActivity : AppCompatActivity() {
                 for (i in 0 until vp.childCount) {
                     val viewChild: View = vp.getChildAt(i)
 
-                    var multiple: Float = -114f
-                    if (viewChild is ScrollView || viewChild is NestedScrollView) multiple =
-                        SharedPreferencesUtil.getFloat("ui_rotatory_scroll", 0f)
-                    if (viewChild is RecyclerView) multiple =
-                        SharedPreferencesUtil.getFloat("ui_rotatory_recycler", 0f)
-                    if (viewChild is ListView) multiple =
-                        SharedPreferencesUtil.getFloat("ui_rotatory_list", 0f)
-
-                    if (multiple == -114f) setRotaryScroll(viewChild)
+                    val multiple: Float = when (viewChild) {
+                        is ListView -> Preferences.getFloat("ui_rotatory_list", 0f)
+                        is RecyclerView -> Preferences.getFloat("ui_rotatory_recycler", 0f)
+                        is ScrollView, is NestedScrollView -> Preferences.getFloat("ui_rotatory_scroll", 0f)
+                        else -> {
+                            setRotaryScroll(viewChild)
+                            return
+                        }
+                    }
                     if (multiple <= 0) return
 
                     val finalMultiple: Float = multiple
-                    viewChild.setOnGenericMotionListener({ v: View?, ev: MotionEvent ->
+                    viewChild.setOnGenericMotionListener { v: View?, ev: MotionEvent ->
                         if (ev.action == MotionEvent.ACTION_SCROLL && ev.source == InputDevice.SOURCE_ROTARY_ENCODER) {
                             val delta: Float = (-ev.getAxisValue(MotionEvent.AXIS_SCROLL)
                                     * ViewConfigurationCompat.getScaledVerticalScrollFactor(
-                                ViewConfiguration.get(BiliTerminal.contextNotNull),
-                                BiliTerminal.contextNotNull
+                                ViewConfiguration.get(contextNotNull),
+                                contextNotNull
                             ) * 2)
 
                             if (viewChild is ScrollView) viewChild.smoothScrollBy(
@@ -274,16 +274,12 @@ open class BaseActivity : AppCompatActivity() {
                             return@setOnGenericMotionListener true
                         }
                         false
-                    })
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
-    }
-
-    override fun isDestroyed(): Boolean {
-        return lifecycle.currentState == Lifecycle.State.DESTROYED
     }
 
     val className: String

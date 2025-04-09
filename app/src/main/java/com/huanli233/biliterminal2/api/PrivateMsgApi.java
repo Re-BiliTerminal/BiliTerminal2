@@ -8,8 +8,8 @@ import com.huanli233.biliterminal2.model.PrivateMessage;
 import com.huanli233.biliterminal2.model.PrivateMsgSession;
 import com.huanli233.biliterminal2.model.UserInfo;
 import com.huanli233.biliterminal2.util.EmoteUtil;
-import com.huanli233.biliterminal2.util.NetWorkUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -161,7 +161,7 @@ public class PrivateMsgApi {
                 "msg[dev_id]=" + getDevId()
                         + "&msg[msg_type]=" + msgType
                         + "&msg[content]=" + content
-                        + "&msg[receiver_type]=1&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "")
+                        + "&msg[receiver_type]=1&csrf=" + Preferences.getString(Preferences.CSRF, "")
                         + "&msg[sender_uid]=" + senderUid
                         + "&msg[receiver_id]=" + receiverUid
                         + "&msg[timestamp]=" + timestamp;

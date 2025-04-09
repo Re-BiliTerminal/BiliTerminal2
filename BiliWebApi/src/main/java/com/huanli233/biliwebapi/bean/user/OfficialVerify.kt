@@ -1,8 +1,10 @@
 package com.huanli233.biliwebapi.bean.user
 
-import com.google.gson.annotations.Expose
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class OfficialVerify(
-    @Expose val type: Int,
-    @Expose val desc: String
-)
+    val type: Int,
+    val desc: String
+) : Parcelable

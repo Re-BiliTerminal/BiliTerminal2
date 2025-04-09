@@ -2,7 +2,6 @@ package com.huanli233.biliterminal2.activity.settings;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;

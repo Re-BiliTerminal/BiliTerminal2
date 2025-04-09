@@ -4,7 +4,7 @@ package com.huanli233.biliterminal2.api;
 //2023-08-27
 
 import com.huanli233.biliterminal2.model.UserInfo;
-import com.huanli233.biliterminal2.util.NetWorkUtil;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;

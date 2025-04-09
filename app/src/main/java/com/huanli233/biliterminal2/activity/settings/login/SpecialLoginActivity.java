@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -17,8 +16,8 @@ import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.SplashActivity;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.NetWorkUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,12 +51,12 @@ public class SpecialLoginActivity extends BaseActivity {
                 try {
                     JSONObject jsonObject = new JSONObject(loginInfo);
                     String cookies = jsonObject.getString("cookies");
-                    SharedPreferencesUtil.putLong(SharedPreferencesUtil.MID, Long.parseLong(NetWorkUtil.getInfoFromCookie("DedeUserID", cookies)));
-                    SharedPreferencesUtil.putString(SharedPreferencesUtil.CSRF, NetWorkUtil.getInfoFromCookie("bili_jct", cookies));
-                    SharedPreferencesUtil.putString(SharedPreferencesUtil.COOKIES, cookies);
-                    SharedPreferencesUtil.putString(SharedPreferencesUtil.REFRESH_TOKEN, jsonObject.getString("refresh_token"));
+                    Preferences.putLong(Preferences.MID, Long.parseLong(NetWorkUtil.getInfoFromCookie("DedeUserID", cookies)));
+                    Preferences.putString(Preferences.CSRF, NetWorkUtil.getInfoFromCookie("bili_jct", cookies));
+                    Preferences.putString(Preferences.COOKIES, cookies);
+                    Preferences.putString(Preferences.REFRESH_TOKEN, jsonObject.getString("refresh_token"));
                     runOnUiThread(() -> MsgUtil.showMsg("登录成功！"));
-                    SharedPreferencesUtil.putBoolean(SharedPreferencesUtil.SETUP, true);
+                    Preferences.putBoolean(Preferences.SETUP, true);
 
                     NetWorkUtil.refreshHeaders();
 
@@ -79,8 +78,8 @@ public class SpecialLoginActivity extends BaseActivity {
             }
             JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put("cookies", SharedPreferencesUtil.getString(SharedPreferencesUtil.COOKIES, ""));
-                jsonObject.put("refresh_token", SharedPreferencesUtil.getString(SharedPreferencesUtil.REFRESH_TOKEN, ""));
+                jsonObject.put("cookies", Preferences.getString(Preferences.COOKIES, ""));
+                jsonObject.put("refresh_token", Preferences.getString(Preferences.REFRESH_TOKEN, ""));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

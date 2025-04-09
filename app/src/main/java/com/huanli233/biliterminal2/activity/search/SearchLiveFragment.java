@@ -2,7 +2,6 @@ package com.huanli233.biliterminal2.activity.search;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -11,7 +10,7 @@ import com.huanli233.biliterminal2.adapter.LiveCardAdapter;
 import com.huanli233.biliterminal2.api.LiveApi;
 import com.huanli233.biliterminal2.api.SearchApi;
 import com.huanli233.biliterminal2.model.LiveRoom;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -50,7 +49,7 @@ public class SearchLiveFragment extends SearchFragment {
     }
 
     private void continueLoading(int page) {
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 Object result = SearchApi.searchType(keyword, page, "live");
                 if (result != null) {
@@ -63,7 +62,7 @@ public class SearchLiveFragment extends SearchFragment {
                     List<LiveRoom> list = new ArrayList<>();
                     if (jsonArray != null) list.addAll(LiveApi.analyzeLiveRooms(jsonArray));
                     if (list.isEmpty()) setBottom(true);
-                    else CenterThreadPool.runOnUiThread(() -> {
+                    else ThreadManager.runOnUiThread(() -> {
                         int lastSize = roomList.size();
                         roomList.addAll(list);
                         liveCardAdapter.notifyItemRangeInserted(lastSize + 1, roomList.size() - lastSize);
@@ -80,14 +79,14 @@ public class SearchLiveFragment extends SearchFragment {
     }
 
     public void refreshInternal() {
-        CenterThreadPool.runOnUiThread(() -> {
+        ThreadManager.runOnUiThread(() -> {
             page = 1;
             if (this.liveCardAdapter == null)
                 this.liveCardAdapter = new LiveCardAdapter(this.requireContext(), this.roomList);
             int size_old = this.roomList.size();
             this.roomList.clear();
             if (size_old != 0) this.liveCardAdapter.notifyItemRangeRemoved(0, size_old);
-            CenterThreadPool.run(() -> continueLoading(page));
+            ThreadManager.run(() -> continueLoading(page));
         });
     }
 

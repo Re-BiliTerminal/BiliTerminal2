@@ -8,7 +8,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.activity.settings.login.LoginActivity;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 
 public class IntroductionActivity extends BaseActivity {
 
@@ -21,7 +21,7 @@ public class IntroductionActivity extends BaseActivity {
         MaterialCardView confirm = findViewById(R.id.confirm);
 
         confirm.setOnClickListener(view -> {
-            SharedPreferencesUtil.putBoolean("setup", true);
+            Preferences.putBoolean("setup", true);
 
             Intent intent = new Intent();
             intent.putExtra("from_setup", true);

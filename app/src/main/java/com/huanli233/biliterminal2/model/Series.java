@@ -29,7 +29,7 @@ public class Series implements Parcelable, Serializable {
         total = in.readString();
     }
 
-    public static final Creator<Series> CREATOR = new Creator<Series>() {
+    public static final Creator<Series> CREATOR = new Creator<>() {
         @Override
         public Series createFromParcel(Parcel in) {
             return new Series(in);

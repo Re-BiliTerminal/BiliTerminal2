@@ -15,7 +15,7 @@ import com.huanli233.biliterminal2.listener.OnItemLongClickListener;
 import com.huanli233.biliterminal2.model.LiveRoom;
 import com.huanli233.biliterminal2.model.VideoCard;
 import com.huanli233.biliterminal2.util.TerminalContext;
-import com.huanli233.biliterminal2.util.ToolsUtil;
+import com.huanli233.biliterminal2.util.Utils;
 
 import java.util.List;
 import java.util.Objects;
@@ -47,16 +47,16 @@ public class LiveCardAdapter extends RecyclerView.Adapter<VideoCardHolder> {
         LiveRoom room = roomList.get(position);
 
         VideoCard videoCard = new VideoCard();
-        videoCard.setTitle(ToolsUtil.removeHtml(room.title));
+        videoCard.setTitle(Utils.removeHtml(room.title));
         if (!room.user_cover.startsWith("http")) videoCard.setCover("http:" + room.user_cover);
         else videoCard.setCover(room.user_cover);
         if (TextUtils.isEmpty(videoCard.getCover()) || Objects.equals(videoCard.getCover(), "http:"))
             videoCard.setCover(room.cover);
         videoCard.setUploader(room.uname);
-        videoCard.setView(ToolsUtil.toWan(room.online) + "人观看");
+        videoCard.setView(Utils.toWan(room.online) + "人观看");
         videoCard.setType("live");
 
-        holder.showVideoCard(videoCard, context);
+        holder.bindData(videoCard, context);
 
         holder.itemView.setOnClickListener(view -> TerminalContext.getInstance().enterLiveDetailPage(context, room.roomid));
 

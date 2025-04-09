@@ -23,17 +23,14 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okio.Buffer
 import retrofit2.Converter
-import java.io.IOException
 import java.io.OutputStreamWriter
 import java.io.Writer
 import java.nio.charset.Charset
-import java.nio.charset.StandardCharsets
 
-internal class GsonRequestBodyConverter<T>(
+internal class GsonRequestBodyConverter<T : Any>(
     private val gson: Gson,
     private val adapter: TypeAdapter<T>
 ) : Converter<T, RequestBody> {
-    @Throws(IOException::class)
     override fun convert(value: T): RequestBody {
         val buffer = Buffer()
         val writer: Writer = OutputStreamWriter(buffer.outputStream(), Charset.forName("UTF-8"))

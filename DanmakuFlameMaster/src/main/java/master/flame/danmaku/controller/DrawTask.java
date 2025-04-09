@@ -37,7 +37,7 @@ public class DrawTask implements IDrawTask {
 
     protected final DanmakuContext mContext;
     
-    protected final AbsDisplayer mDisp;
+    protected final AbsDisplayer<?, ?> mDisp;
 
     protected IDanmakus danmakuList;
 
@@ -69,7 +69,7 @@ public class DrawTask implements IDrawTask {
 
     private final Danmakus mLiveDanmakus = new Danmakus(Danmakus.ST_BY_LIST);
 
-    private final ConfigChangedCallback mConfigChangedCallback = (config, tag, values) -> DrawTask.this.onDanmakuConfigChanged(config, tag, values);
+    private final ConfigChangedCallback mConfigChangedCallback = DrawTask.this::onDanmakuConfigChanged;
 
     public DrawTask(DanmakuTimer timer, DanmakuContext context,
             TaskListener taskListener) {
@@ -87,13 +87,11 @@ public class DrawTask implements IDrawTask {
         });
         mRenderer.setVerifierEnabled(mContext.isPreventOverlappingEnabled() || mContext.isMaxLinesLimited());
         initTimer(timer);
-        Boolean enable = mContext.isDuplicateMergingEnabled();
-        if (enable != null) {
-            if(enable) {
-                mContext.mDanmakuFilters.registerFilter(DanmakuFilters.TAG_DUPLICATE_FILTER);
-            } else {
-                mContext.mDanmakuFilters.unregisterFilter(DanmakuFilters.TAG_DUPLICATE_FILTER);
-            }
+        boolean enable = mContext.isDuplicateMergingEnabled();
+        if (enable) {
+            mContext.mDanmakuFilters.registerFilter(DanmakuFilters.TAG_DUPLICATE_FILTER);
+        } else {
+            mContext.mDanmakuFilters.unregisterFilter(DanmakuFilters.TAG_DUPLICATE_FILTER);
         }
     }
 
@@ -219,7 +217,7 @@ public class DrawTask implements IDrawTask {
     }
 
     @Override
-    public synchronized RenderingState draw(AbsDisplayer displayer) {
+    public synchronized RenderingState draw(AbsDisplayer<?, ?> displayer) {
         return drawDanmakus(displayer,mTimer);
     }
 
@@ -304,7 +302,7 @@ public class DrawTask implements IDrawTask {
         mReadyState = false;
     }
 
-    protected RenderingState drawDanmakus(AbsDisplayer disp, DanmakuTimer timer) {
+    protected RenderingState drawDanmakus(AbsDisplayer<?, ?> disp, DanmakuTimer timer) {
         if (clearRetainerFlag) {
             mRenderer.clearRetainer();
             clearRetainerFlag = false;

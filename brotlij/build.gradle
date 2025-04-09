@@ -15,6 +15,7 @@ android {
     buildTypes {
         debug {
             ndk {
+                //noinspection ChromeOsAbiSupport
                 abiFilters 'armeabi-v7a', 'x86'
             }
         }
@@ -22,6 +23,7 @@ android {
             minifyEnabled false
             proguardFiles.add(file("proguard-rules.pro"))
             ndk {
+                //noinspection ChromeOsAbiSupport
                 abiFilters 'armeabi-v7a', 'x86'
 //                    abiFilters 'armeabi-v7a'
             }

@@ -2,9 +2,8 @@ package com.huanli233.biliwebapi.api.util
 
 import com.huanli233.biliwebapi.BiliWebApi
 import com.huanli233.biliwebapi.bean.ApiResponse
-import com.huanli233.biliwebapi.bean.request_param.BiliTicket
+import com.huanli233.biliwebapi.bean.requestParam.BiliTicket
 import kotlinx.coroutines.runBlocking
-import java.io.IOException
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 

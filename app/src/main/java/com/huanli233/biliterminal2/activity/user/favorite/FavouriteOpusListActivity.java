@@ -1,32 +1,31 @@
 package com.huanli233.biliterminal2.activity.user.favorite;
 
 import android.os.Bundle;
-import android.util.Log;
 
+import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
-import com.huanli233.biliterminal2.adapter.article.OpusAdapter;
+import com.huanli233.biliterminal2.adapter.article.OpusCardAdapter;
 import com.huanli233.biliterminal2.api.FavoriteApi;
-import com.huanli233.biliterminal2.model.Opus;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.model.OpusCard;
+import com.huanli233.biliterminal2.util.ThreadManager;
 
 import java.util.ArrayList;
 
 public class FavouriteOpusListActivity extends RefreshListActivity {
-    ArrayList<Opus> list;
-    OpusAdapter adapter;
+    ArrayList<OpusCard> list;
+    OpusCardAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setPageName("图文收藏夹");
+        setPageName(getString(R.string.opus_favorite_collection));
 
         list = new ArrayList<>();
 
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 FavoriteApi.getFavouriteOpus(list, page);
-                adapter = new OpusAdapter(this, list);
-                Log.e("", "amount:" + list.size());
+                adapter = new OpusCardAdapter(this, list);
                 setAdapter(adapter);
                 setRefreshing(false);
             } catch (Exception e) {
@@ -38,7 +37,7 @@ public class FavouriteOpusListActivity extends RefreshListActivity {
     }
 
     public void loadMore(int page) {
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 int lastSize = list.size();
                 setBottom(!FavoriteApi.getFavouriteOpus(list, page));

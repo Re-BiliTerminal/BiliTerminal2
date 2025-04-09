@@ -18,7 +18,7 @@ public class DeviceUtils {
 
     public static final String ABI_MIPS = "mips";
 
-    public static enum ARCH {
+    public enum ARCH {
         Unknown, ARM, X86, MIPS, ARM64,
     }
 
@@ -91,7 +91,7 @@ public class DeviceUtils {
             }
 
             return (String) fieldValue;
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="viewModel"
+            type="com.huanli233.biliterminal2.activity.opus.OpusViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="4dp"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <ImageView
+            android:id="@+id/time_icon"
+            android:layout_height="0dp"
+            android:layout_width="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@drawable/icon_time"
+            android:alpha="0.7"
+            app:layout_constraintTop_toTopOf="@+id/time_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/time_text"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/time_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="6dp"
+            android:alpha="0.7"
+            android:lines="1"
+            app:copyable="@{true}"
+            android:text="@{viewModel.data.modules.moduleAuthor.pubTime}"
+            tools:text="9999-13-32 25:61"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/time_icon"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/cvid_icon"
+            android:layout_height="0dp"
+            android:layout_width="wrap_content"
+            android:adjustViewBounds="true"
+            android:alpha="0.7"
+            android:src="@drawable/icon_cv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/time_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/cvid_text"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/cvid_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="6dp"
+            android:alpha="0.7"
+            android:lines="1"
+            android:text="@{&quot;CV&quot; + viewModel.data.basic.commentIdStr}"
+            app:copyable="@{true}"
+            tools:text="CV114514"
+            android:textSize="12sp"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintTop_toTopOf="@+id/cvid_icon"
+            app:layout_constraintStart_toEndOf="@id/cvid_icon"/>
+
+        <ImageView
+            android:id="@+id/opus_icon"
+            android:layout_height="0dp"
+            android:layout_width="wrap_content"
+            android:adjustViewBounds="true"
+            android:alpha="0.7"
+            android:src="@drawable/icon_menu"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cvid_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/opus_text"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/opus_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="6dp"
+            android:alpha="0.7"
+            android:lines="1"
+            android:text="@{viewModel.data.idStr}"
+            app:copyable="@{true}"
+            tools:text="12345678909876"
+            android:textSize="12sp"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintTop_toTopOf="@+id/opus_icon"
+            app:layout_constraintStart_toEndOf="@id/opus_icon"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

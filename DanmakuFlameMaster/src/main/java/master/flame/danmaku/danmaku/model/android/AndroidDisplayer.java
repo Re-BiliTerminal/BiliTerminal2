@@ -161,9 +161,9 @@ public class AndroidDisplayer extends AbsDisplayer<Canvas, Typeface> {
 
     public void setProjectionConfig(float offsetX, float offsetY, int alpha) {
         if (sProjectionOffsetX != offsetX || sProjectionOffsetY != offsetY || sProjectionAlpha != alpha) {
-            sProjectionOffsetX = (offsetX > 1.0f) ? offsetX : 1.0f;
-            sProjectionOffsetY = (offsetY > 1.0f) ? offsetY : 1.0f;
-            sProjectionAlpha = (alpha < 0) ? 0 : ((alpha > 255) ? 255 : alpha);
+            sProjectionOffsetX = Math.max(offsetX, 1.0f);
+            sProjectionOffsetY = Math.max(offsetY, 1.0f);
+            sProjectionAlpha = (alpha < 0) ? 0 : (Math.min(alpha, 255));
         }
     }
 
@@ -376,7 +376,7 @@ public class AndroidDisplayer extends AbsDisplayer<Canvas, Typeface> {
             } else {
                 float textHeight = (danmaku.paintHeight - 2 * danmaku.padding) / lines.length;
                 for (int t = 0; t < lines.length; t++) {
-                    if (lines[t] == null || lines[t].length() == 0) {
+                    if (lines[t] == null || lines[t].isEmpty()) {
                         continue;
                     }
                     if (hasStroke(danmaku)) {

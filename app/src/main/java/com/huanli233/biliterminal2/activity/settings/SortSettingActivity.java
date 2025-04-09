@@ -19,7 +19,7 @@ import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.activity.base.InstanceActivity;
 import com.huanli233.biliterminal2.adapter.DragAdapter;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +41,7 @@ public class SortSettingActivity extends BaseActivity {
 
         setPageName("菜单排序");
 
-        String sortConf = SharedPreferencesUtil.getString(SharedPreferencesUtil.MENU_SORT, "");
+        String sortConf = Preferences.getString(Preferences.MENU_SORT, "");
         String[] splitName;
         if (!TextUtils.isEmpty(sortConf) && (splitName = sortConf.split(";")).length == MenuActivity.btnNames.size()) {
             for (String name : splitName) {
@@ -125,7 +125,7 @@ public class SortSettingActivity extends BaseActivity {
                 sb.append(displayKeyMap.get(s));
             }
         }
-        SharedPreferencesUtil.putString(SharedPreferencesUtil.MENU_SORT, sb.toString());
+        Preferences.putString(Preferences.MENU_SORT, sb.toString());
     }
 
     static class DragCallBack extends ItemTouchHelper.Callback {

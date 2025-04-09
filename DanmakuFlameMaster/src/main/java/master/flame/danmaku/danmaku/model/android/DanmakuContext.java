@@ -1,6 +1,7 @@
 
 package master.flame.danmaku.danmaku.model.android;
 
+import android.graphics.Canvas;
 import android.graphics.Typeface;
 
 import java.lang.ref.WeakReference;
@@ -105,7 +106,7 @@ public class DanmakuContext {
 
     private boolean mIsPreventOverlappingEnabled;
 
-    private final AbsDisplayer mDisplayer = new AndroidDisplayer();
+    private final AbsDisplayer<Canvas, Typeface> mDisplayer = new AndroidDisplayer();
 
     public final GlobalFlagValues mGlobalFlagValues = new GlobalFlagValues();
 
@@ -190,7 +191,7 @@ public class DanmakuContext {
     private void setDanmakuVisible(boolean visible, int type) {
         if (visible) {
             mFilterTypes.remove(Integer.valueOf(type));
-        } else if (!mFilterTypes.contains(Integer.valueOf(type))) {
+        } else if (!mFilterTypes.contains(type)) {
             mFilterTypes.add(type);
         }
     }
@@ -592,8 +593,8 @@ public class DanmakuContext {
     }
     
     public interface ConfigChangedCallback {
-        public boolean onDanmakuConfigChanged(DanmakuContext config, DanmakuConfigTag tag,
-                Object... value);
+        boolean onDanmakuConfigChanged(DanmakuContext config, DanmakuConfigTag tag,
+                                       Object... value);
     }
 
     public void registerConfigChangedCallback(ConfigChangedCallback listener) {

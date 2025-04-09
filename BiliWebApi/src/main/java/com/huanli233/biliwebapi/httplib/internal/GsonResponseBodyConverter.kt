@@ -25,7 +25,7 @@ internal class GsonResponseBodyConverter<T>(
             if (jsonReader.peek() != JsonToken.END_DOCUMENT) {
                 throw JsonIOException("JSON document was not fully consumed.")
             }
-            return result.also {
+            return result.also { it ->
                 if (it is ApiResponse<*>) {
                     it.data?.let { data ->
                         if (data is ApiData) data.api = apiInstance

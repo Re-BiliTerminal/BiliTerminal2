@@ -25,8 +25,10 @@ object Protocols {
 }
 
 object Domains {
+    const val MAIN_URL: String = "www.bilibili.com"
     const val BASE_API_URL: String = "api.bilibili.com"
     const val PASSPORT_URL: String = "passport.bilibili.com"
     const val VC_API_URL: String = "api.vc.bilibili.com"
+    const val LIVE_API_URL: String = "api.live.bilibili.com"
     const val ACCOUNT_URL: String = "account.bilibili.com"
 }

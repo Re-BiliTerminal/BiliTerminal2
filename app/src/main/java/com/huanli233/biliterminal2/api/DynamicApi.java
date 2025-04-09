@@ -1,7 +1,6 @@
 package com.huanli233.biliterminal2.api;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -15,9 +14,9 @@ import com.huanli233.biliterminal2.model.LiveRoom;
 import com.huanli233.biliterminal2.model.Stats;
 import com.huanli233.biliterminal2.model.UserInfo;
 import com.huanli233.biliterminal2.model.VideoCard;
-import com.huanli233.biliterminal2.util.DmImgParamUtil;
-import com.huanli233.biliterminal2.util.NetWorkUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.api.DmImgParamUtil;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 import com.huanli233.biliterminal2.util.StringUtil;
 
 import org.json.JSONArray;
@@ -56,7 +55,7 @@ public class DynamicApi {
                 .put("type", 4)
                 .put("rid", 0)
                 .put("content", content)
-                .put("csrf", SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, ""))
+                .put("csrf", Preferences.getString(Preferences.CSRF, ""))
                 .toString(), NetWorkUtil.webHeaders));
         try {
             JSONObject respBody = new JSONObject(resp.body().string());
@@ -79,7 +78,7 @@ public class DynamicApi {
      * @return 发送成功返回的动态id，失败返回-1
      */
     public static long publishComplex(@NonNull JSONArray contents, JSONArray pics, JSONObject option, JSONObject topic, int scene, Map<String, Object> otherArgs) throws IOException, JSONException {
-        String url = "https://api.bilibili.com/x/dynamic/feed/create/dyn?csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
+        String url = "https://api.bilibili.com/x/dynamic/feed/create/dyn?csrf=" + Preferences.getString(Preferences.CSRF, "");
         JSONObject reqBody = new JSONObject()
                 .put("content", new JSONObject().put("contents", contents))
                 .put("scene", scene)
@@ -148,7 +147,7 @@ public class DynamicApi {
         Response resp = Objects.requireNonNull(NetWorkUtil.post(url, new NetWorkUtil.FormData()
                 .put("dynamic_id", dyid)
                 .put("content", text)
-                .put("csrf_token", SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, ""))
+                .put("csrf_token", Preferences.getString(Preferences.CSRF, ""))
                 .toString(), NetWorkUtil.webHeaders));
         try {
             JSONObject respBody = new JSONObject(resp.body().string());
@@ -235,7 +234,7 @@ public class DynamicApi {
         Response resp = Objects.requireNonNull(NetWorkUtil.post(url, new NetWorkUtil.FormData()
                 .put("dynamic_id", dyid)
                 .put("up", up ? 1 : 2)
-                .put("csrf_token", SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, ""))
+                .put("csrf_token", Preferences.getString(Preferences.CSRF, ""))
                 .toString(), NetWorkUtil.webHeaders));
         try {
             JSONObject respBody = new JSONObject(resp.body().string());
@@ -249,7 +248,7 @@ public class DynamicApi {
         String url = "https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/rm_dynamic";
         Response resp = Objects.requireNonNull(NetWorkUtil.post(url, new NetWorkUtil.FormData()
                 .put("dynamic_id", dyid)
-                .put("csrf_token", SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, ""))
+                .put("csrf_token", Preferences.getString(Preferences.CSRF, ""))
                 .toString(), NetWorkUtil.webHeaders));
         try {
             JSONObject respBody = new JSONObject(resp.body().string());
@@ -345,7 +344,7 @@ public class DynamicApi {
             userInfo.avatar = module_author.getString("face");
             JSONObject vipJson = module_author.optJSONObject("vip");
             if (vipJson != null) {
-                userInfo.vip_nickname_color = vipJson.optString("nickname_color", "");
+                userInfo.vipNicknameColor = vipJson.optString("nickname_color", "");
             }
             dynamic.pubTime = module_author.getString("pub_time");
         }
@@ -361,7 +360,7 @@ public class DynamicApi {
             JSONObject module_dynamic = modules.getJSONObject("module_dynamic");
 
             //内容
-            if (module_dynamic.has("desc") && !module_dynamic.isNull("desc")) {
+                if (module_dynamic.has("desc") && !module_dynamic.isNull("desc")) {
                 StringBuilder dynamic_content = new StringBuilder();
                 ArrayList<Emote> dynamic_emotes = new ArrayList<>();
                 ArrayList<At> ats = new ArrayList<>();

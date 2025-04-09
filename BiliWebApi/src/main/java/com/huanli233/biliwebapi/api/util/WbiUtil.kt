@@ -53,16 +53,16 @@ object WbiUtil {
         }
     }
 
-    private fun getWBIMixinKey(raw_key: String): String {
+    private fun getWBIMixinKey(rawKey: String): String {
         val key = StringBuilder()
         for (i in 0..31) {
-            key.append(raw_key[MIXIN_KEY_ENC_TAB[i]])
+            key.append(rawKey[MIXIN_KEY_ENC_TAB[i]])
         }
         return key.toString()
     }
 
     private fun getFileFirstName(file: String): String {
-        for (i in 0 until file.length) {
+        for (i in file.indices) {
             if (file[i] == '.') {
                 return file.substring(0, i)
             }
@@ -75,10 +75,10 @@ object WbiUtil {
         val mixinKey = getWbiKey(api)
         val builder: HttpUrl.Builder = url.newBuilder().addQueryParameter("wts", wts)
         val sortedUrl = sortQueryParameters(builder.build())
-        val w_rid = md5(encodeUrl(sortedUrl.query) + mixinKey)
+        val wRid = md5(encodeUrl(sortedUrl.query) + mixinKey)
         return url.newBuilder()
             .addQueryParameter("wts", wts)
-            .addQueryParameter("w_rid", w_rid)
+            .addQueryParameter("w_rid", wRid)
             .build()
     }
 

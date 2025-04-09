@@ -1,7 +1,6 @@
 package com.huanli233.biliterminal2.activity.search;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -9,7 +8,7 @@ import androidx.annotation.NonNull;
 import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter;
 import com.huanli233.biliterminal2.api.SearchApi;
 import com.huanli233.biliterminal2.model.VideoCard;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 
 import org.json.JSONArray;
 
@@ -44,7 +43,7 @@ public class SearchVideoFragment extends SearchFragment {
     }
 
     private void continueLoading(int page) {
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 JSONArray result = SearchApi.search(keyword, page);
                 if (result != null) {
@@ -52,7 +51,7 @@ public class SearchVideoFragment extends SearchFragment {
                     ArrayList<VideoCard> list = new ArrayList<>();
                     SearchApi.getVideosFromSearchResult(result, list, page == 1);
                     if (list.isEmpty()) setBottom(true);
-                    else CenterThreadPool.runOnUiThread(() -> {
+                    else ThreadManager.runOnUiThread(() -> {
                         int lastSize = videoCardList.size();
                         videoCardList.addAll(list);
                         videoCardAdapter.notifyItemRangeInserted(lastSize + 1, videoCardList.size() - lastSize);
@@ -67,14 +66,14 @@ public class SearchVideoFragment extends SearchFragment {
     }
 
     public void refreshInternal() {
-        CenterThreadPool.runOnUiThread(() -> {
+        ThreadManager.runOnUiThread(() -> {
             page = 1;
             if (this.videoCardAdapter == null)
                 this.videoCardAdapter = new VideoCardAdapter(this.requireContext(), this.videoCardList);
             int size_old = this.videoCardList.size();
             this.videoCardList.clear();
             if (size_old != 0) this.videoCardAdapter.notifyItemRangeRemoved(0, size_old);
-            CenterThreadPool.run(() -> continueLoading(page));
+            ThreadManager.run(() -> continueLoading(page));
         });
     }
 }

@@ -1,0 +1,27 @@
+name: 性能提升 | Performance Improvement
+description:
+  关于提升某处功能的性能的建议。
+  Suggestions for improving the performance of a function.
+type: Performance
+labels: ["type: performance", "status: needs triage"]
+body:
+  - type: input
+    id: function
+    attributes:
+      label: 出现性能问题的组件/功能 Component/Feature with Performance Issues
+      placeholder: >
+        e.g. 评论列表
+    validations:
+      required: true
+  - type: textarea
+    id: feature
+    attributes:
+      label: 描述性能问题的具体表现与复现步骤。 Describe specific performance manifestations and reproduction steps.
+      placeholder: e.g. 进入视频评论区，滑动评论列表时出现卡顿
+    validations:
+      required: true
+  - type: textarea
+    id: other
+    attributes:
+      label: 其他 Other
+      description: 添加其他的信息。 Add any other context or screenshots about the feature request below.

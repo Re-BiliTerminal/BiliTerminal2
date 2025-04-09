@@ -1,16 +1,17 @@
 package com.huanli233.biliwebapi.bean.login
 
-import com.google.gson.annotations.Expose
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.huanli233.biliwebapi.BiliWebApi
 import com.huanli233.biliwebapi.api.interfaces.ILoginApi
 import com.huanli233.biliwebapi.bean.ApiData
 import com.huanli233.biliwebapi.bean.ApiResponse
-import retrofit2.Call
+import kotlinx.parcelize.Parcelize
 
-class Sms {
+@Parcelize
+class Sms : Parcelable {
     data class Token(
-        @SerializedName("captcha_key") @Expose val captchaKey: String
+        @SerializedName("captcha_key") val captchaKey: String
     ): ApiData() {
         suspend fun login(country: Country, phoneNum: Long, code: Int): ApiResponse<LoginResult> {
             return api.getApi(ILoginApi::class.java).smsLogin(
@@ -20,9 +21,9 @@ class Sms {
     }
 
     data class LoginResult(
-        @SerializedName("is_new") @Expose val isNew: Boolean,
-        @Expose val status: Int,
-        @Expose val url: String
+        @SerializedName("is_new") val isNew: Boolean,
+        val status: Int,
+        val url: String
     )
 
     companion object {
@@ -42,6 +43,25 @@ class Sms {
                 captchaResult.validate,
                 captchaResult.seccode
             )
+        }
+    }
+}
+
+@Parcelize
+data class Country(
+    val id: Int,
+    val cname: String,
+    @SerializedName("country_id") val countryId: String
+) : Parcelable
+
+@Parcelize
+data class CountryList(
+    val common: List<Country>,
+    val others: List<Country>
+) : Parcelable {
+    companion object {
+        suspend fun getList(api: BiliWebApi): ApiResponse<CountryList> {
+            return api.getApi(ILoginApi::class.java).getCountryList()
         }
     }
 }

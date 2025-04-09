@@ -14,9 +14,9 @@ import com.huanli233.biliterminal2.activity.settings.login.SpecialLoginActivity;
 import com.huanli233.biliterminal2.activity.video.local.DownloadListActivity;
 import com.huanli233.biliterminal2.api.ConfInfoApi;
 import com.huanli233.biliterminal2.service.DownloadService;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.NetWorkUtil;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 
 import org.json.JSONArray;
 
@@ -51,7 +51,7 @@ public class TestActivity extends BaseActivity {
 
         btn_request = findViewById(R.id.request);
 
-        btn_request.setOnClickListener(view -> CenterThreadPool.run(() -> {
+        btn_request.setOnClickListener(view -> ThreadManager.run(() -> {
             try {
                 String url = input_link.getText().toString();
                 if (!url.startsWith("https://") && !url.startsWith("http://"))

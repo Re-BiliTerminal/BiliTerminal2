@@ -2,7 +2,7 @@ package com.huanli233.biliterminal2.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.huanli233.biliterminal2.util.ToolsUtil
+import com.huanli233.biliterminal2.util.Utils
 import com.huanli233.biliwebapi.bean.video.VideoInfo
 import java.io.Serializable
 
@@ -86,5 +86,5 @@ fun VideoInfo.toVideoCard(): VideoCard = VideoCard().also {
     it.uploader = owner.name
     it.aid = aid
     it.cover = pic
-    it.view = ToolsUtil.toWan(stat.view.toLong())
+    it.view = Utils.toWan(stat.view.toLong())
 }

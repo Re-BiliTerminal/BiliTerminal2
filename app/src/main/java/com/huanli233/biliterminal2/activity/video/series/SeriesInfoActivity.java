@@ -3,14 +3,13 @@ package com.huanli233.biliterminal2.activity.video.series;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter;
 import com.huanli233.biliterminal2.api.SeriesApi;
 import com.huanli233.biliterminal2.model.PageInfo;
 import com.huanli233.biliterminal2.model.VideoCard;
-import com.huanli233.biliterminal2.util.CenterThreadPool;
+import com.huanli233.biliterminal2.util.ThreadManager;
 
 import java.util.ArrayList;
 
@@ -38,7 +37,7 @@ public class SeriesInfoActivity extends RefreshListActivity {
 
         videoList = new ArrayList<>();
 
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 PageInfo pageInfo = SeriesApi.getSeriesInfo(type, mid, sid, page, videoList);
                 if (pageInfo.return_ps != 0) {
@@ -60,7 +59,7 @@ public class SeriesInfoActivity extends RefreshListActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     private void continueLoading(int page) {
-        CenterThreadPool.run(() -> {
+        ThreadManager.run(() -> {
             try {
                 int lastSize = videoList.size();
                 PageInfo pageInfo = SeriesApi.getSeriesInfo(type, mid, sid, page, videoList);

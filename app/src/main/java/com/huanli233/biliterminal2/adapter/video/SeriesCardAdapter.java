@@ -36,7 +36,7 @@ public class SeriesCardAdapter extends RecyclerView.Adapter<VideoCardHolder> {
     public void onBindViewHolder(@NonNull VideoCardHolder holder, int position) {
         Series series = seasonList.get(position);
         VideoCard videoCard = VideoCard.of(series.title, series.intro, series.total, series.cover, 0, "", "series");
-        holder.showVideoCard(videoCard, context);    //此函数在VideoCardHolder里
+        holder.bindData(videoCard, context);    //此函数在VideoCardHolder里
 
         holder.itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context, SeriesInfoActivity.class);

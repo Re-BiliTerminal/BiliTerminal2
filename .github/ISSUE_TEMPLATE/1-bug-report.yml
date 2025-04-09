@@ -1,0 +1,66 @@
+name: Bug 反馈 | Bug Report
+description:
+  报告与预期行为不一致的Bug。Report bugs where the expected behavior does not match expectations.
+type: Bug
+labels: ["type: bug", "status: needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        在汇报前，请确认您是否使用最新版本
+        Before report, please make sure you are using the latest version.<br>
+        请详细描述您所遇到的 Bug。请注意，我们不一定能够修复**无法稳定复现**的 Bug。
+        Please describe the bug you encountered in detail. Please note that we may not be able to fix bugs that cannot be stably reproduced.<br>
+        如果您确定的话，就按照下面的模板填充信息，并提交反馈。
+        If you are sure, follow the template below to fill in the information and submit your feedback.<br>
+        请不要提交重复的 Issue。
+        Please do not submit duplicate issues.
+  - type: input
+    id: version
+    attributes:
+      label: 版本名 Version name
+      description:
+        包含 Git commit hash 的版本名 / The version name containing the hash of the git commit
+      placeholder: >
+        e.g. 0.1.0+1e1277bb
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: 预期的行为 Expected behavior
+      description: 你期望看到的情况是什么样。What you expected to see.
+      placeholder: e.g. 点击发送评论按钮后成功发送评论
+    validations:
+      required: true
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: 观测到的实际行为 Observed/Actual behavior
+      description: 你实际看到的。 What you actually saw.
+      placeholder: e.g. 点击发送评论按钮后发送评论失败
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 复现步骤 Steps/models to reproduce
+      description:
+        如何复现此问题。How to reproduce this bug.
+      placeholder:
+        e.g. 进入av123456视频的发送评论页，输入任意文字并点击发送
+    validations:
+      required: true
+  - type: textarea
+    id: device-info
+    attributes:
+      label: 设备与系统信息。Device and system information.
+      description:
+        安卓版本、品牌、型号等信息
+        Android version, brand, model, etc.<br>
+    validations:
+      required: true
+  - type: textarea
+    id: other
+    attributes:
+      label: 更多详细信息。 The more information.

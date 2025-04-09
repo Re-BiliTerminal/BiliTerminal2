@@ -87,15 +87,15 @@ public class AcFunDanmakuParser extends BaseDanmakuParser {
                         item.time = time;
                         item.textSize = textSize * (mDispDensity - 0.6f);
                         item.textColor = color;
-                        item.textShadowColor = color <= Color.BLACK ? Color.WHITE : Color.BLACK;
+                        item.textShadowColor = color == Color.BLACK ? Color.WHITE : Color.BLACK;
                         DanmakuUtils.fillText(item, obj.optString("m", "...."));
                         item.index = i;
                         item.setTimer(mTimer);
                         danmakus.addItem(item);
                     }
                 }
-            } catch (JSONException e) {
-            } catch (NumberFormatException e) {
+            } catch (JSONException ignored) {
+            } catch (NumberFormatException ignored) {
             }
         }
         return danmakus;

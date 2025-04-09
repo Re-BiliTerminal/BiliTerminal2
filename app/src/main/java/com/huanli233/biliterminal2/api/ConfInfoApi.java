@@ -1,11 +1,10 @@
 package com.huanli233.biliterminal2.api;
 
 import android.net.Uri;
-import android.util.Log;
 
 import com.huanli233.biliterminal2.util.FileUtil;
-import com.huanli233.biliterminal2.util.NetWorkUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
+import com.huanli233.biliterminal2.util.Preferences;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,12 +49,12 @@ public class ConfInfoApi {
     public static String signWBI(String url_query) throws JSONException, IOException {
         String mixin_key;
         int curr = getDateCurr();
-        if (SharedPreferencesUtil.getLong(SharedPreferencesUtil.WBI_LAST_UPDATED, 0) < curr) {
-            SharedPreferencesUtil.putLong(SharedPreferencesUtil.WBI_LAST_UPDATED, curr);
+        if (Preferences.getLong(Preferences.WBI_LAST_UPDATED, 0) < curr) {
+            Preferences.putLong(Preferences.WBI_LAST_UPDATED, curr);
 
             mixin_key = ConfInfoApi.getWBIMixinKey(ConfInfoApi.getWBIRawKey());
-            SharedPreferencesUtil.putString(SharedPreferencesUtil.WBI_MIXIN_KEY, mixin_key);
-        } else mixin_key = SharedPreferencesUtil.getString(SharedPreferencesUtil.WBI_MIXIN_KEY, "");
+            Preferences.putString(Preferences.WBI_MIXIN_KEY, mixin_key);
+        } else mixin_key = Preferences.getString(Preferences.WBI_MIXIN_KEY, "");
 
         String wts = String.valueOf(System.currentTimeMillis() / 1000);
         String calc_str = sortUrlParams(Uri.encode(url_query, "@#&=*+-_.,:!?()/~'%") + "&wts=" + wts) + mixin_key;

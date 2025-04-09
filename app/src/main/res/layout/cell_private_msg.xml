@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:orientation="vertical"
@@ -42,7 +43,8 @@
         android:layout_width="60dp"
         android:layout_margin="5dp"
         android:visibility="gone"
-        android:id="@+id/msg_type_pic" />
+        android:id="@+id/msg_type_pic"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:layout_height="wrap_content"

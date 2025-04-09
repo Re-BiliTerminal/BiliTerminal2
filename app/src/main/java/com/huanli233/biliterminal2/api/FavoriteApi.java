@@ -5,11 +5,11 @@ import android.util.Pair;
 
 import com.huanli233.biliterminal2.model.Collection;
 import com.huanli233.biliterminal2.model.FavoriteFolder;
-import com.huanli233.biliterminal2.model.Opus;
+import com.huanli233.biliterminal2.model.OpusCard;
 import com.huanli233.biliterminal2.model.VideoCard;
-import com.huanli233.biliterminal2.util.NetWorkUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.huanli233.biliterminal2.util.ToolsUtil;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
+import com.huanli233.biliterminal2.util.Preferences;
+import com.huanli233.biliterminal2.util.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -82,7 +82,7 @@ public class FavoriteApi {
                     collection.title = item.optString("title");
                     collection.cover = item.optString("cover");
                     collection.intro = item.optString("intro");
-                    collection.view = ToolsUtil.toWan(item.optInt("view_count", -1));
+                    collection.view = Utils.toWan(item.optInt("view_count", -1));
                     collectionList.add(collection);
                 }
             }
@@ -108,7 +108,7 @@ public class FavoriteApi {
                     String upName = owner.getString("name");
 
                     JSONObject stat = video.getJSONObject("stat");
-                    String view = ToolsUtil.toWan(stat.getLong("view")) + "观看";
+                    String view = Utils.toWan(stat.getLong("view")) + "观看";
                     VideoCard card = new VideoCard();
                     card.setTitle(title);
                     card.setCover(cover);
@@ -122,36 +122,8 @@ public class FavoriteApi {
         } else return -1;
     }
 
-    public static boolean getFavouriteOpus(ArrayList<Opus> list, int page) throws IOException, JSONException {
-        String url = "https://api.bilibili.com/x/polymer/web-dynamic/v1/opus/favlist?page_size=10&page=" + page;
-        JSONObject result = NetWorkUtil.getJson(url);
-        Log.e("OpusFav", result.toString());
-        boolean hasMore = result.getJSONObject("data").getBoolean("has_more");
-        if (!hasMore) Log.e("图文", "没有更多啦");
-        JSONArray items = result.getJSONObject("data").getJSONArray("items");
-
-        for (int i = 0; i < items.length(); i++) {
-            JSONObject item = items.getJSONObject(i);
-            Opus opus = new Opus();
-            opus.content = item.getString("content");
-            if (item.has("cover")) {
-                opus.cover = item.getString("cover");
-            } else opus.cover = "";
-            if (item.has("title")) {
-                opus.title = item.getString("title");
-            } else {
-                opus.title = item.getString("content");
-            }
-            opus.opusId = Long.parseLong(item.getString("opus_id"));
-            opus.timeText = item.getString("time_text");
-            list.add(opus);
-        }
-
-        return hasMore;
-    }
-
     public static void getFavoriteState(long aid, ArrayList<String> folderList, ArrayList<Long> fidList, ArrayList<Boolean> stateList) throws IOException, JSONException {
-        String url = "https://api.bilibili.com/x/v3/fav/folder/created/list-all?type=2&jsonp=jsonp&rid=" + aid + "&up_mid=" + SharedPreferencesUtil.getLong("mid", 0);
+        String url = "https://api.bilibili.com/x/v3/fav/folder/created/list-all?type=2&jsonp=jsonp&rid=" + aid + "&up_mid=" + Preferences.getLong("mid", 0);
         JSONObject result = NetWorkUtil.getJson(url);
         JSONObject data = result.getJSONObject("data");
 
@@ -167,10 +139,10 @@ public class FavoriteApi {
     }
 
     public static int addFavorite(long aid, long fid) throws IOException, JSONException {
-        String strMid = String.valueOf(SharedPreferencesUtil.getLong("mid", 0));
+        String strMid = String.valueOf(Preferences.getLong("mid", 0));
         String addFid = fid + strMid.substring(strMid.length() - 2);
         String url = "https://api.bilibili.com/medialist/gateway/coll/resource/deal";
-        String per = "rid=" + aid + "&type=2&add_media_ids=" + addFid + "&del_media_ids=&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
+        String per = "rid=" + aid + "&type=2&add_media_ids=" + addFid + "&del_media_ids=&csrf=" + Preferences.getString(Preferences.CSRF, "");
 
         JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, per, NetWorkUtil.webHeaders).body()).string());
         return result.getInt("code");
@@ -178,10 +150,10 @@ public class FavoriteApi {
 
 
     public static int deleteFavorite(long aid, long fid) throws IOException, JSONException {
-        String strMid = String.valueOf(SharedPreferencesUtil.getLong("mid", 0));
+        String strMid = String.valueOf(Preferences.getLong("mid", 0));
         String delFid = fid + strMid.substring(strMid.length() - 2);
         String url = "https://api.bilibili.com/medialist/gateway/coll/resource/batch/del";
-        String per = "resources=" + aid + ":2&media_id=" + delFid + "&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
+        String per = "resources=" + aid + ":2&media_id=" + delFid + "&csrf=" + Preferences.getString(Preferences.CSRF, "");
 
         JSONObject result = new JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, per, NetWorkUtil.webHeaders).body()).string());
         return result.getInt("code");

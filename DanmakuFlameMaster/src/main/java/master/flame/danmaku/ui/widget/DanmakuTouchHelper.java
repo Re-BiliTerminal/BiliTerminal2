@@ -27,21 +27,17 @@ public class DanmakuTouchHelper {
     }
 
     public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_UP:
-                IDanmakus clickDanmakus = touchHitDanmaku(event.getX(), event.getY());
-                BaseDanmaku newestDanmaku = null;
-                if (null != clickDanmakus && !clickDanmakus.isEmpty()) {
-                    performClick(clickDanmakus);
-                    newestDanmaku = fetchLatestOne(clickDanmakus);
-                }
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            IDanmakus clickDanmakus = touchHitDanmaku(event.getX(), event.getY());
+            BaseDanmaku newestDanmaku = null;
+            if (null != clickDanmakus && !clickDanmakus.isEmpty()) {
+                performClick(clickDanmakus);
+                newestDanmaku = fetchLatestOne(clickDanmakus);
+            }
 
-                if (null != newestDanmaku) {
-                    performClickWithlatest(newestDanmaku);
-                }
-                break;
-            default:
-                break;
+            if (null != newestDanmaku) {
+                performClickWithlatest(newestDanmaku);
+            }
         }
 
         return false;

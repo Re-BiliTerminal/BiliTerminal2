@@ -1,9 +1,9 @@
 package com.huanli233.biliterminal2.api;
 
 import com.huanli233.biliterminal2.model.VideoCard;
-import com.huanli233.biliterminal2.util.NetWorkUtil;
-import com.huanli233.biliterminal2.util.SharedPreferencesUtil;
-import com.huanli233.biliterminal2.util.ToolsUtil;
+import com.huanli233.biliterminal2.util.network.NetWorkUtil;
+import com.huanli233.biliterminal2.util.Preferences;
+import com.huanli233.biliterminal2.util.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,7 +37,7 @@ public class WatchLaterApi {
                 String cover = videoCard.getString("pic");
                 String upName = videoCard.getJSONObject("owner").getString("name");
                 long view = videoCard.getJSONObject("stat").getLong("view");
-                String viewStr = ToolsUtil.toWan(view) + "观看";
+                String viewStr = Utils.toWan(view) + "观看";
                 videoCardList.add(VideoCard.of(title, upName, viewStr, cover, aid, bvid));
             }
         }
@@ -46,7 +46,7 @@ public class WatchLaterApi {
 
     public static int delete(long aid) throws IOException, JSONException {
         String url = "https://api.bilibili.com/x/v2/history/toview/del";
-        String per = "aid=" + aid + "&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
+        String per = "aid=" + aid + "&csrf=" + Preferences.getString(Preferences.CSRF, "");
 
         Response response = NetWorkUtil.post(url, per, NetWorkUtil.webHeaders);
 
@@ -57,7 +57,7 @@ public class WatchLaterApi {
 
     public static int add(long aid) throws IOException, JSONException {
         String url = "https://api.bilibili.com/x/v2/history/toview/add";
-        String per = "aid=" + aid + "&csrf=" + SharedPreferencesUtil.getString(SharedPreferencesUtil.CSRF, "");
+        String per = "aid=" + aid + "&csrf=" + Preferences.getString(Preferences.CSRF, "");
 
         Response response = NetWorkUtil.post(url, per, NetWorkUtil.webHeaders);
 

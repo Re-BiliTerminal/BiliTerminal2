@@ -1,7 +1,9 @@
 package com.huanli233.biliwebapi.bean.login
 
-import com.google.gson.annotations.Expose
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class CookieActivePayload(
-    @Expose val payload: String
-)
+    val payload: String
+) : Parcelable
