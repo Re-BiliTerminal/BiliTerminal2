@@ -1,5 +1,7 @@
 package com.huanli233.biliterminal2.activity.video.local;
 
+import static com.huanli233.biliterminal2.bean.PlayerDataKt.TYPE_LOCAL;
+
 import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -14,7 +16,9 @@ import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.activity.base.InstanceActivity;
 import com.huanli233.biliterminal2.adapter.video.PageChooseAdapter;
 import com.huanli233.biliterminal2.api.PlayerApi;
-import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager;
+import com.huanli233.biliterminal2.bean.PlayerData;
+import com.huanli233.biliterminal2.player.PlayerManager;
+import com.huanli233.biliterminal2.ui.widget.recyclerView.CustomLinearManager;
 import com.huanli233.biliterminal2.util.FileUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
 
@@ -35,7 +39,7 @@ public class LocalPageChooseActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_list);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        findViewById(R.id.top).setOnClickListener(view -> finish());
+        findViewById(R.id.top_bar).setOnClickListener(view -> finish());
 
         TextView textView = findViewById(R.id.page_name);
         textView.setText("请选择分页");
@@ -48,8 +52,12 @@ public class LocalPageChooseActivity extends BaseActivity {
 
         PageChooseAdapter adapter = new PageChooseAdapter(this, pageList);
         adapter.setOnItemClickListener(position -> {
+            PlayerData playerData = new PlayerData(TYPE_LOCAL);
+            playerData.setUrlVideo(videoFileList.get(position));
+            playerData.setUrlDanmaku(danmakuFileList.get(position));
+            playerData.setTitle(pageList.get(position));
             try {
-                Intent player = PlayerApi.jumpToPlayer(LocalPageChooseActivity.this, videoFileList.get(position), danmakuFileList.get(position), "", pageList.get(position), true, 0, "", 0, 0, 0, false);
+                Intent player = PlayerManager.playerIntent(LocalPageChooseActivity.this, playerData);
                 startActivity(player);
             } catch (ActivityNotFoundException e) {
                 MsgUtil.showMsg("没有找到播放器，请检查是否安装");

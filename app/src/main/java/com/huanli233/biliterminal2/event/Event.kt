@@ -20,3 +20,5 @@ class Event<out T>(private val content: T) {
 }
 
 fun <T> T.event() = Event(this)
+
+fun emptyEvent() = Event(Unit)

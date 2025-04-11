@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.adapter.video.VideoCardHolder;
 import com.huanli233.biliterminal2.listener.OnItemLongClickListener;
-import com.huanli233.biliterminal2.model.LiveRoom;
-import com.huanli233.biliterminal2.model.VideoCard;
+import com.huanli233.biliterminal2.bean.LiveRoom;
+import com.huanli233.biliterminal2.bean.VideoCard;
 import com.huanli233.biliterminal2.util.TerminalContext;
 import com.huanli233.biliterminal2.util.Utils;
 

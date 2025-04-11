@@ -1,8 +1,8 @@
 package com.huanli233.biliterminal2.api;
 
 import com.elvishew.xlog.XLog;
-import com.huanli233.biliterminal2.model.Bangumi;
-import com.huanli233.biliterminal2.model.VideoCard;
+import com.huanli233.biliterminal2.bean.Bangumi;
+import com.huanli233.biliterminal2.bean.VideoCard;
 import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 import com.huanli233.biliterminal2.util.Preferences;
 import com.huanli233.biliterminal2.util.Utils;

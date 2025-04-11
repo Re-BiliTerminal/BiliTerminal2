@@ -6,7 +6,7 @@ import android.os.Bundle;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.SettingsAdapter;
-import com.huanli233.biliterminal2.model.SettingSection;
+import com.huanli233.biliterminal2.bean.SettingSection;
 import com.huanli233.biliterminal2.util.Preferences;
 
 import java.util.ArrayList;

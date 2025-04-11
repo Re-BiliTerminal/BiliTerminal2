@@ -95,7 +95,7 @@ object Utils {
     }
 
     @JvmStatic
-    fun removeHtml(html: String?): String {
+    fun removeHtml(html: String): String {
         return Jsoup.parse(html).text()
     }
 
@@ -132,6 +132,7 @@ object Utils {
         }
     }
 
+    @JvmStatic
     fun copyable(textView: TextView) {
         copyable(textView, null)
     }
@@ -390,6 +391,8 @@ object Utils {
     }
 }
 
-fun String.htmlToString(): String {
-    return Utils.htmlToString(this)
-}
+fun String.htmlToString() = Utils.htmlToString(this)
+
+fun String.removeHtml() = Utils.removeHtml(this)
+
+fun copyable(vararg textViews: TextView) = Utils.copyable(*textViews)

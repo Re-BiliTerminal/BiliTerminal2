@@ -6,7 +6,7 @@ import android.os.Bundle;
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.user.UserListAdapter;
 import com.huanli233.biliterminal2.api.FollowApi;
-import com.huanli233.biliterminal2.model.UserInfo;
+import com.huanli233.biliterminal2.bean.UserInfo;
 import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.MsgUtil;
 

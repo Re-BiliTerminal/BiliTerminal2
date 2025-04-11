@@ -3,16 +3,11 @@ package com.huanli233.biliterminal2.adapter.article
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.huanli233.biliterminal2.adapter.article.OpusCardAdapter.OpusHolder
-import com.huanli233.biliterminal2.api.bilibiliApi
-import com.huanli233.biliterminal2.api.toResultNonNull
 import com.huanli233.biliterminal2.databinding.CardOpusBinding
-import com.huanli233.biliterminal2.model.OpusCard
+import com.huanli233.biliterminal2.bean.OpusCard
 import com.huanli233.biliterminal2.util.GlideUtil.loadPicture
-import com.huanli233.biliwebapi.api.interfaces.IOpusApi
-import kotlinx.coroutines.launch
 
 class OpusCardAdapter(
     val lifecycleOwner: LifecycleOwner,

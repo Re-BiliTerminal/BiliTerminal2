@@ -16,7 +16,7 @@ public class InstanceActivity extends BaseActivity {
     }
 
     public void setMenuClick() {
-        findViewById(R.id.top).setOnClickListener(view -> menuClick.run());
+        findViewById(R.id.top_bar).setOnClickListener(view -> menuClick.run());
     }
 
     public Runnable menuClick = (() -> {

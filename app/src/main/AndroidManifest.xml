@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-sdk tools:overrideLibrary="com.geetest.sdk" />
+    <uses-sdk
+        tools:overrideLibrary="com.geetest.sdk,com.mikepenz.iconics.typeface.library.googlematerial,com.mikepenz.iconics.typeface.library.googlematerial.rounded" />
 
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission
@@ -13,7 +14,7 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- Geetest -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -31,7 +32,7 @@
         android:theme="@style/Theme.BiliTerminal2"
         android:usesCleartextTraffic="true"
         tools:ignore="LockedOrientationActivity,RtlEnabled,DiscouragedApi"
-        tools:targetApi="m">
+        tools:targetApi="33">
         <service
             android:name=".service.DownloadService"
             android:enabled="true"/>

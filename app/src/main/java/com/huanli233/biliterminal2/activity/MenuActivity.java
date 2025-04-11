@@ -80,7 +80,7 @@ public class MenuActivity extends BaseActivity {
                 setPageName(Objects.requireNonNull(btnNames.get(from)).first);
         }
 
-        findViewById(R.id.top).setOnClickListener(view -> finish());
+        findViewById(R.id.top_bar).setOnClickListener(view -> finish());
 
         List<String> btnList;
 

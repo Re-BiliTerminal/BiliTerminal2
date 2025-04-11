@@ -2,25 +2,24 @@ package com.huanli233.biliterminal2.api
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import android.os.SystemClock
 import android.util.Pair
-import com.huanli233.biliterminal2.R
-import com.huanli233.biliterminal2.activity.player.PlayerActivity
-import com.huanli233.biliterminal2.activity.settings.SettingPlayerChooseActivity
 import com.huanli233.biliterminal2.activity.video.JumpToPlayerActivity
 import com.huanli233.biliterminal2.contextNotNull
 import com.huanli233.biliterminal2.service.DownloadService
-import com.huanli233.biliterminal2.util.network.NetWorkUtil
 import com.huanli233.biliterminal2.util.Preferences
 import com.huanli233.biliterminal2.util.Preferences.getBoolean
 import com.huanli233.biliterminal2.util.Preferences.getLong
 import com.huanli233.biliterminal2.util.Preferences.getString
+import com.huanli233.biliterminal2.util.encode.MD5Util
+import com.huanli233.biliterminal2.util.network.NetWorkUtil
+import com.huanli233.biliterminal2.util.network.NetWorkUtil.FormData
 import com.huanli233.biliwebapi.bean.video.VideoInfo
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
-import java.io.Serializable
 import java.util.Objects
+
 
 object PlayerApi {
     @JvmStatic
@@ -86,6 +85,46 @@ object PlayerApi {
         )
     }
 
+    @JvmStatic
+    fun getBangumi(
+        aid: Long,
+        cid: Long,
+        qn: Int,
+    ): BangumiPlayInfo {
+        val reqData = FormData()
+            .setUrlParam(true)
+            .put("aid", aid)
+            .put("cid", cid)
+            .put("fnval", 1)
+            .put("fnvar", 0)
+            .put("qn", qn)
+            .put("season_type", 1)
+            .put(
+                "session",
+                MD5Util.md5(java.lang.String.valueOf(System.currentTimeMillis() - SystemClock.currentThreadTimeMillis()))
+            )
+            .put("platform", "pc")
+
+        val url = "https://api.bilibili.com/pgc/player/web/playurl$reqData"
+
+        val body = NetWorkUtil.getJson(url)
+
+        val data = body.getJSONObject("result")
+        val durl = data.getJSONArray("durl")
+        val videoUrl = durl.getJSONObject(0)
+
+        val acceptDescription = data.getJSONArray("accept_description")
+        val acceptQuality = data.getJSONArray("accept_quality")
+        val qnStrList = arrayOfNulls<String>(acceptDescription.length())
+        val qnValueList = IntArray(acceptDescription.length())
+        for (i in qnStrList.indices) {
+            qnStrList[i] = acceptDescription.optString(i)
+            qnValueList[i] = acceptQuality.optInt(i)
+        }
+        return BangumiPlayInfo(videoUrl.getString("url"),
+            "https://comment.bilibili.com/$cid.xml", qnStrList.requireNoNulls().toList(), qnValueList.toList())
+    }
+
     /**
      * @param aid      aid
      * @param cid      cid
@@ -117,76 +156,11 @@ object PlayerApi {
         val videourl = video_url.getString("url")
         return Pair(videourl, body)
     }
-
-    @JvmStatic
-    fun jumpToPlayer(
-        context: Context,
-        videourl: String?,
-        danmakuurl: String?,
-        subtitleurl: String?,
-        title: String?,
-        local: Boolean,
-        aid: Long,
-        bvid: String?,
-        cid: Long,
-        mid: Long,
-        progress: Int,
-        liveMode: Boolean
-    ): Intent {
-        val intent = Intent()
-        when (getString(Preferences.PLAYER, "null")) {
-            "terminalPlayer" -> {
-                intent.setClass(context, PlayerActivity::class.java)
-                intent.putExtra("url", videourl)
-                intent.putExtra("danmaku", danmakuurl)
-                intent.putExtra("subtitle", subtitleurl)
-                intent.putExtra("title", title)
-                intent.putExtra("aid", aid)
-                intent.putExtra("bvid", bvid)
-                intent.putExtra("cid", cid)
-                intent.putExtra("mid", mid)
-                intent.putExtra("progress", progress)
-                intent.putExtra("live_mode", liveMode)
-            }
-
-            "mtvPlayer" -> {
-                intent.setClassName(
-                    context.getString(R.string.player_mtv_package),
-                    "com.xinxiangshicheng.wearbiliplayer.cn.player.PlayerActivity"
-                )
-                intent.setAction(Intent.ACTION_VIEW)
-                intent.putExtra("cookie", getString(Preferences.COOKIES, ""))
-                intent.putExtra("mode", (if (local) "2" else "0"))
-                intent.putExtra("url", videourl)
-                intent.putExtra("danmaku", danmakuurl)
-                intent.putExtra("title", title)
-            }
-
-            "aliangPlayer" -> {
-                intent.setClassName(
-                    context.getString(R.string.player_aliang_package),
-                    "com.aliangmaker.media.PlayVideoActivity"
-                )
-                intent.putExtra("name", title)
-                intent.putExtra("danmaku", danmakuurl)
-                intent.putExtra("live_mode", liveMode)
-
-                intent.setData(Uri.parse(videourl))
-
-                if (!local) {
-                    val headers: MutableMap<String, String> = HashMap()
-                    headers["Cookie"] =
-                        getString(Preferences.COOKIES, "")
-                    headers["Referer"] = "https://www.bilibili.com/"
-                    intent.putExtra("cookie", headers as Serializable)
-                    intent.putExtra("agent", NetWorkUtil.USER_AGENT_WEB)
-                    intent.putExtra("progress", progress * 1000L)
-                }
-                intent.setAction(Intent.ACTION_VIEW)
-            }
-
-            else -> intent.setClass(context, SettingPlayerChooseActivity::class.java)
-        }
-        return intent
-    }
 }
+
+data class BangumiPlayInfo(
+    val videoUrl: String,
+    val danmakuUrl: String,
+    val qnStrList: List<String>,
+    val qnValueList: List<Int>
+)

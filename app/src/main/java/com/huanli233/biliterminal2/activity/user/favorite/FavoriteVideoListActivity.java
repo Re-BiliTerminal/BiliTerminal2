@@ -7,7 +7,7 @@ import android.os.Bundle;
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter;
 import com.huanli233.biliterminal2.api.FavoriteApi;
-import com.huanli233.biliterminal2.model.VideoCard;
+import com.huanli233.biliterminal2.bean.VideoCard;
 import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.MsgUtil;
 

@@ -22,7 +22,7 @@ import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.InstanceActivity;
 import com.huanli233.biliterminal2.adapter.SearchHistoryAdapter;
 import com.huanli233.biliterminal2.helper.TutorialHelper;
-import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager;
+import com.huanli233.biliterminal2.ui.widget.recyclerView.CustomLinearManager;
 import com.huanli233.biliterminal2.util.view.AsyncLayoutInflaterX;
 import com.huanli233.biliterminal2.util.JsonUtil;
 import com.huanli233.biliterminal2.util.LinkUrlUtil;
@@ -147,7 +147,7 @@ public class SearchActivity extends InstanceActivity {
 
 
             if (getIntent().getStringExtra("keyword") != null) {
-                findViewById(R.id.top).setOnClickListener(view1 -> finish());
+                findViewById(R.id.top_bar).setOnClickListener(view1 -> finish());
                 keywordInput.setText(getIntent().getStringExtra("keyword"));
                 MsgUtil.showMsg("可点击标题栏返回详情页");
             }

@@ -7,7 +7,7 @@
     tools:context=".activity.message.MessageActivity">
 
     <RelativeLayout
-        android:id="@+id/top"
+        android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true">
@@ -41,7 +41,7 @@
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/top">
+        android:layout_below="@id/top_bar">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"

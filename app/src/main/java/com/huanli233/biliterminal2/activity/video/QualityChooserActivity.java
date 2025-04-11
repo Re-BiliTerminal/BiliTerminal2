@@ -10,7 +10,7 @@ import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.adapter.QualityChooseAdapter;
 import com.huanli233.biliterminal2.api.PlayerApi;
-import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager;
+import com.huanli233.biliterminal2.ui.widget.recyclerView.CustomLinearManager;
 import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.TerminalContext;
@@ -32,7 +32,7 @@ public class QualityChooserActivity extends BaseActivity {
 
         setContentView(R.layout.activity_simple_list);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        findViewById(R.id.top).setOnClickListener(view -> {
+        findViewById(R.id.top_bar).setOnClickListener(view -> {
             setResult(RESULT_CANCELED);
             finish();
         });

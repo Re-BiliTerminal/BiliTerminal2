@@ -28,7 +28,7 @@ import com.huanli233.biliterminal2.activity.CopyTextActivity;
 import com.huanli233.biliterminal2.activity.ImageViewerActivity;
 import com.huanli233.biliterminal2.api.PrivateMsgApi;
 import com.huanli233.biliterminal2.api.VideoInfoApi;
-import com.huanli233.biliterminal2.model.PrivateMessage;
+import com.huanli233.biliterminal2.bean.PrivateMessage;
 import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.GlideUtil;
 import com.huanli233.biliterminal2.util.Preferences;

@@ -14,8 +14,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.listener.OnLoadMoreListener;
-import com.huanli233.biliterminal2.ui.widget.recycler.CustomGridManager;
-import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager;
+import com.huanli233.biliterminal2.ui.widget.recyclerView.CustomGridManager;
+import com.huanli233.biliterminal2.ui.widget.recyclerView.CustomLinearManager;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.Preferences;
 import com.huanli233.biliterminal2.util.view.ImageAutoLoadScrollListener;

@@ -47,6 +47,14 @@ sealed class LoadState<T> {
         return this
     }
 
+    fun toLoading() = this as Loading<T>
+    fun toSuccess() = this as Success<T>
+    fun toError() = this as Error<T>
+
+    fun toLoadingOrNull() = this as? Loading<T>
+    fun toSuccessOrNull() = this as? Success<T>
+    fun toErrorOrNull() = this as? Error<T>
+
     class Loading<T> : LoadState<T>()
     data class Success<T>(val data: T) : LoadState<T>()
     data class Error<T>(val error: Throwable) : LoadState<T>()

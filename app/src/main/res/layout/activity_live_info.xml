@@ -1,318 +1,329 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activity.live.LiveInfoActivity">
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="com.huanli233.biliterminal2.util.Utils" />
+        <import type="com.huanli233.biliterminal2.util.extensions.AndroidUtilsKt" />
+        <variable
+            name="viewModel"
+            type="com.huanli233.biliterminal2.activity.live.LiveInfoViewModel" />
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        tools:context=".activity.live.LiveInfoActivity">
 
-        <TextView
-            android:id="@+id/page_name"
-            android:layout_width="wrap_content"
+        <com.huanli233.biliterminal2.ui.widget.TopBar
+            android:id="@+id/top_bar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="3dp"
-            android:layout_marginStart="8dp"
-            android:gravity="center"
-            android:text="@string/live"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:titleText="@string/live"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:drawableStartCompat="@drawable/arrow_back" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <com.huanli233.biliterminal2.ui.widget.TextClock
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginVertical="3dp"
-            android:format12Hour="hh:mm"
-            android:format24Hour="HH:mm"
-            android:gravity="center"
-            tools:text="11:45"
-            android:textStyle="bold"
+        <androidx.core.widget.NestedScrollView
+            android:layout_height="0dp"
+            android:layout_width="0dp"
+            app:visibleIf="@{viewModel.loadState.success}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="UnusedAttribute" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/top_bar"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:id="@+id/scroll_view">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/activity_padding_horizontal"
+                android:paddingBottom="4dp">
+
+                <ImageView
+                    android:id="@+id/img_cover"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:adjustViewBounds="true"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@mipmap/placeholder"
+                    app:loadPicture="@{viewModel.loadState.toSuccessOrNull().data.room.userCover}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription,ImageContrastCheck,SpeakableTextPresentCheck" />
+
+                <TextView
+                    android:id="@+id/text_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="@{Utils.removeHtml(viewModel.loadState.toSuccessOrNull().data.room.title) ?? @string/loading}"
+                    android:textSize="13sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/img_cover" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/uploader_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/text_title"
+                    tools:itemCount="1"
+                    tools:listitem="@layout/item_uploader" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/qualities"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    app:visibleIf="@{viewModel.playInfo.toSuccessOrNull().data.playurlInfo == null}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/uploader_list">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/quality_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="4dp"
+                            android:layout_marginTop="4dp"
+                            android:paddingHorizontal="3dp"
+                            android:text="@string/choose_quality"
+                            android:textSize="14sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/quality_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="4dp"
+                            android:orientation="horizontal"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/quality_title"
+                            tools:itemCount="3"
+                            tools:listitem="@layout/item_choice_button" />
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/hosts"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    app:visibleIf="@{viewModel.playInfo.toSuccessOrNull().data.playurlInfo == null}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/qualities">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/host_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="4dp"
+                            android:layout_marginTop="4dp"
+                            android:paddingHorizontal="3dp"
+                            android:text="@string/choose_play_host"
+                            android:textSize="14sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                        
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            app:visibleIf="@{viewModel.loadingHost}"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="4dp"
+                            android:indeterminate="true" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/host_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="4dp"
+                            android:orientation="horizontal"
+                            app:visibleIf="@{!viewModel.loadingHost}"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/host_title"
+                            tools:listitem="@layout/item_choice_button" />
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/play"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@{viewModel.playInfo.toSuccessOrNull().data.playurlInfo != null ? @string/play : @string/live_ended}"
+                    android:enabled="@{!viewModel.loadingHost &amp;&amp; viewModel.playInfo.toSuccessOrNull().data.playurlInfo != null}"
+                    android:onClick="@{() -> viewModel.play()}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/hosts" />
+
+                <ImageView
+                    android:id="@+id/views_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:adjustViewBounds="true"
+                    android:alpha="0.5"
+                    android:src="@drawable/icon_play_12"
+                    app:layout_constraintBottom_toBottomOf="@+id/views_count"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/views_count"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/views_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="4dp"
+                    android:alpha="0.5"
+                    android:textSize="12sp"
+                    android:text="@{@string/online_count(AndroidUtilsKt.formatNumber(viewModel.loadState.toSuccessOrNull().data.room.online))}"
+                    app:layout_constraintStart_toEndOf="@+id/views_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/play"
+                    tools:text="114人在线" />
+
+                <ImageView
+                    android:id="@+id/time_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:adjustViewBounds="true"
+                    android:alpha="0.5"
+                    android:src="@drawable/icon_time"
+                    app:layout_constraintBottom_toBottomOf="@+id/time_text"
+                    app:layout_constraintStart_toStartOf="@+id/views_icon"
+                    app:layout_constraintTop_toTopOf="@+id/time_text"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/time_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="10dp"
+                    android:alpha="0.5"
+                    android:lines="1"
+                    android:textColor="#fff"
+                    android:textSize="12sp"
+                    android:text="@{@string/live_start_time(viewModel.loadState.toSuccessOrNull().data.room.liveTime)}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/time_icon"
+                    app:layout_constraintTop_toBottomOf="@id/views_count"
+                    tools:text="已直播 00:00:00" />
+
+                <ImageView
+                    android:id="@+id/bvid_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:adjustViewBounds="true"
+                    android:alpha="0.5"
+                    android:src="@drawable/icon_bv"
+                    app:layout_constraintBottom_toBottomOf="@+id/id_text"
+                    app:layout_constraintStart_toStartOf="@+id/views_icon"
+                    app:layout_constraintTop_toTopOf="@+id/id_text"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/id_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="4dp"
+                    android:alpha="0.5"
+                    android:lines="1"
+                    android:textColor="#fff"
+                    android:textSize="12sp"
+                    android:text="@{String.valueOf(viewModel.loadState.toSuccessOrNull().data.room.roomId)}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/bvid_icon"
+                    app:layout_constraintTop_toBottomOf="@id/time_text"
+                    tools:text="直播间ID" />
+
+                <TextView
+                    android:id="@+id/tags"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:alpha="0.5"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textSize="12sp"
+                    android:text="@{@string/tags_content(viewModel.loadState.toSuccessOrNull().data.room.tags)}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/id_text"
+                    tools:text="标签：???" />
+
+                <com.huanli233.biliterminal2.ExpandableTextView
+                    android:id="@+id/description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+                    android:textSize="12sp"
+                    android:text="@{Utils.removeHtml(Utils.htmlToString(viewModel.loadState.toSuccessOrNull().data.room.description))}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tags" >
+                    <TextView
+                        android:id="@id/expandable_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="描述" />
+                    <ImageButton
+                        android:id="@id/expand_collapse"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:ignore="ContentDescription" />
+                </com.huanli233.biliterminal2.ExpandableTextView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <ImageView
+            android:id="@+id/loading"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:loadState="@{viewModel.loadState}"
+            tools:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/top_bar"
+            tools:ignore="ContentDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_height="0dp"
-        android:layout_width="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:id="@+id/scroll_view">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:paddingHorizontal="@dimen/activity_padding_horizontal"
-            android:paddingBottom="4dp">
-
-            <ImageView
-                android:id="@+id/img_cover"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:adjustViewBounds="true"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@mipmap/placeholder"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="ContentDescription,ImageContrastCheck,SpeakableTextPresentCheck" />
-
-            <TextView
-                android:id="@+id/text_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="@string/loading"
-                android:textSize="13sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/img_cover" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/uploader_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/text_title"
-                tools:itemCount="1"
-                tools:listitem="@layout/cell_up_list" />
-
-            <ImageView
-                android:id="@+id/views_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:adjustViewBounds="true"
-                android:alpha="0.5"
-                android:src="@drawable/icon_play_12"
-                app:layout_constraintBottom_toBottomOf="@+id/views_count"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/views_count"
-                tools:ignore="ContentDescription" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/qualities"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="4dp"
-                app:layout_constraintTop_toBottomOf="@id/uploader_list"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/quality_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="4dp"
-                        android:layout_marginTop="4dp"
-                        android:paddingHorizontal="3dp"
-                        android:text="@string/choose_quality"
-                        android:textSize="14sp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/quality_list"
-                        app:layout_constraintTop_toBottomOf="@+id/quality_title"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="4dp"
-                        android:orientation="horizontal"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        tools:listitem="@layout/cell_episode" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/hosts"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="4dp"
-                app:layout_constraintTop_toBottomOf="@id/qualities"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/host_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="4dp"
-                        android:layout_marginTop="4dp"
-                        android:paddingHorizontal="3dp"
-                        android:text="@string/choose_play_host"
-                        android:textSize="14sp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/host_list"
-                        app:layout_constraintTop_toBottomOf="@+id/host_title"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="4dp"
-                        android:orientation="horizontal"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        tools:listitem="@layout/cell_episode" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/play"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:text="@string/play"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/hosts" />
-
-            <TextView
-                android:id="@+id/views_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="4dp"
-                android:alpha="0.5"
-                tools:text="114人在线"
-                android:textColor="#fff"
-                android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@+id/views_icon"
-                app:layout_constraintTop_toBottomOf="@+id/play" />
-
-            <ImageView
-                android:layout_height="0dp"
-                android:layout_width="wrap_content"
-                android:adjustViewBounds="true"
-                android:src="@drawable/icon_time"
-                android:alpha="0.5"
-                app:layout_constraintTop_toTopOf="@+id/time_text"
-                app:layout_constraintStart_toStartOf="@+id/views_icon"
-                app:layout_constraintBottom_toBottomOf="@+id/time_text"
-                android:id="@+id/time_icon"
-                tools:ignore="ContentDescription" />
-
-            <TextView
-                android:id="@+id/time_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="10dp"
-                android:alpha="0.5"
-                android:lines="1"
-                tools:text="已直播 00:00:00"
-                android:textColor="#fff"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/time_icon"
-                app:layout_constraintTop_toBottomOf="@id/views_count" />
-
-            <ImageView
-                android:layout_height="0dp"
-                android:layout_width="wrap_content"
-                android:adjustViewBounds="true"
-                android:src="@drawable/icon_bv"
-                android:alpha="0.5"
-                app:layout_constraintTop_toTopOf="@+id/id_text"
-                app:layout_constraintStart_toStartOf="@+id/views_icon"
-                app:layout_constraintBottom_toBottomOf="@+id/id_text"
-                android:id="@+id/bvid_icon"
-                tools:ignore="ContentDescription" />
-
-            <TextView
-                android:id="@+id/id_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="4dp"
-                android:alpha="0.5"
-                android:lines="1"
-                tools:text="直播间ID"
-                android:textColor="#fff"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/bvid_icon"
-                app:layout_constraintTop_toBottomOf="@id/time_text" />
-
-            <TextView
-                android:id="@+id/tags"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:alpha="0.5"
-                android:ellipsize="end"
-                android:maxLines="1"
-                tools:text="标签：???"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/id_text" />
-
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:ellipsize="end"
-                android:maxLines="3"
-                tools:text="描述"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tags" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.core.widget.NestedScrollView>
-
-    <ImageView
-        android:id="@+id/loading"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:src="@mipmap/loading_2233"
-        tools:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/top"
-        tools:ignore="ContentDescription" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

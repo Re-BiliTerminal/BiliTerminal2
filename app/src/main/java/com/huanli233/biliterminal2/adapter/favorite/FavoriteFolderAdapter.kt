@@ -17,7 +17,7 @@ import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.activity.user.favorite.FavoriteVideoListActivity
 import com.huanli233.biliterminal2.activity.user.favorite.FavouriteOpusListActivity
 import com.huanli233.biliterminal2.adapter.favorite.FavoriteFolderAdapter.FavoriteHolder
-import com.huanli233.biliterminal2.model.FavoriteFolder
+import com.huanli233.biliterminal2.bean.FavoriteFolder
 import com.huanli233.biliterminal2.util.GlideUtil.loadPicture
 import com.huanli233.biliterminal2.util.GlideUtil.transitionOptions
 import com.huanli233.biliterminal2.util.Utils

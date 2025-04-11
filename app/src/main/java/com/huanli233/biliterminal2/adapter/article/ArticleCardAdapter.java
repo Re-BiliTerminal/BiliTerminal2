@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.listener.OnItemLongClickListener;
-import com.huanli233.biliterminal2.model.ArticleCard;
+import com.huanli233.biliterminal2.bean.ArticleCard;
 import com.huanli233.biliterminal2.util.TerminalContext;
 
 import java.util.ArrayList;

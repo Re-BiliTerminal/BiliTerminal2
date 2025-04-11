@@ -1,25 +1,14 @@
 package com.huanli233.biliterminal2.adapter.article
 
 import android.content.Context
-import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DecodeFormat
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
 import com.huanli233.biliterminal2.R
-import com.huanli233.biliterminal2.model.ArticleCard
+import com.huanli233.biliterminal2.bean.ArticleCard
 import com.huanli233.biliterminal2.util.GlideUtil.loadPicture
-import com.huanli233.biliterminal2.util.GlideUtil.transitionOptions
-import com.huanli233.biliterminal2.util.GlideUtil.url
-import com.huanli233.biliterminal2.util.Utils.dp2px
-import com.huanli233.biliterminal2.util.Utils.htmlToString
 import com.huanli233.biliterminal2.util.htmlToString
-import com.huanli233.biliwebapi.bean.opus.DynamicOpus
 
 class ArticleCardHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     var title: TextView =

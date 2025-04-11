@@ -17,7 +17,7 @@ import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.listener.OnItemClickListener;
 import com.huanli233.biliterminal2.listener.OnItemLongClickListener;
-import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager;
+import com.huanli233.biliterminal2.ui.widget.recyclerView.CustomLinearManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ public class ListChooseActivity extends BaseActivity {
 
         setContentView(R.layout.activity_simple_list);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        findViewById(R.id.top).setOnClickListener(view -> {
+        findViewById(R.id.top_bar).setOnClickListener(view -> {
             setResult(RESULT_CANCELED);
             finish();
         });

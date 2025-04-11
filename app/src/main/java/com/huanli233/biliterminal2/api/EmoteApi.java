@@ -1,7 +1,7 @@
 package com.huanli233.biliterminal2.api;
 
-import com.huanli233.biliterminal2.model.Emote;
-import com.huanli233.biliterminal2.model.EmotePackage;
+import com.huanli233.biliterminal2.bean.Emote;
+import com.huanli233.biliterminal2.bean.EmotePackage;
 import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 import com.huanli233.biliterminal2.util.Preferences;
 

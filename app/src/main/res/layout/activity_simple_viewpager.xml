@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/top"
+        android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true">
@@ -40,21 +40,21 @@
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/top"/>
+        android:layout_below="@id/top_bar"/>
 
     <ImageView
         android:id="@+id/loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@mipmap/loading_2233"
-        android:layout_below="@id/top"
+        android:layout_below="@id/top_bar"
         tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/text_tutorial_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/top"
+        android:layout_below="@id/top_bar"
         android:visibility="gone"
         android:background="#6000"
         android:clickable="false"

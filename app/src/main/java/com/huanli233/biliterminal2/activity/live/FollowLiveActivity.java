@@ -6,7 +6,7 @@ import android.os.Bundle;
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.LiveCardAdapter;
 import com.huanli233.biliterminal2.api.LiveApi;
-import com.huanli233.biliterminal2.model.LiveRoom;
+import com.huanli233.biliterminal2.bean.LiveRoom;
 import com.huanli233.biliterminal2.util.ThreadManager;
 
 import java.util.ArrayList;

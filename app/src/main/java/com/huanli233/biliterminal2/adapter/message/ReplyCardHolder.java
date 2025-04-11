@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.huanli233.biliterminal2.R;
-import com.huanli233.biliterminal2.model.Reply;
+import com.huanli233.biliterminal2.bean.Reply;
 import com.huanli233.biliterminal2.util.Utils;
 
 public class ReplyCardHolder extends RecyclerView.ViewHolder {

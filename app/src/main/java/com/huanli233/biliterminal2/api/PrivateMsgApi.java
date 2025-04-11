@@ -4,9 +4,9 @@ import android.content.Context;
 import android.text.SpannableString;
 import android.util.Log;
 
-import com.huanli233.biliterminal2.model.PrivateMessage;
-import com.huanli233.biliterminal2.model.PrivateMsgSession;
-import com.huanli233.biliterminal2.model.UserInfo;
+import com.huanli233.biliterminal2.bean.PrivateMessage;
+import com.huanli233.biliterminal2.bean.PrivateMsgSession;
+import com.huanli233.biliterminal2.bean.UserInfo;
 import com.huanli233.biliterminal2.util.EmoteUtil;
 import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 import com.huanli233.biliterminal2.util.Preferences;

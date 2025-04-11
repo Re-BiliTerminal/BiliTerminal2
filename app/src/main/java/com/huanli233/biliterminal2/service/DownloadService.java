@@ -21,7 +21,7 @@ import com.huanli233.biliterminal2.activity.video.local.DownloadListActivity;
 import com.huanli233.biliterminal2.activity.video.local.LocalListActivity;
 import com.huanli233.biliterminal2.api.PlayerApi;
 import com.huanli233.biliterminal2.helper.sql.DownloadSqlHelper;
-import com.huanli233.biliterminal2.model.DownloadSection;
+import com.huanli233.biliterminal2.bean.DownloadSection;
 import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.FileUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;

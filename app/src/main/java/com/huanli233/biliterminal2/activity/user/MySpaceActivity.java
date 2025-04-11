@@ -17,7 +17,7 @@ import com.huanli233.biliterminal2.activity.settings.login.LoginActivity;
 import com.huanli233.biliterminal2.activity.user.favorite.FavoriteFolderListActivity;
 import com.huanli233.biliterminal2.activity.user.info.UserInfoActivity;
 import com.huanli233.biliterminal2.api.UserInfoApi;
-import com.huanli233.biliterminal2.model.UserInfo;
+import com.huanli233.biliterminal2.bean.UserInfo;
 import com.huanli233.biliterminal2.util.view.AsyncLayoutInflaterX;
 import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.GlideUtil;
@@ -43,8 +43,8 @@ public class MySpaceActivity extends InstanceActivity {
             setContentView(layoutView);
             setMenuClick();
 
-            userAvatar = findViewById(R.id.userAvatar);
-            userName = findViewById(R.id.userName);
+            userAvatar = findViewById(R.id.user_avatar);
+            userName = findViewById(R.id.user_name);
             userFans = findViewById(R.id.userFans);
             userExp = findViewById(R.id.userExp);
 

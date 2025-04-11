@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.video.DownloadAdapter;
-import com.huanli233.biliterminal2.model.DownloadSection;
+import com.huanli233.biliterminal2.bean.DownloadSection;
 import com.huanli233.biliterminal2.service.DownloadService;
 import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.FileUtil;

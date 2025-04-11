@@ -1,5 +1,7 @@
 package com.huanli233.biliterminal2.adapter.video;
 
+import static com.huanli233.biliterminal2.bean.PlayerDataKt.TYPE_LOCAL;
+
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -20,8 +22,10 @@ import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.video.local.DownloadListActivity;
 import com.huanli233.biliterminal2.activity.video.local.LocalPageChooseActivity;
 import com.huanli233.biliterminal2.api.PlayerApi;
+import com.huanli233.biliterminal2.bean.PlayerData;
 import com.huanli233.biliterminal2.listener.OnItemLongClickListener;
-import com.huanli233.biliterminal2.model.LocalVideo;
+import com.huanli233.biliterminal2.bean.LocalVideo;
+import com.huanli233.biliterminal2.player.PlayerManager;
 import com.huanli233.biliterminal2.util.GlideUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.Utils;
@@ -67,8 +71,13 @@ public class LocalVideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             holder.itemView.setOnClickListener(view -> {
                 LocalVideo localVideo = localVideoList.get(realPosition);
                 if (localVideo.videoFileList.size() == 1) {
+                    PlayerData playerData = new PlayerData(TYPE_LOCAL);
+                    playerData.setUrlVideo(localVideo.videoFileList.get(0));
+                    playerData.setUrlDanmaku(localVideo.danmakuFileList.get(0));
+                    playerData.setTitle(localVideo.title);
+
                     try {
-                        Intent player = PlayerApi.jumpToPlayer(context, localVideo.videoFileList.get(0), localVideo.danmakuFileList.get(0), "", localVideo.title, true, 0, "", 0, 0, 0, false);
+                        Intent player = PlayerManager.playerIntent(context, playerData);
                         context.startActivity(player);
                     } catch (ActivityNotFoundException e) {
                         MsgUtil.showMsg("跳转失败");

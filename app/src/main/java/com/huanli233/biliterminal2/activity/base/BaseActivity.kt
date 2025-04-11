@@ -24,14 +24,15 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewConfigurationCompat
 import androidx.core.widget.NestedScrollView
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.huanli233.biliterminal2.BiliTerminal
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.activity.dynamic.DynamicActivity
 import com.huanli233.biliterminal2.contextNotNull
 import com.huanli233.biliterminal2.event.SnackEvent
-import com.huanli233.biliterminal2.ui.widget.recycler.CustomGridManager
-import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager
+import com.huanli233.biliterminal2.ui.widget.recyclerView.CustomGridManager
+import com.huanli233.biliterminal2.ui.widget.recyclerView.CustomLinearManager
 import com.huanli233.biliterminal2.util.view.AsyncLayoutInflaterX
 import com.huanli233.biliterminal2.util.MsgUtil
 import com.huanli233.biliterminal2.util.Preferences
@@ -108,7 +109,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun setTopbarExit() {
-        val view: View = findViewById(R.id.top) ?: return
+        val view: View = findViewById(R.id.top_bar) ?: return
         if (Build.VERSION.SDK_INT > 17 && view.hasOnClickListeners()) return
         view.setOnClickListener {
             if (Build.VERSION.SDK_INT < 17 || !isDestroyed) {
@@ -196,6 +197,10 @@ open class BaseActivity : AppCompatActivity() {
             }
             callBack.finishInflate(view, layoutId)
         }
+    }
+
+    override fun isDestroyed(): Boolean {
+        return lifecycle.currentState == Lifecycle.State.DESTROYED
     }
 
     protected interface InflateCallBack {

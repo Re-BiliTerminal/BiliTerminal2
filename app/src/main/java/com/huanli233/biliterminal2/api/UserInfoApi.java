@@ -1,10 +1,10 @@
 package com.huanli233.biliterminal2.api;
 
 import com.elvishew.xlog.XLog;
-import com.huanli233.biliterminal2.model.ArticleCard;
-import com.huanli233.biliterminal2.model.LiveRoom;
-import com.huanli233.biliterminal2.model.UserInfo;
-import com.huanli233.biliterminal2.model.VideoCard;
+import com.huanli233.biliterminal2.bean.ArticleCard;
+import com.huanli233.biliterminal2.bean.LiveRoom;
+import com.huanli233.biliterminal2.bean.UserInfo;
+import com.huanli233.biliterminal2.bean.VideoCard;
 import com.huanli233.biliterminal2.util.api.DmImgParamUtil;
 import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 import com.huanli233.biliterminal2.util.Preferences;

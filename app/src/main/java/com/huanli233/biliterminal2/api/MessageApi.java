@@ -2,10 +2,10 @@ package com.huanli233.biliterminal2.api;
 
 import android.util.Pair;
 
-import com.huanli233.biliterminal2.model.MessageCard;
-import com.huanli233.biliterminal2.model.Reply;
-import com.huanli233.biliterminal2.model.UserInfo;
-import com.huanli233.biliterminal2.model.VideoCard;
+import com.huanli233.biliterminal2.bean.MessageCard;
+import com.huanli233.biliterminal2.bean.Reply;
+import com.huanli233.biliterminal2.bean.UserInfo;
+import com.huanli233.biliterminal2.bean.VideoCard;
 import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 import com.huanli233.biliterminal2.util.Preferences;
 

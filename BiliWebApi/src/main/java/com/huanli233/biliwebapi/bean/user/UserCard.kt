@@ -12,7 +12,12 @@ data class UserCardInfo(
     @SerializedName("article_count") val articleCount: Int,
     val follower: Int,
     @SerializedName("like_num") val likeNum: Int
-) : Parcelable
+) : Parcelable {
+    fun toUserInfo() = card.toUserInfo().copy(
+        follower = follower,
+        isFollowed = following
+    )
+}
 
 @Parcelize
 data class UserCard(
@@ -33,7 +38,38 @@ data class UserCard(
     @SerializedName("official_verify") val officialVerify: OfficialVerify,
     val vip: Vip,
     val space: SpaceImage
-) : Parcelable
+) : Parcelable {
+    fun toUserInfo() = UserInfo(
+        mid = mid.toLongOrNull() ?: -1,
+        title = null,
+        name = name,
+        face = face,
+        vip = vip,
+        official = official,
+        follower = fans,
+        sex = sex,
+        sign = sign,
+        rank = -1,
+        level = levelInfo.currentLevel,
+        silence = 0,
+        coins = -1,
+        fansBadge = false,
+        fansMedal = null,
+        pendant = pendant,
+        nameplate = nameplate,
+        isFollowed = false,
+        topPhoto = "",
+        systemNotice = null,
+        liveRoom = null,
+        series = SeriesStatus(userUpgradeStatus = -1, showUpgradeWindow = false),
+        isSeniorMember = 1,
+        contract = ContractStatus(
+            isDisplay = false,
+            isFollowDisplay = false
+        ),
+        school = School("")
+    )
+}
 
 @Parcelize
 data class SpaceImage(

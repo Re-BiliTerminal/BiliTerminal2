@@ -6,13 +6,12 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
-import android.widget.ScrollView
 import androidx.fragment.app.Fragment
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.activity.base.BaseActivity
 import com.huanli233.biliterminal2.adapter.dynamic.DynamicHolder
 import com.huanli233.biliterminal2.databinding.FragmentDynamicInfoBinding
-import com.huanli233.biliterminal2.model.Dynamic
+import com.huanli233.biliterminal2.bean.Dynamic
 import com.huanli233.biliterminal2.util.*
 import java.lang.Exception
 

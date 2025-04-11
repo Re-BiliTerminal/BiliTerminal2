@@ -9,6 +9,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
+    id("kotlin-parcelize")
 }
 
 buildscript {
@@ -162,9 +163,14 @@ android {
 }
 
 dependencies {
+
+    implementation(project(":ijkplayer-java"))
+    implementation(project(":DanmakuFlameMaster"))
+    implementation(project(":brotlij"))
+    implementation(project(":BiliWebApi"))
+
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
-    val multidexVersion = "2.0.1"
-    implementation("androidx.multidex:multidex:$multidexVersion")
+    implementation("androidx.multidex:multidex:2.0.1")
 
     // noinspection GradleDependency
     implementation("androidx.viewpager2:viewpager2:1.0.0")
@@ -187,6 +193,7 @@ dependencies {
     implementation("com.google.android.material:material:1.9.0")
     // noinspection GradleDependency
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0")
+    // noinspection GradleDependency
     implementation("androidx.asynclayoutinflater:asynclayoutinflater:1.0.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
@@ -210,14 +217,13 @@ dependencies {
         exclude(group = "com.squareup.okhttp3")
     }
 
-    implementation(project(":ijkplayer-java"))
-    implementation(project(":DanmakuFlameMaster"))
-    implementation(project(":brotlij"))
-    implementation(project(":BiliWebApi"))
-
     implementation("org.brotli:dec:0.1.2")
     implementation("com.aayushatharva.brotli4j:brotli4j:1.16.0")
 
     implementation("com.elvishew:xlog:1.11.0")
 
+    implementation("com.mikepenz:iconics-core:5.4.0")
+    implementation("com.mikepenz:iconics-views:5.4.0")
+    implementation("com.mikepenz:google-material-typeface:4.0.0.3-kotlin@aar")
+    implementation("com.mikepenz:google-material-typeface-rounded:4.0.0.2-kotlin@aar")
 }

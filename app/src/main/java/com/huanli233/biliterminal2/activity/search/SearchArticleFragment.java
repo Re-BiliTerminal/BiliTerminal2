@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.huanli233.biliterminal2.adapter.article.ArticleCardAdapter;
 import com.huanli233.biliterminal2.api.SearchApi;
-import com.huanli233.biliterminal2.model.ArticleCard;
+import com.huanli233.biliterminal2.bean.ArticleCard;
 import com.huanli233.biliterminal2.util.ThreadManager;
 
 import org.json.JSONArray;

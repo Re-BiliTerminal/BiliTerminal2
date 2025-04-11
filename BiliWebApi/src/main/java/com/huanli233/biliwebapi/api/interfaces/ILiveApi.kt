@@ -1,6 +1,7 @@
 package com.huanli233.biliwebapi.api.interfaces
 
 import com.huanli233.biliwebapi.bean.ApiResponse
+import com.huanli233.biliwebapi.bean.live.DEFAULT_QN
 import com.huanli233.biliwebapi.bean.live.LivePlayInfo
 import com.huanli233.biliwebapi.bean.live.LiveRoom
 import com.huanli233.biliwebapi.httplib.Domains
@@ -20,7 +21,7 @@ interface ILiveApi {
     @GET("/xlive/web-room/v2/index/getRoomPlayInfo")
     suspend fun getPlayInfo(
         @Query("room_id") roomId: String,
-        @Query("qn") qn: Int,
+        @Query("qn") qn: Int = DEFAULT_QN,
         @Query("protocol") protocol: String = "0,1",
         @Query("format") format: String = "0,1,2",
         @Query("codec") codec: String = "0,1,2",

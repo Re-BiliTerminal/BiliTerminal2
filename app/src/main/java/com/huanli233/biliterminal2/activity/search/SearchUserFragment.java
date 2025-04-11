@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.huanli233.biliterminal2.adapter.user.UserListAdapter;
 import com.huanli233.biliterminal2.api.SearchApi;
-import com.huanli233.biliterminal2.model.UserInfo;
+import com.huanli233.biliterminal2.bean.UserInfo;
 import com.huanli233.biliterminal2.util.ThreadManager;
 
 import org.json.JSONArray;

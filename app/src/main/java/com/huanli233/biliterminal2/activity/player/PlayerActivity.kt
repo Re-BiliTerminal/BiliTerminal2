@@ -41,11 +41,10 @@ import com.huanli233.biliterminal2.api.DanmakuApi
 import com.huanli233.biliterminal2.api.VideoInfoApi
 import com.huanli233.biliterminal2.api.apiResultNonNull
 import com.huanli233.biliterminal2.api.bilibiliApi
-import com.huanli233.biliterminal2.api.toResultNonNull
 import com.huanli233.biliterminal2.databinding.ActivityPlayerBinding
 import com.huanli233.biliterminal2.event.SnackEvent
 import com.huanli233.biliterminal2.ui.widget.BatteryView
-import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager
+import com.huanli233.biliterminal2.ui.widget.recyclerView.CustomLinearManager
 import com.huanli233.biliterminal2.util.ThreadManager
 import com.huanli233.biliterminal2.util.MsgUtil
 import com.huanli233.biliterminal2.util.network.NetWorkUtil

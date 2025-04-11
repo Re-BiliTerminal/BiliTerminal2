@@ -7,7 +7,7 @@ import com.huanli233.biliterminal2.activity.base.RefreshListFragment
 import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter
 import com.huanli233.biliterminal2.api.bilibiliApi
 import com.huanli233.biliterminal2.api.toResultNonNull
-import com.huanli233.biliterminal2.model.toVideoCard
+import com.huanli233.biliterminal2.bean.toVideoCard
 import com.huanli233.biliwebapi.bean.video.VideoInfo
 import kotlinx.coroutines.launch
 

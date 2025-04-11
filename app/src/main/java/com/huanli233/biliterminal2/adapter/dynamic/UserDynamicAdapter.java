@@ -31,8 +31,8 @@ import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.activity.message.PrivateMsgActivity;
 import com.huanli233.biliterminal2.activity.user.FollowUsersActivity;
 import com.huanli233.biliterminal2.api.UserInfoApi;
-import com.huanli233.biliterminal2.model.Dynamic;
-import com.huanli233.biliterminal2.model.UserInfo;
+import com.huanli233.biliterminal2.bean.Dynamic;
+import com.huanli233.biliterminal2.bean.UserInfo;
 import com.huanli233.biliterminal2.ui.widget.RadiusBackgroundSpan;
 import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.GlideUtil;
@@ -254,8 +254,8 @@ public class UserDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         public UserInfoHolder(@NonNull View itemView) {
             super(itemView);
-            userName = itemView.findViewById(R.id.userName);
-            userDesc = itemView.findViewById(R.id.userDesc);
+            userName = itemView.findViewById(R.id.user_name);
+            userDesc = itemView.findViewById(R.id.user_desc);
             userNotice = itemView.findViewById(R.id.userNotice);
             userLevel = itemView.findViewById(R.id.userLevel);
             userFans = itemView.findViewById(R.id.userFollowers);
@@ -266,7 +266,7 @@ public class UserDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             liveRoom = itemView.findViewById(R.id.liveRoom);
             liveRoomLabel = itemView.findViewById(R.id.liveRoomLabel);
             officialIcon = itemView.findViewById(R.id.officialIcon);
-            userAvatar = itemView.findViewById(R.id.userAvatar);
+            userAvatar = itemView.findViewById(R.id.user_avatar);
             followBtn = itemView.findViewById(R.id.followBtn);
             msgBtn = itemView.findViewById(R.id.msgBtn);
             uidTv = itemView.findViewById(R.id.uidText);

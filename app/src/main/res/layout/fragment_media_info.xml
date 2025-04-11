@@ -104,7 +104,7 @@
                     android:orientation="horizontal"
 
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/cell_episode" />
+                    tools:listitem="@layout/item_choice_button" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>

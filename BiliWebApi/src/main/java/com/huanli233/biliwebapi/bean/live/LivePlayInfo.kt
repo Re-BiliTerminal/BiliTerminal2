@@ -4,6 +4,8 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
+const val DEFAULT_QN = 80
+
 @Parcelize
 data class LivePlayInfo(
     @SerializedName("room_id")

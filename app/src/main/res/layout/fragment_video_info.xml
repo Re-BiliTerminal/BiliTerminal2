@@ -91,7 +91,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/exclusiveTip"
             tools:itemCount="3"
-            tools:listitem="@layout/cell_up_list" />
+            tools:listitem="@layout/item_uploader" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/collection"

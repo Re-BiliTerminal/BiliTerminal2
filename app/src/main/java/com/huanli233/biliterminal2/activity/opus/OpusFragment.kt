@@ -1,5 +1,6 @@
 package com.huanli233.biliterminal2.activity.opus
 
+import android.annotation.SuppressLint
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -26,11 +27,12 @@ import androidx.core.graphics.toColorInt
 import androidx.core.text.backgroundColor
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LifecycleOwner
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.databinding.ItemOpusFooterBinding
 import com.huanli233.biliterminal2.databinding.ItemOpusHeaderBinding
 import com.huanli233.biliterminal2.databinding.ItemOpusImageBinding
-import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager
+import com.huanli233.biliterminal2.ui.widget.recyclerView.CustomLinearManager
 import com.huanli233.biliterminal2.util.MsgUtil
 import com.huanli233.biliterminal2.util.Utils
 import com.huanli233.biliterminal2.util.extensions.FooterView
@@ -62,6 +64,7 @@ class OpusFragment: Fragment() {
     private lateinit var opusId: String
 
     private lateinit var binding: FragmentSimpleListBinding
+    val viewModel: OpusViewModel by activityViewModels()
     private val multiTypeAdapter: MultiTypeAdapter by lazy { MultiTypeAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,18 +86,18 @@ class OpusFragment: Fragment() {
         binding = it
     }.root
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val viewModel: OpusViewModel by activityViewModels()
         binding.recyclerView.apply {
             layoutManager = CustomLinearManager(context)
             adapter = multiTypeAdapter.register {
-                +OpusHeaderViewDelegate(viewModel)
-                +OpusFooterViewDelegate(viewModel)
+                +OpusHeaderViewDelegate(viewModel, this@OpusFragment)
+                +OpusFooterViewDelegate(viewModel, this@OpusFragment)
             }.apply {
                 register(OpusContentModule.Paragraph::class).to(
                     OpusTextViewDelegate(),
-                    OpusImageViewDelegate()
+                    OpusImageViewDelegate(this@OpusFragment)
                 ).withKotlinClassLinker { _, data ->
                     when (data.type) {
                         PARAGRAPH_TYPE_WORD, PARAGRAPH_TYPE_QUOTE, PARAGRAPH_TYPE_LIST -> OpusTextViewDelegate::class
@@ -103,48 +106,61 @@ class OpusFragment: Fragment() {
                     }
                 }
             }
-            viewModel.toastEvent.observe(viewLifecycleOwner) { event ->
-                event.handle { data ->
-                    MsgUtil.showMsg(getString(R.string.operation_failed, data))
+        }
+        viewModel.opusState.observe(viewLifecycleOwner) {
+            it.onSuccess {
+                multiTypeAdapter.items = buildList {
+                    add(HeaderView(it))
+                    addAll(it.modules.moduleContent.paragraphs)
+                    add(FooterView(it))
                 }
+                multiTypeAdapter.notifyDataSetChanged()
+            }
+        }
+        viewModel.toastEvent.observe(viewLifecycleOwner) { event ->
+            event.handle { data ->
+                MsgUtil.showMsg(getString(R.string.operation_failed, data))
             }
         }
     }
 
 }
 
-class OpusHeaderViewDelegate(private val viewModel: OpusViewModel): ItemViewBinder<HeaderView<Opus>, OpusHeaderViewDelegate.ViewHolder>() {
+class OpusHeaderViewDelegate(
+    private val viewModel: OpusViewModel,
+    private val lifecycleOwner: LifecycleOwner
+): ItemViewBinder<HeaderView<Opus>, OpusHeaderViewDelegate.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, item: HeaderView<Opus>) {
-        holder.binding.viewModel = viewModel
-        holder.binding.handler = object : OpusHeaderViewHandler {
-
-        }
         holder.binding.executePendingBindings()
     }
 
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): ViewHolder =
-        ViewHolder(ItemOpusHeaderBinding.inflate(inflater, parent, false))
+        ViewHolder(ItemOpusHeaderBinding.inflate(inflater, parent, false).also {
+            it.viewModel = viewModel
+            it.lifecycleOwner = lifecycleOwner
+        })
 
     class ViewHolder(val binding: ItemOpusHeaderBinding): RecyclerView.ViewHolder(binding.root)
 }
 
-interface OpusHeaderViewHandler {
-
-}
-
-class OpusFooterViewDelegate(private val viewModel: OpusViewModel): ItemViewBinder<FooterView<Opus>, OpusFooterViewDelegate.ViewHolder>() {
+class OpusFooterViewDelegate(
+    private val viewModel: OpusViewModel,
+    private val lifecycleOwner: LifecycleOwner
+): ItemViewBinder<FooterView<Opus>, OpusFooterViewDelegate.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, item: FooterView<Opus>) {
-        holder.binding.viewModel = viewModel
         holder.binding.executePendingBindings()
     }
 
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): ViewHolder =
-        ViewHolder(ItemOpusFooterBinding.inflate(inflater, parent, false))
+        ViewHolder(ItemOpusFooterBinding.inflate(inflater, parent, false).also {
+            it.viewModel = viewModel
+            it.lifecycleOwner = lifecycleOwner
+        })
 
     class ViewHolder(val binding: ItemOpusFooterBinding): RecyclerView.ViewHolder(binding.root)
 }
 
-class OpusTextViewDelegate: ItemViewBinder<OpusContentModule.Paragraph, OpusTextViewDelegate.ViewHolder>() {
+class OpusTextViewDelegate(): ItemViewBinder<OpusContentModule.Paragraph, OpusTextViewDelegate.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, item: OpusContentModule.Paragraph) {
         when (item.type) {
             PARAGRAPH_TYPE_WORD, PARAGRAPH_TYPE_QUOTE -> {
@@ -237,7 +253,9 @@ class OpusTextViewDelegate: ItemViewBinder<OpusContentModule.Paragraph, OpusText
     class ViewHolder(val binding: ItemOpusTextViewBinding): RecyclerView.ViewHolder(binding.root)
 }
 
-class OpusImageViewDelegate: ItemViewBinder<OpusContentModule.Paragraph, OpusImageViewDelegate.ViewHolder>() {
+class OpusImageViewDelegate(
+    val lifecycleOwner: LifecycleOwner
+): ItemViewBinder<OpusContentModule.Paragraph, OpusImageViewDelegate.ViewHolder>() {
     override fun onBindViewHolder(
         holder: ViewHolder,
         item: OpusContentModule.Paragraph
@@ -256,7 +274,9 @@ class OpusImageViewDelegate: ItemViewBinder<OpusContentModule.Paragraph, OpusIma
     override fun onCreateViewHolder(
         inflater: LayoutInflater,
         parent: ViewGroup
-    ): ViewHolder = ViewHolder(ItemOpusImageBinding.inflate(inflater, parent, false))
+    ): ViewHolder = ViewHolder(ItemOpusImageBinding.inflate(inflater, parent, false).also {
+        it.lifecycleOwner = lifecycleOwner
+    })
 
     class ViewHolder(val binding: ItemOpusImageBinding): RecyclerView.ViewHolder(binding.root)
 

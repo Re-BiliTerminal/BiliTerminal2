@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.huanli233.biliterminal2.R;
-import com.huanli233.biliterminal2.model.SettingSection;
+import com.huanli233.biliterminal2.bean.SettingSection;
 import com.huanli233.biliterminal2.util.Preferences;
 
 import java.util.HashMap;

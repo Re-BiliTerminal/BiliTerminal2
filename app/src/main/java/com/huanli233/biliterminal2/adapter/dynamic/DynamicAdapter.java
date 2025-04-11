@@ -18,7 +18,7 @@ import com.huanli233.biliterminal2.activity.ListChooseActivity;
 import com.huanli233.biliterminal2.activity.dynamic.DynamicActivity;
 import com.huanli233.biliterminal2.activity.dynamic.send.SendDynamicActivity;
 import com.huanli233.biliterminal2.activity.live.FollowLiveActivity;
-import com.huanli233.biliterminal2.model.Dynamic;
+import com.huanli233.biliterminal2.bean.Dynamic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -94,7 +94,7 @@ public class DynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             dynamicHolder.item_dynamic_delete.setOnLongClickListener(onDeleteLongClick);
             if (dynamicList.get(position).canDelete)
                 dynamicHolder.item_dynamic_delete.setVisibility(View.VISIBLE);
-            Log.d("BiliTerminal2", "DynamicAdapter onBindViewHolder finish: " + (System.currentTimeMillis() - time));
+            Log.d("BiliTerminal2", "DynamicAdapter onBindViewHolder finish cost: " + (System.currentTimeMillis() - time));
         }
     }
 

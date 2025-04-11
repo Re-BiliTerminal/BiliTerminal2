@@ -18,7 +18,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.listener.OnItemClickListener;
 import com.huanli233.biliterminal2.listener.OnItemLongClickListener;
-import com.huanli233.biliterminal2.model.DownloadSection;
+import com.huanli233.biliterminal2.bean.DownloadSection;
 import com.huanli233.biliterminal2.service.DownloadService;
 import com.huanli233.biliterminal2.util.GlideUtil;
 import com.huanli233.biliterminal2.util.Utils;

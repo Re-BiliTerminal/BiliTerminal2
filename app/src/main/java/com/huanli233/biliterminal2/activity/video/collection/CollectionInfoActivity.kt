@@ -16,9 +16,8 @@ import com.huanli233.biliterminal2.activity.base.RefreshListActivity
 import com.huanli233.biliterminal2.adapter.video.VideoCardHolder
 import com.huanli233.biliterminal2.api.apiResultNonNull
 import com.huanli233.biliterminal2.api.bilibiliApi
-import com.huanli233.biliterminal2.api.toResultNonNull
-import com.huanli233.biliterminal2.model.VideoCard
-import com.huanli233.biliterminal2.model.toVideoCard
+import com.huanli233.biliterminal2.bean.VideoCard
+import com.huanli233.biliterminal2.bean.toVideoCard
 import com.huanli233.biliterminal2.util.GlideUtil.loadPicture
 import com.huanli233.biliterminal2.util.TerminalContext
 import com.huanli233.biliterminal2.util.Utils

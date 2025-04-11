@@ -5,7 +5,7 @@ import android.os.Bundle;
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.video.SeriesCardAdapter;
 import com.huanli233.biliterminal2.api.SeriesApi;
-import com.huanli233.biliterminal2.model.Series;
+import com.huanli233.biliterminal2.bean.Series;
 import com.huanli233.biliterminal2.util.ThreadManager;
 
 import java.util.ArrayList;

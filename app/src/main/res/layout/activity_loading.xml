@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/top"
+        android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true">
@@ -41,7 +41,7 @@
         android:layout_height="match_parent"
         android:visibility="visible"
         android:src="@mipmap/loading_2233"
-        android:layout_below="@+id/top"
+        android:layout_below="@+id/top_bar"
         android:contentDescription="加载中" />
 
 </RelativeLayout>

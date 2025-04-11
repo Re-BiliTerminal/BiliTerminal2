@@ -51,7 +51,7 @@ import com.huanli233.biliterminal2.api.WatchLaterApi
 import com.huanli233.biliterminal2.api.apiResultNonNull
 import com.huanli233.biliterminal2.api.bilibiliApi
 import com.huanli233.biliterminal2.ui.widget.RadiusBackgroundSpan
-import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager
+import com.huanli233.biliterminal2.ui.widget.recyclerView.CustomLinearManager
 import com.huanli233.biliterminal2.util.ThreadManager
 import com.huanli233.biliterminal2.util.ThreadManager.runOnUiThread
 import com.huanli233.biliterminal2.util.FileUtil

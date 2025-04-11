@@ -11,8 +11,8 @@ import com.huanli233.biliterminal2.adapter.dynamic.DynamicHolder;
 import com.huanli233.biliterminal2.adapter.dynamic.UserDynamicAdapter;
 import com.huanli233.biliterminal2.api.DynamicApi;
 import com.huanli233.biliterminal2.api.UserInfoApi;
-import com.huanli233.biliterminal2.model.Dynamic;
-import com.huanli233.biliterminal2.model.UserInfo;
+import com.huanli233.biliterminal2.bean.Dynamic;
+import com.huanli233.biliterminal2.bean.UserInfo;
 import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.MsgUtil;
 

@@ -1,8 +1,8 @@
 package com.huanli233.biliterminal2.api;
 
-import com.huanli233.biliterminal2.model.ArticleCard;
-import com.huanli233.biliterminal2.model.UserInfo;
-import com.huanli233.biliterminal2.model.VideoCard;
+import com.huanli233.biliterminal2.bean.ArticleCard;
+import com.huanli233.biliterminal2.bean.UserInfo;
+import com.huanli233.biliterminal2.bean.VideoCard;
 import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 import com.huanli233.biliterminal2.util.Utils;
 

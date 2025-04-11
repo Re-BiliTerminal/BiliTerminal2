@@ -7,7 +7,7 @@ import android.util.Pair;
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.message.NoticeAdapter;
 import com.huanli233.biliterminal2.api.MessageApi;
-import com.huanli233.biliterminal2.model.MessageCard;
+import com.huanli233.biliterminal2.bean.MessageCard;
 import com.huanli233.biliterminal2.util.ThreadManager;
 
 import java.util.ArrayList;

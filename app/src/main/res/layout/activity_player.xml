@@ -68,7 +68,7 @@
             android:textSize="11sp" />
 
         <RelativeLayout
-            android:id="@+id/top"
+            android:id="@+id/top_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#348A8A8A"
@@ -184,7 +184,7 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/bottom_control"
             android:gravity="center"
-            android:layout_below="@+id/top"
+            android:layout_below="@+id/top_bar"
             android:layout_alignParentRight="true"
             android:layout_marginEnd="4dp"
             android:orientation="horizontal"

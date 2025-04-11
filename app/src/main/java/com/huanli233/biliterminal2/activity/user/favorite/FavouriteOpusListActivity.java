@@ -6,7 +6,7 @@ import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.article.OpusCardAdapter;
 import com.huanli233.biliterminal2.api.FavoriteApi;
-import com.huanli233.biliterminal2.model.OpusCard;
+import com.huanli233.biliterminal2.bean.OpusCard;
 import com.huanli233.biliterminal2.util.ThreadManager;
 
 import java.util.ArrayList;

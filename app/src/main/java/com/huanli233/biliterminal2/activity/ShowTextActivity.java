@@ -60,6 +60,5 @@ public class ShowTextActivity extends BaseActivity {
         textView.setText(content);
         Utils.copyable(textView);
 
-
     }
 }

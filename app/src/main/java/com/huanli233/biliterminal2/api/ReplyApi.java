@@ -5,8 +5,8 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
-import com.huanli233.biliterminal2.model.ContentType;
-import com.huanli233.biliterminal2.model.Reply;
+import com.huanli233.biliterminal2.bean.ContentType;
+import com.huanli233.biliterminal2.bean.Reply;
 import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 import com.huanli233.biliterminal2.util.Result;
 import com.huanli233.biliterminal2.util.Preferences;

@@ -19,9 +19,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.message.PrivateMsgActivity;
 import com.huanli233.biliterminal2.activity.user.info.UserInfoActivity;
-import com.huanli233.biliterminal2.model.PrivateMessage;
-import com.huanli233.biliterminal2.model.PrivateMsgSession;
-import com.huanli233.biliterminal2.model.UserInfo;
+import com.huanli233.biliterminal2.bean.PrivateMessage;
+import com.huanli233.biliterminal2.bean.PrivateMsgSession;
+import com.huanli233.biliterminal2.bean.UserInfo;
 import com.huanli233.biliterminal2.util.GlideUtil;
 
 import org.json.JSONException;
@@ -115,9 +115,9 @@ public class PrivateMsgSessionsAdapter extends RecyclerView.Adapter<PrivateMsgSe
 
         public PrivateMsgSessionsHolder(View itemView) {
             super(itemView);
-            avatarView = itemView.findViewById(R.id.userAvatar);
-            nameText = itemView.findViewById(R.id.userName);
-            contentText = itemView.findViewById(R.id.userDesc);
+            avatarView = itemView.findViewById(R.id.user_avatar);
+            nameText = itemView.findViewById(R.id.user_name);
+            contentText = itemView.findViewById(R.id.user_desc);
         }
 
     }

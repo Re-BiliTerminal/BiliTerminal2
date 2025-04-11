@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import com.huanli233.biliterminal2.activity.base.RefreshListFragment;
 import com.huanli233.biliterminal2.adapter.article.ArticleCardAdapter;
 import com.huanli233.biliterminal2.api.UserInfoApi;
-import com.huanli233.biliterminal2.model.ArticleCard;
+import com.huanli233.biliterminal2.bean.ArticleCard;
 import com.huanli233.biliterminal2.util.ThreadManager;
 
 import java.util.ArrayList;

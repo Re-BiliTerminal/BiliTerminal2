@@ -7,7 +7,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/userAvatar"
+        android:id="@+id/user_avatar"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
@@ -19,7 +19,7 @@
         tools:ignore="ContentDescription" />
 
     <com.huanli233.biliterminal2.ui.widget.MarqueeTextView
-        android:id="@+id/userName"
+        android:id="@+id/user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
@@ -27,8 +27,8 @@
         android:singleLine="true"
         android:text="蔡徐坤"
         app:layout_constraintBottom_toTopOf="@+id/userLevel"
-        app:layout_constraintStart_toEndOf="@id/userAvatar"
-        app:layout_constraintTop_toTopOf="@id/userAvatar" />
+        app:layout_constraintStart_toEndOf="@id/user_avatar"
+        app:layout_constraintTop_toTopOf="@id/user_avatar" />
 
     <TextView
         android:id="@+id/userLevel"
@@ -39,9 +39,9 @@
         android:alpha="0.86"
         tools:text="Lv114"
         android:textSize="11sp"
-        app:layout_constraintBottom_toBottomOf="@+id/userAvatar"
-        app:layout_constraintStart_toEndOf="@id/userAvatar"
-        app:layout_constraintTop_toBottomOf="@+id/userName" />
+        app:layout_constraintBottom_toBottomOf="@+id/user_avatar"
+        app:layout_constraintStart_toEndOf="@id/user_avatar"
+        app:layout_constraintTop_toBottomOf="@+id/user_name" />
 
     <TextView
         android:id="@+id/userFollowers"
@@ -54,9 +54,9 @@
         android:text="2.5万粉丝"
         android:textColor="@color/link"
         android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/userDesc"
-        app:layout_constraintStart_toStartOf="@id/userDesc"
-        app:layout_constraintTop_toBottomOf="@+id/userAvatar" />
+        app:layout_constraintBottom_toTopOf="@+id/user_desc"
+        app:layout_constraintStart_toStartOf="@id/user_desc"
+        app:layout_constraintTop_toBottomOf="@+id/user_avatar" />
 
     <View
         android:id="@+id/followDivider"
@@ -82,7 +82,7 @@
         app:layout_constraintTop_toTopOf="@+id/userFollowers" />
 
     <TextView
-        android:id="@+id/userDesc"
+        android:id="@+id/user_desc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
@@ -107,7 +107,7 @@
         android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/userDesc"
+        app:layout_constraintTop_toBottomOf="@id/user_desc"
         tools:ignore="TouchTargetSizeCheck" />
 
 
@@ -222,7 +222,7 @@
         android:backgroundTint="#dd262626"
         android:text="关注"
         app:layout_constraintEnd_toStartOf="@+id/msgBtn"
-        app:layout_constraintStart_toStartOf="@+id/userDesc"
+        app:layout_constraintStart_toStartOf="@+id/user_desc"
         app:layout_constraintTop_toBottomOf="@+id/uidText"
         tools:ignore="UnusedAttribute" />
 
@@ -236,7 +236,7 @@
         android:insetBottom="0dp"
         android:backgroundTint="#dd262626"
         android:text="私信"
-        app:layout_constraintEnd_toEndOf="@+id/userDesc"
+        app:layout_constraintEnd_toEndOf="@+id/user_desc"
         app:layout_constraintStart_toEndOf="@id/followBtn"
         app:layout_constraintTop_toTopOf="@id/followBtn"
         tools:ignore="UnusedAttribute" />

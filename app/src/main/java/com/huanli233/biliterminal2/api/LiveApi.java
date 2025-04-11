@@ -3,8 +3,8 @@ package com.huanli233.biliterminal2.api;
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
 
-import com.huanli233.biliterminal2.model.LivePlayInfo;
-import com.huanli233.biliterminal2.model.LiveRoom;
+import com.huanli233.biliterminal2.bean.LivePlayInfo;
+import com.huanli233.biliterminal2.bean.LiveRoom;
 import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 
 import org.json.JSONArray;

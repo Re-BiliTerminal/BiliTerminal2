@@ -15,17 +15,8 @@ import com.huanli233.biliterminal2.activity.dynamic.DynamicInfoActivity;
 import com.huanli233.biliterminal2.activity.live.LiveInfoActivity;
 import com.huanli233.biliterminal2.activity.video.info.VideoInfoActivity;
 import com.huanli233.biliterminal2.api.DynamicApi;
-import com.huanli233.biliterminal2.api.LiveApi;
-import com.huanli233.biliterminal2.api.ReplyApi;
-import com.huanli233.biliterminal2.api.UserInfoApi;
-import com.huanli233.biliterminal2.model.ArticleInfo;
-import com.huanli233.biliterminal2.model.ContentType;
-import com.huanli233.biliterminal2.model.Dynamic;
-import com.huanli233.biliterminal2.model.LiveInfo;
-import com.huanli233.biliterminal2.model.LivePlayInfo;
-import com.huanli233.biliterminal2.model.LiveRoom;
-
-import java.util.concurrent.Future;
+import com.huanli233.biliterminal2.bean.ContentType;
+import com.huanli233.biliterminal2.bean.Dynamic;
 
 /**
  * @author silent碎月

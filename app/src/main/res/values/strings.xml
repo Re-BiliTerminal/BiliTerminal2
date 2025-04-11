@@ -167,6 +167,18 @@
     <string name="live">直播</string>
     <string name="choose_quality">选择清晰度</string>
     <string name="choose_play_host">选择播放路线</string>
+    <string name="live_time">已直播：%1$s</string>
+    <string name="live_start_time">直播开始于：%1$s</string>
+    <string name="online_count">在线人数：%1$s</string>
+    <string name="tags_content">标签：%1$s</string>
+    <string name="live_ended">直播已结束</string>
+    <string name="quality_80">流畅</string>
+    <string name="quality_150">高清</string>
+    <string name="quality_250">超清</string>
+    <string name="quality_400">蓝光</string>
+    <string name="quality_10000">原画</string>
+    <string name="player_not_found">未找到播放器</string>
+    <string name="tip_live_player">若无法播放请更换为内置播放器</string>
     <string-array name="icon_license">
         <item>界面设置: Newicons, MIT License</item>
         <item>番剧: hicon, MIT License</item>

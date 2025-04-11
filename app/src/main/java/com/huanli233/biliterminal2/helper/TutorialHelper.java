@@ -17,8 +17,8 @@ import android.widget.Toast;
 
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.TutorialActivity;
-import com.huanli233.biliterminal2.model.CustomText;
-import com.huanli233.biliterminal2.model.Tutorial;
+import com.huanli233.biliterminal2.bean.CustomText;
+import com.huanli233.biliterminal2.bean.Tutorial;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.Preferences;
 

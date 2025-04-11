@@ -14,7 +14,7 @@
         android:paddingBottom="40dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/top"
+        android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/black"

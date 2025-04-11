@@ -28,10 +28,6 @@ import androidx.annotation.RequiresApi;
 
 import java.text.SimpleDateFormat;
 
-/**
- * 为了兼容安卓4.0，必须自己实现TextClock
- * 参考了安卓官方TextClock和DigitalClock的写法
- */
 @SuppressLint("AppCompatCustomView")
 public class TextClock extends TextView {
 

@@ -5,9 +5,6 @@
         <variable
             name="viewModel"
             type="com.huanli233.biliterminal2.activity.opus.OpusViewModel" />
-        <variable
-            name="handler"
-            type="com.huanli233.biliterminal2.activity.opus.OpusHeaderViewHandler" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

@@ -4,11 +4,11 @@ import android.annotation.SuppressLint;
 import android.util.Log;
 import android.util.Pair;
 
-import com.huanli233.biliterminal2.model.At;
-import com.huanli233.biliterminal2.model.Collection;
-import com.huanli233.biliterminal2.model.Stats;
-import com.huanli233.biliterminal2.model.UserInfo;
-import com.huanli233.biliterminal2.model.VideoInfo;
+import com.huanli233.biliterminal2.bean.At;
+import com.huanli233.biliterminal2.bean.Collection;
+import com.huanli233.biliterminal2.bean.Stats;
+import com.huanli233.biliterminal2.bean.UserInfo;
+import com.huanli233.biliterminal2.bean.VideoInfo;
 import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 import com.huanli233.biliterminal2.util.StringUtil;
 import com.huanli233.biliterminal2.util.Utils;

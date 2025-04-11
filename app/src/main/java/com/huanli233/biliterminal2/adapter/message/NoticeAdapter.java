@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.huanli233.biliterminal2.R;
-import com.huanli233.biliterminal2.model.MessageCard;
+import com.huanli233.biliterminal2.bean.MessageCard;
 
 import java.util.List;
 

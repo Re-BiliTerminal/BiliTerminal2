@@ -11,7 +11,7 @@ import androidx.constraintlayout.utils.widget.ImageFilterView;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.helper.TutorialHelper;
-import com.huanli233.biliterminal2.model.Tutorial;
+import com.huanli233.biliterminal2.bean.Tutorial;
 import com.huanli233.biliterminal2.util.view.AsyncLayoutInflaterX;
 import com.huanli233.biliterminal2.util.Preferences;
 import com.google.android.material.button.MaterialButton;

@@ -3,7 +3,7 @@ package com.huanli233.biliterminal2.api;
 //关注api
 //2023-08-27
 
-import com.huanli233.biliterminal2.model.UserInfo;
+import com.huanli233.biliterminal2.bean.UserInfo;
 import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 
 import org.json.JSONArray;

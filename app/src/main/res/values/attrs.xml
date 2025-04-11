@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TopBar">
+        <attr name="titleText" format="string|reference"/>
+        <attr name="showBackIcon" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="AppScrollView">
+        <attr name="animScaleSV" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="AppNestedScrollView">
+        <attr name="springEnableEndNSV" format="boolean" />
+        <attr name="springEnableStartNSV" format="boolean" />
+        <attr name="animScaleNSV" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="AppRecyclerView">
+        <attr name="springEnableEndRV" format="boolean" />
+        <attr name="springEnableStartRV" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="AppLinearLayout">
+        <attr name="useAlphaForLL" format="boolean" />
+        <attr name="useZoomForLL" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="AppRelativeLayout">
+        <attr name="useAlphaForRL" format="boolean" />
+        <attr name="useZoomForRL" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="ExpandableTextView">
+        <attr name="maxCollapsedLines" format="integer"/>
+        <attr name="animDuration" format="integer"/>
+        <attr name="animAlphaStart" format="float"/>
+        <attr name="expandIndicator" format="reference"/>
+        <attr name="collapseIndicator" format="reference"/>
+        <attr name="expandToggleType" format="enum">
+            <enum name="ImageButton" value="0"/>
+            <enum name="TextView" value="1"/>
+        </attr>
+        <attr name="expandableTextId" format="reference"/>
+        <attr name="expandCollapseToggleId" format="reference"/>
+        <attr name="expandToggleOnTextClick" format="boolean"/>
+        <attr name="android:text" format="string"/>
+    </declare-styleable>
+</resources>

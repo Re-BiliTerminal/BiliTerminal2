@@ -12,9 +12,9 @@ import com.huanli233.biliterminal2.activity.base.InstanceActivity
 import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter
 import com.huanli233.biliterminal2.api.apiResultNonNull
 import com.huanli233.biliterminal2.api.bilibiliApi
-import com.huanli233.biliterminal2.model.VideoCard
-import com.huanli233.biliterminal2.model.toVideoCard
-import com.huanli233.biliterminal2.ui.widget.recycler.CustomLinearManager
+import com.huanli233.biliterminal2.bean.VideoCard
+import com.huanli233.biliterminal2.bean.toVideoCard
+import com.huanli233.biliterminal2.ui.widget.recyclerView.CustomLinearManager
 import com.huanli233.biliterminal2.util.ThreadManager
 import com.huanli233.biliterminal2.util.MsgUtil
 import com.huanli233.biliterminal2.util.view.ImageAutoLoadScrollListener

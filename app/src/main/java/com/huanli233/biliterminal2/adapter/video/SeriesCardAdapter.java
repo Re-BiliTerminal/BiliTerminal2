@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.video.series.SeriesInfoActivity;
-import com.huanli233.biliterminal2.model.Series;
-import com.huanli233.biliterminal2.model.VideoCard;
+import com.huanli233.biliterminal2.bean.Series;
+import com.huanli233.biliterminal2.bean.VideoCard;
 
 import java.util.List;
 
