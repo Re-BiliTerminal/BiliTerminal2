@@ -13,7 +13,7 @@ import com.huanli233.biliterminal2.bean.Emote;
 import com.huanli233.biliterminal2.bean.LiveRoom;
 import com.huanli233.biliterminal2.bean.Stats;
 import com.huanli233.biliterminal2.bean.UserInfo;
-import com.huanli233.biliterminal2.bean.VideoCard;
+import com.huanli233.biliterminal2.bean.VideoCardKt;
 import com.huanli233.biliterminal2.util.api.DmImgParamUtil;
 import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 import com.huanli233.biliterminal2.util.Preferences;
@@ -37,8 +37,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import okhttp3.Response;
-
-//新的动态api，旧的那个实在太蛋疼而且说不定随时会被弃用（
 
 public class DynamicApi {
 
@@ -314,6 +312,7 @@ public class DynamicApi {
 
         JSONObject data = all.getJSONObject("data");
         JSONObject item = data.getJSONObject("item");
+
         return analyzeDynamic(item);
     }
 
@@ -408,7 +407,7 @@ public class DynamicApi {
                         break;
                     case "MAJOR_TYPE_PGC":
                         JSONObject bangumi = major.getJSONObject("pgc");
-                        VideoCard card = new VideoCard();
+                        VideoCardKt card = new VideoCardKt();
                         card.setType("media_bangumi");
                         card.setAid(BangumiApi.getMdidFromEpid(bangumi.getLong("epid")));
                         card.setTitle(bangumi.getString("title"));
@@ -505,8 +504,8 @@ public class DynamicApi {
         return dynamic;
     }
 
-    private static VideoCard analyzeVideoCard(JSONObject jsonObject) throws JSONException {
-        VideoCard card = new VideoCard();
+    private static VideoCardKt analyzeVideoCard(JSONObject jsonObject) throws JSONException {
+        VideoCardKt card = new VideoCardKt();
         card.setTitle(jsonObject.getString("title"));
         card.setUploader("投稿视频");
         card.setView(jsonObject.getJSONObject("stat").getString("play"));

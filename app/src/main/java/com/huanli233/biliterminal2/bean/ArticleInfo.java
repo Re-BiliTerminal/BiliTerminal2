@@ -29,7 +29,7 @@ public class ArticleInfo implements Parcelable, Serializable {
         banner = in.readString();
         upInfo = in.readParcelable(UserInfo.class.getClassLoader());
         ctime = in.readLong();
-        stats = in.readParcelable(Stats.class.getClassLoader());
+        stats = (Stats) in.readSerializable();
         wordCount = in.readInt();
         keywords = in.readString();
         content = in.readString();
@@ -43,7 +43,7 @@ public class ArticleInfo implements Parcelable, Serializable {
         dest.writeString(banner);
         dest.writeParcelable(upInfo, flags);
         dest.writeLong(ctime);
-        dest.writeParcelable(stats, flags);
+        dest.writeSerializable(stats);
         dest.writeInt(wordCount);
         dest.writeString(keywords);
         dest.writeString(content);

@@ -15,7 +15,6 @@ import com.huanli233.biliterminal2.adapter.ReplyAdapter
 import com.huanli233.biliterminal2.api.ReplyApi
 import com.huanli233.biliterminal2.api.apiResultNonNull
 import com.huanli233.biliterminal2.api.bilibiliApi
-import com.huanli233.biliterminal2.api.toResultNonNull
 import com.huanli233.biliterminal2.event.ReplyEvent
 import com.huanli233.biliterminal2.util.ThreadManager
 import com.huanli233.biliterminal2.util.Preferences
@@ -28,46 +27,63 @@ import kotlin.math.max
 
 open class ReplyFragment : RefreshListFragment() {
 
-    private var dontLoad = false
-    protected var aid: Long = 0
-    protected var mid: Long = -1
-    protected var sort = 3
-    protected var type: Int = ReplyApi.REPLY_TYPE_VIDEO
-    protected var replyList = mutableListOf<Reply>()
-    protected var replyAdapter: ReplyAdapter? = null
-    private var source: Any? = null
-    private var seek: Long = -1
-    private var pagination = ""
+    private data class ReplyState(
+        var isInitialLoadingDisabled: Boolean = false,
+        var contentId: Long = 0,
+        var authorId: Long = -1,
+        var sortMode: Int = DEFAULT_SORT_MODE,
+        var replyType: Int = ReplyApi.REPLY_TYPE_VIDEO,
+        var seekPosition: Long = -1,
+        var paginationToken: String = ""
+    )
+
+    private val state = ReplyState()
+    private val replies = mutableListOf<Reply>()
+    private var replyAdapter: ReplyAdapter? = null
+    private var contentSource: Any? = null
 
     companion object {
+        private const val DEFAULT_SORT_MODE = 3
+        private const val KEY_CONTENT_ID = "content_id"
+        private const val KEY_REPLY_TYPE = "reply_type"
+        private const val KEY_DISABLE_INITIAL_LOAD = "disable_initial_load"
+        private const val KEY_SEEK_POSITION = "seek_reply"
+        private const val KEY_AUTHOR_ID = "author_id"
+
         @JvmStatic
         fun newInstance(
-            aid: Long,
-            type: Int,
-            dontload: Boolean = false,
-            seek: Long = -1,
-            mid: Long = -1
+            oid: Long,
+            replyType: Int,
+            disableInitialLoad: Boolean = false,
+            seekReply: Long = -1,
+            authorId: Long = -1
         ) = ReplyFragment().apply {
             arguments = bundleOf(
-                "aid" to aid,
-                "type" to type,
-                "dontload" to dontload.takeIf { it },
-                "seek" to seek.takeIf { it != -1L },
-                "mid" to mid.takeIf { it != -1L }
-            ).apply { clearNullValues() }
+                KEY_CONTENT_ID to oid,
+                KEY_REPLY_TYPE to replyType,
+                KEY_DISABLE_INITIAL_LOAD to disableInitialLoad.takeIf { it },
+                KEY_SEEK_POSITION to seekReply.takeIf { it != -1L },
+                KEY_AUTHOR_ID to authorId.takeIf { it != -1L }
+            ).apply { removeNullValues() }
         }
 
-        private fun Bundle.clearNullValues() = keySet().filter { get(it) == null }.forEach { remove(it) }
+        private fun Bundle.removeNullValues() {
+            keySet().filter { get(it) == null }.forEach { remove(it) }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initializeState()
+    }
+
+    private fun initializeState() {
         arguments?.run {
-            aid = getLong("aid")
-            type = getInt("type", ReplyApi.REPLY_TYPE_VIDEO)
-            dontLoad = getBoolean("dontload", false)
-            seek = getLong("seek", -1)
-            mid = getLong("mid", -1)
+            state.contentId = getLong(KEY_CONTENT_ID)
+            state.replyType = getInt(KEY_REPLY_TYPE, ReplyApi.REPLY_TYPE_VIDEO)
+            state.isInitialLoadingDisabled = getBoolean(KEY_DISABLE_INITIAL_LOAD, false)
+            state.seekPosition = getLong(KEY_SEEK_POSITION, -1)
+            state.authorId = getLong(KEY_AUTHOR_ID, -1)
         }
     }
 
@@ -77,130 +93,145 @@ open class ReplyFragment : RefreshListFragment() {
 
         setupLandscapePadding(view.context)
         setupRefreshListeners()
-        initReplyList()
+        initializeReplyList()
     }
 
     @Suppress("DEPRECATION")
     private fun setupLandscapePadding(context: Context) {
-        if (Preferences.getBoolean("ui_landscape", false)) {
-            val metrics = DisplayMetrics().also {
-                (context.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)?.defaultDisplay?.run {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) getRealMetrics(it)
-                    else getMetrics(it)
+        if (!Preferences.getBoolean("ui_landscape", false)) return
+
+        val metrics = DisplayMetrics().also { displayMetrics ->
+            (context.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)?.defaultDisplay?.run {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    getRealMetrics(displayMetrics)
+                } else {
+                    getMetrics(displayMetrics)
                 }
             }
-            (metrics.widthPixels / 6).let { paddings ->
-                recyclerView.setPadding(paddings, 0, paddings, 0)
-            }
         }
+
+        val horizontalPadding = metrics.widthPixels / 6
+        recyclerView.setPadding(horizontalPadding, 0, horizontalPadding, 0)
     }
 
     private fun setupRefreshListeners() {
-        onRefresh {
-            refresh(aid)
-        }
-        onLoadMore(::continueLoading)
+        onRefresh { refresh(state.contentId) }
+        onLoadMore(::loadMoreReplies)
     }
 
-    private fun initReplyList() {
-        if (!dontLoad) ThreadManager.run(::loadInitialReplies)
+    private fun initializeReplyList() {
+        if (!state.isInitialLoadingDisabled) {
+            ThreadManager.run(::loadInitialReplies)
+        }
     }
 
     private fun loadInitialReplies() = lifecycleScope.launch {
+        loadReplies(isInitialLoad = true)
+    }
+
+    private suspend fun loadReplies(isInitialLoad: Boolean = false) {
         bilibiliApi.api(IReplyApi::class) {
             getReplies(
-                type = type,
-                oid = aid,
-                paginationStr = PaginationStr(pagination),
-                mode = sort,
-                extraParams = let {
-                    if (seek > 0) mapOf("seek_rpid" to seek)
-                    else emptyMap()
+                type = state.replyType,
+                oid = state.contentId,
+                paginationStr = PaginationStr(state.paginationToken),
+                mode = state.sortMode,
+                extraParams = if (isInitialLoad && state.seekPosition > 0) {
+                    mapOf("seek_rpid" to state.seekPosition)
+                } else {
+                    emptyMap()
                 }
             )
-        }.apiResultNonNull().onSuccess {
-            pagination = it.cursor.paginationReply.nextOffset
-            refreshing = false
-            if (isAdded) {
-                if (it.cursor.isBegin) replyList.addAll(it.topReplies)
-                it.replies?.let { replies -> replyList.addAll(replies) }
-                if (it.cursor.isEnd || it.cursor.paginationReply.nextOffset.isEmpty()) bottomReached = true
-                replyAdapter = createReplyAdapter().apply {
-                    this.source = this@ReplyFragment.source
-                    setOnSortSwitch()
-                    setAdapter(this)
-                }
-            }
+        }.apiResultNonNull().onSuccess { response ->
+            handleReplyResponse(response, isInitialLoad)
         }
     }
 
-    fun setSource(source: Any?) {
-        this.source = source
+    private fun handleReplyResponse(response: RepliesInfo, isInitialLoad: Boolean) {
+        if (!isAdded) return
+
+        state.paginationToken = response.cursor.paginationReply.nextOffset
+        refreshing = false
+
+        if (isInitialLoad) {
+            if (response.cursor.isBegin) {
+                replies.addAll(response.topReplies)
+            }
+            response.replies?.let { replies.addAll(it) }
+
+            if (response.cursor.isEnd || response.cursor.paginationReply.nextOffset.isEmpty()) {
+                bottomReached = true
+            }
+
+            initializeAdapter()
+        } else {
+            val startPosition = replies.size
+            response.replies?.let { replies.addAll(it) }
+
+            if (response.cursor.isEnd || response.cursor.paginationReply.nextOffset.isEmpty()) {
+                bottomReached = true
+            }
+
+            replyAdapter?.notifyItemRangeInserted(startPosition, response.replies?.size ?: 0)
+        }
+    }
+
+    private fun initializeAdapter() {
+        replyAdapter = createReplyAdapter().apply {
+            this.source = this@ReplyFragment.contentSource
+            setOnSortSwitch()
+            setAdapter(this)
+        }
+    }
+
+    fun setContentSource(source: Any?) {
+        this.contentSource = source
         replyAdapter?.source = source
     }
 
     private fun createReplyAdapter() = ReplyAdapter(
         context = requireContext(),
         lifecycleOwner = requireActivity(),
-        replyList = replyList,
-        oid = aid,
+        replyList = replies,
+        oid = state.contentId,
         root = 0,
-        type = type,
-        sort = sort,
-        exitDetail = {
-            activity?.finish()
-        },
-        source = source,
-        upMid = mid
+        type = state.replyType,
+        sort = state.sortMode,
+        exitDetail = { activity?.finish() },
+        source = contentSource,
+        upMid = state.authorId
     )
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun continueLoading(page: Int) = lifecycleScope.launch {
-        bilibiliApi.api(IReplyApi::class) {
-            getReplies(
-                type = type,
-                oid = aid,
-                mode = sort,
-                paginationStr = PaginationStr(pagination),
-                extraParams = emptyMap()
-            )
-        }.apiResultNonNull().onSuccess {
-            pagination = it.cursor.paginationReply.nextOffset
-            refreshing = false
-            if (isAdded) {
-                val positionStart = replyList.size
-                it.replies?.let { replies -> replyList.addAll(replies) }
-                if (it.cursor.isEnd || it.cursor.paginationReply.nextOffset.isEmpty()) bottomReached = true
-                replyAdapter?.notifyItemRangeInserted(positionStart, it.replies?.size ?: 0)
-            }
-        }
+    private fun loadMoreReplies(page: Int) = lifecycleScope.launch {
+        loadReplies(isInitialLoad = false)
     }
 
     fun notifyReplyInserted(replyEvent: ReplyEvent) {
-        if (replyEvent.oid != aid) return
+        if (replyEvent.oid != state.contentId) return
 
         replyEvent.message.let { reply ->
             when {
-                reply.root == 0L -> handleRootReply(reply)
-                replyEvent.pos >= 0 -> handleChildReply(replyEvent)
+                reply.root == 0L -> processRootReplyAddEvent(reply)
+                replyEvent.pos >= 0 -> processChildReplyAddEvent(replyEvent)
             }
         }
     }
 
-    private fun handleRootReply(reply: Reply) {
+    private fun processRootReplyAddEvent(reply: Reply) {
         (recyclerView.layoutManager as? LinearLayoutManager)?.let { layoutManager ->
-            val pos = max(layoutManager.findFirstCompletelyVisibleItemPosition(), 0)
-            replyList.add(pos, reply)
+            val insertPosition = max(layoutManager.findFirstCompletelyVisibleItemPosition(), 0)
+            replies.add(insertPosition, reply)
             runOnUiThread {
-                replyAdapter?.notifyItemInserted(pos)
-                replyAdapter?.notifyItemRangeChanged(pos, replyList.size - pos + 1)
-                layoutManager.scrollToPositionWithOffset(pos + 1, 0)
+                replyAdapter?.notifyItemInserted(insertPosition)
+                replyAdapter?.notifyItemRangeChanged(insertPosition, replies.size - insertPosition + 1)
+                layoutManager.scrollToPositionWithOffset(insertPosition + 1, 0)
             }
         }
     }
 
-    private fun handleChildReply(replyEvent: ReplyEvent) {
-        replyList[replyEvent.pos] = replyList[replyEvent.pos].run {
+    private fun processChildReplyAddEvent(replyEvent: ReplyEvent) {
+        replies[replyEvent.pos] = replies[replyEvent.pos].run {
             copy(
                 replies = replies.orEmpty().toMutableList().apply {
                     add(replyEvent.message)
@@ -214,40 +245,21 @@ open class ReplyFragment : RefreshListFragment() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun refresh(aid: Long) {
-        pagination = ""
-        this.aid = aid
+    fun refresh(contentId: Long) {
+        state.paginationToken = ""
+        state.contentId = contentId
         refreshing = true
 
         lifecycleScope.launch {
-            bilibiliApi.api(IReplyApi::class) {
-                getReplies(
-                    type = type,
-                    oid = aid,
-                    mode = sort,
-                    paginationStr = PaginationStr(pagination),
-                    extraParams = emptyMap()
-                )
-            }.apiResultNonNull().onSuccess {
-                pagination = it.cursor.paginationReply.nextOffset
-                refreshing = false
-                if (isAdded) {
-                    val positionStart = replyList.size
-                    replyList.clear()
-                    if (it.cursor.isBegin) replyList.addAll(it.topReplies)
-                    it.replies?.let { replies -> replyList.addAll(replies) }
-                    if (it.cursor.isEnd || it.cursor.paginationReply.nextOffset.isEmpty()) bottomReached = true
-                    replyAdapter?.notifyDataSetChanged()
-                }
-            }
+            loadReplies(isInitialLoad = true)
         }
     }
 
     private fun setOnSortSwitch() {
         replyAdapter?.onSortChangeListener = {
-            sort = if (sort == 2) 3 else 2
-            replyAdapter?.sort = sort
-            refresh(aid)
+            state.sortMode = if (state.sortMode == 2) 3 else 2
+            replyAdapter?.sort = state.sortMode
+            refresh(state.contentId)
         }
     }
 }

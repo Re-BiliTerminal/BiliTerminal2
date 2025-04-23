@@ -18,7 +18,7 @@ object EmoteUtil {
         context: Context,
         source: CharSequence?
     ): SpannableString {
-        val result = if ((source !is SpannableString)) SpannableString(text) else source
+        val result = source as? SpannableString ?: SpannableString(text)
         emotes.forEach { (emoteName, emoteContent) ->
             replaceSingle(
                 origText = text,

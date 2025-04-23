@@ -5,7 +5,7 @@ import android.os.Bundle;
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter;
 import com.huanli233.biliterminal2.api.BangumiApi;
-import com.huanli233.biliterminal2.bean.VideoCard;
+import com.huanli233.biliterminal2.bean.VideoCardKt;
 import com.huanli233.biliterminal2.util.ThreadManager;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class FollowingBangumisActivity extends RefreshListActivity {
 
-    private ArrayList<VideoCard> videoList;
+    private ArrayList<VideoCardKt> videoList;
     private VideoCardAdapter videoCardAdapter;
 
     @Override
@@ -52,7 +52,7 @@ public class FollowingBangumisActivity extends RefreshListActivity {
     private void continueLoading(int page) {
         ThreadManager.run(() -> {
             try {
-                List<VideoCard> list = new ArrayList<>();
+                List<VideoCardKt> list = new ArrayList<>();
                 int result = BangumiApi.getFollowingList(page, list);
                 if (result != -1) {
                     runOnUiThread(() -> {

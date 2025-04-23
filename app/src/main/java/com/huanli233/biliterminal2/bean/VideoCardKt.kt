@@ -6,7 +6,7 @@ import com.huanli233.biliterminal2.util.Utils
 import com.huanli233.biliwebapi.bean.video.VideoInfo
 import java.io.Serializable
 
-open class VideoCard() : Parcelable, Serializable {
+open class VideoCardKt() : Parcelable, Serializable {
     var title: String? = null
     var uploader: String? = null
     var view: String? = null
@@ -44,12 +44,12 @@ open class VideoCard() : Parcelable, Serializable {
 
     companion object {
         @JvmField
-        val CREATOR: Parcelable.Creator<VideoCard> = object : Parcelable.Creator<VideoCard> {
-            override fun createFromParcel(`in`: Parcel): VideoCard {
-                return VideoCard(`in`)
+        val CREATOR: Parcelable.Creator<VideoCardKt> = object : Parcelable.Creator<VideoCardKt> {
+            override fun createFromParcel(`in`: Parcel): VideoCardKt {
+                return VideoCardKt(`in`)
             }
 
-            override fun newArray(size: Int): Array<VideoCard?> {
+            override fun newArray(size: Int): Array<VideoCardKt?> {
                 return arrayOfNulls(size)
             }
         }
@@ -64,8 +64,8 @@ open class VideoCard() : Parcelable, Serializable {
             bvid: String,
             type: String = "video",
             cid: Long = 0
-        ): VideoCard {
-            return VideoCard().also {
+        ): VideoCardKt {
+            return VideoCardKt().also {
                 it.title = title
                 it.uploader = uploader
                 it.view = view
@@ -79,7 +79,7 @@ open class VideoCard() : Parcelable, Serializable {
     }
 }
 
-fun VideoInfo.toVideoCard(): VideoCard = VideoCard().also {
+fun VideoInfo.toVideoCard(): VideoCardKt = VideoCardKt().also {
     it.title = title
     it.bvid = bvid
     it.cid = cid

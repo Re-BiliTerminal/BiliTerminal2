@@ -69,9 +69,9 @@ public class AppScrollView extends ScrollView {
         setOverScrollMode(2);
         this.isAnimScale = true;
         TypedArray obtainStyledAttributes = context.obtainStyledAttributes(attributeSet, R.styleable.AppScrollView, 0, 0);
-        this.isAnimScale = obtainStyledAttributes.getBoolean(R.styleable.AppScrollView_animScale, true);
-        this.enableStart = obtainStyledAttributes.getBoolean(R.styleable.AppNestedScrollView_springEnableStart, true);
-        this.enableEnd = obtainStyledAttributes.getBoolean(R.styleable.AppNestedScrollView_springEnableEnd, true);
+        this.isAnimScale = obtainStyledAttributes.getBoolean(R.styleable.AppScrollView_animScaleSV, true);
+        this.enableStart = obtainStyledAttributes.getBoolean(R.styleable.AppNestedScrollView_springEnableStartNSV, true);
+        this.enableEnd = obtainStyledAttributes.getBoolean(R.styleable.AppNestedScrollView_springEnableEndNSV, true);
         obtainStyledAttributes.recycle();
     }
 

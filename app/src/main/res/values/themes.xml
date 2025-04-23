@@ -1,11 +1,22 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.BiliTerminal2" parent="Theme.MaterialComponents.NoActionBar">
+    <style name="Theme.BiliTerminal2.Material3" parent="Theme.Material3.DynamicColors.DayNight">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowSwipeToDismiss" tools:ignore="NewApi">true</item>
+
+        <item name="materialCardViewStyle">@style/Material3CardView</item>
+        <item name="materialButtonStyle">@style/Material3Button</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Theme.BiliTerminal2" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowBackground">@color/bgblack</item>
         <item name="statusBarBackground">@color/pink</item>
         <item name="android:colorForeground">@color/textwhite</item>
         <item name="colorOnPrimary">@color/textwhite</item>
         <item name="colorPrimary">@color/textwhite</item>
+        <item name="colorOnSurface">@color/textwhite</item>
+        <item name="colorOnSurfaceVariant">@color/textwhite</item>
         <item name="android:windowIsTranslucent">false</item>
         <item name="android:windowSwipeToDismiss" tools:ignore="NewApi">true</item>
 
@@ -22,6 +33,20 @@
         <item name="colorControlNormal">@color/color_ripple</item>
         <item name="android:textColor">@color/textwhite</item>
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Material3CardView" parent="Widget.Material3.CardView.Outlined">
+        <item name="cardBackgroundColor">?attr/colorSurfaceVariant</item>
+        <item name="android:clickable">true</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
+
+    <style name="Material3Button" parent="Widget.Material3.Button">
+        <item name="cornerRadius">12dp</item>
+    </style>
+
+    <style name="Material3Button.Icon" parent="Widget.Material3.Button.Icon">
+        <item name="cornerRadius">12dp</item>
     </style>
 
     <style name="Theme.BiliTerminal2.Splash" parent="Theme.BiliTerminal2">

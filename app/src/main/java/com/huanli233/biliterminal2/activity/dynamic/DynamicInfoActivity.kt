@@ -1,97 +1,135 @@
-package com.huanli233.biliterminal2.activity.dynamic;
+package com.huanli233.biliterminal2.activity.dynamic
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.os.Bundle
+import android.view.View
+import androidx.activity.viewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.RecyclerView
+import com.huanli233.biliterminal2.R
+import com.huanli233.biliterminal2.activity.base.BaseActivity
+import com.huanli233.biliterminal2.activity.reply.ReplyFragment
+import com.huanli233.biliterminal2.api.apiResultNonNull
+import com.huanli233.biliterminal2.api.bilibiliApi
+import com.huanli233.biliterminal2.databinding.ActivitySimpleViewpagerBinding
+import com.huanli233.biliterminal2.databinding.DynamicItemBinding
+import com.huanli233.biliterminal2.event.ReplyEvent
+import com.huanli233.biliterminal2.helper.TutorialHelper
+import com.huanli233.biliterminal2.ui.TopBarBinder
+import com.huanli233.biliterminal2.ui.bindTopBar
+import com.huanli233.biliterminal2.util.MsgUtil
+import com.huanli233.biliterminal2.util.extensions.LoadState
+import com.huanli233.biliterminal2.util.extensions.invisible
+import com.huanli233.biliterminal2.util.extensions.setupFragments
+import com.huanli233.biliterminal2.util.extensions.showError
+import com.huanli233.biliterminal2.util.extensions.visible
+import com.huanli233.biliwebapi.api.interfaces.IDynamicApi
+import com.huanli233.biliwebapi.bean.dynamic.Dynamic
+import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
+class DynamicInfoActivity : BaseActivity(), TopBarBinder {
+    private lateinit var binding: ActivitySimpleViewpagerBinding
+    lateinit var replyFragment: ReplyFragment
+    private val seekReply by lazy { intent.getLongExtra("seekReply", -1) }
+    private val dynamicId by lazy { intent.getLongExtra("id", -1) }
 
-import com.huanli233.biliterminal2.R;
-import com.huanli233.biliterminal2.activity.base.BaseActivity;
-import com.huanli233.biliterminal2.activity.reply.ReplyFragment;
-import com.huanli233.biliterminal2.adapter.viewpager.ViewPagerFragmentAdapter;
-import com.huanli233.biliterminal2.api.ReplyApi;
-import com.huanli233.biliterminal2.event.ReplyEvent;
-import com.huanli233.biliterminal2.helper.TutorialHelper;
-import com.huanli233.biliterminal2.util.view.AnimationUtils;
-import com.huanli233.biliterminal2.util.view.AsyncLayoutInflaterX;
-import com.huanli233.biliterminal2.util.MsgUtil;
-import com.huanli233.biliterminal2.util.TerminalContext;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
-import java.util.List;
-
-//动态信息页面
-//2023-10-03
-
-public class DynamicInfoActivity extends BaseActivity {
-
-    ReplyFragment rFragment;
-    private long seek_reply;
-
-    @SuppressLint({"MissingInflatedId", "InflateParams"})
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_loading);
-        this.seek_reply = getIntent().getLongExtra("seekReply", -1);
-
-        new AsyncLayoutInflaterX(this).inflate(R.layout.activity_simple_viewpager, null, (layoutView, resId, parent) -> {
-            setContentView(layoutView);
-            setTopbarExit();
-            Intent intent = getIntent();
-            long id = intent.getLongExtra("id", 0);
-
-            TextView pageName = findViewById(R.id.page_name);
-            pageName.setText("动态详情");
-
-            TutorialHelper.showTutorialList(this, R.array.tutorial_dynamic_info, 6);
-            TerminalContext.getInstance().getDynamicById(id)
-                    .observe(this, (dynamicResult) -> dynamicResult.onSuccess((dynamic) -> {
-                        List<Fragment> fragmentList = new ArrayList<>();
-                        DynamicInfoFragment diFragment = DynamicInfoFragment.newInstance(id);
-                        fragmentList.add(diFragment);
-                        rFragment = ReplyFragment.newInstance(dynamic.comment_id, dynamic.comment_type, seek_reply, dynamic.userInfo.mid);
-                        rFragment.setSource(dynamic);
-                        rFragment.replyType = ReplyApi.REPLY_TYPE_DYNAMIC;
-                        fragmentList.add(rFragment);
-                        ViewPagerFragmentAdapter vpfAdapter = new ViewPagerFragmentAdapter(getSupportFragmentManager(), fragmentList);
-                        ViewPager viewPager = findViewById(R.id.viewPager);
-                        viewPager.setAdapter(vpfAdapter);  //没啥好说的，教科书式的ViewPager使用方法
-                        View view;
-                        if ((view = diFragment.getView()) != null) view.setVisibility(View.GONE);
-                        if (seek_reply != -1) viewPager.setCurrentItem(1);
-                        diFragment.setOnFinishLoad(() -> {
-                            AnimationUtils.crossFade(findViewById(R.id.loading), diFragment.getView());
-                            TutorialHelper.showPagerTutorial(this, 2);
-                        });
-                    }).onFailure((e) -> {
-                        MsgUtil.error(e);
-                        ((ImageView) findViewById(R.id.loading)).setImageResource(R.mipmap.loading_2233_error);
-                    }));
-        });
+    private val viewModel by viewModels<DynamicInfoViewModel> {
+        DynamicInfoViewModelFactory(dynamicId.toString())
     }
 
-    @Override
-    protected boolean eventBusEnabled() {
-        return true;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivitySimpleViewpagerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setTopbarExit()
+        setPageName(getString(R.string.dynamic_info))
+
+        TutorialHelper.showTutorialList(this, R.array.tutorial_dynamic_info, 6)
+
+        viewModel.state.observe(this) {
+            when (it) {
+                is LoadState.Loading -> {
+                    binding.loading.visible()
+                    binding.viewPager.invisible()
+                }
+
+                is LoadState.Error -> {
+                    binding.loading.showError()
+                    binding.viewPager.invisible()
+                    MsgUtil.error(it.error)
+                }
+
+                is LoadState.Success -> {
+                    binding.loading.invisible()
+
+                    with(binding.viewPager) {
+                        visible()
+                        setupFragments(
+                            fragmentManager = supportFragmentManager,
+                            DynamicInfoFragment.newInstance(),
+                            ReplyFragment.newInstance(
+                                oid = it.data.basic.commentIdStr.toLongOrNull() ?: -1,
+                                replyType = it.data.basic.commentType.toIntOrNull() ?: -1,
+                                seekReply = seekReply
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    override fun eventBusEnabled(): Boolean {
+        return true
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC, sticky = true, priority = 1)
-    public void onEvent(ReplyEvent event) {
-        rFragment.notifyReplyInserted(event);
+    fun onEvent(event: ReplyEvent) {
+        replyFragment.notifyReplyInserted(event)
     }
 
-    @Override
-    protected void onDestroy() {
-        TerminalContext.getInstance().leaveDetailPage();
-        super.onDestroy();
+    override fun bindToTopBar(scrollableView: View) {
+        scrollableView.bindTopBar(binding.topBar)
+    }
+}
+
+class DynamicInfoViewModel(
+    val dynamicId: String
+): ViewModel() {
+
+    private val _state: MutableLiveData<LoadState<Dynamic>> = MutableLiveData()
+    val state: LiveData<LoadState<Dynamic>> = _state
+
+    init {
+        fetchData()
+    }
+
+    fun fetchData() {
+        viewModelScope.launch {
+            bilibiliApi.api(IDynamicApi::class) {
+                getDynamic(dynamicId)
+            }.apiResultNonNull()
+                .onSuccess {
+                    _state.postValue(LoadState.Success(it.item))
+                }
+                .onFailure {
+                    _state.postValue(LoadState.Error(it))
+                }
+        }
+    }
+
+}
+
+class DynamicInfoViewModelFactory(
+    val dynamicId: String
+): ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return DynamicInfoViewModel(dynamicId) as T
     }
 }

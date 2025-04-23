@@ -11,6 +11,8 @@ import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.util.view.AsyncLayoutInflaterX;
 import com.huanli233.biliterminal2.util.Preferences;
 
+import kotlin.Unit;
+
 public class SettingMenuActivity extends BaseActivity {
 
     private SwitchMaterial menu_popular, menu_live, menu_precious;
@@ -39,6 +41,8 @@ public class SettingMenuActivity extends BaseActivity {
                 Intent intent = new Intent(SettingMenuActivity.this, SortSettingActivity.class);
                 startActivity(intent);
             });
+
+            return Unit.INSTANCE;
         });
     }
 

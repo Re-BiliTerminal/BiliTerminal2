@@ -5,36 +5,11 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
+    <com.huanli233.biliterminal2.ui.widget.TopBar
         android:id="@+id/top_bar"
+        app:titleText="@string/about"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
-
-        <TextView
-            android:id="@+id/page_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginVertical="3dp"
-            android:text="@string/about"
-            android:textStyle="bold"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            app:drawableStartCompat="@drawable/arrow_back" />
-
-        <com.huanli233.biliterminal2.ui.widget.TextClock
-            android:id="@+id/time_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginVertical="3dp"
-            tools:text="11:45"
-            android:textStyle="bold"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-
-    </RelativeLayout>
+        android:layout_height="wrap_content" />
 
     <ScrollView
         android:layout_height="match_parent"
@@ -72,7 +47,6 @@
                 android:layout_marginHorizontal="4dp"
                 android:layout_marginBottom="6dp"
                 android:text="@string/about_description"
-                android:singleLine="true"
                 android:gravity="center" />
 
             <LinearLayout
@@ -185,16 +159,25 @@
 
                             <ImageView
                                 android:id="@+id/robinAvatar"
+                                tools:src="@mipmap/avatar_robin"
                                 android:layout_width="0dp"
                                 android:layout_height="0dp"
                                 android:layout_marginStart="8dp"
+                                android:layout_marginEnd="3dp"
                                 android:adjustViewBounds="true"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintDimensionRatio="1:1"
-                                app:layout_constraintHeight_percent="0.7"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/guideline_robin"
                                 tools:ignore="ContentDescription" />
+
+                            <androidx.constraintlayout.widget.Guideline
+                                android:id="@+id/guideline_robin"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                app:layout_constraintGuide_percent="0.25" />
 
                             <TextView
                                 android:id="@+id/robinName"
@@ -204,7 +187,6 @@
                                 android:layout_marginTop="2dp"
                                 android:layout_marginBottom="1dp"
                                 android:ellipsize="end"
-                                android:singleLine="true"
                                 android:text="@string/name_robin_not_bad"
                                 app:layout_constraintBottom_toTopOf="@+id/robinDesc"
                                 app:layout_constraintStart_toEndOf="@id/robinAvatar"
@@ -218,7 +200,6 @@
                                 android:layout_marginTop="1dp"
                                 android:layout_marginBottom="2dp"
                                 android:alpha="0.7"
-                                android:singleLine="true"
                                 android:text="@string/desc_robin_not_bad"
                                 android:textSize="11sp"
                                 app:layout_constraintBottom_toBottomOf="@+id/robinAvatar"
@@ -242,6 +223,7 @@
 
                             <ImageView
                                 android:id="@+id/huanliAvatar"
+                                tools:src="@mipmap/avatar_huanli"
                                 android:layout_width="0dp"
                                 android:layout_height="0dp"
                                 android:layout_marginStart="8dp"
@@ -251,7 +233,15 @@
                                 app:layout_constraintHeight_percent="0.7"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/guideline_huanli"
                                 tools:ignore="ContentDescription" />
+
+                            <androidx.constraintlayout.widget.Guideline
+                                android:id="@+id/guideline_huanli"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                app:layout_constraintGuide_percent="0.25" />
 
                             <TextView
                                 android:id="@+id/huanliName"
@@ -261,7 +251,6 @@
                                 android:layout_marginTop="2dp"
                                 android:layout_marginBottom="1dp"
                                 android:ellipsize="end"
-                                android:singleLine="true"
                                 android:text="@string/name_huanli233"
                                 app:layout_constraintBottom_toTopOf="@+id/huanliDesc"
                                 app:layout_constraintStart_toEndOf="@id/huanliAvatar"
@@ -275,7 +264,6 @@
                                 android:layout_marginTop="1dp"
                                 android:layout_marginBottom="2dp"
                                 android:alpha="0.7"
-                                android:singleLine="true"
                                 android:text="@string/desc_huanli233"
                                 android:textSize="11sp"
                                 app:layout_constraintBottom_toBottomOf="@+id/huanliAvatar"
@@ -310,7 +298,7 @@
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:textSize="14sp"
-                        android:text="开源信息"
+                        android:text="@string/open_source_info"
                         android:layout_gravity="center" />
 
                     <TextView

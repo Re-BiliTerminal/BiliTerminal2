@@ -13,7 +13,7 @@ import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.adapter.video.VideoCardHolder;
 import com.huanli233.biliterminal2.listener.OnItemLongClickListener;
 import com.huanli233.biliterminal2.bean.LiveRoom;
-import com.huanli233.biliterminal2.bean.VideoCard;
+import com.huanli233.biliterminal2.bean.VideoCardKt;
 import com.huanli233.biliterminal2.util.TerminalContext;
 import com.huanli233.biliterminal2.util.Utils;
 
@@ -46,7 +46,7 @@ public class LiveCardAdapter extends RecyclerView.Adapter<VideoCardHolder> {
     public void onBindViewHolder(@NonNull VideoCardHolder holder, int position) {
         LiveRoom room = roomList.get(position);
 
-        VideoCard videoCard = new VideoCard();
+        VideoCardKt videoCard = new VideoCardKt();
         videoCard.setTitle(Utils.removeHtml(room.title));
         if (!room.user_cover.startsWith("http")) videoCard.setCover("http:" + room.user_cover);
         else videoCard.setCover(room.user_cover);

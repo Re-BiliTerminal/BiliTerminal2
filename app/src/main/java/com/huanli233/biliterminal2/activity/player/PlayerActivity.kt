@@ -92,7 +92,7 @@ import java.util.zip.Inflater
 import kotlin.math.sqrt
 
 open class PlayerActivity : AppCompatActivity(), IMediaPlayer.OnPreparedListener {
-    private lateinit var binding: ActivityPlayerBinding
+    lateinit var binding: ActivityPlayerBinding
 
     private var destroyed = false
 
@@ -251,7 +251,7 @@ open class PlayerActivity : AppCompatActivity(), IMediaPlayer.OnPreparedListener
             binding.textOnline.setPadding(0, 0, padding * 3, 0)
             binding.textProgress.setPadding(padding * 3, 0, 0, 0)
 
-            binding.top.setPadding(
+            binding.topBar.setPadding(
                 (padding * 5.5f).toInt(),
                 padding * 2,
                 (padding * 5.5f).toInt(),
@@ -390,7 +390,7 @@ open class PlayerActivity : AppCompatActivity(), IMediaPlayer.OnPreparedListener
 
 
     private fun initView() {
-        binding.top.setOnClickListener { finish() }
+        binding.topBar.setOnClickListener { finish() }
 
         val params = RelativeLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -661,7 +661,7 @@ open class PlayerActivity : AppCompatActivity(), IMediaPlayer.OnPreparedListener
             }
         } else {
             timestampClick = nowTimestamp
-            if ((binding.top.visibility) == View.GONE) showControls()
+            if ((binding.topBar.visibility) == View.GONE) showControls()
             else hideControls()
         }
     }
@@ -669,7 +669,7 @@ open class PlayerActivity : AppCompatActivity(), IMediaPlayer.OnPreparedListener
     @SuppressLint("SetTextI18n")
     private fun showControls() {
         binding.rightControl.visibility = View.VISIBLE
-        binding.top.visibility = View.VISIBLE
+        binding.topBar.visibility = View.VISIBLE
         binding.bottomButtons.visibility = View.VISIBLE
         binding.videoProgress.visibility = View.VISIBLE
         if (isPrepared && !isLiveMode) binding.textSpeed.visibility = View.VISIBLE
@@ -687,7 +687,7 @@ open class PlayerActivity : AppCompatActivity(), IMediaPlayer.OnPreparedListener
 
     private fun hideControls() {
         binding.rightControl.visibility = View.GONE
-        binding.top.visibility = View.GONE
+        binding.topBar.visibility = View.GONE
         binding.bottomButtons.visibility = View.GONE
         binding.videoProgress.visibility = View.GONE
         if (isPrepared) binding.textSpeed.visibility = View.GONE
@@ -903,7 +903,7 @@ open class PlayerActivity : AppCompatActivity(), IMediaPlayer.OnPreparedListener
         isPlaying = true
         binding.buttonVideo.setImageResource(R.drawable.btn_player_pause)
 
-        binding.textSpeed.visibility = binding.top.visibility
+        binding.textSpeed.visibility = binding.topBar.visibility
         if (isLiveMode) binding.textSpeed.visibility = View.GONE
         binding.textSpeed.setOnClickListener {
             binding.layoutSpeed.visibility =

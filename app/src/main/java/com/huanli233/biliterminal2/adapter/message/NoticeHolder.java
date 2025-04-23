@@ -23,7 +23,7 @@ import com.huanli233.biliterminal2.adapter.video.VideoCardHolder;
 import com.huanli233.biliterminal2.api.ReplyApi;
 import com.huanli233.biliterminal2.bean.MessageCard;
 import com.huanli233.biliterminal2.bean.Reply;
-import com.huanli233.biliterminal2.bean.VideoCard;
+import com.huanli233.biliterminal2.bean.VideoCardKt;
 import com.huanli233.biliterminal2.util.GlideUtil;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.TerminalContext;
@@ -88,7 +88,7 @@ public class NoticeHolder extends RecyclerView.ViewHolder {
         Utils.copyable(action);
 
         if (message.videoCard != null) {
-            VideoCard childVideoCard = message.videoCard;
+            VideoCardKt childVideoCard = message.videoCard;
             VideoCardHolder holder = new VideoCardHolder(View.inflate(context, R.layout.cell_dynamic_video, extraCard));
             holder.bindData(childVideoCard, context);
             holder.itemView.findViewById(R.id.videoCardView).setOnClickListener(view ->

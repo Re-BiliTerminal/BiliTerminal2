@@ -7,8 +7,7 @@ import com.huanli233.biliterminal2.activity.reply.ReplyFragment
 import com.huanli233.biliterminal2.databinding.ActivitySimpleViewpagerBinding
 import com.huanli233.biliterminal2.util.MsgUtil
 import com.huanli233.biliterminal2.util.TerminalContext
-import com.huanli233.biliterminal2.util.extensions.LoadState
-import com.huanli233.biliterminal2.util.extensions.gone
+import com.huanli233.biliterminal2.util.extensions.invisible
 import com.huanli233.biliterminal2.util.extensions.setupFragments
 import com.huanli233.biliterminal2.util.extensions.showError
 import com.huanli233.biliterminal2.util.extensions.visible
@@ -29,10 +28,10 @@ class OpusActivity: BaseActivity() {
         val seekReply = intent.getLongExtra("seekReply", -1)
         viewModel.opusState.observe(this) {
             it.onLoading {
-                binding.viewPager.gone()
+                binding.viewPager.invisible()
                 binding.loading.visible()
             }.onError {
-                binding.viewPager.gone()
+                binding.viewPager.invisible()
                 binding.loading.showError()
                 MsgUtil.error(it)
             }.onSuccess {
@@ -42,7 +41,7 @@ class OpusActivity: BaseActivity() {
                     finish()
                     return@observe
                 }
-                binding.loading.gone()
+                binding.loading.invisible()
                 binding.viewPager.visible()
                 with(binding.viewPager) {
                     visible()
@@ -50,9 +49,9 @@ class OpusActivity: BaseActivity() {
                         fragmentManager = supportFragmentManager,
                         OpusFragment.newInstance(opusId),
                         ReplyFragment.newInstance(
-                            aid = opus.basic.commentIdStr.toLongOrNull() ?: -1,
-                            type = opus.basic.commentType.toIntOrNull() ?: -1,
-                            seek = seekReply
+                            oid = opus.basic.commentIdStr.toLongOrNull() ?: -1,
+                            replyType = opus.basic.commentType.toIntOrNull() ?: -1,
+                            seekReply = seekReply
                         )
                     )
                     if (seekReply != -1L) {

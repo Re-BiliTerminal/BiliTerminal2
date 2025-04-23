@@ -12,6 +12,8 @@ import com.huanli233.biliterminal2.util.Preferences.getString
 import com.huanli233.biliterminal2.util.network.NetWorkUtil
 import java.io.Serializable
 import androidx.core.net.toUri
+import com.huanli233.biliterminal2.bean.TYPE_LIVE
+import com.huanli233.biliterminal2.bean.TYPE_LOCAL
 
 object PlayerManager {
 
@@ -38,7 +40,7 @@ object PlayerManager {
                 intent.putExtra("cid", playerData.cid)
                 intent.putExtra("mid", playerData.mid)
                 intent.putExtra("progress", playerData.progress)
-                intent.putExtra("live_mode", playerData.live)
+                intent.putExtra("live_mode", playerData.type == TYPE_LIVE)
             }
 
             "mtvPlayer" -> {
@@ -48,7 +50,7 @@ object PlayerManager {
                 )
                 intent.setAction(Intent.ACTION_VIEW)
                 intent.putExtra("cookie", getString(Preferences.COOKIES, ""))
-                intent.putExtra("mode", (if (playerData.local) "2" else "0"))
+                intent.putExtra("mode", (if (playerData.type == TYPE_LOCAL) "2" else "0"))
                 intent.putExtra("url", playerData.urlVideo)
                 intent.putExtra("danmaku", playerData.urlDanmaku)
                 intent.putExtra("title", playerData.title)
@@ -61,11 +63,11 @@ object PlayerManager {
                 )
                 intent.putExtra("name", playerData.title)
                 intent.putExtra("danmaku", playerData.urlDanmaku)
-                intent.putExtra("live_mode", playerData.live)
+                intent.putExtra("live_mode", playerData.type == TYPE_LIVE)
 
-                intent.setData(playerData.urlVideo?.toUri())
+                intent.setData(playerData.urlVideo.toUri())
 
-                if (!playerData.local) {
+                if (playerData.type != TYPE_LOCAL) {
                     val headers: MutableMap<String, String> = HashMap()
                     headers["Cookie"] =
                         getString(Preferences.COOKIES, "")

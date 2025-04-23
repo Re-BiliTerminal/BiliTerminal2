@@ -211,9 +211,9 @@ class VideoInfoFragment : Fragment() {
         val timeText = rootview.findViewById<TextView>(R.id.time_text)
         val durationText = rootview.findViewById<TextView>(R.id.durationText)
         val play = rootview.findViewById<MaterialButton>(R.id.play)
-        val addWatchlater = rootview.findViewById<MaterialButton>(R.id.addWatchlater)
+        val addWatchlater = rootview.findViewById<MaterialButton>(R.id.btn_add_watch_later)
         val download = rootview.findViewById<MaterialButton>(R.id.download)
-        val relay = rootview.findViewById<MaterialButton>(R.id.relay)
+        val relay = rootview.findViewById<MaterialButton>(R.id.forward)
         val bvidText = rootview.findViewById<TextView>(R.id.bvidText)
         val danmakuCount = rootview.findViewById<TextView>(R.id.danmakuCount)
         val like = rootview.findViewById<ImageView>(R.id.btn_like)
@@ -330,7 +330,7 @@ class VideoInfoFragment : Fragment() {
                         videoInfo.staff
                     )
                 upRecyclerview.setHasFixedSize(true)
-                upRecyclerview.layoutManager = CustomLinearManager(context)
+                upRecyclerview.layoutManager = CustomLinearManager(requireContext())
                 upRecyclerview.adapter = adapter
 
 

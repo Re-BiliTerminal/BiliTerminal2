@@ -2,7 +2,7 @@ package com.huanli233.biliterminal2.api;
 
 import com.huanli233.biliterminal2.bean.ArticleCard;
 import com.huanli233.biliterminal2.bean.UserInfo;
-import com.huanli233.biliterminal2.bean.VideoCard;
+import com.huanli233.biliterminal2.bean.VideoCardKt;
 import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 import com.huanli233.biliterminal2.util.Utils;
 
@@ -67,7 +67,7 @@ public class SearchApi {
         else return null;
     }
 
-    public static void getVideosFromSearchResult(JSONArray input, ArrayList<VideoCard> videoCardList, boolean first) throws JSONException {
+    public static void getVideosFromSearchResult(JSONArray input, ArrayList<VideoCardKt> videoCardList, boolean first) throws JSONException {
         for (int i = 0; i < input.length(); i++) {  //遍历所有的分类，找到视频那一项
             JSONObject typecard = input.getJSONObject(i);
             String type = typecard.getString("result_type");
@@ -90,7 +90,7 @@ public class SearchApi {
                     long play = card.getLong("play");
                     String playTimesStr = Utils.toWan(play) + "观看";
 
-                    videoCardList.add(VideoCard.of(title, upName, playTimesStr, cover, aid, bvid));
+                    videoCardList.add(VideoCardKt.of(title, upName, playTimesStr, cover, aid, bvid));
                 }
             } else if (type.equals("media_bangumi") && first) {
                 JSONArray data = typecard.getJSONArray("data");
@@ -105,7 +105,7 @@ public class SearchApi {
                     long aid = card.getLong("media_id");
                     String bvid = card.getString("season_id");
                     String playTimesStr = card.getString("index_show");
-                    videoCardList.add(VideoCard.of(title, upName, playTimesStr, cover, aid, bvid));
+                    videoCardList.add(VideoCardKt.of(title, upName, playTimesStr, cover, aid, bvid));
                 }
             }
         }

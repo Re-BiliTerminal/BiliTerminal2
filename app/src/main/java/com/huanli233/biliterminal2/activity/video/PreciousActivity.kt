@@ -12,7 +12,7 @@ import com.huanli233.biliterminal2.activity.base.InstanceActivity
 import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter
 import com.huanli233.biliterminal2.api.apiResultNonNull
 import com.huanli233.biliterminal2.api.bilibiliApi
-import com.huanli233.biliterminal2.bean.VideoCard
+import com.huanli233.biliterminal2.bean.VideoCardKt
 import com.huanli233.biliterminal2.bean.toVideoCard
 import com.huanli233.biliterminal2.ui.widget.recyclerView.CustomLinearManager
 import com.huanli233.biliterminal2.util.ThreadManager
@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 class PreciousActivity : InstanceActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private var videoCardList = mutableListOf<VideoCard>()
+    private var videoCardList = mutableListOf<VideoCardKt>()
     private val videoCardAdapter: VideoCardAdapter by lazy { VideoCardAdapter(this@PreciousActivity, videoCardList) }
     private var firstRefresh = true
     private var refreshing = false
@@ -36,7 +36,7 @@ class PreciousActivity : InstanceActivity() {
         setContentView(R.layout.activity_simple_main_refresh)
         setMenuClick()
 
-        recyclerView = findViewById<RecyclerView>(R.id.recyclerView).apply {
+        recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
                 override fun onScrolled(

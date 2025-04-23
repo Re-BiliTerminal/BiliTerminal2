@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.listener.OnItemLongClickListener
-import com.huanli233.biliterminal2.bean.VideoCard
+import com.huanli233.biliterminal2.bean.VideoCardKt
 import com.huanli233.biliterminal2.util.TerminalContext
 
-class VideoCardAdapter(val context: Context, val videoCardList: List<VideoCard>) :
+class VideoCardAdapter(val context: Context, val videoCardList: List<VideoCardKt>) :
     RecyclerView.Adapter<VideoCardHolder>() {
     var longClickListener: OnItemLongClickListener? = null
 

@@ -40,7 +40,7 @@ import com.huanli233.biliterminal2.util.extensions.HeaderView
 import com.huanli233.biliterminal2.util.extensions.toColorIntOrNull
 import com.huanli233.biliterminal2.util.extensions.dp2px
 import com.huanli233.biliwebapi.bean.opus.Opus
-import com.huanli233.biliwebapi.bean.opus.PARAGRAPH_TYPE_LINE
+import com.huanli233.biliwebapi.bean.opus.PARAGRAPH_TYPE_LINE_DIVIDER
 import com.huanli233.biliwebapi.bean.opus.PARAGRAPH_TYPE_LIST
 import com.huanli233.biliwebapi.bean.opus.PARAGRAPH_TYPE_PICTURE
 import com.huanli233.biliwebapi.bean.opus.PARAGRAPH_TYPE_QUOTE
@@ -101,7 +101,7 @@ class OpusFragment: Fragment() {
                 ).withKotlinClassLinker { _, data ->
                     when (data.type) {
                         PARAGRAPH_TYPE_WORD, PARAGRAPH_TYPE_QUOTE, PARAGRAPH_TYPE_LIST -> OpusTextViewDelegate::class
-                        PARAGRAPH_TYPE_LINE, PARAGRAPH_TYPE_PICTURE -> OpusImageViewDelegate::class
+                        PARAGRAPH_TYPE_LINE_DIVIDER, PARAGRAPH_TYPE_PICTURE -> OpusImageViewDelegate::class
                         else -> OpusTextViewDelegate::class
                     }
                 }
@@ -264,7 +264,7 @@ class OpusImageViewDelegate(
             PARAGRAPH_TYPE_PICTURE -> {
                 holder.binding.urls = item.pic?.pics?.map { it.url }.orEmpty()
             }
-            PARAGRAPH_TYPE_LINE -> {
+            PARAGRAPH_TYPE_LINE_DIVIDER -> {
                 holder.binding.urls = listOf(item.line?.pic?.url.orEmpty())
             }
         }

@@ -16,7 +16,7 @@ import com.huanli233.biliterminal2.activity.base.RefreshListActivity
 import com.huanli233.biliterminal2.adapter.video.VideoCardHolder
 import com.huanli233.biliterminal2.api.apiResultNonNull
 import com.huanli233.biliterminal2.api.bilibiliApi
-import com.huanli233.biliterminal2.bean.VideoCard
+import com.huanli233.biliterminal2.bean.VideoCardKt
 import com.huanli233.biliterminal2.bean.toVideoCard
 import com.huanli233.biliterminal2.util.GlideUtil.loadPicture
 import com.huanli233.biliterminal2.util.TerminalContext
@@ -131,7 +131,7 @@ class CollectionInfoActivity : RefreshListActivity() {
                 realPosition--
                 val videoInfo: VideoInfo =
                     data[getSectionPos(realPosition)].episodes[getEpisodePos(realPosition)]
-                val videoCard: VideoCard = videoInfo.toVideoCard()
+                val videoCard: VideoCardKt = videoInfo.toVideoCard()
                 holder.itemView.setOnClickListener {
                     TerminalContext.getInstance().enterVideoDetailPage(
                         context, videoCard.aid, videoCard.bvid

@@ -7,7 +7,6 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.huanli233.biliterminal2.activity.base.RefreshListFragment;
-import com.huanli233.biliterminal2.adapter.dynamic.DynamicHolder;
 import com.huanli233.biliterminal2.adapter.dynamic.UserDynamicAdapter;
 import com.huanli233.biliterminal2.api.DynamicApi;
 import com.huanli233.biliterminal2.api.UserInfoApi;
@@ -70,7 +69,7 @@ public class UserDynamicFragment extends RefreshListFragment {
 
                 try {
                     offset = DynamicApi.getDynamicList(dynamicList, offset, mid, null);
-                    bottomReached = (offset == -1);
+                    setBottomReached(offset == -1);
                 } catch (Exception e) {
                     loadFail(e);
                 }

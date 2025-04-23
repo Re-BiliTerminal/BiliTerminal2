@@ -13,9 +13,9 @@ import androidx.dynamicanimation.animation.DynamicAnimation;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
-import com.skywear.keyuploader.R;
-import com.skywear.keyuploader.ui.utils.SpringAnimationUtils;
-import com.skywear.keyuploader.ui.utils.ViewUtils;
+import com.huanli233.biliterminal2.R;
+import com.huanli233.biliterminal2.ui.utils.SpringAnimationUtils;
+import com.huanli233.biliterminal2.ui.utils.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,9 +72,9 @@ public class AppNestedScrollView extends NestedScrollView {
         setOverScrollMode(2);
         this.isAnimScale = true;
         TypedArray obtainStyledAttributes = context.obtainStyledAttributes(attributeSet, R.styleable.AppNestedScrollView, 0, 0);
-        this.isAnimScale = obtainStyledAttributes.getBoolean(R.styleable.AppNestedScrollView_ansv_anim_scale, true);
-        this.enableStart = obtainStyledAttributes.getBoolean(R.styleable.AppNestedScrollView_ansv_enable_start, true);
-        this.enableEnd = obtainStyledAttributes.getBoolean(R.styleable.AppNestedScrollView_ansv_enable_end, true);
+        this.isAnimScale = obtainStyledAttributes.getBoolean(R.styleable.AppNestedScrollView_animScaleNSV, true);
+        this.enableStart = obtainStyledAttributes.getBoolean(R.styleable.AppNestedScrollView_springEnableStartNSV, true);
+        this.enableEnd = obtainStyledAttributes.getBoolean(R.styleable.AppNestedScrollView_springEnableEndNSV, true);
         obtainStyledAttributes.recycle();
     }
 

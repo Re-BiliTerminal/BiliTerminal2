@@ -17,6 +17,8 @@ import com.huanli233.biliterminal2.util.Utils;
 import java.util.ArrayList;
 import java.util.Map;
 
+import kotlin.Unit;
+
 //选择播放器
 
 public class SettingPlayerChooseActivity extends BaseActivity {
@@ -68,6 +70,8 @@ public class SettingPlayerChooseActivity extends BaseActivity {
             });
 
             updateQn();
+
+            return Unit.INSTANCE;
         });
     }
 

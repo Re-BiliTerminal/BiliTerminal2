@@ -8,14 +8,14 @@ import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter
 import com.huanli233.biliterminal2.api.apiResultNonNull
 import com.huanli233.biliterminal2.api.bilibiliApi
 import com.huanli233.biliterminal2.helper.TutorialHelper
-import com.huanli233.biliterminal2.bean.VideoCard
+import com.huanli233.biliterminal2.bean.VideoCardKt
 import com.huanli233.biliterminal2.bean.toVideoCard
 import com.huanli233.biliterminal2.util.api.uniqId
 import com.huanli233.biliwebapi.api.interfaces.IRecommendApi
 import kotlinx.coroutines.launch
 
 class RecommendActivity : RefreshMainActivity() {
-    private var videoCardList = mutableListOf<VideoCard>()
+    private var videoCardList = mutableListOf<VideoCardKt>()
     private val videoCardAdapter: VideoCardAdapter by lazy { VideoCardAdapter(this, videoCardList) }
     private var firstRefresh = true
 

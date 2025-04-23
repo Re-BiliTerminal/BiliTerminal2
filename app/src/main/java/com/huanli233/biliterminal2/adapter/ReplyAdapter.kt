@@ -232,9 +232,9 @@ class ReplyAdapter(
     }
 
     private fun SpannableStringBuilder.appendMedal(sender: UserInfo) {
-        if (!TextUtils.isEmpty(sender.fansMedal.medal.medalName)) {
+        if (!TextUtils.isEmpty(sender.fansMedal?.medal?.medalName)) {
             val start = length
-            append("  ${sender.fansMedal.medal.medalName}Lv${sender.fansMedal.medal.level} ")
+            append("  ${sender.fansMedal?.medal?.medalName}Lv${sender.fansMedal?.medal?.level} ")
             setSpan(
                 RadiusBackgroundSpan(
                     2,

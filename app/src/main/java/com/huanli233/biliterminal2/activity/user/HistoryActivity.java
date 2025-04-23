@@ -5,7 +5,7 @@ import android.os.Bundle;
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter;
 import com.huanli233.biliterminal2.api.HistoryApi;
-import com.huanli233.biliterminal2.bean.VideoCard;
+import com.huanli233.biliterminal2.bean.VideoCardKt;
 import com.huanli233.biliterminal2.util.ThreadManager;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import java.util.List;
 
 public class HistoryActivity extends RefreshListActivity {
 
-    private ArrayList<VideoCard> videoList;
+    private ArrayList<VideoCardKt> videoList;
     private VideoCardAdapter videoCardAdapter;
 
     @Override
@@ -53,7 +53,7 @@ public class HistoryActivity extends RefreshListActivity {
     private void continueLoading(int page) {
         ThreadManager.run(() -> {
             try {
-                List<VideoCard> list = new ArrayList<>();
+                List<VideoCardKt> list = new ArrayList<>();
                 int result = HistoryApi.getHistory(page, list);
                 if (result != -1) {
                     runOnUiThread(() -> {

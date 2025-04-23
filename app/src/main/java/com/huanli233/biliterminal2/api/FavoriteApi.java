@@ -4,7 +4,7 @@ import android.util.Pair;
 
 import com.huanli233.biliterminal2.bean.Collection;
 import com.huanli233.biliterminal2.bean.FavoriteFolder;
-import com.huanli233.biliterminal2.bean.VideoCard;
+import com.huanli233.biliterminal2.bean.VideoCardKt;
 import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 import com.huanli233.biliterminal2.util.Preferences;
 import com.huanli233.biliterminal2.util.Utils;
@@ -88,7 +88,7 @@ public class FavoriteApi {
         return new Pair<>(result.optInt("code", -1), has_more);
     }
 
-    public static int getFolderVideos(long mid, long fid, int page, ArrayList<VideoCard> videoList) throws IOException, JSONException {
+    public static int getFolderVideos(long mid, long fid, int page, ArrayList<VideoCardKt> videoList) throws IOException, JSONException {
         String url = "https://api.bilibili.com/x/space/fav/arc?vmid=" + mid
                 + "&ps=30&fid=" + fid + "&tid=0&keyword=&pn=" + page + "&order=fav_time";
         JSONObject result = NetWorkUtil.getJson(url);
@@ -107,13 +107,13 @@ public class FavoriteApi {
 
                     JSONObject stat = video.getJSONObject("stat");
                     String view = Utils.toWan(stat.getLong("view")) + "观看";
-                    VideoCard card = new VideoCard();
+                    VideoCardKt card = new VideoCardKt();
                     card.setTitle(title);
                     card.setCover(cover);
                     card.setAid(aid);
                     card.setUploader(upName);
                     card.setView(view);
-                    videoList.add(VideoCard.of(title, upName, view, cover, aid, ""));
+                    videoList.add(VideoCardKt.of(title, upName, view, cover, aid, ""));
                 }
                 return 0;
             } else return 1;

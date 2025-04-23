@@ -8,7 +8,7 @@ import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter;
 import com.huanli233.biliterminal2.api.SeriesApi;
 import com.huanli233.biliterminal2.bean.PageInfo;
-import com.huanli233.biliterminal2.bean.VideoCard;
+import com.huanli233.biliterminal2.bean.VideoCardKt;
 import com.huanli233.biliterminal2.util.ThreadManager;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class SeriesInfoActivity extends RefreshListActivity {
     private String type;
     private long mid;
     private int sid;
-    private ArrayList<VideoCard> videoList;
+    private ArrayList<VideoCardKt> videoList;
     private VideoCardAdapter videoCardAdapter;
 
     @SuppressLint("MissingInflatedId")

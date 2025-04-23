@@ -219,7 +219,7 @@ public class PlayerDanmuClientListener extends WebSocketListener {
                     data = result.getJSONObject("data");
                     playerActivity.runOnUiThread(() -> {
                         try {
-                            playerActivity.text_title.setText(data.getString("title"));
+                            playerActivity.binding.textTitle.setText(data.getString("title"));
                         } catch (Exception ignore) {
                         }
                     });

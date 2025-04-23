@@ -69,7 +69,7 @@ public class SortSettingActivity extends BaseActivity {
             }
         }
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         DragAdapter dragAdapter = new DragAdapter(this, data);
         recyclerView.setAdapter(dragAdapter);

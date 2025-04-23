@@ -89,6 +89,8 @@ android {
 
         multiDexEnabled = true
 
+        vectorDrawables.useSupportLibrary = true
+
         ndk {
             //noinspection ChromeOsAbiSupport
             abiFilters += setOf("armeabi-v7a", "x86", "mips")
@@ -190,11 +192,13 @@ dependencies {
     // noinspection GradleDependency
     implementation("androidx.appcompat:appcompat:1.5.1")
     //noinspection GradleDependency
-    implementation("com.google.android.material:material:1.9.0")
+    implementation("com.google.android.material:material:1.10.0")
     // noinspection GradleDependency
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0")
     // noinspection GradleDependency
     implementation("androidx.asynclayoutinflater:asynclayoutinflater:1.0.0")
+    // noinspection GradleDependency
+    implementation("androidx.recyclerview:recyclerview:1.3.1")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
 
@@ -222,8 +226,9 @@ dependencies {
 
     implementation("com.elvishew:xlog:1.11.0")
 
-    implementation("com.mikepenz:iconics-core:5.4.0")
-    implementation("com.mikepenz:iconics-views:5.4.0")
-    implementation("com.mikepenz:google-material-typeface:4.0.0.3-kotlin@aar")
-    implementation("com.mikepenz:google-material-typeface-rounded:4.0.0.2-kotlin@aar")
+    // will be removed
+//    implementation("com.mikepenz:iconics-core:5.4.0")
+//    implementation("com.mikepenz:iconics-views:5.4.0")
+//    implementation("com.mikepenz:google-material-typeface:4.0.0.3-kotlin@aar")
+//    implementation("com.mikepenz:google-material-typeface-rounded:4.0.0.2-kotlin@aar")
 }

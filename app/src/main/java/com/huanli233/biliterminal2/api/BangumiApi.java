@@ -2,7 +2,7 @@ package com.huanli233.biliterminal2.api;
 
 import com.elvishew.xlog.XLog;
 import com.huanli233.biliterminal2.bean.Bangumi;
-import com.huanli233.biliterminal2.bean.VideoCard;
+import com.huanli233.biliterminal2.bean.VideoCardKt;
 import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 import com.huanli233.biliterminal2.util.Preferences;
 import com.huanli233.biliterminal2.util.Utils;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class BangumiApi {
-    public static int getFollowingList(int page, List<VideoCard> cardList) throws JSONException, IOException {
+    public static int getFollowingList(int page, List<VideoCardKt> cardList) throws JSONException, IOException {
         String url = "https://api.bilibili.com/x/space/bangumi/follow/list?type=1&follow_status=0&pn=" + page
                 + "&ps=15&vmid=" + Preferences.getLong("mid", 0);
 
@@ -32,7 +32,7 @@ public class BangumiApi {
 
         for (int i = 0; i < list.length(); i++) {
             JSONObject bangumi = list.getJSONObject(i);
-            VideoCard card = new VideoCard();
+            VideoCardKt card = new VideoCardKt();
             card.setType("media_bangumi");
             card.setAid(bangumi.getLong("media_id"));
             card.setTitle(bangumi.getString("title"));

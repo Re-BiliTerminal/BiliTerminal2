@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.video.series.SeriesInfoActivity;
 import com.huanli233.biliterminal2.bean.Series;
-import com.huanli233.biliterminal2.bean.VideoCard;
+import com.huanli233.biliterminal2.bean.VideoCardKt;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class SeriesCardAdapter extends RecyclerView.Adapter<VideoCardHolder> {
     @Override
     public void onBindViewHolder(@NonNull VideoCardHolder holder, int position) {
         Series series = seasonList.get(position);
-        VideoCard videoCard = VideoCard.of(series.title, series.intro, series.total, series.cover, 0, "", "series");
+        VideoCardKt videoCard = VideoCardKt.of(series.title, series.intro, series.total, series.cover, 0, "", "series");
         holder.bindData(videoCard, context);    //此函数在VideoCardHolder里
 
         holder.itemView.setOnClickListener(view -> {

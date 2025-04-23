@@ -41,7 +41,7 @@ public class LocalListActivity extends InstanceActivity {
         setContentView(R.layout.activity_simple_main_refresh);
         setMenuClick();
 
-        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recycler_view);
 
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(this::refresh);

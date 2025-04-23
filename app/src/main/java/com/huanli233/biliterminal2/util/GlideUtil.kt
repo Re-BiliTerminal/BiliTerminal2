@@ -29,11 +29,12 @@ object GlideUtil {
     @JvmStatic
     @JvmOverloads
     fun ImageView.loadPicture(
-        vararg url: Any,
+        url: Any,
         setClick: Boolean = false,
         option: RequestBuilder<Drawable>.() -> RequestBuilder<Drawable> = { this }
     ) {
-        Glide.with(context).asDrawable().load(if (url[0] is String) url(url[0].toString()) else url[0])
+        val urls = url as? List<*> ?: listOf(url)
+        Glide.with(context).asDrawable().load(if (urls[0] is String) url(urls[0].toString()) else urls[0])
             .transition(transitionOptions)
             .apply(RequestOptions.bitmapTransform(RoundedCorners(Utils.dp2px(5f))))
             .placeholder(R.mipmap.placeholder)
@@ -48,7 +49,7 @@ object GlideUtil {
                         context,
                         ImageViewerActivity::class.java
                     ).putExtra(
-                        "imageList", arrayListOf(*url)
+                        "imageList", ArrayList(urls)
                     )
                 )
             }

@@ -1,6 +1,6 @@
 package com.huanli233.biliterminal2.api;
 
-import com.huanli233.biliterminal2.bean.VideoCard;
+import com.huanli233.biliterminal2.bean.VideoCardKt;
 import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 import com.huanli233.biliterminal2.util.Preferences;
 import com.huanli233.biliterminal2.util.Utils;
@@ -19,7 +19,7 @@ public class HistoryApi {
         NetWorkUtil.post(url, per, NetWorkUtil.webHeaders);
     }
 
-    public static int getHistory(int page, List<VideoCard> videoList) throws IOException, JSONException {
+    public static int getHistory(int page, List<VideoCardKt> videoList) throws IOException, JSONException {
         String url = "https://api.bilibili.com/x/v2/history?pn=" + page + "&ps=30";
         JSONObject result = NetWorkUtil.getJson(url);
         if (!result.isNull("data")) {
@@ -35,7 +35,7 @@ public class HistoryApi {
                 String viewStr;
                 if (progress == 0) viewStr = "还没看过";
                 else viewStr = "看到" + Utils.toTime(videoCard.getInt("progress"));
-                VideoCard card = new VideoCard();
+                VideoCardKt card = new VideoCardKt();
                 card.setAid(aid);
                 card.setBvid(bvid);
                 card.setTitle(title);

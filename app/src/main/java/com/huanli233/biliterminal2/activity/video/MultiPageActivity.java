@@ -33,7 +33,7 @@ public class MultiPageActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_list);
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
         findViewById(R.id.top_bar).setOnClickListener(view -> finish());
 
         TextView textView = findViewById(R.id.page_name);

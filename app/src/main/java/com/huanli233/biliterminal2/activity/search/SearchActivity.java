@@ -36,6 +36,8 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import kotlin.Unit;
+
 public class SearchActivity extends InstanceActivity {
     private String lastKeyword = "≠~`";
     private RecyclerView historyRecyclerview;
@@ -151,6 +153,8 @@ public class SearchActivity extends InstanceActivity {
                 keywordInput.setText(getIntent().getStringExtra("keyword"));
                 MsgUtil.showMsg("可点击标题栏返回详情页");
             }
+
+            return Unit.INSTANCE;
         });
     }
 

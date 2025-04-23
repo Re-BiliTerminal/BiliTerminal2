@@ -12,6 +12,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.huanli233.biliterminal2.BiliTerminal;
+import com.huanli233.biliterminal2.BiliTerminalKt;
 
 import org.json.JSONObject;
 
@@ -73,9 +74,8 @@ public class FileUtil {
     public static boolean checkStoragePermission() {
         int sdk = Build.VERSION.SDK_INT;
         if (sdk < 17) return true;
-        assert BiliTerminal.context != null;
-        return ContextCompat.checkSelfPermission(BiliTerminal.context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(BiliTerminal.context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        return ContextCompat.checkSelfPermission(BiliTerminalKt.getContextNotNull(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(BiliTerminalKt.getContextNotNull(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -84,7 +84,7 @@ public class FileUtil {
     }
 
     public static File getDownloadPath() {
-        File path = new File(Preferences.getString("save_path_video", Environment.getExternalStorageDirectory() + "/Android/media/" + BiliTerminal.context.getPackageName() + "/"));
+        File path = new File(Preferences.getString("save_path_video", Environment.getExternalStorageDirectory() + "/Android/media/" + BiliTerminalKt.getContextNotNull().getPackageName() + "/"));
         try {
             File nomedia = new File(path, ".nomedia");    //为了防止系统扫描
             if (!nomedia.exists()) nomedia.createNewFile();

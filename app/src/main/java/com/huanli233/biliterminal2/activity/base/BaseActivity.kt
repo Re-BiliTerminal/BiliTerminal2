@@ -112,7 +112,7 @@ open class BaseActivity : AppCompatActivity() {
         val view: View = findViewById(R.id.top_bar) ?: return
         if (Build.VERSION.SDK_INT > 17 && view.hasOnClickListeners()) return
         view.setOnClickListener {
-            if (Build.VERSION.SDK_INT < 17 || !isDestroyed) {
+            if (!isDestroyed) {
                 finish()
             }
         }

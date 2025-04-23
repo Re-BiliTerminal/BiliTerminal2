@@ -49,7 +49,7 @@ open class RefreshListFragment : Fragment() {
                 isEnabled = false
                 isRefreshing = true
             }
-            recyclerView = findViewById<RecyclerView>(R.id.recyclerView).apply {
+            recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
                 layoutManager = this@RefreshListFragment.getLayoutManager()
                 addOnScrollListener(createScrollListener())
                 ImageAutoLoadScrollListener.install(this)

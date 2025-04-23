@@ -18,6 +18,8 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.Objects;
 
+import kotlin.Unit;
+
 public class TutorialActivity extends BaseActivity {
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
@@ -51,10 +53,7 @@ public class TutorialActivity extends BaseActivity {
                 Preferences.putInt("tutorial_ver_" + intent.getStringExtra("tag"), intent.getIntExtra("version", -1));
                 finish();
             });
+            return Unit.INSTANCE;
         });
-    }
-
-    @Override
-    public void onBackPressed() {
     }
 }

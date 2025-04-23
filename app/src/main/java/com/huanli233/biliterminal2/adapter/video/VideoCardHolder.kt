@@ -12,7 +12,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.elvishew.xlog.XLog
 import com.huanli233.biliterminal2.R
-import com.huanli233.biliterminal2.bean.VideoCard
+import com.huanli233.biliterminal2.bean.VideoCardKt
 import com.huanli233.biliterminal2.ui.widget.recyclerView.BaseHolder
 import com.huanli233.biliterminal2.util.GlideUtil.loadPicture
 import com.huanli233.biliterminal2.util.Utils
@@ -27,7 +27,7 @@ class VideoCardHolder(itemView: View) : BaseHolder(itemView) {
     var cover: ImageView =
         itemView.findViewById(R.id.img_cover)
 
-    fun bindData(videoCard: VideoCard, context: Context) {
+    fun bindData(videoCard: VideoCardKt, context: Context) {
         videoCard.uploader?.let {
             if (it.isNotEmpty()) {
                 upName.text = it

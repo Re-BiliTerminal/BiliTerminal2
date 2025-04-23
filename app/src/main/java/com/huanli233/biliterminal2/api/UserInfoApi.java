@@ -4,7 +4,7 @@ import com.elvishew.xlog.XLog;
 import com.huanli233.biliterminal2.bean.ArticleCard;
 import com.huanli233.biliterminal2.bean.LiveRoom;
 import com.huanli233.biliterminal2.bean.UserInfo;
-import com.huanli233.biliterminal2.bean.VideoCard;
+import com.huanli233.biliterminal2.bean.VideoCardKt;
 import com.huanli233.biliterminal2.util.api.DmImgParamUtil;
 import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 import com.huanli233.biliterminal2.util.Preferences;
@@ -131,7 +131,7 @@ public class UserInfoApi {
     }
 
 
-    public static int getUserVideos(long mid, int page, String searchKeyword, List<VideoCard> videoList) throws IOException, JSONException {
+    public static int getUserVideos(long mid, int page, String searchKeyword, List<VideoCardKt> videoList) throws IOException, JSONException {
         String url = "https://api.bilibili.com/x/space/wbi/arc/search?";
         url += "keyword=" + searchKeyword + "&mid=" + mid + "&order_avoided=true&order=pubdate&pn=" + page
                 + "&ps=30&tid=0&web_location=333.999";
@@ -153,7 +153,7 @@ public class UserInfoApi {
                     String upName = card.getString("author");
                     String title = card.getString("title");
 
-                    videoList.add(VideoCard.of(title, upName, playStr, cover, aid, bvid));
+                    videoList.add(VideoCardKt.of(title, upName, playStr, cover, aid, bvid));
                 }
                 return 0;
             } else return -1;

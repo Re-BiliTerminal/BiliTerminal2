@@ -15,6 +15,8 @@ import com.huanli233.biliterminal2.util.view.AsyncLayoutInflaterX;
 import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.Preferences;
 
+import kotlin.Unit;
+
 public class SettingUIActivity extends BaseActivity {
 
     private EditText uiScaleInput, uiPaddingH, uiPaddingV, density_input;
@@ -77,6 +79,7 @@ public class SettingUIActivity extends BaseActivity {
                 round.setChecked(false);
                 MsgUtil.showMsg("恢复完成");
             });
+            return Unit.INSTANCE;
         });
     }
 

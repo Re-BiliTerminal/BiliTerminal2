@@ -39,10 +39,11 @@
                 android:lines="1"
                 android:paddingEnd="4dp"
                 android:paddingBottom="2dp"
-                android:shadowColor="@color/bgblack"
-                android:shadowDx="3"
-                android:shadowDy="3"
-                android:shadowRadius="5"
+                android:textColor="?attr/colorOnPrimary"
+                android:shadowColor="?attr/colorPrimaryDark"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="1"
                 android:textSize="13sp"
                 android:textStyle="bold"
                 tools:text="00:00"
@@ -55,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="正在加载中..."
+            tools:text="正在加载中..."
             android:textSize="13sp" />
 
         <com.google.android.material.card.MaterialCardView
@@ -64,7 +65,7 @@
             android:layout_height="match_parent"
             android:layout_marginVertical="2dp"
             android:layout_marginTop="4dp"
-            android:alpha="0.6"
+            android:alpha="0.7"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -102,17 +103,37 @@
             app:layout_constraintStart_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/uploader_list">
 
-            <TextView
-                android:id="@+id/collectionText"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="35sp"
-                android:layout_marginHorizontal="8dp"
-                app:drawableEndCompat="@drawable/arrow_forward"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:singleLine="true"
-                tools:text="合集 · 纳西妲"
-                android:textSize="13sp" />
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="8dp" >
+
+                <TextView
+                    android:id="@+id/collectionText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:layout_marginHorizontal="8dp"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    tools:text="合集 · 纳西妲"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/icon_arrow_forward"
+                    android:textAlignment="textStart"
+                    android:textSize="13sp" />
+
+                <ImageView
+                    android:id="@+id/icon_arrow_forward"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/arrow_forward"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintStart_toEndOf="@+id/collectionText"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <LinearLayout
@@ -125,11 +146,10 @@
                 android:id="@+id/views_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="0.5"
+                android:alpha="0.7"
                 app:drawableStartCompat="@drawable/icon_play_16"
-                android:drawablePadding="1dp"
+                android:drawablePadding="2dp"
                 tools:text="114514"
-                android:textColor="#fff"
                 android:textSize="12sp" />
 
             <TextView
@@ -137,9 +157,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:alpha="0.5"
+                android:alpha="0.7"
                 app:drawableStartCompat="@drawable/icon_danmaku"
-                android:drawablePadding="1dp"
+                android:drawablePadding="2dp"
                 tools:text="1919"
                 android:textSize="12sp" />
 
@@ -150,9 +170,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:alpha="0.5"
+            android:alpha="0.7"
             app:drawableStartCompat="@drawable/icon_time"
-            android:drawablePadding="1dp"
+            android:drawablePadding="2dp"
             tools:text="9999-13-32 25:61"
             android:textSize="12sp" />
 
@@ -161,9 +181,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:alpha="0.5"
+            android:alpha="0.7"
             app:drawableStartCompat="@drawable/icon_bv"
-            android:drawablePadding="1dp"
+            android:drawablePadding="2dp"
             tools:text="BV114514"
             android:textSize="12sp" />
 
@@ -172,7 +192,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:alpha="0.5"
+            android:alpha="0.7"
             android:ellipsize="end"
             android:maxLines="1"
             tools:text="标签：???"
@@ -209,6 +229,7 @@
                 android:layout_height="50dp"
                 android:layout_marginVertical="6dp"
                 android:layout_marginHorizontal="8dp"
+                android:baselineAligned="false"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -223,7 +244,6 @@
                         android:id="@+id/btn_like"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:background="#0000"
                         android:src="@drawable/icon_like_deactivate"
                         tools:ignore="ContentDescription" />
 
@@ -231,7 +251,7 @@
                         android:id="@+id/like_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="点赞"
+                        android:text="@string/like"
                         android:textSize="12sp" />
                 </LinearLayout>
 
@@ -247,7 +267,6 @@
                         android:id="@+id/btn_coin"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:background="#0000"
                         android:src="@drawable/icon_coin_deactivate"
                         tools:ignore="ContentDescription" />
 
@@ -272,7 +291,6 @@
                         android:id="@+id/btn_fav"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:background="#0000"
                         android:src="@drawable/icon_fav_deactivate"
                         tools:ignore="ContentDescription" />
 
@@ -286,39 +304,59 @@
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-
-        <LinearLayout
+        
+        <HorizontalScrollView
+            android:id="@+id/action_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/addWatchlater"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="2dp"
-                android:layout_weight="0.5"
-                android:text="稍后再看" />
+                android:layout_marginTop="2dp"
+                android:orientation="horizontal">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/download"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_weight="0.5"
-                android:text="缓存" />
-        </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_add_watch_later"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="3dp"
+                    app:icon="@drawable/icon_watch_later_24dp"
+                    app:iconGravity="top"
+                    app:iconPadding="2dp"
+                    app:iconSize="24dp"
+                    app:cornerRadius="32dp"
+                    android:text="@string/watch_later"
+                    android:textSize="11sp" />
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/download"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="3dp"
+                    app:icon="@drawable/icon_download_24dp"
+                    app:iconGravity="top"
+                    app:iconPadding="2dp"
+                    app:iconSize="24dp"
+                    android:text="@string/download"
+                    app:cornerRadius="32dp"
+                    android:textSize="11sp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/relay"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="转发"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/download" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/forward"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    app:icon="@drawable/icon_shortcut_24dp"
+                    app:iconGravity="top"
+                    app:iconPadding="2dp"
+                    app:iconSize="24dp"
+                    android:text="@string/relay"
+                    app:cornerRadius="32dp"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+        </HorizontalScrollView>
 
     </LinearLayout>
 

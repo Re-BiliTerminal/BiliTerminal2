@@ -69,7 +69,7 @@ public class ReplyInfoActivity extends BaseActivity {
         mid = intent.getLongExtra("up_mid", -1);
 
         refreshLayout = findViewById(R.id.swipeRefreshLayout);
-        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recycler_view);
         refreshLayout.setOnRefreshListener(this::refresh);
 
         setPageName("评论详情");

@@ -20,6 +20,7 @@
             android:adjustViewBounds="true"
             android:src="@drawable/icon_time"
             android:alpha="0.7"
+            android:layout_marginStart="2dp"
             app:layout_constraintTop_toTopOf="@+id/time_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="@+id/time_text"
@@ -39,7 +40,6 @@
             tools:text="9999-13-32 25:61"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/time_icon"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -50,6 +50,7 @@
             android:adjustViewBounds="true"
             android:alpha="0.7"
             android:src="@drawable/icon_cv"
+            android:layout_marginStart="2dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/time_icon"
             app:layout_constraintBottom_toBottomOf="@+id/cvid_text"
@@ -78,6 +79,7 @@
             android:adjustViewBounds="true"
             android:alpha="0.7"
             android:src="@drawable/icon_menu"
+            android:layout_marginStart="2dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cvid_icon"
             app:layout_constraintBottom_toBottomOf="@+id/opus_text"

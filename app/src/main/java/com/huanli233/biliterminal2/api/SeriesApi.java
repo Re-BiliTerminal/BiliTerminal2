@@ -2,7 +2,7 @@ package com.huanli233.biliterminal2.api;
 
 import com.huanli233.biliterminal2.bean.PageInfo;
 import com.huanli233.biliterminal2.bean.Series;
-import com.huanli233.biliterminal2.bean.VideoCard;
+import com.huanli233.biliterminal2.bean.VideoCardKt;
 import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 import com.huanli233.biliterminal2.util.Utils;
 
@@ -59,7 +59,7 @@ public class SeriesApi {
      * @param page 页数
      * @return Collection对象与分页信息
      */
-    public static PageInfo getSeriesInfo(String type, long mid, int id, int page, ArrayList<VideoCard> videoList) throws JSONException, IOException {
+    public static PageInfo getSeriesInfo(String type, long mid, int id, int page, ArrayList<VideoCardKt> videoList) throws JSONException, IOException {
         String url;
         switch (type) {
             case "series":
@@ -109,7 +109,7 @@ public class SeriesApi {
                 pageInfo.return_ps = archives.length();
                 for (int i = 0; i < archives.length(); i++) {
                     JSONObject archive = archives.getJSONObject(i);
-                    VideoCard videoCard = new VideoCard();
+                    VideoCardKt videoCard = new VideoCardKt();
                     videoCard.setAid(archive.optLong("aid", 0));
                     videoCard.setBvid(archive.optString("bvid", ""));
                     videoCard.setCover(archive.optString("pic", ""));

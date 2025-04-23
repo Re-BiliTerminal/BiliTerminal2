@@ -24,7 +24,7 @@ import com.huanli233.biliterminal2.activity.user.info.UserInfoActivity
 import com.huanli233.biliterminal2.adapter.video.VideoCardHolder
 import com.huanli233.biliterminal2.api.EmoteApi
 import com.huanli233.biliterminal2.databinding.ActivitySendDynamicBinding
-import com.huanli233.biliterminal2.bean.VideoCard
+import com.huanli233.biliterminal2.bean.VideoCardKt
 import com.huanli233.biliterminal2.bean.toVideoCard
 import com.huanli233.biliterminal2.util.EmoteUtil
 import com.huanli233.biliterminal2.util.GlideUtil
@@ -243,7 +243,7 @@ class SendDynamicActivity : BaseActivity() {
         ).forEach { it?.isVisible = false }
     }
 
-    private fun setupVideoCard(videoCard: VideoCard, container: LinearLayout, isPgc: Boolean) {
+    private fun setupVideoCard(videoCard: VideoCardKt, container: LinearLayout, isPgc: Boolean) {
         container.findViewById<MaterialCardView>(R.id.dynamic_video_child).apply {
             VideoCardHolder(this).bindData(videoCard, this@SendDynamicActivity)
             setOnClickListener {

@@ -5,7 +5,7 @@ import android.util.Pair;
 import com.huanli233.biliterminal2.bean.MessageCard;
 import com.huanli233.biliterminal2.bean.Reply;
 import com.huanli233.biliterminal2.bean.UserInfo;
-import com.huanli233.biliterminal2.bean.VideoCard;
+import com.huanli233.biliterminal2.bean.VideoCardKt;
 import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 import com.huanli233.biliterminal2.util.Preferences;
 
@@ -59,7 +59,7 @@ public class MessageApi {
 
                 if (object.getJSONObject("item").getString("type").equals("video")) {
                     likeInfo.content = "等总共 " + object.getLong("counts") + " 人点赞了你的视频";
-                    VideoCard videoCard = new VideoCard();
+                    VideoCardKt videoCard = new VideoCardKt();
                     videoCard.setAid(0);
                     videoCard.setBvid(object.getJSONObject("item").getString("uri").replace("https://www.bilibili.com/video/BV", ""));
                     videoCard.setUploader("");
@@ -145,7 +145,7 @@ public class MessageApi {
                 replyInfo.content = object.getJSONObject("item").getString("source_content");
 
                 if (object.getJSONObject("item").getString("type").equals("video")) {
-                    VideoCard videoCard = new VideoCard();
+                    VideoCardKt videoCard = new VideoCardKt();
                     videoCard.setAid(0);
                     videoCard.setBvid(object.getJSONObject("item").getString("uri").replace("https://www.bilibili.com/video/BV", ""));
                     videoCard.setUploader("");
@@ -228,7 +228,7 @@ public class MessageApi {
                 replyInfo.content = "提到了我";
 
                 if (object.getJSONObject("item").getString("type").equals("video")) {
-                    VideoCard videoCard = new VideoCard();
+                    VideoCardKt videoCard = new VideoCardKt();
                     videoCard.setAid(0);
                     videoCard.setBvid(object.getJSONObject("item").getString("uri").replace("https://www.bilibili.com/video/BV", ""));
                     videoCard.setUploader("");

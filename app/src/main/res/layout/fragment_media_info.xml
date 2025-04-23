@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:adjustViewBounds="true"
             android:src="@drawable/icon_bv"
-            android:alpha="0.5"
+            android:alpha="0.7"
             app:layout_constraintTop_toTopOf="@+id/indexShow"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="@+id/indexShow"
@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:alpha="0.5"
+            android:alpha="0.7"
             tools:text="敬请期待"
             android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@+id/icon"
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="加载中"
+            android:text="@string/loading"
             android:textSize="13sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/indexShow" />
@@ -61,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="正片 点击切换"
+            tools:text="正片 点击切换"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_title" />
@@ -102,7 +102,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="4dp"
                     android:orientation="horizontal"
-
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_choice_button" />
 

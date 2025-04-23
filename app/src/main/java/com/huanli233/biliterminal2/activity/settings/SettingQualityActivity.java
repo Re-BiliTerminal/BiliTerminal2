@@ -28,7 +28,7 @@ public class SettingQualityActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_simple_list);
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
         findViewById(R.id.top_bar).setOnClickListener(view -> {
             setResult(RESULT_CANCELED);
             finish();

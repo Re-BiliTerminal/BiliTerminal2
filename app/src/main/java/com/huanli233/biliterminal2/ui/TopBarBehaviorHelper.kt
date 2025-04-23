@@ -6,6 +6,7 @@ import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
+import android.widget.ScrollView
 import androidx.core.view.ViewCompat
 import androidx.core.view.ViewPropertyAnimatorListener
 import androidx.recyclerview.widget.RecyclerView
@@ -16,11 +17,9 @@ import com.huanli233.biliterminal2.util.extensions.visible
 import androidx.core.view.isNotEmpty
 
 class TopBarBehaviorHelper(
-    val topBar: View,
-    val scrollableView: View
+    val topBar: View
 ) {
     private var isHidden = false
-    private var lastScrollY = 0
     private val scrollSlop = 25
 
     private val animDuration = 300L
@@ -29,10 +28,10 @@ class TopBarBehaviorHelper(
     private var isScrolling = false
     private val handler = Handler(Looper.getMainLooper())
 
-    fun install() {
+    fun installFor(scrollableView: View) {
         when (scrollableView) {
-            is RecyclerView -> setupForRecyclerView()
-            else -> setupForScrollView()
+            is RecyclerView -> setupForRecyclerView(scrollableView)
+            else -> setupForScrollView(scrollableView)
         }
     }
 
@@ -40,30 +39,9 @@ class TopBarBehaviorHelper(
         showTopBar()
     }
 
-    val scrollCallback = object : ObservableRecyclerView.OnScrollCallback {
-        override fun onScrollIdle(isUp: Boolean) {
-            val recyclerView = scrollableView as RecyclerView
-            val canScrollUp = recyclerView.canScrollVertically(1)
-            val canScrollDown = recyclerView.canScrollVertically(-1)
-            if (isUp &&
-                (!canScrollDown || canScrollUp) &&
-                !isHidden) {
-                handler.removeCallbacks(runnable)
-                showTopBar()
-            } else {
-                handler.postDelayed(runnable, animDuration)
-            }
-        }
-
-        override fun onScrolling() {
-            if (!isScrolling) {
-                isScrolling = true
-                hideTopBar()
-            }
-        }
-    }
-
-    private fun setupForRecyclerView() {
+    private fun setupForRecyclerView(
+        scrollableView: View
+    ) {
         (scrollableView as? ObservableRecyclerView)?.apply {
             addItemDecoration(object : RecyclerView.ItemDecoration() {
                 override fun getItemOffsets(
@@ -77,11 +55,13 @@ class TopBarBehaviorHelper(
                     }
                 }
             })
-            addScrollCallback(scrollCallback)
+            addScrollCallback(ScrollCallBack(scrollableView))
         }
     }
 
-    private fun setupForScrollView() {
+    private fun setupForScrollView(
+        scrollableView: View
+    ) {
         (scrollableView as? ViewGroup)?.takeIf { it.isNotEmpty() }?.let { scrollView ->
             val contentView = scrollView.getChildAt(0)
 
@@ -93,13 +73,14 @@ class TopBarBehaviorHelper(
                 contentView.paddingBottom
             )
         }
+        val callback = ScrollCallBack(scrollableView)
         (scrollableView as? ObservableScrollView)?.setOnScrollStateChangeListener(
             object : ObservableScrollView.OnScrollStateChangeListener {
                 override fun onScrollStateChanged(state: Int, direction: Int) {
                     if (state == ObservableScrollView.SCROLL_STATE_SCROLLING) {
-                        scrollCallback.onScrolling()
+                        callback.onScrolling()
                     } else if (state == ObservableScrollView.SCROLL_STATE_IDLE) {
-                        scrollCallback.onScrollIdle(direction == ObservableScrollView.DIRECTION_UP)
+                        callback.onScrollIdle(direction == ObservableScrollView.DIRECTION_UP)
                     }
                 }
             }
@@ -161,10 +142,46 @@ class TopBarBehaviorHelper(
         }
     }
 
+    inner class ScrollCallBack(
+        private val scrollableView: View
+    ) : ObservableRecyclerView.OnScrollCallback {
+        override fun onScrollIdle(isUp: Boolean) {
+            val recyclerView = scrollableView as? RecyclerView
+            val scrollView = scrollableView as? ScrollView
+            val canScrollUp = recyclerView?.canScrollVertically(1) ?: scrollView?.canScrollVertically(1)
+            val canScrollDown = recyclerView?.canScrollVertically(-1) ?: scrollView?.canScrollVertically(-1)
+            if (isUp &&
+                (canScrollDown != true || canScrollUp == true) &&
+                !isHidden) {
+                handler.removeCallbacks(runnable)
+                showTopBar()
+            } else {
+                handler.postDelayed(runnable, animDuration)
+            }
+        }
+
+        override fun onScrolling() {
+            if (!isScrolling) {
+                isScrolling = true
+                hideTopBar()
+            }
+        }
+    }
+
+}
+
+interface TopBarBinder {
+    fun bindToTopBar(scrollableView: View)
+}
+
+private val topBarBehaviorHelperMap = mutableMapOf<View, TopBarBehaviorHelper>()
+
+fun createOrGet(topBar: View): TopBarBehaviorHelper = topBarBehaviorHelperMap.getOrPut(topBar) {
+    TopBarBehaviorHelper(topBar)
 }
 
 fun View.bindTopBar(
     topBar: View
-): TopBarBehaviorHelper = TopBarBehaviorHelper(this, topBar).apply {
-    install()
+): TopBarBehaviorHelper = createOrGet(topBar).apply {
+    installFor(this@bindTopBar)
 }

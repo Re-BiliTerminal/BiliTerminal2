@@ -13,8 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.video.series.UserSeriesActivity;
-import com.huanli233.biliterminal2.adapter.dynamic.DynamicHolder;
-import com.huanli233.biliterminal2.bean.VideoCard;
+import com.huanli233.biliterminal2.bean.VideoCardKt;
 import com.huanli233.biliterminal2.util.TerminalContext;
 
 import java.util.List;
@@ -25,9 +24,9 @@ public class UserVideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     final Context context;
     final long mid;
-    final List<VideoCard> videoCardList;
+    final List<VideoCardKt> videoCardList;
 
-    public UserVideoAdapter(Context context, long mid, List<VideoCard> videoCardList) {
+    public UserVideoAdapter(Context context, long mid, List<VideoCardKt> videoCardList) {
         this.context = context;
         this.mid = mid;
         this.videoCardList = videoCardList;
@@ -60,7 +59,7 @@ public class UserVideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         } else {
             int realPosition = position - 1;
             VideoCardHolder videoCardHolder = (VideoCardHolder) holder;
-            VideoCard videoCard = videoCardList.get(realPosition);
+            VideoCardKt videoCard = videoCardList.get(realPosition);
             videoCardHolder.bindData(videoCard, context);    //此函数在VideoCardHolder里
 
             holder.itemView.setOnClickListener(view -> TerminalContext.getInstance().enterVideoDetailPage(context, videoCard.getAid(), videoCard.getBvid()));

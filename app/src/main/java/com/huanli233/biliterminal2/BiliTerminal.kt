@@ -10,6 +10,7 @@ import androidx.multidex.MultiDex
 import com.elvishew.xlog.LogLevel
 import com.elvishew.xlog.XLog
 import com.elvishew.xlog.printer.AndroidPrinter
+import com.google.android.material.color.DynamicColors
 import com.huanli233.biliterminal2.activity.base.InstanceActivity
 import com.huanli233.biliterminal2.activity.user.info.UserInfoActivity
 import com.huanli233.biliterminal2.util.Preferences
@@ -28,6 +29,7 @@ class BiliTerminal : Application() {
             if (BuildConfig.DEBUG) LogLevel.DEBUG else LogLevel.ERROR,
             AndroidPrinter()
         )
+        DynamicColors.applyToActivitiesIfAvailable(this)
         if (context == null) {
             Preferences.sharedPreferences = getSharedPreferences("default", MODE_PRIVATE)
             context = getFitDisplayContext(applicationContext)

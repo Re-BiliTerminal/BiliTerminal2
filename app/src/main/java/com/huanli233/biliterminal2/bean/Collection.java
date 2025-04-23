@@ -14,7 +14,7 @@ public class Collection implements Parcelable, Serializable {
     public String intro;
     public long mid;
     public List<Section> sections = new ArrayList<>();
-    public List<VideoCard> videos = new ArrayList<>();
+    public List<VideoCardKt> videos = new ArrayList<>();
     public String view;
 
     public static class Section implements Parcelable, Serializable {
@@ -95,7 +95,7 @@ public class Collection implements Parcelable, Serializable {
             dest.writeLong(cid);
             dest.writeString(title);
             dest.writeString(bvid);
-            dest.writeParcelable(arc, flags);
+            dest.writeSerializable(arc);
         }
 
         @Override
@@ -126,7 +126,7 @@ public class Collection implements Parcelable, Serializable {
         intro = in.readString();
         mid = in.readLong();
         sections = in.createTypedArrayList(Section.CREATOR);
-        videos = in.createTypedArrayList(VideoCard.CREATOR);
+        videos = in.createTypedArrayList(VideoCardKt.CREATOR);
         view = in.readString();
     }
 

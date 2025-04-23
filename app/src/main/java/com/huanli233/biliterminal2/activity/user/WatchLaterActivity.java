@@ -7,7 +7,7 @@ import com.elvishew.xlog.XLog;
 import com.huanli233.biliterminal2.activity.base.RefreshListActivity;
 import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter;
 import com.huanli233.biliterminal2.api.WatchLaterApi;
-import com.huanli233.biliterminal2.bean.VideoCard;
+import com.huanli233.biliterminal2.bean.VideoCardKt;
 import com.huanli233.biliterminal2.util.ThreadManager;
 import com.huanli233.biliterminal2.util.MsgUtil;
 
@@ -29,7 +29,7 @@ public class WatchLaterActivity extends RefreshListActivity {
 
         ThreadManager.run(() -> {
             try {
-                ArrayList<VideoCard> videoCardList = WatchLaterApi.getWatchLaterList();
+                ArrayList<VideoCardKt> videoCardList = WatchLaterApi.getWatchLaterList();
                 VideoCardAdapter adapter = new VideoCardAdapter(this, videoCardList);
 
                 adapter.setOnLongClickListener(position -> {

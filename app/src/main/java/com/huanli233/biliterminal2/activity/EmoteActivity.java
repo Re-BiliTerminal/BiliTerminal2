@@ -181,7 +181,7 @@ public class EmoteActivity extends BaseActivity {
         public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
 
-            this.recyclerView = view.findViewById(R.id.recyclerView);
+            this.recyclerView = view.findViewById(R.id.recycler_view);
             CustomGridManager layoutManager = new CustomGridManager(getContext(), 4, RecyclerView.VERTICAL, false);
             layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override

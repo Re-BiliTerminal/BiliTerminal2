@@ -13,7 +13,6 @@ import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.activity.base.RefreshMainActivity;
 import com.huanli233.biliterminal2.adapter.dynamic.DynamicAdapter;
-import com.huanli233.biliterminal2.adapter.dynamic.DynamicHolder;
 import com.huanli233.biliterminal2.api.DynamicApi;
 import com.huanli233.biliterminal2.helper.TutorialHelper;
 import com.huanli233.biliterminal2.bean.Dynamic;

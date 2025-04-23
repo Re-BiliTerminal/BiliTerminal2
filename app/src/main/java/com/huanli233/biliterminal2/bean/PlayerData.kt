@@ -14,10 +14,12 @@ class PlayerData @JvmOverloads constructor(
     var title: String = "",
     var urlVideo: String = "",
     var urlDanmaku: String = "",
+    var urlSubtitle: String = "",
     var qn: Int = -1,
     var qnStrList: List<String> = emptyList(),
     var qnValueList: List<Int> = emptyList(),
     var aid: Long = -1,
+    var bvid: String = "",
     var cid: Long = -1,
     var mid: Long = -1,
     var progress: Int = -1

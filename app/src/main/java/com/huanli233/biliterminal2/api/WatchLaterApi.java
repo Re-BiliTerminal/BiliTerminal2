@@ -1,6 +1,6 @@
 package com.huanli233.biliterminal2.api;
 
-import com.huanli233.biliterminal2.bean.VideoCard;
+import com.huanli233.biliterminal2.bean.VideoCardKt;
 import com.huanli233.biliterminal2.util.network.NetWorkUtil;
 import com.huanli233.biliterminal2.util.Preferences;
 import com.huanli233.biliterminal2.util.Utils;
@@ -19,14 +19,14 @@ import okhttp3.Response;
 //2023-08-17
 
 public class WatchLaterApi {
-    public static ArrayList<VideoCard> getWatchLaterList() throws IOException, JSONException {
+    public static ArrayList<VideoCardKt> getWatchLaterList() throws IOException, JSONException {
         String url = "https://api.bilibili.com/x/v2/history/toview/web";
 
         JSONObject result = NetWorkUtil.getJson(url);
         JSONObject data = result.getJSONObject("data");
 
 
-        ArrayList<VideoCard> videoCardList = new ArrayList<>();
+        ArrayList<VideoCardKt> videoCardList = new ArrayList<>();
         if (!data.isNull("list")) {
             JSONArray list = data.getJSONArray("list");
             for (int i = 0; i < list.length(); i++) {
@@ -38,7 +38,7 @@ public class WatchLaterApi {
                 String upName = videoCard.getJSONObject("owner").getString("name");
                 long view = videoCard.getJSONObject("stat").getLong("view");
                 String viewStr = Utils.toWan(view) + "观看";
-                videoCardList.add(VideoCard.of(title, upName, viewStr, cover, aid, bvid));
+                videoCardList.add(VideoCardKt.of(title, upName, viewStr, cover, aid, bvid));
             }
         }
         return videoCardList;

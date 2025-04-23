@@ -25,6 +25,8 @@ import com.huanli233.biliterminal2.util.MsgUtil;
 import com.huanli233.biliterminal2.util.Preferences;
 import com.huanli233.biliterminal2.util.Utils;
 
+import kotlin.Unit;
+
 public class MySpaceActivity extends InstanceActivity {
 
     private ImageView userAvatar;
@@ -70,7 +72,6 @@ public class MySpaceActivity extends InstanceActivity {
                                 .into(userAvatar);
                         userName.setText(userInfo.name);
                         userFans.setText(Utils.toWan(userInfo.fans) + "粉丝 " + userCoin + "硬币");
-                        userExp.setText("EXP:" + userInfo.currentExp + (userInfo.level >= 6 ? "" : "/" + userInfo.nextExp));
 
                         myInfo.setOnClickListener(view -> {
                             Intent intent = new Intent();
@@ -139,6 +140,8 @@ public class MySpaceActivity extends InstanceActivity {
                     report(e);
                 }
             });
+
+            return Unit.INSTANCE;
         });
     }
 }

@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 
 import com.huanli233.biliterminal2.adapter.video.VideoCardAdapter;
 import com.huanli233.biliterminal2.api.SearchApi;
-import com.huanli233.biliterminal2.bean.VideoCard;
+import com.huanli233.biliterminal2.bean.VideoCardKt;
 import com.huanli233.biliterminal2.util.ThreadManager;
 
 import org.json.JSONArray;
@@ -15,7 +15,7 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 
 public class SearchVideoFragment extends SearchFragment {
-    private ArrayList<VideoCard> videoCardList = new ArrayList<>();
+    private ArrayList<VideoCardKt> videoCardList = new ArrayList<>();
     private VideoCardAdapter videoCardAdapter;
 
     public SearchVideoFragment() {
@@ -48,7 +48,7 @@ public class SearchVideoFragment extends SearchFragment {
                 JSONArray result = SearchApi.search(keyword, page);
                 if (result != null) {
                     if (page == 1) showEmptyView(false);
-                    ArrayList<VideoCard> list = new ArrayList<>();
+                    ArrayList<VideoCardKt> list = new ArrayList<>();
                     SearchApi.getVideosFromSearchResult(result, list, page == 1);
                     if (list.isEmpty()) setBottom(true);
                     else ThreadManager.runOnUiThread(() -> {

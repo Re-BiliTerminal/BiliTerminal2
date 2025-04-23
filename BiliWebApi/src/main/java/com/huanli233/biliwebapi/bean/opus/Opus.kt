@@ -4,15 +4,13 @@ import android.os.Parcelable
 import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
 import com.huanli233.biliwebapi.bean.content.RichTextNode
-import com.huanli233.biliwebapi.bean.dynamic.DynamicModule
 import com.huanli233.biliwebapi.bean.user.UserInfo
-import com.huanli233.biliwebapi.bean.video.VideoInfo
 import com.huanli233.biliwebapi.util.LowerCaseUnderScore
 import kotlinx.parcelize.Parcelize
 
 const val PARAGRAPH_TYPE_WORD = 1
 const val PARAGRAPH_TYPE_PICTURE = 2
-const val PARAGRAPH_TYPE_LINE = 3
+const val PARAGRAPH_TYPE_LINE_DIVIDER = 3
 const val PARAGRAPH_TYPE_QUOTE = 4
 const val PARAGRAPH_TYPE_LIST = 5
 const val PARAGRAPH_TYPE_VIDEO = 6

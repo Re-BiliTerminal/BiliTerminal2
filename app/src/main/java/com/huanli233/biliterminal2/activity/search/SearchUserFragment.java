@@ -72,12 +72,12 @@ public class SearchUserFragment extends SearchFragment {
     public void refreshInternal() {
         ThreadManager.runOnUiThread(() -> {
             page = 1;
-            if (this.userInfoAdapter == null)
-                this.userInfoAdapter = new UserListAdapter(this.requireContext(), this.userInfoList);
-            int size_old = this.userInfoList.size();
-            this.userInfoList.clear();
-            if (size_old != 0) this.userInfoAdapter.notifyItemRangeRemoved(0, size_old);
-            ThreadManager.run(() -> continueLoading(page));
+//            if (this.userInfoAdapter == null)
+//                this.userInfoAdapter = new UserListAdapter(this.requireContext(), this.userInfoList);
+//            int size_old = this.userInfoList.size();
+//            this.userInfoList.clear();
+//            if (size_old != 0) this.userInfoAdapter.notifyItemRangeRemoved(0, size_old);
+//            ThreadManager.run(() -> continueLoading(page));
         });
     }
 

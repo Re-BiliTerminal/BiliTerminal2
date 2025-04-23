@@ -17,19 +17,19 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Dynamic(
     val basic: OpusBasicInfo,
-    @LowerCaseUnderScore val idStr: String,
+    @LowerCaseUnderScore val dynamicId: String,
     val type: String,
-    val visible: Boolean,
+    val isVisible: Boolean,
     val modules: DynamicModules,
-    val orig: Dynamic? = null,
+    val origin: Dynamic? = null,
 ) : Parcelable
 
 @Parcelize
 @JsonAdapter(DynamicModulesDeserializer::class)
 data class DynamicModules(
-    @LowerCaseUnderScore val moduleAuthor: UserInfo,
-    @LowerCaseUnderScore val moduleDynamic: DynamicModule,
-    @LowerCaseUnderScore val moduleStat: OpusStatModule,
+    @LowerCaseUnderScore val authorModule: UserInfo,
+    @LowerCaseUnderScore val contentModule: DynamicModule,
+    @LowerCaseUnderScore val statsModule: OpusStatModule,
 ) : Parcelable
 
 @Parcelize

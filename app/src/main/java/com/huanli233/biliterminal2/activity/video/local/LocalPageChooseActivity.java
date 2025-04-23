@@ -15,7 +15,6 @@ import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.BaseActivity;
 import com.huanli233.biliterminal2.activity.base.InstanceActivity;
 import com.huanli233.biliterminal2.adapter.video.PageChooseAdapter;
-import com.huanli233.biliterminal2.api.PlayerApi;
 import com.huanli233.biliterminal2.bean.PlayerData;
 import com.huanli233.biliterminal2.player.PlayerManager;
 import com.huanli233.biliterminal2.ui.widget.recyclerView.CustomLinearManager;
@@ -38,7 +37,7 @@ public class LocalPageChooseActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_list);
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
         findViewById(R.id.top_bar).setOnClickListener(view -> finish());
 
         TextView textView = findViewById(R.id.page_name);

@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import com.huanli233.biliterminal2.activity.base.RefreshListFragment;
 import com.huanli233.biliterminal2.adapter.video.UserVideoAdapter;
 import com.huanli233.biliterminal2.api.UserInfoApi;
-import com.huanli233.biliterminal2.bean.VideoCard;
+import com.huanli233.biliterminal2.bean.VideoCardKt;
 import com.huanli233.biliterminal2.util.ThreadManager;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import java.util.List;
 public class UserVideoFragment extends RefreshListFragment {
 
     private long mid;
-    private ArrayList<VideoCard> videoList;
+    private ArrayList<VideoCardKt> videoList;
     private UserVideoAdapter adapter;
 
     public static UserVideoFragment newInstance(long mid) {
@@ -63,7 +63,7 @@ public class UserVideoFragment extends RefreshListFragment {
     private void continueLoading(int page) {
         ThreadManager.run(() -> {
             try {
-                List<VideoCard> list = new ArrayList<>();
+                List<VideoCardKt> list = new ArrayList<>();
                 int result = UserInfoApi.getUserVideos(mid, page, "", list);
                 if (result != -1) {
                     runOnUiThread(() -> {

@@ -27,6 +27,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import kotlin.Unit;
+
 
 public class MessageActivity extends InstanceActivity {
     private RecyclerView sessionsView;
@@ -111,6 +113,7 @@ public class MessageActivity extends InstanceActivity {
             });
 
             TutorialHelper.showTutorialList(this, R.array.tutorial_message, 5);
+            return Unit.INSTANCE;
         });
     }
 }

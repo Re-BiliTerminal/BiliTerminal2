@@ -60,8 +60,8 @@ public class AppRecyclerView extends RecyclerView {
     public AppRecyclerView(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
         TypedArray obtainStyledAttributes = context.obtainStyledAttributes(attributeSet, R.styleable.AppRecyclerView, 0, 0);
-        this.enableStart = obtainStyledAttributes.getBoolean(R.styleable.AppRecyclerView_springEnableStart, true);
-        this.enableEnd = obtainStyledAttributes.getBoolean(R.styleable.AppRecyclerView_springEnableEnd, true);
+        this.enableStart = obtainStyledAttributes.getBoolean(R.styleable.AppRecyclerView_springEnableStartRV, true);
+        this.enableEnd = obtainStyledAttributes.getBoolean(R.styleable.AppRecyclerView_springEnableEndRV, true);
         obtainStyledAttributes.recycle();
         this.animChildren = new HashSet<>();
         this.animation = new SpringAnimation(this, PROPERTY_OVER_TRANSLATION_Y).setSpring(new SpringForce().setDampingRatio(1.0f).setStiffness(150.0f));

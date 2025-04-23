@@ -15,6 +15,7 @@ import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
 
 import com.huanli233.biliterminal2.BiliTerminal;
+import com.huanli233.biliterminal2.BiliTerminalKt;
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.activity.base.InstanceActivity;
 import com.huanli233.biliterminal2.activity.video.local.DownloadListActivity;
@@ -375,7 +376,7 @@ public class DownloadService extends Service {
         Cursor cursor = null;
         SQLiteDatabase database = null;
         try {
-            DownloadSqlHelper helper = new DownloadSqlHelper(BiliTerminal.context);
+            DownloadSqlHelper helper = new DownloadSqlHelper(BiliTerminalKt.getContextNotNull());
             database = helper.getReadableDatabase();
 
             if (firstDown >= 0)
@@ -402,7 +403,7 @@ public class DownloadService extends Service {
         Cursor cursor = null;
         SQLiteDatabase database = null;
         try {
-            DownloadSqlHelper helper = new DownloadSqlHelper(BiliTerminal.context);
+            DownloadSqlHelper helper = new DownloadSqlHelper(BiliTerminalKt.getContextNotNull());
             database = helper.getReadableDatabase();
             cursor = database.rawQuery("select * from download", null);
             if (cursor == null || cursor.getCount() == 0) return null;
@@ -425,7 +426,7 @@ public class DownloadService extends Service {
         SQLiteDatabase database = null;
         Cursor cursor = null;
         try {
-            DownloadSqlHelper helper = new DownloadSqlHelper(BiliTerminal.context);
+            DownloadSqlHelper helper = new DownloadSqlHelper(BiliTerminalKt.getContextNotNull());
             database = helper.getReadableDatabase();
             cursor = database.rawQuery("select * from download where state!=?", new String[]{"downloading"});
             if (cursor == null || cursor.getCount() == 0) return null;
@@ -449,7 +450,7 @@ public class DownloadService extends Service {
     public static void deleteSection(long id) {
         SQLiteDatabase database = null;
         try {
-            DownloadSqlHelper helper = new DownloadSqlHelper(BiliTerminal.context);
+            DownloadSqlHelper helper = new DownloadSqlHelper(BiliTerminalKt.getContextNotNull());
             database = helper.getWritableDatabase();
             database.execSQL("delete from download where id=?", new Object[]{id});
             database.close();
@@ -463,7 +464,7 @@ public class DownloadService extends Service {
     public static void clear() {
         SQLiteDatabase database = null;
         try {
-            DownloadSqlHelper helper = new DownloadSqlHelper(BiliTerminal.context);
+            DownloadSqlHelper helper = new DownloadSqlHelper(BiliTerminalKt.getContextNotNull());
             database = helper.getWritableDatabase();
             database.execSQL("delete from download", new Object[]{});
             database.close();
@@ -477,7 +478,7 @@ public class DownloadService extends Service {
     public static void setState(long id, String state) {
         SQLiteDatabase database = null;
         try {
-            DownloadSqlHelper helper = new DownloadSqlHelper(BiliTerminal.context);
+            DownloadSqlHelper helper = new DownloadSqlHelper(BiliTerminalKt.getContextNotNull());
             database = helper.getWritableDatabase();
             database.execSQL("update download set state=? where id=?", new Object[]{state, id});
             database.close();
@@ -492,7 +493,7 @@ public class DownloadService extends Service {
     public static void startDownload(String title, long aid, long cid, String danmaku, String cover, int qn) {
         ThreadManager.run(() -> {
             try {
-                DownloadSqlHelper helper = new DownloadSqlHelper(BiliTerminal.context);
+                DownloadSqlHelper helper = new DownloadSqlHelper(BiliTerminalKt.getContextNotNull());
                 SQLiteDatabase database = helper.getWritableDatabase();
                 database.execSQL("insert into download(type,state,aid,cid,qn,title,child,cover,danmaku) values(?,?,?,?,?,?,?,?,?)",
                         new Object[]{"video_single", "none", aid, cid, qn, title, "", cover, danmaku});
@@ -506,7 +507,7 @@ public class DownloadService extends Service {
 
                 MsgUtil.showMsg("已添加下载");
 
-                Context context = BiliTerminal.context;
+                Context context = BiliTerminalKt.getContextNotNull();
                 context.startService(new Intent(context, DownloadService.class));
             } catch (Exception e) {
                 MsgUtil.error(e);
@@ -517,7 +518,7 @@ public class DownloadService extends Service {
     public static void startDownload(String parent, String child, long aid, long cid, String danmaku, String cover, int qn) {
         ThreadManager.run(() -> {
             try {
-                DownloadSqlHelper helper = new DownloadSqlHelper(BiliTerminal.context);
+                DownloadSqlHelper helper = new DownloadSqlHelper(BiliTerminalKt.getContextNotNull());
                 SQLiteDatabase database = helper.getWritableDatabase();
                 database.execSQL("insert into download(type,state,aid,cid,qn,title,child,cover,danmaku) values(?,?,?,?,?,?,?,?,?)",
                         new Object[]{"video_multi", "none", aid, cid, qn, parent, child, cover, danmaku});
@@ -532,7 +533,7 @@ public class DownloadService extends Service {
 
                 MsgUtil.showMsg("已添加下载");
 
-                Context context = BiliTerminal.context;
+                Context context = BiliTerminalKt.getContextNotNull();
                 context.startService(new Intent(context, DownloadService.class));
             } catch (Exception e) {
                 MsgUtil.error(e);

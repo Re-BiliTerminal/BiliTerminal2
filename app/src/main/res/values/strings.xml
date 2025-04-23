@@ -104,7 +104,7 @@
     <string name="interface_size_tip">有效范围：0.25倍-5.00倍，建议少量多次调节</string>
     <string name="interface_margins">界面边距</string>
     <string name="horizontal">横向</string>
-    <string name="percent">%</string>
+    <string name="percent" translatable="false">%</string>
     <string name="vertical">纵向</string>
     <string name="ui_margins_tip">第一个输入框为横向边距，第二个输入框为纵向边距，单位百分比。\n出于保护，数值超过30不会保存。</string>
     <string name="view_preview">查看预览</string>
@@ -179,6 +179,51 @@
     <string name="quality_10000">原画</string>
     <string name="player_not_found">未找到播放器</string>
     <string name="tip_live_player">若无法播放请更换为内置播放器</string>
+    <string name="dynamic_info">动态详情</string>
+    <string name="empty_tip">啥都木有~</string>
+    <string name="login_qrcode_network_error">获取二维码失败，网络错误</string>
+    <string name="login_qrcode_api_error">登录接口可能失效，请找开发者</string>
+    <string name="open_source_info">开源信息</string>
+    <string name="watch_later">稍后再看</string>
+    <string name="relay">转发</string>
+    <string name="download">缓存</string>
+
+    <string name="dynamic_delete_success">删除成功~</string>
+    <string name="dynamic_delete_failed">删除失败</string>
+    <string name="dynamic_delete_already">已经删除过了哦~</string>
+    <string name="dynamic_delete_not_own">不是自己的动态！</string>
+    <string name="dynamic_delete_error">操作失败：%1$d</string>
+    <string name="dynamic_delete_confirm">再次长按删除</string>
+    <string name="dynamic_like_success">点赞成功</string>
+    <string name="dynamic_like_failed">点赞失败</string>
+    <string name="dynamic_unlike_success">取消成功</string>
+    <string name="dynamic_unlike_failed">取消失败</string>
+    <string name="dynamic_image_count">共%1$d张图片</string>
+    <string name="dynamic_delete_hint">长按删除</string>
+
+    <string name="user_level">Lv%1$d</string>
+    <string name="user_vip_monthly">月度大会员</string>
+    <string name="user_vip_yearly">年度大会员</string>
+    <string name="user_vip_ten_year">十年大会员</string>
+    <string name="user_vip_hundred_year">百年大会员</string>
+    <string name="user_fans">%1$s粉丝</string>
+    <string name="user_followings">%1$s关注</string>
+    <string name="user_official_unknown">哔哩哔哩不知名UP主</string>
+    <string name="user_official_known">哔哩哔哩知名UP主</string>
+    <string name="user_official_talent">哔哩哔哩大V达人</string>
+    <string name="user_official_business">哔哩哔哩企业认证</string>
+    <string name="user_official_organization">哔哩哔哩组织认证</string>
+    <string name="user_official_media">哔哩哔哩媒体认证</string>
+    <string name="user_official_government">哔哩哔哩政府认证</string>
+    <string name="user_official_streamer">哔哩哔哩高能主播</string>
+    <string name="user_official_unknown_person">社会不知名人士</string>
+    <string name="user_official_known_person">社会知名人士</string>
+    <string name="user_follow_success">操作成功喵~</string>
+    <string name="user_follow_blocked">被B站风控系统拦截了\n（无法解决）</string>
+    <string name="user_follow_failed">操作失败（原因未知）：%1$d</string>
+    <string name="user_followed">已关注</string>
+    <string name="user_follow">关注</string>
+
     <string-array name="icon_license">
         <item>界面设置: Newicons, MIT License</item>
         <item>番剧: hicon, MIT License</item>
