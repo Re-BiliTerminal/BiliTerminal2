@@ -164,8 +164,8 @@ android {
 
 configurations.all {
     resolutionStrategy {
-        force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.20'
-        force 'androidx.lifecycle:lifecycle-common:2.6.0'
+        force("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.20")
+        force("androidx.lifecycle:lifecycle-common:2.6.0")
     }
 }
 
@@ -177,21 +177,21 @@ dependencies {
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4") {
-        exclude(group: "org.jetbrains.kotlin", module: "kotlin-stdlib-jdk8")
+        exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk8")
     }
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.2.0")
     
     implementation("androidx.multidex:multidex:2.0.1")
-    implementation("androidx.viewpager2:viewpager2:1.0.0")
-    implementation("androidx.core:core-ktx:1.10.1")
-    implementation("androidx.activity:activity-ktx:1.8.2")
-    implementation("androidx.fragment:fragment-ktx:1.6.2")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.viewpager:viewpager:1.0.0")
+    implementation("androidx.core:core-ktx:1.3.2")
+    implementation("androidx.activity:activity-ktx:1.2.0")
+    implementation("androidx.fragment:fragment-ktx:1.1.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("com.google.zxing:core:3.3.0")
     implementation("androidx.appcompat:appcompat:1.5.1")
-    implementation("com.google.android.material:material:1.10.0")
+    implementation("com.google.android.material:material:1.6.0")
     implementation("androidx.asynclayoutinflater:asynclayoutinflater:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.3.1")
     implementation("com.drakeet.multitype:multitype:4.3.0")
@@ -202,10 +202,10 @@ dependencies {
         exclude("com.google.code.gson", "gson")
     }
     implementation("com.google.code.gson:gson:2.9.1")
-    implementation("com.github.bumptech.glide:glide:4.13.2")
+    implementation("com.github.bumptech.glide:glide:4.12.0")
     implementation("org.greenrobot:eventbus:3.3.1")
     implementation("com.geetest.sensebot:sensebot:4.4.2.1") {
-        exclude(group: "com.squareup.okhttp3")
+        exclude(group = "com.squareup.okhttp3")
     }
     implementation("org.brotli:dec:0.1.2")
     implementation("com.aayushatharva.brotli4j:brotli4j:1.16.0")
