@@ -18,56 +18,52 @@ class RefreshListActivity : BaseActivity() {
     var listener: OnLoadMoreListener? = null
     var bottom = false
     var page = 1
-    var lastLoadTimestamp: Long = 0
-    
-    private var loadThreshold = 100L
-    
+    private var lastLoadTimestamp: Long = 0
+    private var isLoading = false // 新增加载状态标志
+
+    private var loadThreshold = 500L // 调整时间间隔
+
     override fun onCreate(@Nullable savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_simple_refresh)
         emptyView = findViewById(R.id.emptyTip)
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
         swipeRefreshLayout.isEnabled = false
-        swipeRefreshLayout.isRefreshing = true
         recyclerView = findViewById(R.id.recycler_view)
         recyclerView.layoutManager = layoutManager
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (listener != null &&
-                    !recyclerView.canScrollVertically(1) &&
-                    !swipeRefreshLayout.isRefreshing &&
-                    newState == RecyclerView.SCROLL_STATE_DRAGGING &&
-                    !bottom
-                ) {
+                if (canLoadMore() && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     goOnLoad()
                 }
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (listener != null) {
-                    val manager = recyclerView.layoutManager as LinearLayoutManager
-                    val lastItemPosition = manager.findLastCompletelyVisibleItemPosition()
-                    val itemCount = manager.itemCount
-                    if (lastItemPosition >= (itemCount - 3) &&
-                        dy > 0 &&
-                        !swipeRefreshLayout.isRefreshing &&
-                        !bottom
-                    ) {
-                        goOnLoad()
-                    }
+                if (canLoadMore()) {
+                    goOnLoad()
                 }
             }
+
+            private fun canLoadMore(): Boolean {
+                return listener != null &&
+                        !isLoading &&
+                        !swipeRefreshLayout.isRefreshing &&
+                        !bottom &&
+                        !recyclerView.canScrollVertically(1)
+            }
         })
+        swipeRefreshLayout.isRefreshing = true
+        goOnLoad() // 触发首次加载
     }
 
-    val layoutManager: RecyclerView.LayoutManager
+    open val layoutManager: RecyclerView.LayoutManager
         get() = LinearLayoutManager(this)
 
     fun setAdapter(adapter: RecyclerView.Adapter<*>) {
-        runOnUiThread { recyclerView.adapter = adapter }
+        recyclerView.adapter = adapter
     }
 
     fun setOnRefreshListener(listener: SwipeRefreshLayout.OnRefreshListener) {
@@ -77,24 +73,20 @@ class RefreshListActivity : BaseActivity() {
 
     fun showEmptyView() {
         emptyView?.let {
-            runOnUiThread {
-                recyclerView.visibility = View.GONE
-                it.visibility = View.VISIBLE
-            }
+            it.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
         }
     }
 
     fun hideEmptyView() {
         emptyView?.let {
-            runOnUiThread {
-                recyclerView.visibility = View.VISIBLE
-                it.visibility = View.GONE
-            }
+            it.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
         }
     }
 
     fun setRefreshing(bool: Boolean) {
-        runOnUiThread { swipeRefreshLayout.isRefreshing = bool }
+        swipeRefreshLayout.isRefreshing = bool
     }
 
     fun setOnLoadMoreListener(loadMore: OnLoadMoreListener) {
@@ -102,8 +94,10 @@ class RefreshListActivity : BaseActivity() {
     }
 
     private fun goOnLoad() {
+        if (isLoading) return
         val timeCurrent = System.currentTimeMillis()
         if (timeCurrent - lastLoadTimestamp > loadThreshold) {
+            isLoading = true
             swipeRefreshLayout.isRefreshing = true
             page++
             listener?.onLoad(page)
@@ -116,14 +110,16 @@ class RefreshListActivity : BaseActivity() {
     }
 
     fun loadFail() {
-        page--
+        if (page > 1) page--
+        isLoading = false
         MsgUtil.showMsgLong("加载失败")
         setRefreshing(false)
     }
 
     fun loadFail(e: Exception) {
-        page--
-        report(e)
+        if (page > 1) page--
+        isLoading = false
+        report(e) // 确保 BaseActivity 有 report 方法
         setRefreshing(false)
     }
 }

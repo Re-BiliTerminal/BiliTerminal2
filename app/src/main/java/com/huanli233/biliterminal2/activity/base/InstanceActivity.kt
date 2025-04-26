@@ -11,18 +11,23 @@ import com.huanli233.biliterminal2.activity.MenuActivity
 class InstanceActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        BiliTerminal.setInstance(this)
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.your_layout) // 确保设置正确的布局
+        BiliTerminal.setInstance(this)
+        setMenuClick()
     }
 
-    fun setMenuClick() {
-        findViewById<View>(R.id.top_bar).setOnClickListener { menuClick.run() }
+    private fun setMenuClick() {
+        findViewById<View>(R.id.top_bar)?.setOnClickListener {
+            menuClick.run()
+        }
     }
 
-    val menuClick = Runnable {
+    private val menuClick = Runnable {
         Intent(this@InstanceActivity, MenuActivity::class.java).apply {
-            if (this@InstanceActivity.intent.hasExtra("from")) {
-                putExtra("from", this@InstanceActivity.intent.getStringExtra("from"))
+            val fromExtra = this@InstanceActivity.intent.getStringExtra("from")
+            if (!fromExtra.isNullOrEmpty()) {
+                putExtra("from", fromExtra)
             }
             startActivity(this)
             overridePendingTransition(R.anim.anim_activity_in_down, 0)
@@ -30,7 +35,10 @@ class InstanceActivity : BaseActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_MENU) menuClick.run()
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            menuClick.run()
+            return true // 消费事件
+        }
         return super.onKeyDown(keyCode, event)
     }
 }
