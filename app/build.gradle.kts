@@ -88,10 +88,12 @@ android {
         versionName = "${readVersion()}+${getGitHash()}"
 
         multiDexEnabled = true
+
         vectorDrawables.useSupportLibrary = true
 
         ndk {
-            abiFilters += setOf("armeabi-v7a", "arm64-v8a", "x86", "mips")
+            //noinspection ChromeOsAbiSupport
+            abiFilters += setOf("armeabi-v7a", "x86", "mips")
         }
     }
 
@@ -162,55 +164,81 @@ android {
     }
 }
 
-configurations.all {
-    resolutionStrategy {
-        force("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.20")
-        force("androidx.lifecycle:lifecycle-common:2.6.0")
-    }
-}
-
 dependencies {
+
     implementation(project(":ijkplayer-java"))
     implementation(project(":DanmakuFlameMaster"))
     implementation(project(":brotlij"))
     implementation(project(":BiliWebApi"))
 
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4") {
-        exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk8")
-    }
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.2.0")
-    
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
     implementation("androidx.multidex:multidex:2.0.1")
-    implementation("androidx.viewpager:viewpager:1.0.0")
-    implementation("androidx.core:core-ktx:1.3.2")
-    implementation("androidx.activity:activity-ktx:1.2.0")
-    implementation("androidx.fragment:fragment-ktx:1.1.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
+
+    // noinspection GradleDependency
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+    // noinspection GradleDependency
+    implementation("androidx.core:core-ktx:1.10.1")
+    // noinspection GradleDependency
+    implementation("androidx.activity:activity-ktx:1.8.2")
+    // noinspection GradleDependency
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
+    // noinspection GradleDependency
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    // noinspection GradleDependency
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    // noinspection GradleDependency
     implementation("com.google.zxing:core:3.3.0")
+    // noinspection GradleDependency
     implementation("androidx.appcompat:appcompat:1.5.1")
-    implementation("com.google.android.material:material:1.6.0")
+    //noinspection GradleDependency
+    implementation("com.google.android.material:material:1.10.0")
+    // noinspection GradleDependency
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0")
+    // noinspection GradleDependency
     implementation("androidx.asynclayoutinflater:asynclayoutinflater:1.0.0")
+    // noinspection GradleDependency
     implementation("androidx.recyclerview:recyclerview:1.3.1")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
+
     implementation("com.drakeet.multitype:multitype:4.3.0")
+    //noinspection GradleDependency
     implementation("org.jsoup:jsoup:1.10.2")
     implementation("com.github.chrisbanes:PhotoView:2.3.0")
+
     implementation("com.huanli233.okhttp3-compat:okhttp:5.0.0-p2")
-    implementation("com.huanli233.retrofit2-compat:retrofit:2.12.0-p2") {
+    implementation("com.huanli233.retrofit2-compat:retrofit:2.12.0-p2")
+    implementation("com.huanli233.retrofit2-compat:converter-gson:2.12.0-p2") {
         exclude("com.google.code.gson", "gson")
     }
+    //noinspection GradleDependency
     implementation("com.google.code.gson:gson:2.9.1")
-    implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation("com.github.bumptech.glide:glide:4.13.2")
+
     implementation("org.greenrobot:eventbus:3.3.1")
     implementation("com.geetest.sensebot:sensebot:4.4.2.1") {
         exclude(group = "com.squareup.okhttp3")
     }
+
     implementation("org.brotli:dec:0.1.2")
     implementation("com.aayushatharva.brotli4j:brotli4j:1.16.0")
+
     implementation("com.elvishew:xlog:1.11.0")
     
+    // Kotlin Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    
+    // Lifecycle 协程支持
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
+    
+    // 其他协程扩展
+    implementation("androidx.activity:activity-ktx:1.8.2")
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
+
     // will be removed
 //    implementation("com.mikepenz:iconics-core:5.4.0")
 //    implementation("com.mikepenz:iconics-views:5.4.0")
