@@ -8,7 +8,7 @@ import com.huanli233.biliterminal2.BiliTerminal
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.activity.MenuActivity
 
-class InstanceActivity : BaseActivity() {
+open class InstanceActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

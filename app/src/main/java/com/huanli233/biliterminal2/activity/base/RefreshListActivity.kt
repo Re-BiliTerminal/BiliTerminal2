@@ -11,7 +11,7 @@ import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.listener.OnLoadMoreListener
 import com.huanli233.biliterminal2.util.MsgUtil
 
-class RefreshListActivity : BaseActivity() {
+open class RefreshListActivity : BaseActivity() {
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
     lateinit var recyclerView: RecyclerView
     var emptyView: TextView? = null
