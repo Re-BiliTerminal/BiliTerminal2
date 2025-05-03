@@ -15,7 +15,6 @@ import com.huanli233.biliterminal2.activity.reply.ReplyFragment
 import com.huanli233.biliterminal2.api.apiResultNonNull
 import com.huanli233.biliterminal2.api.bilibiliApi
 import com.huanli233.biliterminal2.databinding.ActivitySimpleViewpagerBinding
-import com.huanli233.biliterminal2.databinding.DynamicItemBinding
 import com.huanli233.biliterminal2.event.ReplyEvent
 import com.huanli233.biliterminal2.helper.TutorialHelper
 import com.huanli233.biliterminal2.ui.TopBarBinder
