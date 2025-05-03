@@ -155,9 +155,9 @@ class SendDynamicActivity : BaseActivity() {
     }
 
     private fun bindUserInfo(dynamic: Dynamic, username: TextView, avatar: ImageView) {
-        username.text = dynamic.modules.moduleAuthor.name
-        loadAvatar(dynamic.modules.moduleAuthor.face, avatar)
-        setupAvatarClickHandler(dynamic.modules.moduleAuthor.mid, avatar)
+        username.text = dynamic.modules.authorModule.name
+        loadAvatar(dynamic.modules.authorModule.face, avatar)
+        setupAvatarClickHandler(dynamic.modules.authorModule.mid, avatar)
     }
 
     private fun loadAvatar(avatarUrl: String, imageView: ImageView) {
