@@ -231,7 +231,8 @@ class SendDynamicActivity : BaseActivity() {
                 major.opus?.let { setupOpus(it, extraCard) }
 
             "MAJOR_TYPE_DRAW" ->
-                major.opus?.pics?.map { it.url }?.let { setupImageCard(it, extraCard) }
+                major.opus?.pics?.map { it.url }?.let { (it: List<String>) ->
+                    setupImageCard(it, extraCard) }
         }
     }
 
