@@ -182,7 +182,7 @@ class SendDynamicActivity : BaseActivity() {
 
     private fun bindDynamicContent(dynamic: Dynamic, content: TextView) {
         content.apply {
-            val dynamicDesc = dynamic.modules.moduleDynamic.desc ?: return
+            val dynamicDesc = dynamic.modules.contentModule.desc ?: return
             val dynamicContent = dynamicDesc.content
             isVisible = dynamicContent.text.isNotEmpty()
             text = dynamicContent.text
@@ -217,7 +217,7 @@ class SendDynamicActivity : BaseActivity() {
     }
 
     private fun bindMajorContent(dynamic: Dynamic, extraCard: LinearLayout) {
-        val major = dynamic.modules.moduleDynamic.major ?: return
+        val major = dynamic.modules.contentModule.major ?: return
         val majorType = major.type
 
         extraCard.resetChildViews()
