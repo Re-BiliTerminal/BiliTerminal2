@@ -23,7 +23,7 @@ fun loadPicture(view: ImageView, url: String?) {
 }
 
 @BindingAdapter("loadPicture")
-fun loadPicture(view: ImageView, url: List<String>?) {
+fun loadPicture(view: ImageView, vararg url: List<String>?) {
     url?.let {
         view.loadPicture(*url.toTypedArray(), setClick = true)
     }
