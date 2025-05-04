@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Field;
 
+@SuppressWarnings("deprecation")
 public class DeviceUtils {
 
     public static final String ABI_X86 = "x86";

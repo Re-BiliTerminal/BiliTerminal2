@@ -17,13 +17,11 @@
 
 package tv.danmaku.ijk.media.player;
 
-import android.annotation.TargetApi;
 import android.graphics.SurfaceTexture;
-import android.os.Build;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+@SuppressWarnings("deprecation")
 public class TextureMediaPlayer extends MediaPlayerProxy implements IMediaPlayer, ISurfaceTextureHolder {
     private SurfaceTexture mSurfaceTexture;
     private ISurfaceTextureHost mSurfaceTextureHost;

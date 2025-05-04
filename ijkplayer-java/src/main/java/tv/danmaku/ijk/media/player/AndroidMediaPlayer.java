@@ -41,6 +41,7 @@ import tv.danmaku.ijk.media.player.misc.IMediaDataSource;
 import tv.danmaku.ijk.media.player.misc.ITrackInfo;
 import tv.danmaku.ijk.media.player.pragma.DebugLog;
 
+@SuppressWarnings("deprecation")
 public class AndroidMediaPlayer extends AbstractMediaPlayer {
     private final MediaPlayer mInternalMediaPlayer;
     private final AndroidMediaPlayerListenerHolder mInternalListenerAdapter;

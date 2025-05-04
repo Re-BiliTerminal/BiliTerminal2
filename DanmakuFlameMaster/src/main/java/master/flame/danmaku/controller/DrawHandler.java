@@ -533,6 +533,7 @@ public class DrawHandler<Y> extends Handler {
         return mReady;
     }
 
+    @SuppressWarnings("deprecation")
     private IDrawTask createDrawTask(boolean useDrwaingCache, DanmakuTimer timer,
                                      Context context,
                                      int width, int height,

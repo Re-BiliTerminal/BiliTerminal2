@@ -42,6 +42,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
+    tasks.withType(JavaCompile).configureEach {
+        options.compilerArgs << "-Xlint:deprecation"
+    }
+
     namespace 'master.flame.danmaku'
     defaultConfig {
         minSdkVersion 14

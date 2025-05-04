@@ -65,6 +65,7 @@ import tv.danmaku.ijk.media.player.pragma.DebugLog;
  *
  *         Java wrapper of ffplay.
  */
+@SuppressWarnings("deprecation")
 public final class IjkMediaPlayer extends AbstractMediaPlayer {
     private final static String TAG = IjkMediaPlayer.class.getName();
 

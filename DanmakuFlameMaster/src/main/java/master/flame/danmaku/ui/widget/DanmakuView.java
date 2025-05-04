@@ -80,6 +80,7 @@ public class DanmakuView extends View implements IDanmakuView, IDanmakuViewContr
         init();
     }
 
+    @SuppressWarnings("deprecation")
     private void init() {
         mUiThreadId = Thread.currentThread().getId();
         setBackgroundColor(Color.TRANSPARENT);

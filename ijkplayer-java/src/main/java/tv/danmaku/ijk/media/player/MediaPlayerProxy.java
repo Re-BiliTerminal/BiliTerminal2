@@ -31,6 +31,7 @@ import java.util.Map;
 import tv.danmaku.ijk.media.player.misc.IMediaDataSource;
 import tv.danmaku.ijk.media.player.misc.ITrackInfo;
 
+@SuppressWarnings("deprecation")
 public class MediaPlayerProxy implements IMediaPlayer {
     protected final IMediaPlayer mBackEndMediaPlayer;
 
