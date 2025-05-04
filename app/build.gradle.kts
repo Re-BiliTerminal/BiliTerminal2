@@ -1,9 +1,11 @@
+import org.eclipse.jgit.api.Git
 import java.io.ByteArrayOutputStream
 import java.util.Properties
 import java.io.FileInputStream
 import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
 import java.io.File
+import java.util.stream.StreamSupport
 
 plugins {
     id("com.android.application")
@@ -22,26 +24,15 @@ buildscript {
     }
 }
 
-val versionPropsFile = file("version.properties")
-val versionProps = Properties()
-
-if (versionPropsFile.exists()) {
-    versionProps.load(FileInputStream(versionPropsFile))
-} else {
-    versionProps["VERSION_CODE"] = "1"
-}
-
-tasks.configureEach {
-    if (name == "assembleRelease") {
-        dependsOn("incrementVersionCode")
-    }
-}
-
-fun readVersionCode(): Int {
-    val versionFile = file("version.properties")
-    val props = Properties()
-    props.load(FileInputStream(versionFile))
-    return props["VERSION_CODE"].toString().toInt()
+fun getGitCommitCount(): Int {
+    return kotlin.runCatching {
+        val gitDir = project.rootDir.resolve(".git")
+        val repository = FileRepositoryBuilder.create(gitDir)
+        repository.use { repo ->
+            val head = repo.resolve("HEAD")
+            StreamSupport.stream(Git(repo).log().add(head).call().spliterator(), false).count().toInt()
+        }
+    }.getOrNull() ?: -1
 }
 
 fun readVersion(): String {
@@ -76,7 +67,7 @@ android {
         applicationId = "com.huanli233.biliterminal2"
         minSdk = 14
         targetSdk = 36
-        versionCode = readVersionCode()
+        versionCode = getGitCommitCount()
         versionName = "${readVersion()}+${getGitHash()}"
 
         multiDexEnabled = true
