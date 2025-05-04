@@ -1,10 +1,7 @@
 import org.eclipse.jgit.api.Git
-import java.io.ByteArrayOutputStream
-import java.util.Properties
-import java.io.FileInputStream
-import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
-import java.io.File
+import java.io.FileInputStream
+import java.util.Properties
 import java.util.stream.StreamSupport
 
 plugins {

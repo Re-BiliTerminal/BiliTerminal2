@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.huanli233.biliterminal2.data.UserPreferences;
-import com.huanli233.biliterminal2.utils.Preferences;
 
 public class ImageAutoLoadScrollListener extends RecyclerView.OnScrollListener {
     @Override

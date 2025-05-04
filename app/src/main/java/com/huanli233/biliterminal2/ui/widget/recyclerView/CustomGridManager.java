@@ -6,8 +6,6 @@ import android.util.AttributeSet;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.huanli233.biliterminal2.utils.MsgUtil;
-
 public class CustomGridManager extends GridLayoutManager {
     public CustomGridManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);

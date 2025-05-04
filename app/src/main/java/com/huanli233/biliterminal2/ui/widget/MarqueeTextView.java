@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 
 import com.huanli233.biliterminal2.data.UserPreferences;
-import com.huanli233.biliterminal2.utils.Preferences;
 
 public class MarqueeTextView extends androidx.appcompat.widget.AppCompatTextView {
     public MarqueeTextView(Context context, AttributeSet attrs, int defStyle) {

@@ -366,7 +366,7 @@ public class Danmakus implements IDanmakus {
         }
     }
 
-    private class YPosDescComparator extends BaseComparator {
+    private static class YPosDescComparator extends BaseComparator {
 
         public YPosDescComparator(boolean duplicateMergingEnabled) {
             super(duplicateMergingEnabled);
