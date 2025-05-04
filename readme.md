@@ -8,7 +8,7 @@
 Fork of [RobinNotBad/BiliClient](https://gitee.com/RobinNotBad/BiliClient)
 
 </div>
-
+ 
 # 介绍
 这是一个**极其轻量级**的**B站客户端**，[哔哩终端](https://gitee.com/RobinNotBad/BiliClient) 的 Fork。使用 `java` + `xml`开发，最低支持**安卓4.2**。本项目借鉴了 [WearBili](https://github.com/SpaceXC/WearBili) 和 [腕上哔哩](https://github.com/luern0313/WristBilibili) 的部分开源代码和它们收集的部分 API ，界面曾使用 [WearBili](https://github.com/SpaceXC/WearBili) 的布局（现已重做）。**本项目与 WearBili 无任何关系**。
 
