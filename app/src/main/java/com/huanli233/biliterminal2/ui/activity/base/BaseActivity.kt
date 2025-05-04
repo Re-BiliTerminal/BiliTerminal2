@@ -21,6 +21,7 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.ViewConfigurationCompat
 import androidx.core.view.WindowInsetsCompat
@@ -63,6 +64,7 @@ open class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         val paddingHPercent: Int = UserPreferences.uiPaddingHorizontal.get()
         val paddingVPercent: Int = UserPreferences.uiPaddingVertical.get()

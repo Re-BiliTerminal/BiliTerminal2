@@ -14,6 +14,7 @@ import master.flame.danmaku.danmaku.model.BaseDanmaku;
 /**
  * Created by ch on 15-7-16.
  */
+@SuppressWarnings("deprecation")
 public class SpannedCacheStuffer extends SimpleTextCacheStuffer {
 
     @Override
@@ -42,6 +43,7 @@ public class SpannedCacheStuffer extends SimpleTextCacheStuffer {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void drawText(BaseDanmaku danmaku, String lineText, Canvas canvas, float left, float top, TextPaint paint, boolean fromWorkerThread) {
         if (danmaku.obj == null) {
             super.drawText(danmaku, lineText, canvas, left, top, paint, fromWorkerThread);

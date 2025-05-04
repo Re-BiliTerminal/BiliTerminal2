@@ -4,10 +4,13 @@ version = '0.0.1-SNAPSHOT'
 group = 'com.netease.hearttouch'
 
 android {
+    namespace 'com.wolfcstech.brotlij'
+
     compileSdk 35
+    ndkVersion "24.0.8215888"
 
     defaultConfig {
-        minSdk = 14
+        minSdk = 19
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -17,23 +20,17 @@ android {
     }
 
     buildTypes {
-        debug {
-            ndk {
-                //noinspection ChromeOsAbiSupport
-                abiFilters 'armeabi-v7a', 'x86'
-            }
-        }
         release {
             minifyEnabled false
             proguardFiles.add(file("proguard-rules.pro"))
-            ndk {
-                //noinspection ChromeOsAbiSupport
-                abiFilters 'armeabi-v7a', 'x86'
-//                    abiFilters 'armeabi-v7a'
-            }
         }
     }
-    namespace 'com.wolfcstech.brotlij'
+
+    externalNativeBuild {
+        ndkBuild {
+            path "src/main/jni/Android.mk"
+        }
+    }
 
 }
 

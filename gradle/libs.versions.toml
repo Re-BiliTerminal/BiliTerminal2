@@ -51,6 +51,7 @@ material = "1.11.0"
 
 # ZXing
 # noinspection GradleDependency
+orgEclipseJgit = "7.2.0.202503040940-r"
 zxingCore = "3.3.0"
 
 # Kotlin
@@ -73,6 +74,10 @@ geetestSensebot = "4.4.2.1"
 brotliDec = "0.1.2"
 brotli4j = "1.16.0"
 xlog = "1.11.0"
+agp = "8.9.2"
+kotlin = "2.1.20"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
 
 
 [libraries]
@@ -116,6 +121,7 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 # ZXing
+org-eclipse-jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "orgEclipseJgit" }
 zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxingCore" }
 
 # Kotlin
@@ -138,3 +144,8 @@ geetest-sensebot = { group = "com.geetest.sensebot", name = "sensebot", version.
 brotli-dec = { group = "org.brotli", name = "dec", version.ref = "brotliDec" }
 brotli4j = { group = "com.aayushatharva.brotli4j", name = "brotli4j", version.ref = "brotli4j" }
 xlog = { group = "com.elvishew", name = "xlog", version.ref = "xlog" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+[plugins]
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

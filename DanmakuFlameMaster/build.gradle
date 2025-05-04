@@ -43,7 +43,7 @@ android {
     }
 
     tasks.withType(JavaCompile).configureEach {
-        options.compilerArgs << "-Xlint:deprecation"
+        options.compilerArgs << "-Xlint:deprecation" << "-Xlint:unchecked"
     }
 
     namespace 'master.flame.danmaku'
@@ -52,6 +52,10 @@ android {
         // noinspection ExpiredTargetSdkVersion
         targetSdkVersion 22
     }
+}
+
+dependencies {
+    implementation project(':NativeBitmap')
 }
 
 if (rootProject.file('gradle/gradle-mvn-push.gradle').exists()) {

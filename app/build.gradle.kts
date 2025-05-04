@@ -17,7 +17,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.eclipse.jgit:org.eclipse.jgit:7.2.0.202503040940-r")
+        classpath(libs.org.eclipse.jgit)
     }
 }
 
@@ -65,6 +65,15 @@ android {
         }
     }
 
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+            isUniversalApk = true
+        }
+    }
+
     defaultConfig {
         applicationId = "com.huanli233.biliterminal2"
         minSdk = 14
@@ -75,11 +84,6 @@ android {
         multiDexEnabled = true
 
         vectorDrawables.useSupportLibrary = true
-
-        ndk {
-            //noinspection ChromeOsAbiSupport
-            abiFilters += setOf("armeabi-v7a", "x86", "mips")
-        }
 
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
@@ -152,7 +156,9 @@ android {
     applicationVariants.all variant@{
         outputs.all {
             val versionName = this@variant.versionName
-            (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName = "BiliTerminal2-${this@variant.name}-${versionName}.apk"
+            val abi = filters.find { it.filterType == "ABI" }?.identifier ?: "universal"
+            (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
+                "BiliTerminal2-${this@variant.name}-${versionName}-${abi}.apk"
         }
     }
 }

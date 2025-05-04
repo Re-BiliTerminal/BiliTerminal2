@@ -19,7 +19,7 @@ public class NativeBitmapFactory {
     static boolean notLoadAgain = false;
     
     public static boolean isInNativeAlloc() {
-        return android.os.Build.VERSION.SDK_INT < 11 || (nativeLibLoaded && nativeIntField != null);
+        return nativeLibLoaded && nativeIntField != null;
     }
 
     public static void loadLibs() {
@@ -35,12 +35,11 @@ public class NativeBitmapFactory {
             return;
         }
         try {
-            if (android.os.Build.VERSION.SDK_INT >= 11 && android.os.Build.VERSION.SDK_INT < 23) {
+            if (android.os.Build.VERSION.SDK_INT < 23) {
                 System.loadLibrary("ndkbitmap");
                 nativeLibLoaded = true;
             } else {
                 notLoadAgain = true;
-                nativeLibLoaded = false;
             }
         } catch (Exception e) {
             e.printStackTrace();

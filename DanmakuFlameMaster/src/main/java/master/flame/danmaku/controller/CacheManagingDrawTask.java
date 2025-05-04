@@ -498,7 +498,6 @@ public class CacheManagingDrawTask extends DrawTask {
                             mCachePool.release(new DrawingCache());
                         }
                     case DISPATCH_ACTIONS:
-//Log.e(TAG,"dispatch_actions:"+mCacheTimer.currMillisecond+":"+mTimer.currMillisecond);
                         long delayed = dispatchAction();
                         if (delayed <= 0) {
                             delayed = mContext.mDanmakuFactory.MAX_DANMAKU_DURATION / 2;
@@ -515,7 +514,6 @@ public class CacheManagingDrawTask extends DrawTask {
                             mTaskListener.ready();
                             mReadyState = true;
                         }
-//                        Log.i(TAG,"BUILD_CACHES:"+mCacheTimer.currMillisecond+":"+mTimer.currMillisecond);
                         break;
                     case ADD_DANMAKKU:
                         BaseDanmaku item = (BaseDanmaku) msg.obj;
@@ -528,7 +526,7 @@ public class CacheManagingDrawTask extends DrawTask {
                         }
                         break;
                     case REBUILD_CACHE:
-                        Pair<BaseDanmaku, Boolean> pair = (Pair<BaseDanmaku, Boolean>) msg.obj;
+                        @SuppressWarnings("unchecked") Pair<BaseDanmaku, Boolean> pair = (Pair<BaseDanmaku, Boolean>) msg.obj;
                         if (pair != null) {
                             BaseDanmaku cacheitem = pair.first;
                             if (pair.second) {
@@ -537,8 +535,7 @@ public class CacheManagingDrawTask extends DrawTask {
                             }
                             cacheitem.requestFlags |= BaseDanmaku.FLAG_REQUEST_INVALIDATE;
                             if (!pair.second && cacheitem.hasDrawingCache() && !cacheitem.cache.hasReferences()) {
-                                DrawingCache cache = DanmakuUtils.buildDanmakuDrawingCache(cacheitem, mDisp, (DrawingCache) cacheitem.cache);
-                                cacheitem.cache = cache;
+                                cacheitem.cache = DanmakuUtils.buildDanmakuDrawingCache(cacheitem, mDisp, (DrawingCache) cacheitem.cache);
                                 push(cacheitem, 0, true);
                                 return;
                             }

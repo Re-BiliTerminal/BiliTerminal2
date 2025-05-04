@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-sdk
-        tools:overrideLibrary="com.geetest.sdk,com.mikepenz.iconics.typeface.library.googlematerial,com.mikepenz.iconics.typeface.library.googlematerial.rounded,com.mikepenz.iconics.view,com.mikepenz.iconics.core,com.mikepenz.iconics.typeface" />
+        tools:overrideLibrary="com.geetest.sdk,com.wolfcstech.brotlij,com.huanli233.nativebitmap" />
 
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission

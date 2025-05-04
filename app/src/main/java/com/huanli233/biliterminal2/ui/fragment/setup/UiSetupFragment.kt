@@ -50,6 +50,11 @@ class UiSetupFragment: BaseFragment() {
         }
     }
 
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        initNightTheme()
+    }
+
     private fun initNightTheme() {
         (binding.darkThemeInput as? MaterialAutoCompleteTextView)?.apply {
             setText(modes[UserPreferences.nightMode.get()])

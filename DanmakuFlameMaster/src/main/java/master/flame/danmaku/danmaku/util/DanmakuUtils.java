@@ -85,6 +85,7 @@ public class DanmakuUtils {
         return false;
     }
 
+    @SuppressWarnings("unchecked")
     public static DrawingCache buildDanmakuDrawingCache(BaseDanmaku danmaku, IDisplayer disp,
             DrawingCache cache) {
         if (cache == null)
