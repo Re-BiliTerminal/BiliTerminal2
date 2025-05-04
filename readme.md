@@ -32,3 +32,12 @@ Fork of [RobinNotBad/BiliClient](https://gitee.com/RobinNotBad/BiliClient)
 
 > [!IMPORTANT]
 > 注意：开发者可能只会处理此仓库的 Issues 中提出的问题，通过其他任何渠道反馈的问题都不保证会有回复。
+
+# 关于 ijkplayer Native 库
+使用了通过 Github Actions 预先构建的 so 库。
+
+[ijkplayer](https://github.com/bilibili/ijkplayer)
+
+[Workflow File](https://github.com/huanli233/ijkplayer-autobuild/blob/main/.github/workflows/run_on_stared.yml)
+
+[使用的构建](https://github.com/huanli233/ijkplayer-autobuild/actions/runs/14823590303)
