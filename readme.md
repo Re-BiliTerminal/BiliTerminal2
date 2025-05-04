@@ -10,28 +10,20 @@ Fork of [RobinNotBad/BiliClient](https://gitee.com/RobinNotBad/BiliClient)
 </div>
 
 # 介绍
-这是一个**极其轻量级**的**B站客户端**，[哔哩终端](https://gitee.com/RobinNotBad/BiliClient) 的 Fork。使用 `java` + `xml`开发，最低支持**安卓4.2**。本项目借鉴了 [WearBili](https://github.com/SpaceXC/WearBili) 和 [腕上哔哩](https://github.com/luern0313/WristBilibili) 的部分开源代码和它们收集的部分 API ，界面曾使用 [WearBili](https://github.com/SpaceXC/WearBili) 的布局（现已重做）。**本项目与 WearBili 无任何关系**。
+这是一个**极其轻量级**的**B站客户端**，[哔哩终端](https://gitee.com/RobinNotBad/BiliClient) 的 Fork。最低支持**安卓4.2**。本项目借鉴了 [WearBili](https://github.com/SpaceXC/WearBili) 和 [腕上哔哩](https://github.com/luern0313/WristBilibili) 的部分开源代码和它们收集的部分 API ，界面曾使用 [WearBili](https://github.com/SpaceXC/WearBili) 的布局。**本项目与 WearBili 无任何关系**。
 
 播放视频可选择使用内置播放器、小电视播放器或凉腕播放器，内置播放器会优先支持部分功能。
 
-# 为什么创建此分支
-由于原项目的代码存在过多影响可维护性的问题，且原开发者不愿引入一些优化代码规范、简化开发的库如 `Gson`、`Lombok` 等，也没有时间大幅度重构项目，故创建此分支，以实现在**保留对低版本 Android 兼容性**的同时使项目**更加规范，更易于维护**。
+# 关于此分支
+此分支试图重写大部分代码，以增强原项目的可读性和维护性。同时，使用 ``Material3`` 并改进界面观感和操作逻辑。
 
-> [!TIP]
-> 目前（发布前），此项目的开发仍然以用新代码重写原有功能为主，这意味着暂时不会添加过多新功能、特性。
+使用了 ``Kotlin`` 、`Okhttp3 + Retrofit2` 、部分 ``Android Jetpack`` 组件和一些其他库。
 
-## 有什么不同
-- 完全重写 API 部分，使用 `Retrofit` + `Gson` （使用了兼容到 **SDK 14** 的修改版库`okhttp3-compat`与`retrofit2-compat`）
-- 引入 `Kotlin` ，并将大部分代码迁移到 `Kotlin`
-- 对项目包、类文件结构进行优化
-- 优化代码复用，减少原项目中复制粘贴的大量重复逻辑
-- 去除不规范的注释与日志，引入日志框架库
-- 去除 **AppApi（如检查更新、公告）** 等
-- 优化部分界面的逻辑与一些细节上的处理
-
-（以及可能添加的更多功能）
+~~其实本来还想同时支持原主题和 ``Material3`` 主题，但是被控件适配问题击败了~~
 
 # 问题反馈
+***不要向原项目反馈该分支的问题。***
+
 由于对项目的大幅度更改，可能会导致对于 Android 5.0 以下的兼容性出现一些问题。
 
 开发者没有条件进行测试，所以如果你遇到了问题，请提交 Issue。
