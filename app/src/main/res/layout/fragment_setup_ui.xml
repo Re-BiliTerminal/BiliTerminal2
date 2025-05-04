@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:layout_marginVertical="7dp"
+        android:orientation="vertical"
+        android:paddingBottom="30dp">
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/round_mode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/round_screen_adaptation" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu" >
+            <com.huanli233.biliterminal2.ui.widget.ExposedDropdownMenu
+                android:id="@+id/dark_theme_input"
+                android:hint="@string/dark_theme"
+                app:simpleItems="@array/dark_theme_modes"
+                android:layout_width="match_parent"
+                android:inputType="none"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/interface_scale"
+            android:textStyle="bold"
+            android:layout_marginTop="6dp"
+            android:textSize="17sp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:hint="@string/interface_size" >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ui_scale_input"
+                android:layout_width="match_parent"
+                android:inputType="numberDecimal"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/interface_size_tip"
+            android:layout_marginTop="2dp"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/interface_margins"
+            android:textStyle="bold"
+            android:layout_marginTop="6dp"
+            android:textSize="17sp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/horizontal"
+            android:layout_marginTop="2dp"
+            app:endIconMode="custom"
+            app:endIconDrawable="@drawable/percent"
+            app:endIconContentDescription="@null" >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ui_padding_horizontal_input"
+                android:inputType="number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/vertical"
+            app:endIconMode="custom"
+            app:endIconDrawable="@drawable/percent"
+            app:endIconContentDescription="@null" >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ui_padding_vertical_input"
+                android:inputType="number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/ui_preview_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:text="@string/view_preview" />
+
+    </LinearLayout>
+
+</com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppScrollView>

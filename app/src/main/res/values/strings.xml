@@ -11,7 +11,7 @@
     <string name="setting_ui_density_desc">最低72，建议每次仅进行轻微调节，调节后请预览页面，确认显示正常后完成修改，打开新页面后将会生效。\n若乱调此选项，导致应用无法正常使用的，请清除应用数据或卸载重装！\n注：此选项可能有其他问题，没有必要请不要修改。</string>
     <string name="setting_ui_round_desc">开启选项后，界面边距会直接更改为适合圆屏手表的大小，同时内置播放器也会更换为圆屏布局。\n这会导致显示面积缩小，但这是目前最好且工作量最小的办法了。</string>
     <string name="setting_player_desc">*你也可以通过长按“播放”按钮快速进入此页面。若无法跳转播放，请确保你已经安装对应播放器且播放器和BiliTerminal2都是最新版本。</string>
-    <string name="setup_introduction">这是哔哩终端的Fork项目，\n\n愿你在这一方小小的屏幕中，找到属于自己的小小的快乐！\n\n暂无交流群\n反馈问题、提交建议请前往开源地址提交Issue！\n开源地址：https://github.com/Re-BiliTerminal/BiliTerminal2\n\n请注意：\n本软件永久免费开源，不会收集你的任何账号及隐私信息，请放心使用！\n若你在任何平台付费下载到哔哩终端，那么你被坑了！\n\n点击下面的按钮，让我们开始吧！</string>
+    <string name="setup_introduction">这是哔哩终端的Fork项目，\n\n愿你在这一方小小的屏幕中，找到属于自己的小小的快乐！\n\n暂无交流群\n反馈问题、提交建议请前往开源地址提交Issue！\n开源地址：https://github.com/Re-BiliTerminal/BiliTerminal2\n\n请注意：\n本软件永久免费开源，不会收集你的任何账号及隐私信息，请放心使用！\n若你在任何平台付费下载到哔哩终端，那么你被坑了！</string>
 
     <string name="egg_warmwords_warmworld">请记住，如果遇到心理健康相关问题：\n全国24小时免费心理咨询热线：010\-82951332\n或官方手机端哔哩哔哩，打开 我的-下滑找到推荐服务-能量加油站。\n\n如果你需要这个，那么希望这个彩蛋能帮到你。\n如果其他人需要，那就请推荐给他/她吧。</string>
 
@@ -223,11 +223,27 @@
     <string name="user_follow_failed">操作失败（原因未知）：%1$d</string>
     <string name="user_followed">已关注</string>
     <string name="user_follow">关注</string>
+    <string name="biliterminal_crash">哔哩终端崩溃了</string>
+    <string name="crash_stack">崩溃堆栈：</string>
+    <string name="restart_app">重启应用</string>
+    <string name="exit_app">退出应用</string>
+    <string name="initializing">初始化中...</string>
+    <string name="initialize_setting">初始化设置</string>
+    <string name="welcome">欢迎</string>
+    <string name="interface_scale">界面缩放</string>
+    <string name="dark_theme">深色主题</string>
+    <string name="invalid_value">无效的值</string>
 
     <string-array name="icon_license">
         <item>界面设置: Newicons, MIT License</item>
         <item>番剧: hicon, MIT License</item>
         <item>退出登录: scarlab, MIT License</item>
+    </string-array>
+
+    <string-array name="dark_theme_modes">
+        <item>自动</item>
+        <item>浅色</item>
+        <item>深色</item>
     </string-array>
 
     <array name="tutorial_space">

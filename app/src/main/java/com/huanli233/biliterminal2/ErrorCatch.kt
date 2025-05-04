@@ -1,48 +1,40 @@
-package com.huanli233.biliterminal2;
+package com.huanli233.biliterminal2
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
+import android.content.Context
+import android.content.Intent
+import android.os.Process
+import com.huanli233.biliterminal2.ui.activity.CatchActivity
+import java.lang.ref.WeakReference
 
-import androidx.annotation.NonNull;
+class ErrorCatch : Thread.UncaughtExceptionHandler {
+    private var context: Context? = null
 
-import com.huanli233.biliterminal2.activity.CatchActivity;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
-
-public class ErrorCatch implements Thread.UncaughtExceptionHandler {
-    @SuppressLint("StaticFieldLeak")
-    public static ErrorCatch instance;
-    private Context context;
-
-    public static ErrorCatch getInstance() {
-        if (instance == null) instance = new ErrorCatch();
-        return instance;
+    fun install(context: Context) {
+        this.context = context
+        Thread.setDefaultUncaughtExceptionHandler(this)
     }
 
-    public void init(Context context) {
-        this.context = context;
-        Thread.setDefaultUncaughtExceptionHandler(this);
-    }
-
-    @Override
-    public void uncaughtException(@NonNull Thread thread, @NonNull Throwable throwable) {
-        Writer writer = new StringWriter();
-        PrintWriter printWriter = new PrintWriter(writer);
-        throwable.printStackTrace(printWriter);
-
+    override fun uncaughtException(thread: Thread, throwable: Throwable) {
         try {
-            Intent intent = new Intent(context, CatchActivity.class);
-            intent.putExtra("stack", writer.toString());
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //这句是安卓4必须有的
-            context.startActivity(intent);
-        } catch (Throwable t) {
-            t.printStackTrace();
+            context?.startActivity(
+                Intent(context, CatchActivity::class.java).apply {
+                    putExtra("stack", throwable)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+            )
+        } catch (t: Throwable) {
+            t.printStackTrace()
         }
 
-        throwable.printStackTrace();
-        android.os.Process.killProcess(android.os.Process.myPid());
+        throwable.printStackTrace()
+        Process.killProcess(Process.myPid())
+    }
+
+    companion object {
+        private var _instance: WeakReference<ErrorCatch> = WeakReference(null)
+        val instance: ErrorCatch
+            get() = _instance.get() ?: ErrorCatch().also {
+                _instance = WeakReference(it)
+            }
     }
 }

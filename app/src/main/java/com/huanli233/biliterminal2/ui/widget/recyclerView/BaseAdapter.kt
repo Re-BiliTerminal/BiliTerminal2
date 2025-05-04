@@ -117,7 +117,7 @@ abstract class BaseAdapter<M, VH : BaseHolder> : AbstractAdapter<VH> {
     }
 
     fun getItem(vh: VH): M? {
-        return getItem(vh.adapterPosition)
+        return getItem(vh.bindingAdapterPosition)
     }
 
     val allData: List<M>

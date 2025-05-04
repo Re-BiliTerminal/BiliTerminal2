@@ -48,7 +48,7 @@ class TopBar @JvmOverloads constructor(
         }
     }
 
-    fun setTitle(text: String) {
+    fun setTitle(text: CharSequence) {
         findViewById<TextView>(R.id.page_name).text = text
     }
 

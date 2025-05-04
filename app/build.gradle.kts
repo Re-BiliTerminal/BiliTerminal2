@@ -8,6 +8,7 @@ import java.io.File
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
     id("kotlin-kapt")
     id("kotlin-parcelize")
 }
@@ -28,15 +29,6 @@ if (versionPropsFile.exists()) {
     versionProps.load(FileInputStream(versionPropsFile))
 } else {
     versionProps["VERSION_CODE"] = "1"
-}
-
-tasks.register("incrementVersionCode") {
-    doLast {
-        val versionCode = versionProps["VERSION_CODE"].toString().toInt()
-        versionProps["VERSION_CODE"] = (versionCode + 1).toString()
-        versionProps.store(versionPropsFile.writer(), null)
-        println("Incremented VERSION_CODE to ${versionCode + 1}")
-    }
 }
 
 tasks.configureEach {
@@ -83,7 +75,7 @@ android {
     defaultConfig {
         applicationId = "com.huanli233.biliterminal2"
         minSdk = 14
-        targetSdk = 35
+        targetSdk = 36
         versionCode = readVersionCode()
         versionName = "${readVersion()}+${getGitHash()}"
 
@@ -199,6 +191,16 @@ dependencies {
     implementation("androidx.asynclayoutinflater:asynclayoutinflater:1.0.0")
     // noinspection GradleDependency
     implementation("androidx.recyclerview:recyclerview:1.3.1")
+    // noinspection GradleDependency
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    // noinspection GradleDependency
+    implementation("androidx.room:room-runtime:2.6.0")
+    // noinspection GradleDependency
+    implementation("androidx.room:room-ktx:2.6.0")
+    // noinspection GradleDependency
+    ksp("androidx.room:room-compiler:2.6.0")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.2.2")
+    implementation("androidx.navigation:navigation-ui-ktx:2.2.2")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
 
@@ -214,7 +216,7 @@ dependencies {
     }
     //noinspection GradleDependency
     implementation("com.google.code.gson:gson:2.9.1")
-    implementation("com.github.bumptech.glide:glide:4.13.2")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 
     implementation("org.greenrobot:eventbus:3.3.1")
     implementation("com.geetest.sensebot:sensebot:4.4.2.1") {
@@ -225,10 +227,4 @@ dependencies {
     implementation("com.aayushatharva.brotli4j:brotli4j:1.16.0")
 
     implementation("com.elvishew:xlog:1.11.0")
-
-    // will be removed
-//    implementation("com.mikepenz:iconics-core:5.4.0")
-//    implementation("com.mikepenz:iconics-views:5.4.0")
-//    implementation("com.mikepenz:google-material-typeface:4.0.0.3-kotlin@aar")
-//    implementation("com.mikepenz:google-material-typeface-rounded:4.0.0.2-kotlin@aar")
 }

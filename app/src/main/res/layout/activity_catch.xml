@@ -1,100 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-        <LinearLayout
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="6dp"
+        android:orientation="vertical">
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            android:orientation="vertical">
+            android:layout_marginTop="6dp"
+            android:text="@string/biliterminal_crash"
+            android:gravity="center"
+            android:textSize="18sp" />
 
-            <TextView
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="2dp"
+            android:layout_marginTop="4dp">
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="2dp"
+            android:layout_marginTop="4dp">
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="哔哩终端崩溃了"
-                android:gravity="center"
-                android:textSize="18sp" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="2dp"
-                android:layout_marginTop="4dp">
+                android:padding="4dp"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/catch_reason"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="4dp"
-                    android:gravity="center_vertical"
-                    android:text="可能的崩溃原因：\n？？？"
-                    android:textAlignment="textStart"
+                    android:text="@string/crash_stack"
                     android:textSize="13sp"
-                    tools:ignore="RtlCompat" />
-            </com.google.android.material.card.MaterialCardView>
+                    android:textStyle="bold" />
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="2dp"
-                android:layout_marginTop="4dp">
-                <LinearLayout
+                <com.huanli233.biliterminal2.ui.widget.ExpandableTextView
+                    android:id="@+id/stack"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="4dp"
-                    android:orientation="vertical">
-
+                    tools:text="xxx.xxx.xxx.xxxException\nAt ...\nAt ...\nAt ...\nAt ...\nAt ..."
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:maxCollapsedLines="4"
+                    app:animDuration="200" >
                     <TextView
+                        android:id="@id/expandable_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="崩溃堆栈："
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:textSize="13sp" />
 
-                    <TextView
-                        android:id="@+id/stack"
-                        android:layout_width="match_parent"
+                    <ImageButton
+                        android:id="@id/expand_collapse"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="xxx.xxx.xxx.xxxException\nAt ...\nAt ...\nAt ...\nAt ...\nAt ..."
-                        android:maxLines="5"
-                        android:ellipsize="end"
-                        android:textSize="13sp"
-                        tools:ignore="RtlCompat" />
-                </LinearLayout>
+                        android:contentDescription="@null"
+                        android:padding="10dp"
+                        android:layout_gravity="end|bottom"
+                        android:background="@android:color/transparent"
+                        app:tint="?attr/colorOnSurface" />
 
-            </com.google.android.material.card.MaterialCardView>
+                </com.huanli233.biliterminal2.ui.widget.ExpandableTextView>
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:alpha="0.7"
-                android:gravity="center"
-                android:text="点击上方展开错误堆栈"
-                android:textSize="11sp" />
+        </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/restart_btn"
-                android:text="重启应用"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/restart_btn"
+            android:text="@string/restart_app"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/exit_btn"
-                android:text="退出捕捉"
-                android:layout_marginBottom="6dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/exit_btn"
+            android:text="@string/exit_app"
+            android:layout_marginBottom="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:alpha="0.1"
-                android:textSize="12sp"
-                android:text="“哔哩终端坏掉了，这不是终端的错，绝对不是”"
-                android:gravity="center"/>
-        </LinearLayout>
-    </ScrollView>
+    </LinearLayout>
+
+</ScrollView>

@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.huanli233.biliterminal2.util.MsgUtil;
+import com.huanli233.biliterminal2.utils.MsgUtil;
 
 public class CustomGridManager extends GridLayoutManager {
     public CustomGridManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -25,8 +25,6 @@ public class CustomGridManager extends GridLayoutManager {
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
         try {
             super.onLayoutChildren(recycler, state);
-        } catch (Throwable e) {
-            MsgUtil.error("列表报错：", e);
-        }
+        } catch (Throwable ignored) { }
     }
 }

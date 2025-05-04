@@ -1,15 +1,27 @@
 package com.huanli233.biliterminal2.api
 
-import com.huanli233.biliterminal2.util.MsgUtil
-import com.huanli233.biliterminal2.util.network.NetWorkUtil
-import com.huanli233.biliterminal2.util.Preferences
+import android.annotation.SuppressLint
+import android.os.Build
+import com.huanli233.biliterminal2.applicationContext
+import com.huanli233.biliterminal2.applicationScope
+import com.huanli233.biliterminal2.data.UserPreferences
+import com.huanli233.biliterminal2.data.account.AccountRepository
+import com.huanli233.biliterminal2.utils.MsgUtil
+import com.huanli233.biliterminal2.utils.Preferences
+import com.huanli233.biliterminal2.utils.network.SSLSocketFactoryCompat
 import com.huanli233.biliwebapi.BiliWebApi
 import com.huanli233.biliwebapi.bean.ApiResponse
 import com.huanli233.biliwebapi.httplib.CookieManager
 import com.huanli233.biliwebapi.httplib.WbiSignKeyInfo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import okhttp3.Cookie
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
+import java.security.cert.X509Certificate
+import javax.net.ssl.SSLSocketFactory
+import javax.net.ssl.X509TrustManager
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -19,14 +31,49 @@ val bilibiliApi = object : BiliWebApi(
     wbiDataManager = WbiDataManager
 ) {
     override fun createHttpClient(): OkHttpClient.Builder {
-        return NetWorkUtil.setOkHttpSsl(super.createHttpClient())
+        return setOkHttpSsl(super.createHttpClient())
     }
 }
 
+@Synchronized
+private fun setOkHttpSsl(okhttpBuilder: OkHttpClient.Builder): OkHttpClient.Builder {
+    if (Build.VERSION.SDK_INT > 22) return okhttpBuilder
+    try {
+        @SuppressLint("CustomX509TrustManager") val trustAllCert: X509TrustManager =
+            object : X509TrustManager {
+                @SuppressLint("TrustAllX509TrustManager")
+                override fun checkClientTrusted(
+                    chain: Array<X509Certificate?>?,
+                    authType: String?
+                ) {
+                }
+
+                @SuppressLint("TrustAllX509TrustManager")
+                override fun checkServerTrusted(
+                    chain: Array<X509Certificate?>?,
+                    authType: String?
+                ) {
+                }
+
+                override fun getAcceptedIssuers(): Array<X509Certificate?> {
+                    return arrayOf<X509Certificate?>()
+                }
+            }
+        val sslSocketFactory: SSLSocketFactory = SSLSocketFactoryCompat(trustAllCert)
+        okhttpBuilder.sslSocketFactory(sslSocketFactory, trustAllCert)
+    } catch (e: java.lang.Exception) {
+        throw RuntimeException(e)
+    }
+    return okhttpBuilder
+}
+
+// TODO Flow
 object CookieManager : CookieManager {
 
     override fun loadForRequest(url: HttpUrl): List<Cookie> {
-        val cookiesStr = Preferences.getString(Preferences.COOKIES, "")
+        val cookiesStr = runBlocking(Dispatchers.IO) {
+            AccountRepository.getInstance(applicationContext).getActiveAccountToken()
+        }?.cookies.orEmpty()
         return if (cookiesStr == "") listOf() else cookiesStr.split("; ").map {
             Cookie.Builder()
                 .name(it.substringBefore("="))
@@ -37,18 +84,22 @@ object CookieManager : CookieManager {
     }
 
     override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
-        val cookiesStr = Preferences.getString(Preferences.COOKIES, "")
+        val cookiesStr = runBlocking(Dispatchers.IO) {
+            AccountRepository.getInstance(applicationContext).getActiveAccountToken()
+        }?.cookies.orEmpty()
         val oldCookies = (if (cookiesStr == "") mutableListOf() else mutableListOf(
             *cookiesStr.split("; ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         ))
         cookies.forEach {
             oldCookies.add("${it.name}=${it.value}")
         }
-        Preferences.putString(
-            Preferences.COOKIES,
-            oldCookies.joinToString("; ")
-        )
-        NetWorkUtil.refreshHeaders()
+        runBlocking(Dispatchers.IO) {
+            AccountRepository.getInstance(applicationContext).updateAccountToken {
+                it.copy(
+                    cookies = oldCookies.joinToString("; ")
+                )
+            }
+        }
     }
 
 }
@@ -56,12 +107,14 @@ object CookieManager : CookieManager {
 object WbiDataManager : com.huanli233.biliwebapi.httplib.WbiDataManager {
     override var wbiData: WbiSignKeyInfo
         get() = WbiSignKeyInfo(
-            Preferences.getString("wbi_mixin_key", ""),
-            Preferences.getLong("wbi_last_updated", 0),
+            UserPreferences.wbiMixinKey.get(),
+            UserPreferences.wbiLastUpdated.get(),
         )
         set(value) {
-            Preferences.putLong("wbi_last_updated", value.lastUpdated)
-            Preferences.putString("wbi_mixin_key", value.mixinKey)
+            applicationScope.launch {
+                UserPreferences.wbiLastUpdated.set(value.lastUpdated)
+                UserPreferences.wbiMixinKey.set(value.mixinKey)
+            }
         }
 }
 

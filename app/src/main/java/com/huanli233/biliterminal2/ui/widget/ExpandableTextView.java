@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.huanli233.biliterminal2;
+package com.huanli233.biliterminal2.ui.widget;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
@@ -414,10 +414,6 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
             super.initialize(width, height, parentWidth, parentHeight);
         }
 
-        @Override
-        public boolean willChangeBounds( ) {
-            return true;
-        }
     }
 
     public interface OnExpandStateChangeListener {

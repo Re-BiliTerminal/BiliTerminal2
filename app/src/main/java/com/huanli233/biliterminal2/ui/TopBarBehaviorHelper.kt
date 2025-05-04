@@ -12,8 +12,8 @@ import androidx.core.view.ViewPropertyAnimatorListener
 import androidx.recyclerview.widget.RecyclerView
 import com.huanli233.biliterminal2.ui.widget.scalablecontainer.ObservableRecyclerView
 import com.huanli233.biliterminal2.ui.widget.scalablecontainer.ObservableScrollView
-import com.huanli233.biliterminal2.util.extensions.invisible
-import com.huanli233.biliterminal2.util.extensions.visible
+import com.huanli233.biliterminal2.utils.extensions.invisible
+import com.huanli233.biliterminal2.utils.extensions.visible
 import androidx.core.view.isNotEmpty
 
 class TopBarBehaviorHelper(

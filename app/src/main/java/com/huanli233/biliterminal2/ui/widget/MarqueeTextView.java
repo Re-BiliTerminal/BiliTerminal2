@@ -4,7 +4,8 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 
-import com.huanli233.biliterminal2.util.Preferences;
+import com.huanli233.biliterminal2.data.UserPreferences;
+import com.huanli233.biliterminal2.utils.Preferences;
 
 public class MarqueeTextView extends androidx.appcompat.widget.AppCompatTextView {
     public MarqueeTextView(Context context, AttributeSet attrs, int defStyle) {
@@ -24,7 +25,7 @@ public class MarqueeTextView extends androidx.appcompat.widget.AppCompatTextView
 
     public void setMarquee() {
         if (!isInEditMode())
-            if (Preferences.getBoolean("marquee_enable", true)) {
+            if (UserPreferences.INSTANCE.getMarqueeEnabled().get()) {
                 setSelected(true);
                 setEllipsize(TextUtils.TruncateAt.MARQUEE);
                 setSingleLine();
