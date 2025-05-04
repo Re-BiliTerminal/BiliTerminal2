@@ -1,0 +1,138 @@
+[versions]
+# Android Tools
+desugarJdkLibs = "2.1.5"
+multidex = "2.0.1"
+
+# AndroidX - UI
+# noinspection GradleDependency
+androidxViewpager2 = "1.1.0-beta02"
+# noinspection GradleDependency
+androidxConstraintlayout = "2.1.4"
+androidxSwiperefreshlayout = "1.1.0"
+# noinspection GradleDependency
+androidxAsynclayoutinflater = "1.0.0"
+# noinspection GradleDependency
+androidxRecyclerview = "1.3.1"
+
+# AndroidX - Core/Ktx
+# noinspection GradleDependency
+androidxCoreKtx = "1.12.0"
+# noinspection GradleDependency
+androidxActivityKtx = "1.8.2"
+# noinspection GradleDependency
+androidxFragmentKtx = "1.6.2"
+
+# AndroidX - Lifecycle
+# noinspection GradleDependency
+androidxLifecycleViewmodelKtx = "2.6.2"
+# noinspection GradleDependency
+androidxLifecycleRuntimeKtx = "2.6.2"
+
+# AndroidX - Data
+# noinspection GradleDependency
+androidxDatastorePreferences = "1.0.0"
+
+# AndroidX - Room
+# noinspection GradleDependency
+androidxRoom = "2.6.0"
+
+# AndroidX - Navigation
+# noinspection GradleDependency
+androidxNavigation = "2.7.4"
+
+# AndroidX - Appcompat
+# noinspection GradleDependency
+androidxAppcompat = "1.6.1"
+
+# Google Material
+# noinspection GradleDependency
+material = "1.11.0"
+
+# ZXing
+# noinspection GradleDependency
+zxingCore = "3.3.0"
+
+# Kotlin
+kotlinCoroutinesAndroid = "1.10.1"
+
+# Third Party - UI/Adapters
+multitype = "4.3.0"
+photoview = "2.3.0"
+
+# Third Party - Network
+okhttp3CompatOkhttp = "5.0.0-p2"
+retrofit2Compat = "2.12.0-p2"
+# noinspection GradleDependency
+googleGson = "2.9.1"
+glide = "4.16.0"
+
+# Third Party - Other
+eventbus = "3.3.1"
+geetestSensebot = "4.4.2.1"
+brotliDec = "0.1.2"
+brotli4j = "1.16.0"
+xlog = "1.11.0"
+
+
+[libraries]
+# Android Tools
+desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJdkLibs" }
+multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
+
+# AndroidX - UI
+androidx-viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "androidxViewpager2" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidxConstraintlayout" }
+androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "androidxSwiperefreshlayout" }
+androidx-asynclayoutinflater = { group = "androidx.asynclayoutinflater", name = "asynclayoutinflater", version.ref = "androidxAsynclayoutinflater" }
+androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "androidxRecyclerview" }
+
+# AndroidX - Core/Ktx
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCoreKtx" }
+androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidxActivityKtx" }
+androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidxFragmentKtx" }
+
+# AndroidX - Lifecycle
+androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidxLifecycleViewmodelKtx" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycleRuntimeKtx" }
+
+# AndroidX - Data
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDatastorePreferences" }
+
+# AndroidX - Room
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidxRoom" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidxRoom" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidxRoom" }
+
+# AndroidX - Navigation
+androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "androidxNavigation" }
+androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "androidxNavigation" }
+
+# AndroidX - Appcompat
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppcompat" }
+
+# Google Material
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+# ZXing
+zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxingCore" }
+
+# Kotlin
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinCoroutinesAndroid" }
+
+# Third Party - UI/Adapters
+multitype = { group = "com.drakeet.multitype", name = "multitype", version.ref = "multitype" }
+photoview = { group = "com.github.chrisbanes", name = "PhotoView", version.ref = "photoview" }
+
+# Third Party - Network
+okhttp3-compat-okhttp = { group = "com.huanli233.okhttp3-compat", name = "okhttp", version.ref = "okhttp3CompatOkhttp" }
+retrofit2-compat-retrofit = { group = "com.huanli233.retrofit2-compat", name = "retrofit", version.ref = "retrofit2Compat" }
+retrofit2-compat-converter-gson = { group = "com.huanli233.retrofit2-compat", name = "converter-gson", version.ref = "retrofit2Compat" }
+google-gson = { group = "com.google.code.gson", name = "gson", version.ref = "googleGson" }
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+
+# Third Party - Other
+eventbus = { group = "org.greenrobot", name = "eventbus", version.ref = "eventbus" }
+geetest-sensebot = { group = "com.geetest.sensebot", name = "sensebot", version.ref = "geetestSensebot" }
+brotli-dec = { group = "org.brotli", name = "dec", version.ref = "brotliDec" }
+brotli4j = { group = "com.aayushatharva.brotli4j", name = "brotli4j", version.ref = "brotli4j" }
+xlog = { group = "com.elvishew", name = "xlog", version.ref = "xlog" }

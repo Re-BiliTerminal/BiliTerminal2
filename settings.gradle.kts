@@ -15,6 +15,9 @@ dependencyResolutionManagement {
         maven { url = uri("https://www.jitpack.io") }
         mavenLocal()
     }
+    versionCatalogs {
+        create("libs")
+    }
 }
 
 rootProject.name = "BiliTerminal2"

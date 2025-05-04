@@ -54,6 +54,10 @@ android {
     namespace = "com.huanli233.biliterminal2"
     compileSdk = 35
 
+    lint {
+        baseline = file("lint-baseline.xml")
+    }
+
     sourceSets {
         getByName("main") {
             jniLibs.srcDirs("libs")
@@ -155,70 +159,49 @@ dependencies {
     implementation(project(":brotlij"))
     implementation(project(":BiliWebApi"))
 
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
-    implementation("androidx.multidex:multidex:2.0.1")
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+    implementation(libs.multidex)
 
-    // noinspection GradleDependency
-    implementation("androidx.viewpager2:viewpager2:1.0.0")
-    // noinspection GradleDependency
-    implementation("androidx.core:core-ktx:1.10.1")
-    // noinspection GradleDependency
-    implementation("androidx.activity:activity-ktx:1.8.2")
-    // noinspection GradleDependency
-    implementation("androidx.fragment:fragment-ktx:1.6.2")
-    // noinspection GradleDependency
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
-    // noinspection GradleDependency
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-    // noinspection GradleDependency
-    implementation("com.google.zxing:core:3.3.0")
-    // noinspection GradleDependency
-    implementation("androidx.appcompat:appcompat:1.5.1")
-    //noinspection GradleDependency
-    implementation("com.google.android.material:material:1.10.0")
-    // noinspection GradleDependency
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0")
-    // noinspection GradleDependency
-    implementation("androidx.asynclayoutinflater:asynclayoutinflater:1.0.0")
-    // noinspection GradleDependency
-    implementation("androidx.recyclerview:recyclerview:1.3.1")
-    // noinspection GradleDependency
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
-    // noinspection GradleDependency
-    implementation("androidx.room:room-runtime:2.6.0")
-    // noinspection GradleDependency
-    implementation("androidx.room:room-ktx:2.6.0")
-    // noinspection GradleDependency
-    ksp("androidx.room:room-compiler:2.6.0")
-    // noinspection GradleDependency
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.4")
-    // noinspection GradleDependency
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.4")
+    implementation(libs.androidx.viewpager2)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.zxing.core)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.asynclayoutinflater)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
+    implementation(libs.kotlinx.coroutines.android)
 
-    implementation("com.drakeet.multitype:multitype:4.3.0")
-    //noinspection GradleDependency
-    implementation("org.jsoup:jsoup:1.10.2")
-    implementation("com.github.chrisbanes:PhotoView:2.3.0")
+    implementation(libs.multitype)
+    implementation(libs.photoview)
 
-    implementation("com.huanli233.okhttp3-compat:okhttp:5.0.0-p2")
-    implementation("com.huanli233.retrofit2-compat:retrofit:2.12.0-p2")
-    implementation("com.huanli233.retrofit2-compat:converter-gson:2.12.0-p2") {
+    implementation(libs.okhttp3.compat.okhttp)
+    implementation(libs.retrofit2.compat.retrofit)
+    implementation(libs.retrofit2.compat.converter.gson) {
         exclude("com.google.code.gson", "gson")
     }
-    //noinspection GradleDependency
-    implementation("com.google.code.gson:gson:2.9.1")
-    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation(libs.google.gson)
+    implementation(libs.glide)
 
-    implementation("org.greenrobot:eventbus:3.3.1")
-    implementation("com.geetest.sensebot:sensebot:4.4.2.1") {
+    implementation(libs.eventbus)
+    implementation(libs.geetest.sensebot) {
         exclude(group = "com.squareup.okhttp3")
     }
 
-    implementation("org.brotli:dec:0.1.2")
-    implementation("com.aayushatharva.brotli4j:brotli4j:1.16.0")
+    implementation(libs.brotli.dec)
+    implementation(libs.brotli4j)
 
-    implementation("com.elvishew:xlog:1.11.0")
+    implementation(libs.xlog)
 }
