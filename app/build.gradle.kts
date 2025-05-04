@@ -75,6 +75,10 @@ android {
             //noinspection ChromeOsAbiSupport
             abiFilters += setOf("armeabi-v7a", "x86", "mips")
         }
+
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
+        }
     }
 
     signingConfigs {
@@ -187,8 +191,10 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.0")
     // noinspection GradleDependency
     ksp("androidx.room:room-compiler:2.6.0")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.2.2")
-    implementation("androidx.navigation:navigation-ui-ktx:2.2.2")
+    // noinspection GradleDependency
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.4")
+    // noinspection GradleDependency
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.4")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
 

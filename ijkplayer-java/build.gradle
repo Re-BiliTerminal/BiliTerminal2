@@ -1,8 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdk 34
+    compileSdk 35
     namespace 'tv.danmaku.ijk.media.player'
+
+    defaultConfig {
+        minSdk = 14
+    }
 }
 
 

@@ -59,7 +59,9 @@ internal class GsonResponseBodyConverter<T>(
             value.api = apiInstance
         }
         value.javaClass.fields.forEach {
-            injectApiInstance(value, it)
+            if (value != null) {
+                injectApiInstance(value, it)
+            }
         }
     }
 }

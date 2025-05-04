@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.huanli233.biliwebapi.api.interfaces
 
 import com.huanli233.biliwebapi.bean.ApiResponse
@@ -9,7 +11,6 @@ interface IArticleApi {
 
     @GET("/x/article/view")
     @Deprecated("Move to opus api")
-    @Suppress("DEPRECATION")
     suspend fun getArticle(@Query("cvid") cvid: Long): ApiResponse<ArticleInfo>
 
 }
