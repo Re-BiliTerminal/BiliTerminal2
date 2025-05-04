@@ -4,36 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <com.huanli233.biliterminal2.ui.widget.TopBar
         android:id="@+id/top_bar"
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
-
-        <TextView
-            android:id="@+id/page_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginVertical="3dp"
-            android:text="加载中…"
-            android:textStyle="bold"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            app:drawableStartCompat="@drawable/arrow_back" />
-
-        <com.huanli233.biliterminal2.ui.widget.TextClock
-            android:id="@+id/time_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginVertical="3dp"
-            android:text="11:45"
-            android:textStyle="bold"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-
-    </RelativeLayout>
+        app:titleText="@string/loading" />
 
     <ImageView
         android:id="@+id/loading"
@@ -42,6 +18,6 @@
         android:visibility="visible"
         android:src="@mipmap/loading_2233"
         android:layout_below="@+id/top_bar"
-        android:contentDescription="加载中" />
+        android:contentDescription="@null" />
 
 </RelativeLayout>

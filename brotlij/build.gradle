@@ -4,12 +4,16 @@ version = '0.0.1-SNAPSHOT'
 group = 'com.netease.hearttouch'
 
 android {
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         minSdk = 14
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     buildTypes {
@@ -38,5 +42,5 @@ dependencies {
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testImplementation 'junit:junit:4.13.2'
+    testImplementation libs.junit
 }

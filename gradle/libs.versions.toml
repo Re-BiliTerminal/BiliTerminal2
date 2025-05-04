@@ -1,6 +1,7 @@
 [versions]
 # Android Tools
 desugarJdkLibs = "2.1.5"
+junit = "4.13.2"
 multidex = "2.0.1"
 
 # AndroidX - UI
@@ -77,6 +78,7 @@ xlog = "1.11.0"
 [libraries]
 # Android Tools
 desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJdkLibs" }
+junit = { module = "junit:junit", version.ref = "junit" }
 multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
 
 # AndroidX - UI

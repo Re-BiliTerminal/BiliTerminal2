@@ -6,13 +6,15 @@ import android.graphics.Rect;
 import android.text.TextUtils;
 import android.view.View;
 
+import androidx.core.content.res.ResourcesCompat;
+
 public class UiCommonUtil {
 
     public static int getColor(Context context, int i) {
         if (context == null || i == 0) {
             return -1;
         }
-        return context.getResources().getColor(i);
+        return ResourcesCompat.getColor(context.getResources(), i, context.getTheme());
     }
 
     public static int[] getColorArray(Context context, int[] iArr) {

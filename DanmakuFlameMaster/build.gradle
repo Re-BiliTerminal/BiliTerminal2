@@ -19,7 +19,7 @@ apply plugin: 'com.android.library'
 def SourcePath = 'src/main/'
 
 android {
-    compileSdk 34
+    compileSdk 35
 
     buildTypes {
         release {
@@ -27,6 +27,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     sourceSets {
         main {
             manifest.srcFile "${SourcePath}AndroidManifest.xml"
@@ -35,16 +36,24 @@ android {
         }
         androidTest.setRoot("${SourcePath}../androidTest")
     }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
     namespace 'master.flame.danmaku'
     defaultConfig {
         minSdkVersion 14
-        //noinspection ExpiredTargetSdkVersion
+        // noinspection ExpiredTargetSdkVersion
         targetSdkVersion 22
     }
 }
+
 if (rootProject.file('gradle/gradle-mvn-push.gradle').exists()) {
     apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
 }
+
 if (rootProject.file('gradle/gradle-bintray-upload.gradle').exists()) {
     apply from: rootProject.file('gradle/gradle-bintray-upload.gradle')
 }
