@@ -10,6 +10,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("kotlin-kapt")
     id("kotlin-parcelize")
+    id("com.google.dagger.hilt.android")
 }
 
 buildscript {
@@ -76,7 +77,7 @@ android {
 
     defaultConfig {
         applicationId = "com.huanli233.biliterminal2"
-        minSdk = 14
+        minSdk = 15
         targetSdk = 36
         versionCode = getGitCommitCount()
         versionName = "${readVersion()}+${getGitHash()}"
@@ -165,6 +166,10 @@ android {
 
 dependencies {
 
+    // https://github.com/SkywalkerDarren/Skeleton, a fork of https://github.com/ethanhua/Skeleton
+    implementation(project(":Skeleton"))
+    implementation(libs.shimmer)
+
     implementation(project(":ijkplayer-java"))
     implementation(project(":DanmakuFlameMaster"))
     implementation(project(":brotlij"))
@@ -192,6 +197,10 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.interpolator)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
 
     implementation(libs.kotlinx.coroutines.android)
 

@@ -14,10 +14,12 @@ import com.huanli233.biliterminal2.data.NIGHT_MODE_DISABLED
 import com.huanli233.biliterminal2.data.NIGHT_MODE_FOLLOW_SYSTEM
 import com.huanli233.biliterminal2.data.UserPreferences
 import com.huanli233.biliterminal2.utils.Preferences
+import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 
+@HiltAndroidApp
 class BiliTerminal : Application() {
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)

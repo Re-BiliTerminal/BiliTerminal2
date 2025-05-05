@@ -1,5 +1,6 @@
 package com.huanli233.biliterminal2.utils.extensions
 
+import com.huanli233.biliterminal2.api.BilibiliApiException
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -44,6 +45,17 @@ sealed class LoadState<T> {
             callsInPlace(action, InvocationKind.AT_MOST_ONCE)
         }
         if (isError) action((this as Error).error)
+        return this
+    }
+
+    @OptIn(ExperimentalContracts::class)
+    inline fun onApiError(
+        action: (error: BilibiliApiException) -> Unit
+    ): LoadState<T> {
+        contract {
+            callsInPlace(action, InvocationKind.AT_MOST_ONCE)
+        }
+        if (isError) ((this as Error).error as? BilibiliApiException)?.let(action)
         return this
     }
 

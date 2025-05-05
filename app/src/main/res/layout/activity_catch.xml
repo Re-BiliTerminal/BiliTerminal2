@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,14 +18,6 @@
             android:text="@string/biliterminal_crash"
             android:gravity="center"
             android:textSize="18sp" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="2dp"
-            android:layout_marginTop="4dp">
-
-        </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
@@ -89,4 +81,4 @@
 
     </LinearLayout>
 
-</ScrollView>
+</com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppScrollView>

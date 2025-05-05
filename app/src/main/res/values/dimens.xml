@@ -7,4 +7,6 @@
     <dimen name="card_round">6dp</dimen>
     <dimen name="card_stroke">0dp</dimen>
     <dimen name="round_small">4dp</dimen>
+
+    <dimen name="page_bottom_padding">16dp</dimen>
 </resources>

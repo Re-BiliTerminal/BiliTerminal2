@@ -22,7 +22,7 @@ import okhttp3.RequestBody
 import okhttp3.Response
 import okhttp3.internal.http.HttpMethod
 import retrofit2.Invocation
-
+import okio.Buffer
 
 private val otherCookiesMap = mapOf(
     "enable_web_push" to "DISABLE",
@@ -37,21 +37,23 @@ internal class BilibiliApiInterceptor(
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request()
-        val invocation = request.tag(Invocation::class.java)
+        val originalRequest = chain.request()
+        val invocation = originalRequest.tag(Invocation::class.java)
+
         invocation?.let {
-            if (it.service() != IRequestParamApi::class.java) checkCookieParams(request)
+            if (it.service() != IRequestParamApi::class.java) checkCookieParams(originalRequest)
         }
-        return chain.proceed(
-            chain.request()
-                .newBuilder()
-                .addHeaders()
-                .overrideUrl(request, invocation)
-                .processUrlParam(request.url, invocation)
-                .processFormParams(request, invocation)
-                .wbiSign(request.url, invocation)
-                .build()
-        )
+
+        var requestBuilder = originalRequest.newBuilder()
+
+        requestBuilder = requestBuilder.addHeaders()
+        requestBuilder = requestBuilder.overrideUrl(invocation)
+        requestBuilder = requestBuilder.processUrlParam(requestBuilder.build().url, invocation)
+        requestBuilder = requestBuilder.wbiSign(requestBuilder.build().url, invocation)
+        requestBuilder = requestBuilder.processFormParams(requestBuilder.build(), invocation)
+
+
+        return chain.proceed(requestBuilder.build())
     }
 
     private fun checkCookieParams(request: Request) {
@@ -93,7 +95,6 @@ internal class BilibiliApiInterceptor(
             )
         }
 
-        // Hardcoded.
         if (cookies.any { it.name == "buvid_fp" }.not()) {
             biliWebApi.cookieManager.saveFromResponse(
                 url = httpUrl,
@@ -127,7 +128,7 @@ internal class BilibiliApiInterceptor(
         }
 
         otherCookiesMap.forEach {
-            (key, value) ->
+                (key, value) ->
             if (cookies.any { it.name == key }.not()) {
                 biliWebApi.cookieManager.saveFromResponse(
                     url = httpUrl,
@@ -139,20 +140,20 @@ internal class BilibiliApiInterceptor(
         }
     }
 
-    private fun Request.Builder.addHeaders() = apply {
+    private fun Request.Builder.addHeaders(): Request.Builder = apply {
         header(HeaderNames.USER_AGENT, HeaderValues.USER_AGENT_VAL)
         header(HeaderNames.SEC_CH_UA, HeaderValues.SEC_CH_UA)
         header(HeaderNames.SEC_CH_UA_PLATFORM, HeaderValues.SEC_CH_UA_PLATFORM)
         header(HeaderNames.SEC_CH_UA_MOBILE, HeaderValues.SEC_CH_UA_MOBILE)
     }
 
-    private fun Request.Builder.overrideUrl(request: Request, invocation: Invocation?) =
+    private fun Request.Builder.overrideUrl(invocation: Invocation?): Request.Builder =
         (invocation?.method()?.getAnnotation(API::class.java) ?: invocation?.service()
             ?.getAnnotation(API::class.java))?.let {
-            url(request.url.newBuilder().host(it.value).build())
+            url(this.build().url.newBuilder().host(it.value).build())
         } ?: this
 
-    private fun Request.Builder.processUrlParam(httpUrl: HttpUrl, invocation: Invocation?) =
+    private fun Request.Builder.processUrlParam(httpUrl: HttpUrl, invocation: Invocation?): Request.Builder =
         invocation?.method()?.getAnnotation(Queries::class.java)?.let {
             require(it.keys.size == it.values.size) { "@Queries keys and values size not match" }
             val urlBuilder = httpUrl.newBuilder()
@@ -162,14 +163,14 @@ internal class BilibiliApiInterceptor(
             url(urlBuilder.build())
         } ?: this
 
-    private fun Request.Builder.wbiSign(url: HttpUrl, invocation: Invocation?) = invocation?.method()?.let {
+    private fun Request.Builder.wbiSign(url: HttpUrl, invocation: Invocation?): Request.Builder = invocation?.method()?.let {
         if (it.isAnnotationPresent(WbiSign::class.java)) {
             url(WbiUtil.signUrl(biliWebApi, url))
         }
         this
     } ?: this
 
-    private fun Request.Builder.processFormParams(request: Request, invocation: Invocation?) = apply {
+    private fun Request.Builder.processFormParams(request: Request, invocation: Invocation?): Request.Builder = apply {
         invocation?.method()?.let { method ->
             val csrf = biliWebApi.cookieManager.loadForRequest(request.url).find { it.name == "bili_jct" }?.value.orEmpty()
             if (HttpMethod.requiresRequestBody(request.method)) {
@@ -182,21 +183,20 @@ internal class BilibiliApiInterceptor(
                 }
                 method.getAnnotation(Csrf::class.java)?.let {
                     if (it.forceQuery) {
-                        url(request.url.newBuilder().addQueryParameter("csrf", csrf).build())
+                        url(this.build().url.newBuilder().addQueryParameter("csrf", csrf).build())
                     } else {
                         formBody.add("csrf", csrf)
                     }
                 }
                 this@processFormParams.method(request.method, formBody.build())
             } else {
-                url(request.url.newBuilder().addQueryParameter("csrf", csrf).build())
+                url(this.build().url.newBuilder().addQueryParameter("csrf", csrf).build())
             }
         }
     }
-
 }
 
-private fun RequestBody.readString(): String = okio.Buffer().also {
+private fun RequestBody.readString(): String = Buffer().also {
     writeTo(it)
 }.readUtf8()
 

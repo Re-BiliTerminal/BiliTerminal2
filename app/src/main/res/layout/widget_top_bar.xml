@@ -19,7 +19,9 @@
         android:layout_marginLeft="7dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginBottom="4dp"
         tools:text="Page Name"
+        android:textSize="12sp"
         app:drawableStartCompat="@drawable/arrow_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
@@ -36,6 +38,7 @@
         android:layout_marginRight="16dp"
         tools:text="12:08"
         android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -45,6 +48,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.6" />
+        app:layout_constraintGuide_percent="0.7" />
 
 </merge>

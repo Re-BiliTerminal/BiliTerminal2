@@ -7,6 +7,7 @@ pluginManagement {
     }
 }
 
+@Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -27,3 +28,4 @@ include(":DanmakuFlameMaster")
 include(":brotlij")
 include(":BiliWebApi")
 include(":NativeBitmap")
+include(":Skeleton")

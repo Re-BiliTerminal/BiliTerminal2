@@ -12,7 +12,7 @@
         <com.huanli233.biliterminal2.ui.widget.TopBar
             android:id="@+id/top_bar"
             app:layout_constraintTop_toTopOf="parent"
-            app:titleText="@string/initialize_setting"
+            app:titleText="@string/welcome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

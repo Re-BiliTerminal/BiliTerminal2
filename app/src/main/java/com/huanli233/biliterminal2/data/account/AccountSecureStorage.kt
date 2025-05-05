@@ -5,8 +5,6 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.io.IOException
-import android.util.Base64
 import com.huanli233.biliterminal2.data.security.CryptoHelper
 import com.huanli233.biliterminal2.data.security.EncryptedData
 
@@ -23,9 +21,9 @@ class AccountSecureStorage(
         return "encrypted_data_$accountId"
     }
 
-    fun saveTokenData(accountId: Long, sensitiveData: AccountTokenData) {
+    fun saveTokenData(accountId: Long, tokenData: AccountTokenData) {
         try {
-            val dataString = gson.toJson(sensitiveData)
+            val dataString = gson.toJson(tokenData)
             val dataBytes = dataString.toByteArray(Charsets.UTF_8)
 
             val encryptedData = simpleCryptoHelper.encrypt(dataBytes)

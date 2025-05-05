@@ -6,7 +6,9 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.Display
 import android.view.InputDevice
 import android.view.KeyEvent
@@ -17,7 +19,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ListView
 import android.widget.ScrollView
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -26,17 +27,20 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.ViewConfigurationCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.NestedScrollView
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.huanli233.biliterminal2.BiliTerminal
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.data.UserPreferences
 import com.huanli233.biliterminal2.event.SnackEvent
+import com.huanli233.biliterminal2.ui.widget.TopBar
 import com.huanli233.biliterminal2.ui.widget.recyclerView.CustomGridManager
 import com.huanli233.biliterminal2.ui.widget.recyclerView.CustomLinearManager
 import com.huanli233.biliterminal2.utils.view.AsyncLayoutInflaterX
 import com.huanli233.biliterminal2.utils.MsgUtil
 import com.huanli233.biliterminal2.utils.Preferences
+import com.huanli233.biliterminal2.utils.extensions.crossFadeSetText
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -48,6 +52,9 @@ open class BaseActivity : AppCompatActivity() {
     var windowHeight: Int = 0
     var oldContext: Context? = null
     var forceSingleColumn: Boolean = false
+
+    private var topBar: TopBar? = null
+    private var topBarChanged = false
 
     override fun attachBaseContext(newBase: Context) {
         oldContext = newBase
@@ -64,7 +71,7 @@ open class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
 
         val paddingHPercent: Int = UserPreferences.uiPaddingHorizontal.get()
         val paddingVPercent: Int = UserPreferences.uiPaddingVertical.get()
@@ -108,25 +115,38 @@ open class BaseActivity : AppCompatActivity() {
         }
     }
 
-    open fun onBack() {
+    open var pageName: String? = null
+        set(value) {
+            val oldValue = field
+            field = value
+            setTopbarTitle(value, oldValue != null)
+        }
 
-    }
-
-    fun setPageName(name: String?) {
-        val textView: TextView? = findViewById(R.id.page_name)
-        if (textView != null) {
-            textView.text = name
-            textView.maxLines = 1
+    private fun setTopbarTitle(
+        name: String?,
+        animation: Boolean = false
+    ) {
+        val textView = topBar?.titleTextView ?: return
+        name?.let {
+            if (animation) {
+                textView.crossFadeSetText(it)
+            } else {
+                textView.text = it
+            }
         }
     }
 
-    fun setTopbarExit() {
-        val view: View = findViewById(R.id.top_bar) ?: return
+    fun setupTopbar() {
+        val view = topBar ?: return
         if (Build.VERSION.SDK_INT > 17 && view.hasOnClickListeners()) return
         view.setOnClickListener {
-            if (!isDestroyed) {
-                finish()
-            }
+            onTopbarClicked()
+        }
+    }
+
+    open fun onTopbarClicked() {
+        if (!isDestroyed) {
+            finish()
         }
     }
 
@@ -151,6 +171,11 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        if (topBar == null) {
+            topBar = findViewById(R.id.top_bar)
+            setupTopbar()
+            setTopbarTitle(pageName)
+        }
         if (eventBusEnabled()) {
             var snackEvent: SnackEvent
             EventBus.getDefault().getStickyEvent(SnackEvent::class.java)?.also { snackEvent = it }?.let {

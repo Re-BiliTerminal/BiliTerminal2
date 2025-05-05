@@ -6,13 +6,13 @@ import com.huanli233.biliterminal2.applicationContext
 import com.huanli233.biliterminal2.applicationScope
 import com.huanli233.biliterminal2.data.UserPreferences
 import com.huanli233.biliterminal2.data.account.AccountRepository
-import com.huanli233.biliterminal2.utils.MsgUtil
-import com.huanli233.biliterminal2.utils.Preferences
+import com.huanli233.biliterminal2.data.di.AppDependenciesEntryPoint
 import com.huanli233.biliterminal2.utils.network.SSLSocketFactoryCompat
 import com.huanli233.biliwebapi.BiliWebApi
 import com.huanli233.biliwebapi.bean.ApiResponse
 import com.huanli233.biliwebapi.httplib.CookieManager
 import com.huanli233.biliwebapi.httplib.WbiSignKeyInfo
+import dagger.hilt.EntryPoints
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -20,14 +20,20 @@ import okhttp3.Cookie
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import java.security.cert.X509Certificate
+import javax.inject.Inject
 import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.X509TrustManager
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
+private val hiltEntryPoint = EntryPoints.get(
+    applicationContext,
+    AppDependenciesEntryPoint::class.java
+)
+
 val bilibiliApi = object : BiliWebApi(
-    cookieManager = CookieManager,
+    cookieManager = hiltEntryPoint.cookieManager(),
     wbiDataManager = WbiDataManager
 ) {
     override fun createHttpClient(): OkHttpClient.Builder {
@@ -68,11 +74,13 @@ private fun setOkHttpSsl(okhttpBuilder: OkHttpClient.Builder): OkHttpClient.Buil
 }
 
 // TODO Flow
-object CookieManager : CookieManager {
+class AppCookieManager @Inject constructor(
+    private val accountRepository: AccountRepository
+) : CookieManager {
 
     override fun loadForRequest(url: HttpUrl): List<Cookie> {
         val cookiesStr = runBlocking(Dispatchers.IO) {
-            AccountRepository.getInstance(applicationContext).getActiveAccountToken()
+            accountRepository.getActiveAccountToken()
         }?.cookies.orEmpty()
         return if (cookiesStr == "") listOf() else cookiesStr.split("; ").map {
             Cookie.Builder()
@@ -84,8 +92,13 @@ object CookieManager : CookieManager {
     }
 
     override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+        val uid = cookies.find { it.name == "DedeUserID" }?.value?.toLongOrNull() ?: -1
         val cookiesStr = runBlocking(Dispatchers.IO) {
-            AccountRepository.getInstance(applicationContext).getActiveAccountToken()
+            if (uid == -1L) {
+                accountRepository.getActiveAccountToken()
+            } else {
+                accountRepository.getTokenForAccount(uid)
+            }
         }?.cookies.orEmpty()
         val oldCookies = (if (cookiesStr == "") mutableListOf() else mutableListOf(
             *cookiesStr.split("; ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
@@ -94,10 +107,19 @@ object CookieManager : CookieManager {
             oldCookies.add("${it.name}=${it.value}")
         }
         runBlocking(Dispatchers.IO) {
-            AccountRepository.getInstance(applicationContext).updateAccountToken {
-                it.copy(
-                    cookies = oldCookies.joinToString("; ")
-                )
+            if (uid == -1L) {
+                accountRepository.updateActiveAccountToken {
+                    it.copy(
+                        cookies = oldCookies.joinToString("; ")
+                    )
+                }
+            } else {
+                accountRepository.updateAccountToken(uid) {
+                    it.copy(
+                        cookies = oldCookies.joinToString("; ")
+                    )
+                }
+                accountRepository.setActiveAccount(uid)
             }
         }
     }
@@ -153,14 +175,23 @@ fun <T> Result<ApiResponse<T>>.apiResultNonNull(): Result<T> {
 
 @OptIn(ExperimentalContracts::class)
 inline fun <T> Result<T>.onApiFailure(
-    action: (apiException: BilibiliApiException) -> Unit = {
-        MsgUtil.showMsg("")
-    }
+    action: (apiException: BilibiliApiException) -> Unit
 ): Result<T> {
     contract {
         callsInPlace(action, InvocationKind.AT_MOST_ONCE)
     }
     (exceptionOrNull() as? BilibiliApiException)?.let { action(it) }
+    return this
+}
+
+@OptIn(ExperimentalContracts::class)
+inline fun <T> Result<T>.onNonApiFailure(
+    action: (throwable: Throwable) -> Unit
+): Result<T> {
+    contract {
+        callsInPlace(action, InvocationKind.AT_MOST_ONCE)
+    }
+    exceptionOrNull()?.takeIf { it !is BilibiliApiException }?.let { action(it) }
     return this
 }
 

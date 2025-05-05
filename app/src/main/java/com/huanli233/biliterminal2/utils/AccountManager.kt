@@ -6,10 +6,17 @@ import com.huanli233.biliterminal2.applicationContext
 import com.huanli233.biliterminal2.applicationScope
 import com.huanli233.biliterminal2.data.account.Account
 import com.huanli233.biliterminal2.data.account.AccountRepository
+import com.huanli233.biliterminal2.data.di.AppDependenciesEntryPoint
 import com.huanli233.biliterminal2.utils.AccountManager.currentAccount
+import dagger.hilt.EntryPoints
 import kotlinx.coroutines.launch
 
 object AccountManager {
+
+    private val hiltEntryPoint = EntryPoints.get(
+        applicationContext,
+        AppDependenciesEntryPoint::class.java
+    )
 
     private var _currentAccount: Account? = null
     val currentAccount: Account
@@ -22,7 +29,7 @@ object AccountManager {
 
     init {
         applicationScope.launch {
-            AccountRepository.getInstance(applicationContext).activeAccount.collect {
+            hiltEntryPoint.accountRepository().activeAccount.collect {
                 _currentAccount = it
             }
         }

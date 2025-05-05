@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "accounts")
 data class AccountEntity(
     @PrimaryKey val accountId: Long,
-    val username: String,
+    val username: String?,
     val avatarUrl: String?,
     val lastActiveTime: Long,
 )

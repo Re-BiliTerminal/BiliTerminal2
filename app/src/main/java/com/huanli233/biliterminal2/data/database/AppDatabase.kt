@@ -11,10 +11,3 @@ import com.huanli233.biliterminal2.data.account.AccountEntity
 abstract class AppDatabase : RoomDatabase() {
     abstract fun accountDao(): AccountDao
 }
-
-val database by lazy {
-    Room.databaseBuilder(
-        applicationContext,
-        AppDatabase::class.java, "biliterminal"
-    ).build()
-}

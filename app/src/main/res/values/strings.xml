@@ -233,6 +233,12 @@
     <string name="interface_scale">界面缩放</string>
     <string name="dark_theme">深色主题</string>
     <string name="invalid_value">无效的值</string>
+    <string name="login">登录</string>
+    <string name="requesting_qrcode">正在获取二维码</string>
+    <string name="skip">跳过</string>
+    <string name="import_from_other_device">其他设备导入</string>
+    <string name="logged_in">已登录</string>
+    <string name="login_success">登录成功</string>
 
     <string-array name="icon_license">
         <item>界面设置: Newicons, MIT License</item>

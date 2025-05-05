@@ -23,6 +23,8 @@ object PreferenceKeys {
     val DENSITY = intPreferencesKey("ui_density").default(0)
     val NIGHT_MODE = intPreferencesKey("night_mode").default(NIGHT_MODE_ENABLED)
 
+    val ANIMATIONS_ENABLED = booleanPreferencesKey("animations_enabled").default(true)
+
     val WBI_MIXIN_KEY = stringPreferencesKey("wbi_mixin_key").default("")
     val WBI_LAST_UPDATED = longPreferencesKey("wbi_last_updated").default(0)
 
@@ -53,6 +55,8 @@ object UserPreferences {
 
     val wbiMixinKey = config(PreferenceKeys.WBI_MIXIN_KEY)
     val wbiLastUpdated = config(PreferenceKeys.WBI_LAST_UPDATED)
+
+    val animationsEnabled = config(PreferenceKeys.ANIMATIONS_ENABLED)
 
     val backDisabled = config(PreferenceKeys.BACK_DISABLED)
     val snackbarEnabled = config(PreferenceKeys.SNACKBAR_ENABLED)

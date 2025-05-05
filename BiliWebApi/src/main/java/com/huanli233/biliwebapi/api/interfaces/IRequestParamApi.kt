@@ -15,7 +15,6 @@ interface IRequestParamApi {
     suspend fun requestBuvids(): ApiResponse<Buvids>
 
     @POST("/bapis/bilibili.api.ticket.v1.Ticket/GenWebTicket")
-    @FormUrlEncoded
     @Queries(keys = ["csrf"], values = [""])
     suspend fun genWebTicket(
         @Query("key_id") keyId: String?,
