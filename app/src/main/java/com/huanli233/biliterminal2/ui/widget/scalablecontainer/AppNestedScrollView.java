@@ -14,8 +14,8 @@ import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
 import com.huanli233.biliterminal2.R;
-import com.huanli233.biliterminal2.ui.utils.SpringAnimationUtils;
-import com.huanli233.biliterminal2.ui.utils.ViewUtils;
+import com.huanli233.biliterminal2.ui.utils.view.SpringAnimationUtils;
+import com.huanli233.biliterminal2.ui.utils.view.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;

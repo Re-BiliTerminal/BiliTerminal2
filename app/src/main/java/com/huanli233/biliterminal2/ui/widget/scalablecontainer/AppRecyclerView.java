@@ -15,7 +15,7 @@ import androidx.dynamicanimation.animation.SpringForce;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.huanli233.biliterminal2.R;
-import com.huanli233.biliterminal2.ui.utils.ViewUtils;
+import com.huanli233.biliterminal2.ui.utils.view.ViewUtils;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+option java_package = "com.huanli233.biliterminal2.data.proto";
+option java_multiple_files = true;
+
+enum NightMode {
+  NIGHT_MODE_DAY = 0;
+  NIGHT_MODE_NIGHT = 1;
+  NIGHT_MODE_AUTO = 2;
+}
+
+enum ImageFormat {
+  IMAGE_FORMAT_WEBP = 0;
+  IMAGE_FORMAT_JPEG = 1;
+}
+
+message AppSettings {
+  int64 active_account_id = 1;
+  bool first_run = 2;
+
+  bool round_mode = 3;
+  float ui_scale = 4;
+  int32 ui_padding_horizontal = 5;
+  int32 ui_padding_vertical = 6;
+  int32 density = 7;
+  NightMode night_mode = 8;
+
+  bool animations_enabled = 9;
+
+  string wbi_mixin_key = 10;
+  int64 wbi_last_updated = 11;
+
+  bool back_disabled = 12;
+  bool snackbar_enabled = 13;
+  bool async_inflate_enabled = 14;
+  bool marquee_enabled = 15;
+  bool stop_load_image_while_scrolling = 16;
+  bool grid_list_enabled = 17;
+
+  string menu_config = 18;
+
+  ImageFormat image_format = 19;
+  int64 last_check_cookie_refresh = 20;
+}

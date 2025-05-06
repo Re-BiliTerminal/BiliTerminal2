@@ -51,12 +51,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activity.MainActivity" />
+        <activity android:name=".ui.activity.main.MainActivity" />
 
         <activity android:name=".ui.activity.setup.SetupActivity" />
         <activity android:name=".ui.activity.setup.UiPreviewActivity" />
 
         <activity android:name=".ui.activity.login.LoginActivity" />
+
+        <activity android:name=".ui.activity.recommend.RecommendActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -5,10 +5,12 @@ import android.os.PersistableBundle
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.databinding.ActivityCommonViewpagerBinding
 import com.huanli233.biliterminal2.ui.activity.base.BaseActivity
+import com.huanli233.biliterminal2.ui.fragment.login.ImportLoginFragment
 import com.huanli233.biliterminal2.ui.fragment.login.QrCodeLoginFragment
 import com.huanli233.biliterminal2.ui.fragment.setup.WelcomeFragment
 import com.huanli233.biliterminal2.ui.widget.pager.setupWithDotsIndicator
-import com.huanli233.biliterminal2.utils.viewpager2.PagerFragmentStateAdapter
+import com.huanli233.biliterminal2.ui.utils.viewpager2.PagerFragmentStateAdapter
+import com.huanli233.biliterminal2.ui.utils.viewpager2.pagerFragmentAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,7 +24,14 @@ class LoginActivity: BaseActivity() {
         setContentView(binding.root)
 
         binding.viewPager.apply {
-            adapter = PagerFragmentStateAdapter(this@LoginActivity, listOf(QrCodeLoginFragment()))
+            adapter = pagerFragmentAdapter(
+                listOf(
+                    QrCodeLoginFragment(
+                        navigateToImport = { setCurrentItem(1, true) }
+                    ),
+                    ImportLoginFragment()
+                )
+            )
             setupWithDotsIndicator(binding.dotsIndicator)
         }
 

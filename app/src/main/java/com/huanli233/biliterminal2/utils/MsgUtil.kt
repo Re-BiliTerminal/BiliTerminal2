@@ -11,9 +11,8 @@ import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.SnackbarContentLayout
 import com.huanli233.biliterminal2.applicationContext
-import com.huanli233.biliterminal2.data.UserPreferences
+import com.huanli233.biliterminal2.data.setting.DataStore
 import com.huanli233.biliterminal2.event.SnackEvent
-import com.huanli233.biliterminal2.utils.Preferences.getBoolean
 import com.huanli233.biliterminal2.utils.ThreadManager.runOnUiThread
 import com.huanli233.biliterminal2.utils.extensions.dp2px
 import org.greenrobot.eventbus.EventBus
@@ -23,7 +22,7 @@ object MsgUtil {
 
     @JvmStatic
     fun showMsg(str: String) {
-        if (UserPreferences.snackbarEnabled.get()) {
+        if (DataStore.appSettings.snackbarEnabled) {
             runOnUiThread(Runnable { EventBus.getDefault().postSticky(SnackEvent(str)) })
         } else {
             toast(str)
@@ -32,31 +31,33 @@ object MsgUtil {
 
     @JvmStatic
     fun showMsgLong(str: String) {
-        if (UserPreferences.snackbarEnabled.get()) {
+        if (DataStore.appSettings.snackbarEnabled) {
             runOnUiThread(Runnable { EventBus.getDefault().postSticky(SnackEvent(str)) })
         } else {
             toastLong(str)
         }
     }
 
-    fun toast(str: String) {
-        runOnUiThread(Runnable { toastInternal(str, applicationContext) })
+    private fun toast(str: String) {
+        runOnUi {
+            toastInternal(str, applicationContext)
+        }
     }
 
-    fun toastLong(str: String) {
-        runOnUiThread(Runnable { toastLongInternal(str, applicationContext) })
+    private fun toastLong(str: String) {
+        runOnUi {
+            toastLongInternal(str, applicationContext)
+        }
     }
 
     private fun toastInternal(str: String, context: Context?) {
-        if (toast != null) toast!!.cancel()
-        toast = Toast.makeText(context, str, Toast.LENGTH_SHORT)
-        toast!!.show()
+        toast?.cancel()
+        toast = Toast.makeText(context, str, Toast.LENGTH_SHORT).apply { show() }
     }
 
     private fun toastLongInternal(str: String, context: Context?) {
-        if (toast != null) toast!!.cancel()
-        toast = Toast.makeText(context, str, Toast.LENGTH_LONG)
-        toast!!.show()
+        toast?.cancel()
+        toast = Toast.makeText(context, str, Toast.LENGTH_LONG).apply { show() }
     }
 
     fun processSnackEvent(snackEvent: SnackEvent, view: View) {
@@ -78,11 +79,11 @@ object MsgUtil {
         }
     }
 
-    fun snackText(view: View, text: CharSequence) {
+    private fun snackText(view: View, text: CharSequence) {
         createSnack(view, text).show()
     }
 
-    fun snackTextLong(view: View, text: CharSequence) {
+    private fun snackTextLong(view: View, text: CharSequence) {
         createSnack(view, text, Snackbar.LENGTH_LONG).show()
     }
 

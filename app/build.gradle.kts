@@ -11,6 +11,7 @@ plugins {
     id("kotlin-kapt")
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
+    id("com.google.protobuf")
 }
 
 buildscript {
@@ -164,6 +165,21 @@ android {
     }
 }
 
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.25.1"
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                create("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
+}
+
 dependencies {
 
     // https://github.com/SkywalkerDarren/Skeleton, a fork of https://github.com/ethanhua/Skeleton
@@ -192,12 +208,16 @@ dependencies {
     implementation(libs.androidx.asynclayoutinflater)
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.interpolator)
+    implementation(libs.androidx.paging.runtime.ktx)
+
+    implementation(libs.protobuf.javalite)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
@@ -207,6 +227,9 @@ dependencies {
     implementation(libs.multitype)
     implementation(libs.photoview)
 
+    implementation(libs.splitties.fun1.pack.android.base)
+    implementation(libs.splitties.fun1.pack.android.material.components)
+
     implementation(libs.okhttp3.compat.okhttp)
     implementation(libs.retrofit2.compat.retrofit)
     implementation(libs.retrofit2.compat.converter.gson) {
@@ -214,6 +237,7 @@ dependencies {
     }
     implementation(libs.google.gson)
     implementation(libs.glide)
+    ksp(libs.glide.compiler)
 
     implementation(libs.eventbus)
     implementation(libs.geetest.sensebot) {

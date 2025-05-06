@@ -239,6 +239,14 @@
     <string name="import_from_other_device">其他设备导入</string>
     <string name="logged_in">已登录</string>
     <string name="login_success">登录成功</string>
+    <string name="menu">菜单</string>
+    <string name="retry">重试</string>
+    <string name="input_token_info">输入Token信息</string>
+    <string name="confirm">确定</string>
+    <string name="copy">复制</string>
+    <string name="invalid_input">输入内容有误</string>
+    <string name="import_success">导入成功</string>
+    <string name="initialize_error">初始化失败: %1$s</string>
 
     <string-array name="icon_license">
         <item>界面设置: Newicons, MIT License</item>

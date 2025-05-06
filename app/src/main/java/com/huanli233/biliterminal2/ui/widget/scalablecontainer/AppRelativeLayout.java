@@ -1,6 +1,6 @@
 package com.huanli233.biliterminal2.ui.widget.scalablecontainer;
 
-import static com.huanli233.biliterminal2.ui.utils.TypeArrayUtils.optBoolean;
+import static com.huanli233.biliterminal2.ui.utils.view.TypeArrayUtils.optBoolean;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -15,8 +15,8 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.RelativeLayout;
 
 import com.huanli233.biliterminal2.R;
-import com.huanli233.biliterminal2.ui.utils.PressAnimHelper;
-import com.huanli233.biliterminal2.ui.utils.UiTouchPointUtil;
+import com.huanli233.biliterminal2.ui.utils.view.PressAnimHelper;
+import com.huanli233.biliterminal2.ui.utils.view.UiTouchPointUtil;
 
 public class AppRelativeLayout extends RelativeLayout {
     private final Animator.AnimatorListener animatorListener;

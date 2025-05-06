@@ -10,22 +10,31 @@ import com.elvishew.xlog.LogLevel
 import com.elvishew.xlog.XLog
 import com.elvishew.xlog.printer.AndroidPrinter
 import com.google.android.material.color.DynamicColors
-import com.huanli233.biliterminal2.data.NIGHT_MODE_DISABLED
-import com.huanli233.biliterminal2.data.NIGHT_MODE_FOLLOW_SYSTEM
-import com.huanli233.biliterminal2.data.UserPreferences
+import com.huanli233.biliterminal2.data.setting.DataStore
+import com.huanli233.biliterminal2.data.setting.toSystemValue
 import com.huanli233.biliterminal2.utils.Preferences
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @HiltAndroidApp
 class BiliTerminal : Application() {
+
+    init {
+        application = this
+    }
+
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
         contextNullable = base
         MultiDex.install(this)
     }
+
+    private var lastThemeMode: Int = -1
 
     override fun onCreate() {
         super.onCreate()
@@ -35,24 +44,33 @@ class BiliTerminal : Application() {
         )
         contextNullable = getFitDisplayContext(this@BiliTerminal.applicationContext)
         DynamicColors.applyToActivitiesIfAvailable(this)
-        setDefaultNightMode()
-        Preferences.sharedPreferences = getSharedPreferences("default", MODE_PRIVATE)
+        lastThemeMode = DataStore.appSettings.nightMode.toSystemValue()
+        setDefaultNightMode(lastThemeMode)
+        applicationScope.launch {
+            DataStore.appSettingsStateFlow.collectLatest { config ->
+                config?.let {
+                    if (lastThemeMode != it.nightMode.toSystemValue()) {
+                        lastThemeMode = it.nightMode.toSystemValue()
+                        withContext(Dispatchers.Main) {
+                            setDefaultNightMode(lastThemeMode)
+                        }
+                    }
+                }
+            }
+        }
         ErrorCatch.instance.install(applicationContext)
     }
 
     companion object {
-        fun setDefaultNightMode() {
-            AppCompatDelegate.setDefaultNightMode(
-                when (UserPreferences.nightMode.get()) {
-                    NIGHT_MODE_FOLLOW_SYSTEM -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                    NIGHT_MODE_DISABLED -> AppCompatDelegate.MODE_NIGHT_NO
-                    else -> AppCompatDelegate.MODE_NIGHT_YES
-                }
-            )
+        lateinit var application: BiliTerminal
+            private set
+
+        fun setDefaultNightMode(mode: Int) {
+            AppCompatDelegate.setDefaultNightMode(mode)
         }
 
         fun getFitDisplayContext(old: Context): Context? {
-            val dpiTimes = UserPreferences.uiScale.get()
+            val dpiTimes = DataStore.appSettings.uiScale
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) return old
             if (dpiTimes == 1.0f) return old
             try {

@@ -3,7 +3,7 @@ package com.huanli233.biliterminal2.data.di
 import android.content.Context
 import androidx.room.Room
 import com.huanli233.biliterminal2.data.account.AccountDao
-import com.huanli233.biliterminal2.data.account.AccountSecureStorage
+import com.huanli233.biliterminal2.data.account.CookiesDao
 import com.huanli233.biliterminal2.data.database.AppDatabase
 import dagger.Module
 import dagger.Provides
@@ -30,15 +30,13 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideAccountSecureStorage(
-        @ApplicationContext context: Context
-    ): AccountSecureStorage {
-        return AccountSecureStorage(context)
+    fun provideAccountDao(database: AppDatabase): AccountDao {
+        return database.accountDao()
     }
 
     @Provides
     @Singleton
-    fun provideAccountDao(database: AppDatabase): AccountDao {
-        return database.accountDao()
+    fun provideCookiesDao(database: AppDatabase): CookiesDao {
+        return database.cookiesDao()
     }
 }

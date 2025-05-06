@@ -9,9 +9,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.huanli233.biliterminal2.R;
-import com.huanli233.biliterminal2.ui.utils.PressAnimHelper;
-import com.huanli233.biliterminal2.ui.utils.TypeArrayUtils;
-import com.huanli233.biliterminal2.ui.utils.UiTouchPointUtil;
+import com.huanli233.biliterminal2.ui.utils.view.PressAnimHelper;
+import com.huanli233.biliterminal2.ui.utils.view.TypeArrayUtils;
+import com.huanli233.biliterminal2.ui.utils.view.UiTouchPointUtil;
 
 public class AppLinearLayout extends LinearLayout {
     int extraBottom;

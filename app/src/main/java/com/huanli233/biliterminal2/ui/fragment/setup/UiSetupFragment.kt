@@ -1,24 +1,30 @@
 package com.huanli233.biliterminal2.ui.fragment.setup
 
-import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.huanli233.biliterminal2.BiliTerminal
 import com.huanli233.biliterminal2.R
-import com.huanli233.biliterminal2.data.UserPreferences
+import com.huanli233.biliterminal2.data.proto.NightMode
+import com.huanli233.biliterminal2.data.setting.DataStore
+import com.huanli233.biliterminal2.data.setting.edit
+import com.huanli233.biliterminal2.data.setting.toSystemValue
 import com.huanli233.biliterminal2.databinding.FragmentSetupUiBinding
 import com.huanli233.biliterminal2.ui.activity.setup.UiPreviewActivity
 import com.huanli233.biliterminal2.ui.fragment.base.BaseFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import splitties.fragments.start
 
 class UiSetupFragment: BaseFragment() {
 
@@ -44,7 +50,7 @@ class UiSetupFragment: BaseFragment() {
             lifecycleScope.launch {
                 save()
                 withContext(Dispatchers.Main) {
-                    startActivity(Intent(context, UiPreviewActivity::class.java))
+                    start<UiPreviewActivity>()
                 }
             }
         }
@@ -57,17 +63,20 @@ class UiSetupFragment: BaseFragment() {
 
     private fun initNightTheme() {
         (binding.darkThemeInput as? MaterialAutoCompleteTextView)?.apply {
-            setText(modes[UserPreferences.nightMode.get()])
+            setText(modes[DataStore.appSettings.nightMode.toSystemValue().takeIf { it != AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM } ?: 0])
             setSimpleItems(modes)
             onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
                 selectedThemeMode = position
                 lifecycleScope.launch {
-                    with (UserPreferences) {
-                        val oldThemeMode = nightMode.get()
-                        nightMode.set(selectedThemeMode)
-                        if (oldThemeMode != selectedThemeMode) {
-                            withContext(Dispatchers.Main) {
-                                BiliTerminal.setDefaultNightMode()
+                    with (DataStore.appSettings) {
+                        val oldThemeMode = nightMode.toSystemValue()
+                        runBlocking {
+                            DataStore.editData {
+                                nightMode = when (selectedThemeMode) {
+                                    0 -> NightMode.NIGHT_MODE_AUTO
+                                    1 -> NightMode.NIGHT_MODE_DAY
+                                    else -> NightMode.NIGHT_MODE_NIGHT
+                                }
                             }
                         }
                     }
@@ -100,23 +109,23 @@ class UiSetupFragment: BaseFragment() {
     }
 
     private fun initFields() {
-        binding.roundMode.isChecked = UserPreferences.roundMode.get()
-        binding.uiScaleInput.setText(UserPreferences.uiScale.get().toString())
-        binding.uiPaddingHorizontalInput.setText(UserPreferences.uiPaddingHorizontal.get().toString())
-        binding.uiPaddingVerticalInput.setText(UserPreferences.uiPaddingVertical.get().toString())
+        binding.roundMode.isChecked = DataStore.appSettings.roundMode
+        binding.uiScaleInput.setText(DataStore.appSettings.uiScale.toString())
+        binding.uiPaddingHorizontalInput.setText(DataStore.appSettings.uiPaddingHorizontal.toString())
+        binding.uiPaddingVerticalInput.setText(DataStore.appSettings.uiPaddingVertical.toString())
     }
 
     private suspend fun save() {
-        with(UserPreferences) {
-            roundMode.set(binding.roundMode.isChecked)
+        DataStore.editData {
+            roundMode = binding.roundMode.isChecked
             binding.uiScaleInput.valueOrError(converter = { it.toFloatOrNull()?.takeIf { it in 0.25f..5.00f } }) {
-                uiScale.set(it)
+                uiScale = it
             }
             binding.uiPaddingHorizontalInput.valueOrError(converter = { it.toIntOrNull()?.takeIf { it in 0..30 } }) {
-                uiPaddingHorizontal.set(it)
+                uiPaddingHorizontal = it
             }
             binding.uiPaddingVerticalInput.valueOrError(converter = { it.toIntOrNull()?.takeIf { it in 0..30 } }) {
-                uiPaddingVertical.set(it)
+                uiPaddingVertical = it
             }
         }
     }

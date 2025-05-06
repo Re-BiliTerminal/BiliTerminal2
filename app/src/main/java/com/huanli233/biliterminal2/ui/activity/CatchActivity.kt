@@ -6,7 +6,7 @@ import android.os.Process
 import android.view.View
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.ui.activity.base.BaseActivity
-import com.huanli233.biliterminal2.ui.widget.ExpandableTextView
+import com.huanli233.biliterminal2.ui.widget.views.ExpandableTextView
 import kotlin.system.exitProcess
 
 class CatchActivity : BaseActivity() {

@@ -6,11 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.huanli233.biliterminal2.api.apiResultNonNull
 import com.huanli233.biliterminal2.api.bilibiliApi
-import com.huanli233.biliterminal2.data.UserPreferences
-import com.huanli233.biliterminal2.data.account.Account
-import com.huanli233.biliterminal2.data.account.AccountDao
+import com.huanli233.biliterminal2.data.setting.DataStore
+import com.huanli233.biliterminal2.data.account.AccountEntity
 import com.huanli233.biliterminal2.data.account.AccountRepository
-import com.huanli233.biliterminal2.data.account.toEntity
 import com.huanli233.biliterminal2.utils.extensions.LoadState
 import com.huanli233.biliwebapi.api.interfaces.ILoginApi
 import com.huanli233.biliwebapi.bean.login.QrCode
@@ -28,8 +26,7 @@ data class QrCodeLoginState(
 
 @HiltViewModel
 class QrCodeLoginViewModel @Inject constructor(
-    private val accountRepository: AccountRepository,
-    private val accountDao: AccountDao
+    private val accountRepository: AccountRepository
 ): ViewModel() {
 
     private var _qrcodeState: MutableLiveData<LoadState<String>> = MutableLiveData()
@@ -98,12 +95,13 @@ class QrCodeLoginViewModel @Inject constructor(
 
     fun login(loginResult: QrCode.LoginResult) {
         viewModelScope.launch {
-            accountDao.insertAccount(
-                Account(UserPreferences.activeAccountId.get(), null, null, System.currentTimeMillis()).toEntity()
+            accountRepository.addAccount(
+                AccountEntity(
+                    accountId = DataStore.appSettings.activeAccountId,
+                    refreshToken = loginResult.refreshToken,
+                    lastActiveTime = System.currentTimeMillis()
+                )
             )
-            accountRepository.updateActiveAccountToken {
-                it.copy(refreshToken = loginResult.refreshToken)
-            }
             _qrCodeLoginState.postValue(LoadState.Success(QrCodeLoginState(0, true)))
         }
     }

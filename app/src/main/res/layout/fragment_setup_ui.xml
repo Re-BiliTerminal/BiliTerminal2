@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu" >
-            <com.huanli233.biliterminal2.ui.widget.ExposedDropdownMenu
+            <com.huanli233.biliterminal2.ui.widget.views.ExposedDropdownMenu
                 android:id="@+id/dark_theme_input"
                 android:hint="@string/dark_theme"
                 app:simpleItems="@array/dark_theme_modes"
@@ -72,9 +72,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/horizontal"
             android:layout_marginTop="2dp"
-            app:endIconMode="custom"
-            app:endIconDrawable="@drawable/percent"
-            app:endIconContentDescription="@null" >
+            app:suffixText="@string/percent">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/ui_padding_horizontal_input"
                 android:inputType="number"
@@ -86,9 +84,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/vertical"
-            app:endIconMode="custom"
-            app:endIconDrawable="@drawable/percent"
-            app:endIconContentDescription="@null" >
+            app:suffixText="@string/percent" >
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/ui_padding_vertical_input"
                 android:inputType="number"

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:layout_marginVertical="20dp"
+    tools:layout_marginHorizontal="12dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:layout_marginHorizontal="6dp">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_vertical_40"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.43" />
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:id="@+id/video_cover"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_vertical_40"
+            app:layout_constraintDimensionRatio="16:9"
+            tools:src="@mipmap/placeholder" />
+        
+        <TextView
+            android:id="@+id/video_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            app:layout_constraintStart_toEndOf="@id/guideline_vertical_40"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/video_cover"
+            app:layout_constraintBottom_toBottomOf="@+id/video_cover"
+            android:layout_marginStart="4dp"
+            android:textSize="@dimen/video_card_title_size"
+            tools:text="Title"/>
+
+        <TextView
+            android:id="@+id/video_views"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:drawableStartCompat="@drawable/icon_play_16"
+            android:drawablePadding="@dimen/text_drawable_padding"
+            app:layout_constraintStart_toStartOf="@+id/video_cover"
+            app:layout_constraintTop_toBottomOf="@+id/video_cover"
+            android:layout_marginTop="4dp"
+            android:textSize="@dimen/video_card_attr_size"
+            android:alpha="@dimen/video_card_attr_alpha"
+            tools:text="1w" />
+        
+        <TextView
+            android:id="@+id/uploader_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:drawableStartCompat="@drawable/icon_uploader"
+            app:layout_constraintStart_toEndOf="@id/video_views"
+            app:layout_constraintTop_toTopOf="@+id/video_views"
+            android:layout_marginStart="4dp"
+            android:drawablePadding="@dimen/text_drawable_padding"
+            android:textSize="@dimen/video_card_attr_size"
+            android:alpha="@dimen/video_card_attr_alpha"
+            tools:text="Uploader" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

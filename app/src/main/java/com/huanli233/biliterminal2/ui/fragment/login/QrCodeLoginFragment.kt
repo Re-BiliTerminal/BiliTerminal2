@@ -1,23 +1,28 @@
 package com.huanli233.biliterminal2.ui.fragment.login
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import com.ethanhua.skeleton.Skeleton
+import com.bumptech.glide.Glide
 import com.ethanhua.skeleton.SkeletonScreen
 import com.huanli233.biliterminal2.R
+import com.huanli233.biliterminal2.data.menu.MenuConfigManager
 import com.huanli233.biliterminal2.databinding.FragmentLoginQrcodeBinding
 import com.huanli233.biliterminal2.ui.fragment.base.BaseFragment
 import com.huanli233.biliterminal2.utils.MsgUtil
 import com.huanli233.biliterminal2.utils.QRCodeUtil
-import com.huanli233.biliterminal2.utils.extensions.crossFadeSetText
-import com.huanli233.biliterminal2.utils.extensions.showSkeleton
+import com.huanli233.biliterminal2.ui.utils.crossFadeSetText
+import com.huanli233.biliterminal2.ui.utils.image.transition
+import com.huanli233.biliterminal2.ui.utils.showSkeleton
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class QrCodeLoginFragment: BaseFragment() {
+class QrCodeLoginFragment(
+    private val navigateToImport: () -> Unit
+): BaseFragment() {
 
     private lateinit var binding: FragmentLoginQrcodeBinding
     private val viewModel: QrCodeLoginViewModel by viewModels()
@@ -43,7 +48,10 @@ class QrCodeLoginFragment: BaseFragment() {
                 binding.qrcodeStatus.crossFadeSetText(getString(R.string.requesting_qrcode))
             }.onSuccess {
                 skeletonScreen?.hide()
-                binding.qrcodeImage.setImageBitmap(QRCodeUtil.createQRCodeBitmap(it, 320, 320))
+                Glide.with(this)
+                    .load(QRCodeUtil.createQRCodeBitmap(it, 320, 320))
+                    .transition()
+                    .into(binding.qrcodeImage)
             }.onApiError {
                 skeletonScreen?.hide()
                 binding.qrcodeImage.setImageResource(R.mipmap.loading_2233_error)
@@ -58,8 +66,7 @@ class QrCodeLoginFragment: BaseFragment() {
             it.onSuccess {
                 if (it.finished) {
                     MsgUtil.showMsg(getString(R.string.login_success))
-                    activity?.finish()
-                    binding.qrcodeStatus.crossFadeSetText(getString(R.string.logged_in))
+                    callAfterLoggedIn()
                 } else {
                     binding.qrcodeStatus.crossFadeSetText(
                         when (it.code) {
@@ -100,6 +107,13 @@ class QrCodeLoginFragment: BaseFragment() {
                 }
             }
         }
+        binding.skip.setOnClickListener { callAfterLoggedIn() }
+        binding.loginImport.setOnClickListener { navigateToImport() }
+    }
+
+    private fun callAfterLoggedIn() {
+        startActivity(Intent(context, MenuConfigManager.readMenuConfig().firstActivityClass))
+        activity?.finish()
     }
 
 }

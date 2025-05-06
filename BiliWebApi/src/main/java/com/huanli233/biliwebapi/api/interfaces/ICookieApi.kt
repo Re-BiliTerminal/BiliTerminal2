@@ -2,6 +2,7 @@ package com.huanli233.biliwebapi.api.interfaces
 
 import com.huanli233.biliwebapi.bean.ApiResponse
 import com.huanli233.biliwebapi.bean.cookie.CookieInfo
+import com.huanli233.biliwebapi.bean.cookie.CookieRefreshInfo
 import com.huanli233.biliwebapi.httplib.Domains
 import com.huanli233.biliwebapi.httplib.annotation.API
 import com.huanli233.biliwebapi.httplib.annotation.Csrf
@@ -31,6 +32,6 @@ interface ICookieApi {
     suspend fun refreshCookie(
         @Field("refresh_csrf") refreshCsrf: String,
         @Field("refresh_token") refreshToken: String
-    )
+    ): ApiResponse<CookieRefreshInfo>
 
 }

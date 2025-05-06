@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.huanli233.biliterminal2.ui.widget.TopBar
+        <com.huanli233.biliterminal2.ui.widget.components.TopBar
             android:id="@+id/top_bar"
             app:layout_constraintTop_toTopOf="parent"
             app:titleText="@string/welcome"
@@ -36,7 +36,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:contentDescription="@null"
-            app:srcCompat="@drawable/chevron_right"
+            app:srcCompat="@drawable/icon_chevron_right"
             android:layout_margin="16dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

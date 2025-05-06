@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.huanli233.biliterminal2.ui.widget.TopBar
+    <com.huanli233.biliterminal2.ui.widget.components.TopBar
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

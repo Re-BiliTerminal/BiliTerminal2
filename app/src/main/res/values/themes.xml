@@ -36,6 +36,7 @@
         <item name="cardBackgroundColor">?attr/colorSurfaceVariant</item>
         <item name="android:clickable">true</item>
         <item name="cornerRadius">8dp</item>
+        <item name="cardElevation">3dp</item>
     </style>
 
     <style name="Material3Button" parent="Widget.Material3.Button">

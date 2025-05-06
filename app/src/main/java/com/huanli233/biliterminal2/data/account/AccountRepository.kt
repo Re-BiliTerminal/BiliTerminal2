@@ -1,110 +1,96 @@
 package com.huanli233.biliterminal2.data.account
 
-import android.content.Context
+import android.util.Log
 import com.huanli233.biliterminal2.applicationScope
-import com.huanli233.biliterminal2.data.PreferenceKeys
-import com.huanli233.biliterminal2.data.UserPreferences
-import dagger.hilt.android.qualifiers.ApplicationContext
+import com.huanli233.biliterminal2.data.setting.DataStore
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.coroutines.CoroutineContext
 
 const val DEFAULT_ACCOUNT_DATA_ID = 0L
 
+@Singleton
 class AccountRepository @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val accountDao: AccountDao,
-    private val accountSecureStorage: AccountSecureStorage,
+    private val cookiesDao: CookiesDao
 ) {
 
-    private val ioDispatcher: CoroutineContext = Dispatchers.IO
+    private val dispatcher: CoroutineContext = Dispatchers.IO
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val activeAccount: StateFlow<Account?> = accountSecureStorage.getActiveAccountIdFlow()
+    val activeAccount: StateFlow<AccountEntity?> = getActiveAccountIdFlow()
         .flatMapLatest { activeAccountId ->
             if (activeAccountId != null) {
                 accountDao.getAccountById(activeAccountId)
-                    ?.let { flowOf(it.toAccount()) }
-                    ?: flowOf(null)
+                    ?.let { flowOf(it) }
+                    ?: flowOf(emptyAccount)
             } else {
-                flowOf(null)
+                flowOf(emptyAccount)
             }
-        }.flowOn(ioDispatcher).stateIn(
+        }.flowOn(dispatcher).stateIn(
             scope = applicationScope,
-            started = SharingStarted.WhileSubscribed(5000),
+            started = Eagerly,
             initialValue = null
         )
 
-    private fun AccountSecureStorage.getActiveAccountIdFlow(): Flow<Long?> {
-        return UserPreferences.impl.data().map {
-            it[PreferenceKeys.ACTIVE_ACCOUNT_ID.first]
+    private val activeAccountId
+        get() = DataStore.appSettings.activeAccountId
+
+    private fun getActiveAccountIdFlow(): Flow<Long?> {
+        return DataStore.appSettingsStateFlow.map {
+            it?.activeAccountId
         }
     }
 
-    suspend fun addAccount(account: Account, tokenData: AccountTokenData) = withContext(ioDispatcher) {
-        accountDao.insertAccount(account.toEntity())
-        accountSecureStorage.saveTokenData(account.accountId, tokenData)
+    suspend fun setActiveAccount(accountId: Long) = DataStore.editData {
+        activeAccountId = accountId
     }
 
-    suspend fun removeAccount(accountId: Long) = withContext(ioDispatcher) {
+    suspend fun addAccount(account: AccountEntity) = withContext(dispatcher) {
+        accountDao.insertAccount(account)
+    }
+
+    suspend fun removeAccount(accountId: Long) = withContext(dispatcher) {
         accountDao.deleteAccountById(accountId)
-        accountSecureStorage.deleteAccountData(accountId)
-        if (UserPreferences.activeAccountId.get() == accountId) {
+        cookiesDao.deleteCookiesByAccountId(accountId)
+        if (DataStore.appSettings.activeAccountId == accountId) {
             setActiveAccount(DEFAULT_ACCOUNT_DATA_ID)
         }
     }
 
-    suspend fun setActiveAccount(accountId: Long) = withContext(ioDispatcher) {
-        UserPreferences.activeAccountId.set(accountId)
+    suspend fun updateAccount(account: AccountEntity) = withContext(dispatcher) {
+        accountDao.updateAccount(account)
     }
 
-    suspend fun getTokenForAccount(accountId: Long): AccountTokenData? = withContext(ioDispatcher) {
-        accountSecureStorage.getTokenData(accountId)
+    suspend fun getAccountById(accountId: Long) = withContext(dispatcher) {
+        accountDao.getAccountById(accountId)
     }
 
-    suspend fun saveTokenForAccount(accountId: Long, tokenData: AccountTokenData) = withContext(ioDispatcher) {
-        accountSecureStorage.saveTokenData(accountId, tokenData)
+    fun getCookiesFlow() = cookiesDao.getCookiesFlow()
+
+    suspend fun getCookie(name: String) = withContext(dispatcher) {
+        cookiesDao.getCookieByName(name, activeAccountId)
     }
 
-    suspend fun getActiveAccountToken(): AccountTokenData? = withContext(ioDispatcher) {
-        val activeId = UserPreferences.activeAccountId.get()
-        accountSecureStorage.getTokenData(activeId)
+    suspend fun getCookies() = withContext(dispatcher) {
+        cookiesDao.getCookiesByAccountId(activeAccountId)
     }
 
-    suspend fun saveActiveAccountToken(tokenData: AccountTokenData) = withContext(ioDispatcher) {
-        val activeId = UserPreferences.activeAccountId.get()
-        accountSecureStorage.saveTokenData(activeId, tokenData)
+    suspend fun getGuestCookies() = withContext(dispatcher) {
+        cookiesDao.getGuestCookies()
     }
 
-    suspend inline fun updateAccountToken(
-        accountId: Long,
-        block: (AccountTokenData) -> AccountTokenData
-    ) {
-        getTokenForAccount(accountId)?.let {
-            saveTokenForAccount(
-                accountId,
-                block(it)
-            )
+    suspend fun addCookies(cookies: List<CookieEntity>) = withContext(dispatcher) {
+        cookies.forEach {
+            cookiesDao.upsertByNameAndAccountId(it)
         }
     }
 
-    suspend inline fun updateActiveAccountToken(
-        block: (AccountTokenData) -> AccountTokenData
-    ) {
-        saveActiveAccountToken(
-            block((getActiveAccountToken() ?: AccountTokenData()))
-        )
-    }
-
-}
-
-fun AccountEntity.toAccount(): Account {
-    return Account(accountId, username, avatarUrl, lastActiveTime)
-}
-
-fun Account.toEntity(): AccountEntity {
-    return AccountEntity(accountId, username, avatarUrl, lastActiveTime)
 }

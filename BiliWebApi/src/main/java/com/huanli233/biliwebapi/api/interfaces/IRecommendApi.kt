@@ -11,8 +11,15 @@ import retrofit2.http.Query
 
 interface IRecommendApi {
     @GET("/x/web-interface/wbi/index/top/feed/rcmd")
-    @WbiSign @Queries(keys = ["web_location", "feed_version", "homepage_ver", "screen"], values = ["1430650", "V8", "1", "1100-2056"])
-    suspend fun getRecommend(@Query("uniq_id") uniqId: String): ApiResponse<HomeRecommend>
+    @WbiSign @Queries(keys = ["web_location", "feed_version", "homepage_ver", "screen", "seo_info"], values = ["1430650", "V8", "1", "1100-2056", ""])
+    suspend fun getRecommend(
+        @Query("fresh_type") freshType: Int = 3,
+        @Query("uniq_id") uniqId: String = "",
+        @Query("ps") pageSize: Int = 15,
+        @Query("fresh_idx") freshIndex: Int = 1,
+        @Query("fresh_idx_1h") freshIndex1h: Int = 1,
+        @Query("brush") brush: Int = 1,
+    ): ApiResponse<HomeRecommend>
 
     @GET("/x/web-interface/archive/related")
     suspend fun getRelated(@Query("aid") aid: Long, @Query("bvid") bvid: String): ApiResponse<List<VideoInfo>>

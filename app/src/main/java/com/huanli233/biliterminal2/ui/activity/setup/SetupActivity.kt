@@ -1,19 +1,17 @@
 package com.huanli233.biliterminal2.ui.activity.setup
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.huanli233.biliterminal2.R
-import com.huanli233.biliterminal2.data.UserPreferences
+import com.huanli233.biliterminal2.data.setting.DataStore
 import com.huanli233.biliterminal2.databinding.ActivitySetupBinding
 import com.huanli233.biliterminal2.ui.activity.base.BaseActivity
 import com.huanli233.biliterminal2.ui.activity.login.LoginActivity
 import kotlinx.coroutines.launch
+import splitties.activities.start
 
 class SetupActivity: BaseActivity() {
 
@@ -43,11 +41,11 @@ class SetupActivity: BaseActivity() {
             currentFragmentId = destination.id
             when (currentFragmentId) {
                 R.id.welcomeFragment -> {
-                    binding.nextButton.setImageResource(R.drawable.chevron_right)
+                    binding.nextButton.setImageResource(R.drawable.icon_chevron_right)
                     pageName = getString(R.string.welcome)
                 }
                 R.id.uiSetupFragment -> {
-                    binding.nextButton.setImageResource(R.drawable.check)
+                    binding.nextButton.setImageResource(R.drawable.icon_check)
                     pageName = getString(R.string.initialize_setting)
                 }
             }
@@ -66,9 +64,11 @@ class SetupActivity: BaseActivity() {
                 }
                 R.id.uiSetupFragment -> {
                     lifecycleScope.launch {
-                        UserPreferences.firstRun.set(false)
+                        DataStore.editData {
+                            firstRun = false
+                        }
                         finish()
-                        startActivity(Intent(this@SetupActivity, LoginActivity::class.java))
+                        start<LoginActivity>()
                     }
                 }
             }

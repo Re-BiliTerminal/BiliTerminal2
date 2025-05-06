@@ -1,14 +1,11 @@
 package com.huanli233.biliterminal2.ui.activity.base
 
 import android.content.Context
-import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.Display
 import android.view.InputDevice
 import android.view.KeyEvent
@@ -27,20 +24,16 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.ViewConfigurationCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.NestedScrollView
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.huanli233.biliterminal2.BiliTerminal
 import com.huanli233.biliterminal2.R
-import com.huanli233.biliterminal2.data.UserPreferences
+import com.huanli233.biliterminal2.data.setting.DataStore
 import com.huanli233.biliterminal2.event.SnackEvent
-import com.huanli233.biliterminal2.ui.widget.TopBar
-import com.huanli233.biliterminal2.ui.widget.recyclerView.CustomGridManager
-import com.huanli233.biliterminal2.ui.widget.recyclerView.CustomLinearManager
-import com.huanli233.biliterminal2.utils.view.AsyncLayoutInflaterX
+import com.huanli233.biliterminal2.ui.widget.components.TopBar
 import com.huanli233.biliterminal2.utils.MsgUtil
 import com.huanli233.biliterminal2.utils.Preferences
-import com.huanli233.biliterminal2.utils.extensions.crossFadeSetText
+import com.huanli233.biliterminal2.ui.utils.crossFadeSetText
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -48,33 +41,26 @@ import kotlin.math.roundToInt
 
 open class BaseActivity : AppCompatActivity() {
     var windowWidth: Int = 0
-    @JvmField
     var windowHeight: Int = 0
-    var oldContext: Context? = null
+    var originalContext: Context? = null
     var forceSingleColumn: Boolean = false
 
-    private var topBar: TopBar? = null
-    private var topBarChanged = false
+    var topBar: TopBar? = null
 
-    override fun attachBaseContext(newBase: Context) {
-        oldContext = newBase
-        super.attachBaseContext(BiliTerminal.getFitDisplayContext(newBase))
+    override fun attachBaseContext(context: Context) {
+        originalContext = context
+        super.attachBaseContext(BiliTerminal.getFitDisplayContext(context))
     }
 
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
-        requestedOrientation = if (Preferences.getBoolean("ui_landscape", false))
-            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-        else
-            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
 
-        val paddingHPercent: Int = UserPreferences.uiPaddingHorizontal.get()
-        val paddingVPercent: Int = UserPreferences.uiPaddingVertical.get()
+        val paddingHPercent: Int = DataStore.appSettings.uiPaddingHorizontal
+        val paddingVPercent: Int = DataStore.appSettings.uiPaddingVertical
 
         val rootView: View = this.window.decorView.rootView
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
@@ -102,7 +88,7 @@ open class BaseActivity : AppCompatActivity() {
         }
 
         var density: Int
-        if ((UserPreferences.density.get().also { density = it }) >= 72) {
+        if ((DataStore.appSettings.density.also { density = it }) >= 72) {
             setDensity(density)
         }
     }
@@ -110,7 +96,7 @@ open class BaseActivity : AppCompatActivity() {
     @Deprecated("Deprecated in Java")
     @Suppress("DEPRECATION")
     override fun onBackPressed() {
-        if (!UserPreferences.backDisabled.get()) {
+        if (!DataStore.appSettings.backDisabled) {
             super.onBackPressed()
         }
     }
@@ -136,7 +122,7 @@ open class BaseActivity : AppCompatActivity() {
         }
     }
 
-    fun setupTopbar() {
+    open fun setupTopbar() {
         val view = topBar ?: return
         if (Build.VERSION.SDK_INT > 17 && view.hasOnClickListeners()) return
         view.setOnClickListener {
@@ -199,7 +185,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     protected open fun eventBusEnabled(): Boolean {
-        return UserPreferences.snackbarEnabled.get()
+        return DataStore.appSettings.snackbarEnabled
     }
 
     @Suppress("DEPRECATION")
@@ -215,37 +201,8 @@ open class BaseActivity : AppCompatActivity() {
         resources.updateConfiguration(configuration, resources.displayMetrics)
     }
 
-    protected fun asyncInflate(id: Int, callBack: InflateCallBack) {
-        setContentView(R.layout.activity_loading)
-        AsyncLayoutInflaterX(this).inflate(
-            id,
-            null
-        ) { view: View?, layoutId: Int, parent: ViewGroup? ->
-            setContentView(view)
-            callBack.finishInflate(view, layoutId)
-        }
-    }
-
     override fun isDestroyed(): Boolean {
         return lifecycle.currentState == Lifecycle.State.DESTROYED
-    }
-
-    protected interface InflateCallBack {
-        fun finishInflate(view: View?, id: Int)
-    }
-
-    val layoutManager: RecyclerView.LayoutManager
-        get() = if (Preferences.getBoolean(
-                "ui_landscape",
-                false
-            ) && !forceSingleColumn
-        )
-            CustomGridManager(this, 3)
-        else
-            CustomLinearManager(this)
-
-    fun setForceSingleColumn() {
-        forceSingleColumn = true
     }
 
     override fun onContentChanged() {
@@ -313,9 +270,4 @@ open class BaseActivity : AppCompatActivity() {
             }
         }
     }
-
-    val className: String
-        get() {
-            return javaClass.simpleName
-        }
 }

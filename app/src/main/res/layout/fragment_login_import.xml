@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/page_padding_horizontal">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/token_input_layout"
+            android:layout_marginTop="12dp"
+            style="?attr/textInputFilledStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:hint="@string/input_token_info">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/token_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/confirm_button"
+            android:layout_marginTop="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/token_input_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/confirm"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppScrollView>

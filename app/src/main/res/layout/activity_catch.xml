@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="6dp"
+        android:layout_marginHorizontal="@dimen/page_padding_horizontal"
         android:orientation="vertical">
 
         <TextView
@@ -37,7 +37,7 @@
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
-                <com.huanli233.biliterminal2.ui.widget.ExpandableTextView
+                <com.huanli233.biliterminal2.ui.widget.views.ExpandableTextView
                     android:id="@+id/stack"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
                         android:background="@android:color/transparent"
                         app:tint="?attr/colorOnSurface" />
 
-                </com.huanli233.biliterminal2.ui.widget.ExpandableTextView>
+                </com.huanli233.biliterminal2.ui.widget.views.ExpandableTextView>
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>

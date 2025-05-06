@@ -2,11 +2,16 @@ package com.huanli233.biliterminal2.api
 
 import android.annotation.SuppressLint
 import android.os.Build
+import com.huanli233.biliterminal2.BiliTerminal
 import com.huanli233.biliterminal2.applicationContext
 import com.huanli233.biliterminal2.applicationScope
-import com.huanli233.biliterminal2.data.UserPreferences
+import com.huanli233.biliterminal2.data.account.AccountManager
+import com.huanli233.biliterminal2.data.setting.DataStore
 import com.huanli233.biliterminal2.data.account.AccountRepository
+import com.huanli233.biliterminal2.data.account.CookieEntity
+import com.huanli233.biliterminal2.data.account.toCookieEntity
 import com.huanli233.biliterminal2.data.di.AppDependenciesEntryPoint
+import com.huanli233.biliterminal2.data.setting.edit
 import com.huanli233.biliterminal2.utils.network.SSLSocketFactoryCompat
 import com.huanli233.biliwebapi.BiliWebApi
 import com.huanli233.biliwebapi.bean.ApiResponse
@@ -14,6 +19,10 @@ import com.huanli233.biliwebapi.httplib.CookieManager
 import com.huanli233.biliwebapi.httplib.WbiSignKeyInfo
 import dagger.hilt.EntryPoints
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.Cookie
@@ -28,7 +37,7 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 private val hiltEntryPoint = EntryPoints.get(
-    applicationContext,
+    BiliTerminal.application,
     AppDependenciesEntryPoint::class.java
 )
 
@@ -73,54 +82,46 @@ private fun setOkHttpSsl(okhttpBuilder: OkHttpClient.Builder): OkHttpClient.Buil
     return okhttpBuilder
 }
 
-// TODO Flow
 class AppCookieManager @Inject constructor(
     private val accountRepository: AccountRepository
 ) : CookieManager {
 
-    override fun loadForRequest(url: HttpUrl): List<Cookie> {
-        val cookiesStr = runBlocking(Dispatchers.IO) {
-            accountRepository.getActiveAccountToken()
-        }?.cookies.orEmpty()
-        return if (cookiesStr == "") listOf() else cookiesStr.split("; ").map {
-            Cookie.Builder()
-                .name(it.substringBefore("="))
-                .value(it.substringAfter("="))
-                .domain(url.host)
-                .build()
+    val allCookies: StateFlow<List<CookieEntity>> =
+        accountRepository.getCookiesFlow()
+            .stateIn(
+                scope = applicationScope,
+                started = SharingStarted.Eagerly,
+                initialValue = emptyList()
+            )
+
+    val accountCookies: StateFlow<List<CookieEntity>> =
+        combine(
+            allCookies,
+            accountRepository.activeAccount
+        ) { latestCookies, latestAccount ->
+            latestCookies.filter { cookie ->
+                cookie.accountId == null || cookie.accountId == (latestAccount?.accountId ?: 0)
+            }
         }
+            .stateIn(
+                scope = applicationScope,
+                started = SharingStarted.Eagerly,
+                initialValue = emptyList()
+            )
+
+    override fun loadForRequest(url: HttpUrl): List<Cookie> {
+        return accountCookies.value.map { it.toOkHttpCookie() }
     }
 
     override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
-        val uid = cookies.find { it.name == "DedeUserID" }?.value?.toLongOrNull() ?: -1
-        val cookiesStr = runBlocking(Dispatchers.IO) {
-            if (uid == -1L) {
-                accountRepository.getActiveAccountToken()
-            } else {
-                accountRepository.getTokenForAccount(uid)
-            }
-        }?.cookies.orEmpty()
-        val oldCookies = (if (cookiesStr == "") mutableListOf() else mutableListOf(
-            *cookiesStr.split("; ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        ))
-        cookies.forEach {
-            oldCookies.add("${it.name}=${it.value}")
-        }
-        runBlocking(Dispatchers.IO) {
-            if (uid == -1L) {
-                accountRepository.updateActiveAccountToken {
-                    it.copy(
-                        cookies = oldCookies.joinToString("; ")
-                    )
-                }
-            } else {
-                accountRepository.updateAccountToken(uid) {
-                    it.copy(
-                        cookies = oldCookies.joinToString("; ")
-                    )
-                }
-                accountRepository.setActiveAccount(uid)
-            }
+        val uidInCookies = cookies.find {
+            it.name == "DedeUserID"
+        }?.value?.toLongOrNull()
+        val uid = uidInCookies ?: AccountManager.currentAccount.accountId
+        val cookieEntities = cookies.map { it.toCookieEntity(uid) }
+        if (uidInCookies != null) runBlocking {
+            accountRepository.setActiveAccount(uid)
+            accountRepository.addCookies(cookieEntities)
         }
     }
 
@@ -129,13 +130,15 @@ class AppCookieManager @Inject constructor(
 object WbiDataManager : com.huanli233.biliwebapi.httplib.WbiDataManager {
     override var wbiData: WbiSignKeyInfo
         get() = WbiSignKeyInfo(
-            UserPreferences.wbiMixinKey.get(),
-            UserPreferences.wbiLastUpdated.get(),
+            DataStore.appSettings.wbiMixinKey,
+            DataStore.appSettings.wbiLastUpdated,
         )
         set(value) {
             applicationScope.launch {
-                UserPreferences.wbiLastUpdated.set(value.lastUpdated)
-                UserPreferences.wbiMixinKey.set(value.mixinKey)
+                DataStore.editData {
+                    wbiLastUpdated = value.lastUpdated
+                    wbiMixinKey = value.mixinKey
+                }
             }
         }
 }

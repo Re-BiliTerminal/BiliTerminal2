@@ -13,4 +13,5 @@ plugins {
     id("org.jetbrains.kotlin.android") version "2.1.20" apply false
     id("com.google.devtools.ksp") version "2.1.20-1.0.31" apply false
     id("com.google.dagger.hilt.android") version "2.56.1" apply false
+    id("com.google.protobuf") version "0.9.4" apply false
 }
