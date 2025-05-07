@@ -5,13 +5,13 @@ import java.util.Properties
 import java.util.stream.StreamSupport
 
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp")
-    id("kotlin-kapt")
-    id("kotlin-parcelize")
-    id("com.google.dagger.hilt.android")
-    id("com.google.protobuf")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.protobuf)
+    alias(libs.plugins.kapt)
+    alias(libs.plugins.parcelize)
 }
 
 buildscript {

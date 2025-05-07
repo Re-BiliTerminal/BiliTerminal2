@@ -1,7 +1,7 @@
 plugins {
-    id("com.android.library")
-    id("kotlin-parcelize")
-    kotlin("android")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.parcelize)
+    alias(libs.plugins.kotlin.android)
 }
 
 java {
@@ -30,11 +30,11 @@ android {
 }
 
 dependencies {
-    implementation("com.huanli233.retrofit2-compat:retrofit:2.12.0-p2")
+    implementation(libs.retrofit2.compat.retrofit)
     //noinspection GradleDependency
-    implementation("com.google.code.gson:gson:2.9.1")
-    implementation("com.huanli233.retrofit2-compat:converter-gson:2.12.0-p2") {
+    implementation(libs.google.gson)
+    implementation(libs.retrofit2.compat.converter.gson) {
         exclude(group = "com.google.code.gson")
     }
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
+    implementation(libs.kotlinx.coroutines.core)
 }
