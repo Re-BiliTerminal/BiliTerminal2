@@ -25,7 +25,16 @@ inline fun <reified T> menuItem(
     required: Boolean = false,
     notMenuActivity: Boolean = false
 ): MenuItem {
-    return MenuItem(T::class.java, id, title, icon, requireNotLoggedIn, required)
+    return MenuItem(
+        T::class.java,
+        id,
+        title,
+        icon,
+        requireNotLoggedIn,
+        requireLoggedIn,
+        required,
+        notMenuActivity
+    )
 }
 
 data class MenuItem(
@@ -47,7 +56,7 @@ data class MenuConfig(
             DEFAULT_MENU_LIST.first { it.id == id }
         }.filter {
             val loggedIn = AccountManager.loggedIn()
-            !it.requireLoggedIn || loggedIn && !it.requireNotLoggedIn || !loggedIn
+            (!it.requireLoggedIn || loggedIn) && (!it.requireNotLoggedIn || !loggedIn)
         }
 
     val firstActivityClass: Class<*>

@@ -3,6 +3,7 @@ package com.huanli233.biliterminal2.ui.widget.components
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.bumptech.glide.Glide
 import com.huanli233.biliterminal2.databinding.ItemVideoCardBinding
@@ -16,6 +17,13 @@ class VideoCard @JvmOverloads constructor(
 
     var binding: ItemVideoCardBinding =
         ItemVideoCardBinding.inflate(LayoutInflater.from(context), this, true)
+
+    init {
+        layoutParams = ViewGroup.LayoutParams(
+            LayoutParams.MATCH_PARENT,
+            LayoutParams.WRAP_CONTENT
+        )
+    }
 
     fun setVideoTitle(title: String) {
         binding.videoTitle.text = title

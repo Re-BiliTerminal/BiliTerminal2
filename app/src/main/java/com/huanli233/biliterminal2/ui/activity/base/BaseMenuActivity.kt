@@ -1,11 +1,15 @@
 package com.huanli233.biliterminal2.ui.activity.base
 
+import android.os.Build
 import android.os.Bundle
+import android.view.Gravity
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.transition.TransitionManager
 import com.huanli233.biliterminal2.R
+import com.huanli233.biliterminal2.data.setting.DataStore
 import com.huanli233.biliterminal2.ui.fragment.menu.MenuFragment
 
 abstract class BaseMenuActivity : BaseActivity() {
@@ -81,12 +85,14 @@ abstract class BaseMenuActivity : BaseActivity() {
         if (supportFragmentManager.findFragmentByTag(menuFragmentTag) == null) {
             supportFragmentManager.commit {
                 setReorderingAllowed(true)
-                setCustomAnimations(
-                    R.anim.slide_in_top,
-                    R.anim.slide_out_bottom,
-                    R.anim.slide_in_bottom,
-                    R.anim.slide_out_top
-                )
+                if (DataStore.appSettings.animationsEnabled) {
+                    setCustomAnimations(
+                        R.anim.slide_in_from_top,
+                        R.anim.slide_out_to_bottom,
+                        R.anim.slide_in_from_bottom,
+                        R.anim.slide_out_to_top
+                    )
+                }
                 replace(R.id.fragment_container, menuFragment, menuFragmentTag)
                 addToBackStack(null)
             }

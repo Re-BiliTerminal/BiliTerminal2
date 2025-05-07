@@ -179,6 +179,12 @@ protobuf {
     }
 }
 
+configurations.all {
+    resolutionStrategy {
+        force(libs.androidx.core)
+    }
+}
+
 dependencies {
 
     // https://github.com/SkywalkerDarren/Skeleton, a fork of https://github.com/ethanhua/Skeleton
@@ -200,6 +206,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.androidx.transition)
     implementation(libs.zxing.core)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

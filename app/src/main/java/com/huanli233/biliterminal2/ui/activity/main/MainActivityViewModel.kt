@@ -12,9 +12,11 @@ import com.huanli233.biliterminal2.data.account.AccountRepository
 import com.huanli233.biliterminal2.data.proto.AppSettings
 import com.huanli233.biliterminal2.data.setting.DataStore
 import com.huanli233.biliwebapi.api.interfaces.ICookieApi
+import com.huanli233.biliwebapi.api.interfaces.IMainPage
 import com.huanli233.biliwebapi.api.util.CookieRefreshUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

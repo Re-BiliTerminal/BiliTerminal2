@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-sdk
-        tools:overrideLibrary="com.geetest.sdk,com.wolfcstech.brotlij,com.huanli233.nativebitmap" />
+        tools:overrideLibrary="com.geetest.sdk,com.wolfcstech.brotlij,com.huanli233.nativebitmap,androidx.core.ktx,androidx.core,androidx.annotation.experimental,androidx.fragment,androidx.fragment.ktx,androidx.transition" />
 
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.VIBRATE" />

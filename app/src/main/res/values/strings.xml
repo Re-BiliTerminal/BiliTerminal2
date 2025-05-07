@@ -180,7 +180,7 @@
     <string name="player_not_found">未找到播放器</string>
     <string name="tip_live_player">若无法播放请更换为内置播放器</string>
     <string name="dynamic_info">动态详情</string>
-    <string name="empty_tip">啥都木有~</string>
+    <string name="empty_tip">空空如也</string>
     <string name="login_qrcode_network_error">获取二维码失败，网络错误</string>
     <string name="login_qrcode_api_error">登录接口可能失效，请找开发者</string>
     <string name="open_source_info">开源信息</string>

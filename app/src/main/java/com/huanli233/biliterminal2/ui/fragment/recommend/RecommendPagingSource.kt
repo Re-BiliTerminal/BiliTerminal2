@@ -30,7 +30,7 @@ class RecommendPagingSource: PagingSource<Int, VideoInfo>() {
             )
         }.apiResultNonNull().onSuccess {
             return LoadResult.Page(
-                data = it.item,
+                data = it.item.filter { it.bvid.isNotEmpty() },
                 prevKey = null,
                 nextKey = position + 1
             )

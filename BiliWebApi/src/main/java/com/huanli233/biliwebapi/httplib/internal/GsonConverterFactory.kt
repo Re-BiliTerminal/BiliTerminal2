@@ -23,7 +23,14 @@ internal class GsonConverterFactory private constructor(
 ) : Converter.Factory() {
     override fun responseBodyConverter(
         type: Type, annotations: Array<Annotation>, retrofit: Retrofit
-    ): Converter<ResponseBody, *> {
+    ): Converter<ResponseBody, *>? {
+        if (type == String::class.java) {
+            return object : Converter<ResponseBody, String> {
+                override fun convert(value: ResponseBody): String {
+                    return value.string()
+                }
+            }
+        }
         val adapter = gson.getAdapter(TypeToken.get(type))
         return GsonResponseBodyConverter(apiInstance, gson, adapter)
     }

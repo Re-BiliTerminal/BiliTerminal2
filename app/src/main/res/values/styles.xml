@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Material3CardView" parent="Widget.Material3.CardView.Outlined">
+        <item name="cardBackgroundColor">?attr/colorSurfaceVariant</item>
+        <item name="android:clickable">true</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="cardElevation">3dp</item>
+    </style>
+
+    <style name="Material3Button" parent="Widget.Material3.Button">
+        <item name="cornerRadius">12dp</item>
+    </style>
+
+    <style name="Material3Button.Icon" parent="Widget.Material3.Button.Icon">
+        <item name="cornerRadius">12dp</item>
+    </style>
+
     <style name="CardStyle" parent="Widget.MaterialComponents.CardView">
         <item name="rippleColor" tools:ignore="PrivateResource">@color/mtrl_btn_ripple_color</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
@@ -45,7 +61,6 @@
 
     <style name="TextViewSytle" parent="Widget.AppCompat.TextView">
         <item name="android:textSize">14sp</item>
-        #设置默认字体大小，某些设备的默认字体偏大
     </style>
 
 </resources>

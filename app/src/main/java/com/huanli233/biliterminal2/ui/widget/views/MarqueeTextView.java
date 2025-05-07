@@ -4,9 +4,10 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 
+import com.google.android.material.textview.MaterialTextView;
 import com.huanli233.biliterminal2.data.setting.DataStore;
 
-public class MarqueeTextView extends androidx.appcompat.widget.AppCompatTextView {
+public class MarqueeTextView extends MaterialTextView {
     public MarqueeTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         setMarquee();
@@ -23,7 +24,7 @@ public class MarqueeTextView extends androidx.appcompat.widget.AppCompatTextView
     }
 
     public void setMarquee() {
-        if (!isInEditMode())
+        if (!isInEditMode()) {
             if (DataStore.INSTANCE.getAppSettings().getMarqueeEnabled()) {
                 setSelected(true);
                 setEllipsize(TextUtils.TruncateAt.MARQUEE);
@@ -32,5 +33,10 @@ public class MarqueeTextView extends androidx.appcompat.widget.AppCompatTextView
                 setFocusable(true);
                 setFocusableInTouchMode(true);
             }
+        } else {
+            setEllipsize(TextUtils.TruncateAt.MARQUEE);
+            setSingleLine();
+            setMarqueeRepeatLimit(-1);
+        }
     }
 }
