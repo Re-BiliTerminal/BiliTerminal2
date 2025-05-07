@@ -63,28 +63,33 @@ open class BaseActivity : AppCompatActivity() {
         val paddingVPercent: Int = DataStore.appSettings.uiPaddingVertical
 
         val rootView: View = this.window.decorView.rootView
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
         val windowManager: WindowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         val display: Display = windowManager.defaultDisplay
         val metrics = DisplayMetrics()
         if (Build.VERSION.SDK_INT >= 17) display.getRealMetrics(metrics)
         else display.getMetrics(metrics)
 
-        val scrW: Int = metrics.widthPixels
-        val scrH: Int = metrics.heightPixels
+        val screenWidth: Int = metrics.widthPixels
+        val screenHeight: Int = metrics.heightPixels
         if (paddingHPercent != 0 || paddingVPercent != 0) {
-            val paddingH: Int = scrW * paddingHPercent / 100
-            val paddingV: Int = scrH * paddingVPercent / 100
-            windowWidth = scrW - paddingH
-            windowHeight = scrH - paddingV
+            val paddingH: Int = screenWidth * paddingHPercent / 100
+            val paddingV: Int = screenHeight * paddingVPercent / 100
+            windowWidth = screenWidth - paddingH
+            windowHeight = screenHeight - paddingV
             rootView.setPadding(paddingH, paddingV, paddingH, paddingV)
+            ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                v.setPadding(systemBars.left + paddingH, systemBars.top + paddingV, systemBars.right + paddingH, systemBars.bottom + paddingV)
+                insets
+            }
         } else {
-            windowWidth = scrW
-            windowHeight = scrH
+            windowWidth = screenWidth
+            windowHeight = screenHeight
+            ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+                insets
+            }
         }
 
         var density: Int

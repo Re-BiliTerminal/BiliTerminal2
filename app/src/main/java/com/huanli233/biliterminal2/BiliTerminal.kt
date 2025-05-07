@@ -12,7 +12,6 @@ import com.elvishew.xlog.printer.AndroidPrinter
 import com.google.android.material.color.DynamicColors
 import com.huanli233.biliterminal2.data.setting.DataStore
 import com.huanli233.biliterminal2.data.setting.toSystemValue
-import com.huanli233.biliterminal2.utils.Preferences
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -58,7 +57,7 @@ class BiliTerminal : Application() {
                 }
             }
         }
-        ErrorCatch.instance.install(applicationContext)
+        ErrorCatcher.instance.install(applicationContext)
     }
 
     companion object {

@@ -5,11 +5,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="caidan"></TextView>
-
     <com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"

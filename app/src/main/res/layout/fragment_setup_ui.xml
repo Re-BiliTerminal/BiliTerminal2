@@ -44,6 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
+            app:errorEnabled="true"
             android:hint="@string/interface_size" >
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/ui_scale_input"
@@ -72,6 +73,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/horizontal"
             android:layout_marginTop="2dp"
+            app:errorEnabled="true"
             app:suffixText="@string/percent">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/ui_padding_horizontal_input"
@@ -83,6 +85,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:errorEnabled="true"
             android:hint="@string/vertical"
             app:suffixText="@string/percent" >
             <com.google.android.material.textfield.TextInputEditText
