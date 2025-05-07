@@ -11,22 +11,21 @@ abstract class BaseMenuActivity : BaseActivity() {
 
     private lateinit var contentFragment: Fragment
 
-    private var inMenu: Boolean = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu_item)
+
+        val contentFragmentTag = onCreateFragment(null)::class.qualifiedName
 
         if (savedInstanceState == null) {
             supportFragmentManager.commit {
                 setReorderingAllowed(true)
                 contentFragment = onCreateFragment(savedInstanceState)
-                add(R.id.fragment_container, contentFragment, contentFragment::class.qualifiedName)
+                add(R.id.fragment_container, contentFragment, contentFragmentTag)
             }
         } else {
-            contentFragment = supportFragmentManager.findFragmentByTag(
-                onCreateFragment(null)::class.qualifiedName
-            ) ?: throw IllegalStateException("content fragment not found")
+            contentFragment = supportFragmentManager.findFragmentByTag(contentFragmentTag)
+                ?: throw IllegalStateException("Content fragment not found")
         }
 
         setupTopbar()
@@ -47,7 +46,8 @@ abstract class BaseMenuActivity : BaseActivity() {
         topBarView.setTitle(getMenuName())
 
         supportFragmentManager.addOnBackStackChangedListener {
-            if (inMenu) {
+            val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+            if (currentFragment is MenuFragment) {
                 topBar?.setTitle(getString(R.string.menu))
                 topBar?.titleTextView?.setCompoundDrawablesWithIntrinsicBounds(
                     ContextCompat.getDrawable(this, R.drawable.icon_keyboard_arrow_left), null, null, null
@@ -66,15 +66,12 @@ abstract class BaseMenuActivity : BaseActivity() {
     }
 
     private val menuFragment by lazy {
-        MenuFragment {
-            inMenu = false
-        }
+        MenuFragment()
     }
 
     override fun onTopbarClicked() {
-        if (supportFragmentManager.findFragmentByTag(menuFragment::class.qualifiedName) == null) {
-            inMenu = true
-
+        val menuFragmentTag = menuFragment::class.qualifiedName
+        if (supportFragmentManager.findFragmentByTag(menuFragmentTag) == null) {
             supportFragmentManager.commit {
                 setReorderingAllowed(true)
                 setCustomAnimations(
@@ -83,12 +80,10 @@ abstract class BaseMenuActivity : BaseActivity() {
                     R.anim.slide_in_bottom,
                     R.anim.slide_out_top
                 )
-                replace(R.id.fragment_container, menuFragment, menuFragment::class.qualifiedName)
-
+                replace(R.id.fragment_container, menuFragment, menuFragmentTag)
                 addToBackStack(null)
             }
         } else {
-            inMenu = false
             supportFragmentManager.popBackStack()
         }
     }

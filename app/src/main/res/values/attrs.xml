@@ -7,6 +7,8 @@
 
     <declare-styleable name="AppScrollView">
         <attr name="animScaleSV" format="boolean" />
+        <attr name="springEnableEndSV" format="boolean" />
+        <attr name="springEnableStartSV" format="boolean" />
     </declare-styleable>
     <declare-styleable name="AppNestedScrollView">
         <attr name="springEnableEndNSV" format="boolean" />

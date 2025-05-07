@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout" >
+
+    <TextView
+        android:id="@+id/page_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textStyle="bold"
+        android:gravity="center_vertical"
+        android:layout_marginHorizontal="4dp"
+        android:layout_marginTop="2dp"
+        app:layout_constraintTop_toBottomOf="@+id/text_clock"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Page Name"
+        android:textSize="14sp"
+        app:drawableStartCompat="@drawable/icon_keyboard_arrow_left" />
+
+    <com.huanli233.biliterminal2.ui.widget.views.TextClock
+        android:id="@+id/text_clock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:layout_marginHorizontal="4dp"
+        tools:text="12:08"
+        android:alpha="0.85"
+        android:textSize="12sp"
+        android:layout_marginTop="2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/page_name"
+        android:layout_marginTop="2dp"
+        app:dividerInsetStart="10dp"
+        app:dividerInsetEnd="10dp" />
+
+</merge>

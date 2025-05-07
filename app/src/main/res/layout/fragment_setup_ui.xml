@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppNestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -105,4 +105,4 @@
 
     </LinearLayout>
 
-</com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppScrollView>
+</com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppNestedScrollView>

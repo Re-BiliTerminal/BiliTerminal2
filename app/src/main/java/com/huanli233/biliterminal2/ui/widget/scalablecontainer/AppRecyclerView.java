@@ -1,5 +1,7 @@
 package com.huanli233.biliterminal2.ui.widget.scalablecontainer;
 
+import static android.widget.AbsListView.OnScrollListener.SCROLL_STATE_FLING;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.SystemClock;
@@ -21,33 +23,43 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class AppRecyclerView extends RecyclerView {
-    public static final long FLING_CALCULATE_INTERVAL = 30;
-    public static final float OVER_TRANSLATION_RATIO = 2.0f;
-    private static final FloatPropertyCompat<AppRecyclerView> PROPERTY_OVER_TRANSLATION_Y = new FloatPropertyCompat<>("overTranslationY") {
+    public static final long FLING_CALCULATE_INTERVAL_MS = 30L;
+    public static final float OVER_TRANSLATION_DRAG_RATIO = 2.0f;
+    private static final float MIN_OVER_TRANSLATION_FOR_RESET_DP = 30.0f;
+    private static final int MIN_SCROLL_DIFF_FOR_VELOCITY_CALC_DP = 30;
+    private static final int POINTER_INDEX_PRIMARY = 0;
+    private static final float TARGET_TRANSLATION_Y_RESET = 0.0f;
+    private static final int SCROLL_DIRECTION_VERTICAL = 1;
+    private static final float SPRING_DAMPING_RATIO_NO_OSCILLATION = SpringForce.DAMPING_RATIO_NO_BOUNCY;
+    private static final float SPRING_STIFFNESS_DEFAULT = SpringForce.STIFFNESS_MEDIUM;
+    private static final int MAX_VELOCITY_DIVIDER = 2;
+
+    private static final FloatPropertyCompat<AppRecyclerView> PROPERTY_OVER_TRANSLATION_Y = new FloatPropertyCompat<AppRecyclerView>("overTranslationY") {
         @Override
         public float getValue(AppRecyclerView appRecyclerView) {
             return appRecyclerView.getOverTranslationY();
         }
 
         @Override
-        public void setValue(AppRecyclerView appRecyclerView, float f) {
-            appRecyclerView.setOverTranslationY((int) f);
+        public void setValue(AppRecyclerView appRecyclerView, float value) {
+            appRecyclerView.setOverTranslationYInternal(value);
         }
     };
+
     private final Set<View> animChildren;
     private final SpringAnimation animation;
-    private final boolean enableEnd;
-    private final boolean enableStart;
+    private final boolean enableEndOverScroll;
+    private final boolean enableStartOverScroll;
     private int flingVelocityY;
     private boolean forbidEdgeDrag;
-    private boolean isAvailable = true;
-    private long lastScrollTime;
-    private int lastScrollY;
-    private final int maxVelocityY;
-    private float overTranslationY;
-    private int scrollState;
-    private int startPointId;
-    private int totalScrollY;
+    private boolean isOverScrollAvailable = true;
+    private long lastScrollTimeMs;
+    private int lastScrollYPosition;
+    private final int maxFlingVelocityY;
+    private float currentOverTranslationY;
+    private int currentScrollState;
+    private int activePointerId;
+    private int totalScrollDistanceY;
 
     public AppRecyclerView(Context context) {
         this(context, null);
@@ -57,173 +69,208 @@ public class AppRecyclerView extends RecyclerView {
         this(context, attributeSet, 0);
     }
 
-    public AppRecyclerView(Context context, AttributeSet attributeSet, int i) {
-        super(context, attributeSet, i);
-        TypedArray obtainStyledAttributes = context.obtainStyledAttributes(attributeSet, R.styleable.AppRecyclerView, 0, 0);
-        this.enableStart = obtainStyledAttributes.getBoolean(R.styleable.AppRecyclerView_springEnableStartRV, true);
-        this.enableEnd = obtainStyledAttributes.getBoolean(R.styleable.AppRecyclerView_springEnableEndRV, true);
-        obtainStyledAttributes.recycle();
+    public AppRecyclerView(Context context, AttributeSet attributeSet, int defStyleAttr) {
+        super(context, attributeSet, defStyleAttr);
+        TypedArray attributes = context.obtainStyledAttributes(attributeSet, R.styleable.AppRecyclerView, defStyleAttr, 0);
+        this.enableStartOverScroll = attributes.getBoolean(R.styleable.AppRecyclerView_springEnableStartRV, true);
+        this.enableEndOverScroll = attributes.getBoolean(R.styleable.AppRecyclerView_springEnableEndRV, true);
+        attributes.recycle();
+
         this.animChildren = new HashSet<>();
-        this.animation = new SpringAnimation(this, PROPERTY_OVER_TRANSLATION_Y).setSpring(new SpringForce().setDampingRatio(1.0f).setStiffness(150.0f));
-        this.maxVelocityY = ViewConfiguration.get(context).getScaledMaximumFlingVelocity() / 2;
+        this.animation = new SpringAnimation(this, PROPERTY_OVER_TRANSLATION_Y)
+                .setSpring(new SpringForce()
+                        .setDampingRatio(SPRING_DAMPING_RATIO_NO_OSCILLATION)
+                        .setStiffness(SPRING_STIFFNESS_DEFAULT));
+        this.maxFlingVelocityY = ViewConfiguration.get(context).getScaledMaximumFlingVelocity() / MAX_VELOCITY_DIVIDER;
+        this.activePointerId = MotionEvent.INVALID_POINTER_ID;
     }
 
     public float getOverTranslationY() {
-        return this.overTranslationY;
+        return this.currentOverTranslationY;
     }
 
-    public void setAvailable(boolean z) {
-        this.isAvailable = z;
+    private void setOverTranslationYInternal(float translationY) {
+        int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            this.animChildren.add(getChildAt(i));
+        }
+
+        for (View view : this.animChildren) {
+            view.setTranslationY(translationY);
+        }
+        this.currentOverTranslationY = translationY;
+
+        if (translationY == TARGET_TRANSLATION_Y_RESET) {
+            this.animChildren.clear();
+        }
     }
 
-    public void setForbidEdgeDrag(boolean z) {
-        this.forbidEdgeDrag = z;
+    public void setOverScrollAvailable(boolean available) {
+        this.isOverScrollAvailable = available;
+    }
+
+    public void setForbidEdgeDrag(boolean forbid) {
+        this.forbidEdgeDrag = forbid;
     }
 
     @Override
-    public void onScrolled(int i, int i2) {
-        if (!this.isAvailable) {
-            super.onScrolled(i, i2);
+    public void onScrolled(int dx, int dy) {
+        super.onScrolled(dx, dy);
+        if (!this.isOverScrollAvailable) {
             return;
         }
-        this.totalScrollY += i2;
-        boolean isInAbsoluteStart = ViewUtils.isInAbsoluteStart(this, 1);
-        boolean isInAbsoluteEnd = ViewUtils.isInAbsoluteEnd(this, 1);
-        if (!isInAbsoluteStart && !isInAbsoluteEnd && isOverTranslationNeedReset()) {
-            stopAnim();
-            setOverTranslationY(0.0f);
+
+        this.totalScrollDistanceY += dy;
+        boolean isInAbsoluteStart = ViewUtils.isInAbsoluteStart(this, SCROLL_DIRECTION_VERTICAL);
+        boolean isInAbsoluteEnd = ViewUtils.isInAbsoluteEnd(this, SCROLL_DIRECTION_VERTICAL);
+
+        if (!isInAbsoluteStart && !isInAbsoluteEnd && isOverTranslationSignificant()) {
+            stopSpringAnimation();
+            setOverTranslationYInternal(TARGET_TRANSLATION_Y_RESET);
             this.flingVelocityY = 0;
-            this.lastScrollY = this.totalScrollY;
-            this.lastScrollTime = SystemClock.elapsedRealtime();
+            this.lastScrollYPosition = this.totalScrollDistanceY;
+            this.lastScrollTimeMs = SystemClock.elapsedRealtime();
             return;
         }
-        int i3 = this.totalScrollY - this.lastScrollY;
-        if (Math.abs(i3) < 30) {
+
+        int scrollDiff = this.totalScrollDistanceY - this.lastScrollYPosition;
+        if (Math.abs(scrollDiff) < MIN_SCROLL_DIFF_FOR_VELOCITY_CALC_DP) {
             return;
         }
-        long elapsedRealtime = SystemClock.elapsedRealtime();
-        long j = elapsedRealtime - this.lastScrollTime;
-        if (j <= 0) {
-            return;
+
+        long currentTimeMs = SystemClock.elapsedRealtime();
+        long deltaTimeMs = currentTimeMs - this.lastScrollTimeMs;
+
+        if (deltaTimeMs > 0) {
+            this.flingVelocityY = (int) ((scrollDiff * 1000L) / deltaTimeMs);
+            this.lastScrollYPosition = this.totalScrollDistanceY;
+            this.lastScrollTimeMs = currentTimeMs;
         }
-        this.flingVelocityY = (int) ((i3 * 1000) / j);
-        this.lastScrollY = this.totalScrollY;
-        this.lastScrollTime = elapsedRealtime;
     }
 
-    private boolean isOverTranslationNeedReset() {
-        return Math.abs(this.overTranslationY) > 30.0f;
+    private boolean isOverTranslationSignificant() {
+        return Math.abs(this.currentOverTranslationY) > MIN_OVER_TRANSLATION_FOR_RESET_DP;
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent motionEvent) {
-        if (this.isAvailable) {
-            if (this.forbidEdgeDrag) {
-                return super.dispatchTouchEvent(motionEvent);
-            }
-            int action = motionEvent.getAction();
-            LayoutManager layoutManager = getLayoutManager();
-            if (layoutManager == null) {
-                return super.dispatchTouchEvent(motionEvent);
-            }
-            boolean canScrollVertically = layoutManager.canScrollVertically();
-            int childCount = getChildCount();
-            if (!canScrollVertically || childCount == 0) {
-                return super.dispatchTouchEvent(motionEvent);
-            }
-            int i = 0;
-            boolean z = ViewUtils.isInAbsoluteStart(this, 1) && this.enableStart;
-            boolean z2 = ViewUtils.isInAbsoluteEnd(this, 1) && this.enableEnd;
-            if (action != 1) {
-                if (action == 2) {
-                    if (motionEvent.getHistorySize() != 0) {
-                        float y = motionEvent.getY(0) - motionEvent.getHistoricalY(0, 0);
-                        if (Math.abs(y) >= Math.abs(motionEvent.getX(0) - motionEvent.getHistoricalX(0, 0))) {
-                            int pointerId = motionEvent.getPointerId(0);
-                            float f = this.overTranslationY;
-                            if (f != 0.0f) {
-                                if (pointerId == this.startPointId) {
-                                    int i2 = (int) ((y / 2.0f) + f);
-                                    if (i2 * f >= 0.0f) {
-                                        i = i2;
-                                    }
-                                }
-                                stopAnim();
-                                setOverTranslationY(i);
-                            } else if ((y > 0.0f && z) || (y < 0.0f && z2)) {
-                                this.startPointId = pointerId;
-                                setOverTranslationY((int) (y / 2.0f));
-                                ViewParent parent = getParent();
-                                if (parent != null) {
-                                    parent.requestDisallowInterceptTouchEvent(true);
-                                }
-                            }
-                        }
-                    }
-                } else if (action == 3) {
-                    finishOverScroll();
-                }
-                return super.dispatchTouchEvent(motionEvent);
-            } else {
-                finishOverScroll();
-            }
-            finishOverScroll();
-            return super.dispatchTouchEvent(motionEvent);
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (!this.isOverScrollAvailable || this.forbidEdgeDrag) {
+            return super.dispatchTouchEvent(event);
         }
-        return super.dispatchTouchEvent(motionEvent);
+
+        LayoutManager layoutManager = getLayoutManager();
+        if (layoutManager == null || !layoutManager.canScrollVertically() || getChildCount() == 0) {
+            return super.dispatchTouchEvent(event);
+        }
+
+        int action = event.getActionMasked();
+        boolean canOverScrollAtStart = ViewUtils.isInAbsoluteStart(this, SCROLL_DIRECTION_VERTICAL) && this.enableStartOverScroll;
+        boolean canOverScrollAtEnd = ViewUtils.isInAbsoluteEnd(this, SCROLL_DIRECTION_VERTICAL) && this.enableEndOverScroll;
+
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                this.activePointerId = event.getPointerId(POINTER_INDEX_PRIMARY);
+                if (this.animation.isRunning() && this.currentOverTranslationY != TARGET_TRANSLATION_Y_RESET) {
+                    stopSpringAnimation();
+                }
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                if (this.activePointerId == MotionEvent.INVALID_POINTER_ID) break; 
+                int pointerIndex = event.findPointerIndex(this.activePointerId);
+                if (pointerIndex < 0) break;
+
+                if (event.getHistorySize() > 0) {
+                    float dy = event.getY(pointerIndex) - event.getHistoricalY(pointerIndex, 0);
+                    if (Math.abs(dy) < Math.abs(event.getX(pointerIndex) - event.getHistoricalX(pointerIndex, 0))) {
+                        return super.dispatchTouchEvent(event);
+                    }
+
+                    float currentTranslation = this.currentOverTranslationY;
+                    if (currentTranslation != TARGET_TRANSLATION_Y_RESET) {
+                        float newTranslation = currentTranslation + (dy / OVER_TRANSLATION_DRAG_RATIO);
+                        if ((currentTranslation > TARGET_TRANSLATION_Y_RESET && newTranslation < TARGET_TRANSLATION_Y_RESET) || 
+                            (currentTranslation < TARGET_TRANSLATION_Y_RESET && newTranslation > TARGET_TRANSLATION_Y_RESET)) {
+                            newTranslation = TARGET_TRANSLATION_Y_RESET;
+                        }
+                        stopSpringAnimation();
+                        setOverTranslationYInternal(newTranslation);
+                        ViewParent parent = getParent();
+                        if (parent != null) {
+                            parent.requestDisallowInterceptTouchEvent(true);
+                        }
+                        return true;
+                    } else if ((dy > TARGET_TRANSLATION_Y_RESET && canOverScrollAtStart) || (dy < TARGET_TRANSLATION_Y_RESET && canOverScrollAtEnd)) {
+                        stopSpringAnimation();
+                        setOverTranslationYInternal(dy / OVER_TRANSLATION_DRAG_RATIO);
+                        ViewParent parent = getParent();
+                        if (parent != null) {
+                            parent.requestDisallowInterceptTouchEvent(true);
+                        }
+                        return true;
+                    }
+                }
+                break;
+
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                this.activePointerId = MotionEvent.INVALID_POINTER_ID;
+                if (this.currentOverTranslationY != TARGET_TRANSLATION_Y_RESET) {
+                    finishOverScrollAnimation();
+                }
+                break;
+        }
+        return super.dispatchTouchEvent(event);
     }
 
-    private void stopAnim() {
+    private void stopSpringAnimation() {
         if (this.animation.isRunning()) {
             this.animation.cancel();
         }
     }
 
-    public void setOverTranslationY(float f) {
-        int childCount = getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            this.animChildren.add(getChildAt(i));
-        }
-        for (View view : this.animChildren) {
-            view.setTranslationY(f);
-        }
-        this.overTranslationY = f;
-        if (f == 0.0f) {
-            this.animChildren.clear();
-        }
-    }
-
-    private void finishOverScroll() {
-        this.animation.animateToFinalPosition(0.0f);
+    private void finishOverScrollAnimation() {
+        this.animation.setStartVelocity(0);
+        this.animation.animateToFinalPosition(TARGET_TRANSLATION_Y_RESET);
     }
 
     @Override
-    public void onScrollStateChanged(int i) {
-        if (!this.isAvailable) {
-            super.onScrollStateChanged(i);
-        } else if (this.scrollState != 2 || i != 0 || isOverTranslationNeedReset()) {
-            this.scrollState = i;
-        } else {
-            this.scrollState = i;
+    public void onScrollStateChanged(int state) {
+        super.onScrollStateChanged(state);
+        if (!this.isOverScrollAvailable) {
+            return;
+        }
+
+        if (this.currentScrollState == SCROLL_STATE_FLING && state == SCROLL_STATE_IDLE && isOverTranslationSignificant()) {
+             // This might be too late, as fling could have already overscrolled and stopped.
+             // The primary mechanism for fling overscroll should be within onScrolled or a custom fling handler.
+        }
+        this.currentScrollState = state;
+
+        if (state == SCROLL_STATE_IDLE && this.currentOverTranslationY == TARGET_TRANSLATION_Y_RESET) {
             LayoutManager layoutManager = getLayoutManager();
             if (layoutManager != null && layoutManager.canScrollVertically()) {
-                boolean z = true;
-                boolean z2 = ViewUtils.isInAbsoluteStart(this, 1) && this.enableStart;
-                boolean z3 = ViewUtils.isInAbsoluteEnd(this, 1) && this.enableEnd;
-                if ((!z2 || this.flingVelocityY >= 0) && (!z3 || this.flingVelocityY <= 0)) {
-                    z = false;
+                boolean canFlingOverScrollStart = ViewUtils.isInAbsoluteStart(this, SCROLL_DIRECTION_VERTICAL) && this.enableStartOverScroll;
+                boolean canFlingOverScrollEnd = ViewUtils.isInAbsoluteEnd(this, SCROLL_DIRECTION_VERTICAL) && this.enableEndOverScroll;
+                
+                boolean shouldAnimateFling = false;
+                if (canFlingOverScrollStart && this.flingVelocityY > 0) {
+                    shouldAnimateFling = true;
+                } else if (canFlingOverScrollEnd && this.flingVelocityY < 0) { // Flinging towards end
+                    shouldAnimateFling = true;
                 }
-                if (z) {
-                    float min = Math.min(Math.abs(this.flingVelocityY), this.maxVelocityY);
-                    if (min < 0.0f) {
-                        return;
+
+                if (shouldAnimateFling) {
+                    float startVelocityForSpring = -this.flingVelocityY;
+                    startVelocityForSpring = Math.max(-this.maxFlingVelocityY, Math.min(startVelocityForSpring, this.maxFlingVelocityY));
+                    
+                    if (Math.abs(startVelocityForSpring) > 0) {
+                        this.animation.setStartVelocity(startVelocityForSpring);
+                        this.animation.animateToFinalPosition(TARGET_TRANSLATION_Y_RESET);
                     }
-                    if (this.flingVelocityY >= 0) {
-                        min = -min;
-                    }
-                    this.animation.setStartVelocity(min).animateToFinalPosition(0.0f);
                 }
             }
         }
     }
 }
+

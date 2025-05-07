@@ -72,14 +72,20 @@ open class BaseActivity : AppCompatActivity() {
         val screenWidth: Int = metrics.widthPixels
         val screenHeight: Int = metrics.heightPixels
         if (paddingHPercent != 0 || paddingVPercent != 0) {
-            val paddingH: Int = screenWidth * paddingHPercent / 100
-            val paddingV: Int = screenHeight * paddingVPercent / 100
-            windowWidth = screenWidth - paddingH
-            windowHeight = screenHeight - paddingV
-            rootView.setPadding(paddingH, paddingV, paddingH, paddingV)
+            val paddingHorizontal: Int = screenWidth * paddingHPercent / 100
+            val paddingTop: Int = screenHeight * paddingVPercent / 100
+            val paddingBottom = if (DataStore.appSettings.roundMode) {
+                (paddingTop + screenHeight * 0.03).toInt()
+            } else {
+                paddingTop
+            }
+
+            windowWidth = screenWidth - paddingHorizontal - paddingHorizontal
+            windowHeight = screenHeight - paddingTop - (paddingBottom - paddingTop)
+            rootView.setPadding(paddingHorizontal, paddingTop, paddingHorizontal, paddingBottom)
             ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
                 val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-                v.setPadding(systemBars.left + paddingH, systemBars.top + paddingV, systemBars.right + paddingH, systemBars.bottom + paddingV)
+                v.setPadding(systemBars.left + paddingHorizontal, systemBars.top + paddingTop, systemBars.right + paddingHorizontal, systemBars.bottom + paddingBottom)
                 insets
             }
         } else {

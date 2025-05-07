@@ -19,127 +19,146 @@ import com.huanli233.biliterminal2.ui.utils.view.PressAnimHelper;
 import com.huanli233.biliterminal2.ui.utils.view.UiTouchPointUtil;
 
 public class AppRelativeLayout extends RelativeLayout {
-    private final Animator.AnimatorListener animatorListener;
-    private ObjectAnimator horizontalAnimator;
-    private Point point;
+    private static final int DEFAULT_STYLE_ATTR = 0;
+    private static final long HORIZONTAL_ANIMATION_DURATION_MS = 350L;
+    private static final long VERTICAL_ANIMATION_DURATION_MS = 400L;
+    private static final float TARGET_TRANSLATION_RESET = 0.0f;
+
+    private final Animator.AnimatorListener animationEndListener;
+    private ObjectAnimator horizontalTranslationAnimator;
+    private Point lastRawTouchPoint;
     private final PressAnimHelper pressAnimHelper;
-    private final Runnable pressTask;
-    private final Runnable releaseTask;
-    private View specialView;
-    private OnClickListener specialViewListener;
-    private ObjectAnimator verticalAnimator;
+    private final Runnable pressAnimationTask;
+    private final Runnable releaseAnimationTask;
+    private View specialDispatchTargetView; // Renamed for clarity
+    private OnClickListener specialViewClickListener;
+    private ObjectAnimator verticalTranslationAnimator;
 
     public AppRelativeLayout(Context context) {
         this(context, null);
     }
 
-    public AppRelativeLayout(Context context, AttributeSet attributeSet) {
-        this(context, attributeSet, 0);
+    public AppRelativeLayout(Context context, AttributeSet attrs) {
+        this(context, attrs, DEFAULT_STYLE_ATTR);
     }
 
-    public AppRelativeLayout(Context context, AttributeSet attributeSet, int i) {
-        super(context, attributeSet, i);
-        this.animatorListener = new AnimatorListenerAdapter() {
-            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+    public AppRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        this.animationEndListener = new AnimatorListenerAdapter() {
+            @Override
             public void onAnimationEnd(Animator animator) {
-                AppRelativeLayout.this.resetTranslation();
+                AppRelativeLayout.this.resetViewTranslation();
             }
         };
-        this.pressTask = new Runnable() {
-            @Override
-            public void run() {
-                AppRelativeLayout.this.pressAnimHelper.press();
-            }
-        };
-        this.releaseTask = new Runnable() {
-            @Override
-            public void run() {
-                AppRelativeLayout.this.pressAnimHelper.release();
-            }
-        };
-        setClickable(true);
-        TypedArray obtainStyledAttributes = attributeSet != null ? context.obtainStyledAttributes(attributeSet, R.styleable.AppRelativeLayout) : null;
-        boolean optBoolean = optBoolean(obtainStyledAttributes, R.styleable.AppRelativeLayout_useAlphaForRL, true);
-        boolean optBoolean2 = optBoolean(obtainStyledAttributes, R.styleable.AppRelativeLayout_useZoomForRL, true);
-        if (obtainStyledAttributes != null) {
-            obtainStyledAttributes.recycle();
+        this.pressAnimationTask = () -> AppRelativeLayout.this.pressAnimHelper.press();
+        this.releaseAnimationTask = () -> AppRelativeLayout.this.pressAnimHelper.release();
+
+        if (!isClickable()) {
+            setClickable(true);
         }
-        this.pressAnimHelper = new PressAnimHelper(this, optBoolean, optBoolean2);
-        initAnimation();
+
+        TypedArray styledAttributes = null;
+        boolean useAlphaInPressAnim = true;
+        boolean useZoomInPressAnim = true;
+
+        if (attrs != null) {
+            styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.AppRelativeLayout);
+            useAlphaInPressAnim = optBoolean(styledAttributes, R.styleable.AppRelativeLayout_useAlphaForRL, true);
+            useZoomInPressAnim = optBoolean(styledAttributes, R.styleable.AppRelativeLayout_useZoomForRL, true);
+            styledAttributes.recycle();
+        }
+        this.pressAnimHelper = new PressAnimHelper(this, useAlphaInPressAnim, useZoomInPressAnim);
+        initializeAnimations();
     }
 
-    private void initAnimation() {
-        this.horizontalAnimator = new ObjectAnimator();
-        this.horizontalAnimator.setTarget(this);
-        this.horizontalAnimator.setPropertyName("translationX");
-        this.horizontalAnimator.setDuration(350L);
-        this.horizontalAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        this.horizontalAnimator.addListener(this.animatorListener);
-        this.verticalAnimator = new ObjectAnimator();
-        this.verticalAnimator.setTarget(this);
-        this.verticalAnimator.setPropertyName("translationY");
-        this.verticalAnimator.setDuration(400L);
-        this.verticalAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        this.verticalAnimator.addListener(this.animatorListener);
+    private void initializeAnimations() {
+        this.horizontalTranslationAnimator = new ObjectAnimator();
+        this.horizontalTranslationAnimator.setTarget(this);
+        this.horizontalTranslationAnimator.setPropertyName("translationX");
+        this.horizontalTranslationAnimator.setDuration(HORIZONTAL_ANIMATION_DURATION_MS);
+        this.horizontalTranslationAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        this.horizontalTranslationAnimator.addListener(this.animationEndListener);
+
+        this.verticalTranslationAnimator = new ObjectAnimator();
+        this.verticalTranslationAnimator.setTarget(this);
+        this.verticalTranslationAnimator.setPropertyName("translationY");
+        this.verticalTranslationAnimator.setDuration(VERTICAL_ANIMATION_DURATION_MS);
+        this.verticalTranslationAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        this.verticalTranslationAnimator.addListener(this.animationEndListener);
     }
 
-    public void startHorizontalAnimation(float f) {
-        this.verticalAnimator.cancel();
-        this.horizontalAnimator.cancel();
-        resetTranslation();
-        this.horizontalAnimator.setFloatValues(f, 0.0f);
-        this.horizontalAnimator.start();
+    public void startHorizontalReturnAnimation(float fromTranslationX) {
+        this.verticalTranslationAnimator.cancel();
+        this.horizontalTranslationAnimator.cancel();
+        resetViewTranslation(); // Reset before starting new animation
+        this.horizontalTranslationAnimator.setFloatValues(fromTranslationX, TARGET_TRANSLATION_RESET);
+        this.horizontalTranslationAnimator.start();
     }
 
-    public void startVerticalAnimation(float f) {
-        this.horizontalAnimator.cancel();
-        this.verticalAnimator.cancel();
-        resetTranslation();
-        this.verticalAnimator.setFloatValues(f, 0.0f);
-        this.verticalAnimator.start();
+    public void startVerticalReturnAnimation(float fromTranslationY) {
+        this.horizontalTranslationAnimator.cancel();
+        this.verticalTranslationAnimator.cancel();
+        resetViewTranslation(); // Reset before starting new animation
+        this.verticalTranslationAnimator.setFloatValues(fromTranslationY, TARGET_TRANSLATION_RESET);
+        this.verticalTranslationAnimator.start();
     }
 
-    public void resetTranslation() {
-        setTranslationX(0.0f);
-        setTranslationY(0.0f);
+    public void resetViewTranslation() {
+        setTranslationX(TARGET_TRANSLATION_RESET);
+        setTranslationY(TARGET_TRANSLATION_RESET);
     }
 
-    public void setSpecialView(View view) {
-        this.specialView = view;
+    public void setSpecialDispatchTargetView(View view) {
+        this.specialDispatchTargetView = view;
     }
 
-    private void setSpecialViewAndListener(View view, OnClickListener onClickListener) {
-        this.specialView = view;
-        this.specialViewListener = onClickListener;
+    // This method seems to be intended for setting a special view and its click listener.
+    // It might be better to have separate setters if they are used independently.
+    public void setSpecialDispatchTargetViewAndListener(View view, OnClickListener onClickListener) {
+        this.specialDispatchTargetView = view;
+        this.specialViewClickListener = onClickListener;
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent motionEvent) {
-        Point point = this.point;
-        if (point == null) {
-            this.point = new Point((int) motionEvent.getRawX(), (int) motionEvent.getRawY());
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (this.lastRawTouchPoint == null) {
+            this.lastRawTouchPoint = new Point((int) event.getRawX(), (int) event.getRawY());
         } else {
-            point.set((int) motionEvent.getRawX(), (int) motionEvent.getRawY());
+            this.lastRawTouchPoint.set((int) event.getRawX(), (int) event.getRawY());
         }
-        if (UiTouchPointUtil.isTouchPointInView(this.specialView, this.point)) {
-            this.pressAnimHelper.release();
-            return super.dispatchTouchEvent(motionEvent);
+
+        if (this.specialDispatchTargetView != null && UiTouchPointUtil.isTouchPointInView(this.specialDispatchTargetView, this.lastRawTouchPoint)) {
+            // If touch is on the special view, release press animation and let super handle dispatch.
+            removeCallbacks(this.pressAnimationTask);
+            post(this.releaseAnimationTask);
+            // If specialViewListener is set, it implies special handling for this view's touch.
+            // However, the original `dealSpecialView` was not called here. If the intent is to consume
+            // the event or trigger the listener directly, that logic should be here.
+            // For now, just passing to super.dispatchTouchEvent.
+            return super.dispatchTouchEvent(event);
         }
-        int action = motionEvent.getAction();
-        if (action == 0) {
-            post(this.pressTask);
-        } else if (action == 1 || action == 3) {
-            post(this.releaseTask);
+
+        int action = event.getActionMasked();
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                removeCallbacks(this.releaseAnimationTask);
+                post(this.pressAnimationTask);
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                removeCallbacks(this.pressAnimationTask);
+                post(this.releaseAnimationTask);
+                break;
         }
-        return super.dispatchTouchEvent(motionEvent);
+        return super.dispatchTouchEvent(event);
     }
 
-    private void dealSpecialView() {
-        OnClickListener onClickListener;
-        View view = this.specialView;
-        if (view == null || (onClickListener = this.specialViewListener) == null) {
-            return;
+    // This method was unused in the original dispatchTouchEvent logic for specialView.
+    // If it's intended to be called, its invocation point needs to be determined.
+    private void triggerSpecialViewClick() {
+        if (this.specialDispatchTargetView != null && this.specialViewClickListener != null) {
+            this.specialViewClickListener.onClick(this.specialDispatchTargetView);
         }
-        onClickListener.onClick(view);
     }
 }
+

@@ -14,78 +14,76 @@ import com.huanli233.biliterminal2.ui.utils.view.TypeArrayUtils;
 import com.huanli233.biliterminal2.ui.utils.view.UiTouchPointUtil;
 
 public class AppLinearLayout extends LinearLayout {
-    int extraBottom;
-    int extraLeft;
-    int extraRight;
-    int extraTop;
-    private View forbidView;
+    private static final int DEFAULT_STYLE_ATTR = 0;
+
+    private View forbidTouchDispatchView;
     private final PressAnimHelper pressAnimHelper;
-    private final Runnable pressTask;
-    private final Runnable releaseTask;
-    private final Point touchPoint;
+    private final Runnable pressAnimationTask;
+    private final Runnable releaseAnimationTask;
+    private final Point lastTouchPointGlobal;
 
     public AppLinearLayout(Context context) {
         this(context, null);
     }
 
-    public AppLinearLayout(Context context, AttributeSet attributeSet) {
-        this(context, attributeSet, 0);
+    public AppLinearLayout(Context context, AttributeSet attrs) {
+        this(context, attrs, DEFAULT_STYLE_ATTR);
     }
 
-    public AppLinearLayout(Context context, AttributeSet attributeSet, int i) {
-        super(context, attributeSet, i);
-        this.touchPoint = new Point();
-        this.pressTask = new Runnable() {
-            @Override
-            public void run() {
-                AppLinearLayout.this.pressAnimHelper.press();
-            }
-        };
-        this.releaseTask = new Runnable() {
-            @Override
-            public void run() {
-                AppLinearLayout.this.pressAnimHelper.release();
-            }
-        };
-        setClickable(true);
-        TypedArray obtainStyledAttributes = attributeSet != null ? context.obtainStyledAttributes(attributeSet, R.styleable.AppLinearLayout) : null;
-        boolean optBoolean = TypeArrayUtils.optBoolean(obtainStyledAttributes, R.styleable.AppLinearLayout_useAlphaForLL, true);
-        boolean optBoolean2 = TypeArrayUtils.optBoolean(obtainStyledAttributes, R.styleable.AppLinearLayout_useZoomForLL, true);
-        if (obtainStyledAttributes != null) {
-            obtainStyledAttributes.recycle();
+    public AppLinearLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        this.lastTouchPointGlobal = new Point();
+        this.pressAnimationTask = AppLinearLayout.this.pressAnimHelper::press;
+        this.releaseAnimationTask = AppLinearLayout.this.pressAnimHelper::release;
+
+        if (!isClickable()) {
+            setClickable(true);
         }
-        this.pressAnimHelper = new PressAnimHelper(this, optBoolean, optBoolean2);
-    }
 
-    public View getForbidView() {
-        return this.forbidView;
-    }
+        TypedArray styledAttributes = null;
+        boolean useAlphaInPressAnim = true;
+        boolean useZoomInPressAnim = true;
 
-    public void setForbidView(View view) {
-        this.forbidView = view;
-    }
-
-    @Deprecated
-    public void setForbidViewExtra(int i, int i2, int i3, int i4) {
-        this.extraLeft = i;
-        this.extraRight = i2;
-        this.extraTop = i3;
-        this.extraBottom = i4;
-    }
-
-    @Override // android.view.ViewGroup, android.view.View
-    public boolean dispatchTouchEvent(MotionEvent motionEvent) {
-        this.touchPoint.set((int) motionEvent.getRawX(), (int) motionEvent.getRawY());
-        if (UiTouchPointUtil.isTouchPointInView(this.forbidView, this.touchPoint)) {
-            this.pressAnimHelper.release();
-            return super.dispatchTouchEvent(motionEvent);
+        if (attrs != null) {
+            styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.AppLinearLayout);
+            useAlphaInPressAnim = TypeArrayUtils.optBoolean(styledAttributes, R.styleable.AppLinearLayout_useAlphaForLL, true);
+            useZoomInPressAnim = TypeArrayUtils.optBoolean(styledAttributes, R.styleable.AppLinearLayout_useZoomForLL, true);
+            styledAttributes.recycle();
         }
-        int action = motionEvent.getAction();
-        if (action == 0) {
-            post(this.pressTask);
-        } else if (action == 1 || action == 3) {
-            post(this.releaseTask);
+        this.pressAnimHelper = new PressAnimHelper(this, useAlphaInPressAnim, useZoomInPressAnim);
+    }
+
+    public View getForbidTouchDispatchView() {
+        return this.forbidTouchDispatchView;
+    }
+
+    public void setForbidTouchDispatchView(View view) {
+        this.forbidTouchDispatchView = view;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        this.lastTouchPointGlobal.set((int) event.getRawX(), (int) event.getRawY());
+
+        if (UiTouchPointUtil.isTouchPointInView(this.forbidTouchDispatchView, this.lastTouchPointGlobal)) {
+            removeCallbacks(this.pressAnimationTask); // Cancel pending press task
+            post(this.releaseAnimationTask); // Ensure release animation is played
+            return super.dispatchTouchEvent(event);
         }
-        return super.dispatchTouchEvent(motionEvent);
+
+        int action = event.getActionMasked();
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                removeCallbacks(this.releaseAnimationTask); // Cancel pending release task
+                post(this.pressAnimationTask);
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                removeCallbacks(this.pressAnimationTask); // Cancel pending press task
+                post(this.releaseAnimationTask);
+                break;
+        }
+        return super.dispatchTouchEvent(event);
     }
 }
+

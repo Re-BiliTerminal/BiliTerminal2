@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppNestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -69,16 +69,20 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/restart_btn"
             android:text="@string/restart_app"
-            android:layout_width="match_parent"
+            app:icon="@drawable/icon_refresh"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/exit_btn"
             android:text="@string/exit_app"
+            app:icon="@drawable/icon_logout"
             android:layout_marginBottom="8dp"
-            android:layout_width="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
     </LinearLayout>
 
-</com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppScrollView>
+</com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppNestedScrollView>

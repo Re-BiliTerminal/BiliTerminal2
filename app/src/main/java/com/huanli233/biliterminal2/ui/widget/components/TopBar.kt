@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.huanli233.biliterminal2.R
+import com.huanli233.biliterminal2.data.setting.DataStore
 import com.huanli233.biliterminal2.ui.utils.crossFadeSetText
 
 class TopBar @JvmOverloads constructor(
@@ -20,7 +21,7 @@ class TopBar @JvmOverloads constructor(
     }
 
     init {
-        inflate(context, R.layout.widget_top_bar, this)
+        inflate(context, if (DataStore.appSettings.roundMode) R.layout.widget_top_bar_round else R.layout.widget_top_bar, this)
 
         context.obtainStyledAttributes(attrs, R.styleable.TopBar).apply {
             getString(R.styleable.TopBar_titleText)?.let {

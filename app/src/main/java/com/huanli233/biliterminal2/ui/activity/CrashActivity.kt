@@ -23,11 +23,11 @@ class CrashActivity : BaseActivity() {
 
         stackView.setText(stack?.stackTraceToString())
 
-        findViewById<View?>(R.id.exit_btn).setOnClickListener {
+        findViewById<View>(R.id.exit_btn).setOnClickListener {
             exitProcess(-1)
         }
 
-        findViewById<View?>(R.id.restart_btn).setOnClickListener {
+        findViewById<View>(R.id.restart_btn).setOnClickListener {
             finish()
             startActivity(
                 Intent(

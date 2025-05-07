@@ -19,11 +19,15 @@ import com.huanli233.biliterminal2.data.setting.toSystemValue
 import com.huanli233.biliterminal2.databinding.FragmentSetupUiBinding
 import com.huanli233.biliterminal2.ui.activity.setup.UiPreviewActivity
 import com.huanli233.biliterminal2.ui.fragment.base.BaseFragment
+import com.huanli233.biliterminal2.utils.MsgUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import splitties.fragments.start
+
+const val ROUND_MODE_DEFAULT_PADDING_HORIZONTAL = 5
+const val ROUND_MODE_DEFAULT_PADDING_VERTICAL = 3
 
 class UiSetupFragment: BaseFragment() {
 
@@ -108,6 +112,11 @@ class UiSetupFragment: BaseFragment() {
 
     private suspend fun save() {
         DataStore.editData {
+            if (!roundMode && roundMode != binding.roundMode.isChecked) {
+                binding.uiPaddingHorizontalInput.setText(ROUND_MODE_DEFAULT_PADDING_HORIZONTAL.toString())
+                binding.uiPaddingVerticalInput.setText(ROUND_MODE_DEFAULT_PADDING_VERTICAL.toString())
+                MsgUtil.showMsg(getString(R.string.auto_changed_padding))
+            }
             roundMode = binding.roundMode.isChecked
             binding.uiScaleInput.valueOrError(converter = { it.toFloatOrNull()?.takeIf { it in 0.25f..5.00f } }) {
                 uiScale = it

@@ -13,9 +13,7 @@ import com.huanli233.biliterminal2.ui.fragment.base.BaseFragment
 import com.huanli233.biliterminal2.ui.utils.recyclerview.defaultLayoutManager
 import com.huanli233.biliterminal2.utils.multitype.register
 
-class MenuFragment(
-    private val onDismiss: () -> Unit
-): BaseFragment() {
+class MenuFragment: BaseFragment() {
 
     private lateinit var recyclerView: RecyclerView
 
@@ -37,7 +35,7 @@ class MenuFragment(
             MenuConfigManager.readMenuConfig().menuItems
         ).register {
             +MenuItemViewDelegate {
-                onDismiss()
+                requireActivity().supportFragmentManager.popBackStack()
                 context?.startActivity(Intent(context, it))
             }
         }
