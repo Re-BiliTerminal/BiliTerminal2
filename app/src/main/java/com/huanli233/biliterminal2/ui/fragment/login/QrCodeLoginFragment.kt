@@ -31,6 +31,8 @@ class QrCodeLoginFragment(): BaseFragment() {
     private var qrScale: Int = 0
     private var skeletonScreen: SkeletonScreen? = null
 
+    private val fromSetup by lazy { arguments?.getBoolean(EXTRA_NAME_FROM_SETUP) == true }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -109,7 +111,7 @@ class QrCodeLoginFragment(): BaseFragment() {
             }
         }
         binding.skip.apply {
-            visibility = if (arguments?.getBoolean(EXTRA_NAME_FROM_SETUP) == true) View.VISIBLE else View.GONE
+            visibility = if (fromSetup) View.VISIBLE else View.GONE
             setOnClickListener { callAfterLoggedIn() }
         }
         binding.loginImport.setOnClickListener {
@@ -118,7 +120,9 @@ class QrCodeLoginFragment(): BaseFragment() {
     }
 
     private fun callAfterLoggedIn() {
-        startActivity(Intent(context, MenuConfigManager.readMenuConfig().firstActivityClass))
+        if (fromSetup) {
+            startActivity(Intent(context, MenuConfigManager.readMenuConfig().firstActivityClass))
+        }
         activity?.finish()
     }
 

@@ -5,6 +5,11 @@
         <item name="materialCardViewStyle">@style/Material3CardView</item>
         <item name="materialButtonStyle">@style/Material3Button</item>
         <item name="android:textSize">14sp</item>
+
+        <item name="preferenceStyle">@style/PreferenceStyle</item>
+        <item name="preferenceCategoryStyle">@style/PreferenceCategoryStyle</item>
+        <item name="preferenceInformationStyle">@style/PreferenceInformationStyle</item>
+        <item name="switchPreferenceCompatStyle">@style/SwitchPreferenceCompat</item>
     </style>
 
     <style name="Theme.BiliTerminal2.Splash" parent="Theme.BiliTerminal2.Material3">

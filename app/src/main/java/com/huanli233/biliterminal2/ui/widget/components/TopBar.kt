@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.huanli233.biliterminal2.R
@@ -40,7 +41,7 @@ class TopBar @JvmOverloads constructor(
             }
 
             val showIcon = getBoolean(R.styleable.TopBar_showBackIcon, true)
-            updateBackIconVisibility(showIcon)
+            setBackIconVisible(showIcon)
 
             recycle()
         }
@@ -50,9 +51,12 @@ class TopBar @JvmOverloads constructor(
         }
     }
 
-    private fun updateBackIconVisibility(visible: Boolean) {
+    private fun updateBackIconVisibility(
+        visible: Boolean,
+        @DrawableRes icon: Int
+    ) {
         val drawable = if (visible) {
-            ContextCompat.getDrawable(context, R.drawable.icon_arrow_back)
+            ContextCompat.getDrawable(context, icon)
         } else {
             null
         }
@@ -65,6 +69,14 @@ class TopBar @JvmOverloads constructor(
                 drawables[2],
                 drawables[3]
             )
+        } else {
+            val drawables = titleTextView.compoundDrawables
+            titleTextView.setCompoundDrawablesWithIntrinsicBounds(
+                drawable,
+                drawables[1],
+                drawables[2],
+                drawables[3]
+            )
         }
     }
 
@@ -72,11 +84,10 @@ class TopBar @JvmOverloads constructor(
         titleTextView.crossFadeSetText(text)
     }
 
-    fun setBackIconVisible(visible: Boolean) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            titleTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                if (visible) R.drawable.icon_arrow_back else 0, 0, 0, 0
-            )
-        }
+    fun setBackIconVisible(
+        visible: Boolean,
+        @DrawableRes icon: Int = R.drawable.icon_chevron_left
+    ) {
+        updateBackIconVisibility(visible, icon)
     }
 }

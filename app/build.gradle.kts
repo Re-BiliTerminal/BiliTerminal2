@@ -222,6 +222,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.interpolator)
     implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.androidx.preference.ktx)
 
     implementation(libs.protobuf.javalite)
 

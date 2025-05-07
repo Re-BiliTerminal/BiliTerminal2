@@ -2,6 +2,7 @@ package com.huanli233.biliterminal2.ui.fragment.login
 
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +17,9 @@ import com.huanli233.biliterminal2.data.account.AccountEntity
 import com.huanli233.biliterminal2.data.account.AccountManager
 import com.huanli233.biliterminal2.data.account.AccountRepository
 import com.huanli233.biliterminal2.data.account.CookieEntity
+import com.huanli233.biliterminal2.data.menu.MenuConfigManager
 import com.huanli233.biliterminal2.databinding.FragmentLoginImportBinding
+import com.huanli233.biliterminal2.ui.activity.login.EXTRA_NAME_FROM_SETUP
 import com.huanli233.biliterminal2.ui.fragment.base.BaseFragment
 import com.huanli233.biliterminal2.utils.MsgUtil
 import com.huanli233.biliterminal2.utils.network.Cookies
@@ -38,6 +41,8 @@ class ImportLoginFragment(
     @Inject lateinit var accountRepository: AccountRepository
     @Inject lateinit var accountDao: AccountDao
     @Inject lateinit var cookieManager: CookieManager
+
+    private val fromSetup by lazy { arguments?.getBoolean(EXTRA_NAME_FROM_SETUP) == true }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -97,6 +102,10 @@ class ImportLoginFragment(
                             )
                         )
                         MsgUtil.showMsg(getString(R.string.import_success))
+                        if (fromSetup) {
+                            startActivity(Intent(context, MenuConfigManager.readMenuConfig().firstActivityClass))
+                        }
+                        activity?.finish()
                     }.onFailure {
                         MsgUtil.showMsg(getString(R.string.invalid_input))
                     }

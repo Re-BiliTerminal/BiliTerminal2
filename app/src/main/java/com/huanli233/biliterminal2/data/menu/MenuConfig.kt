@@ -8,12 +8,14 @@ import com.huanli233.biliterminal2.data.setting.DataStore
 import com.huanli233.biliterminal2.data.account.AccountManager
 import com.huanli233.biliterminal2.ui.activity.login.LoginActivity
 import com.huanli233.biliterminal2.ui.activity.recommend.RecommendActivity
+import com.huanli233.biliterminal2.ui.activity.setting.SettingsActivity
 import kotlin.collections.firstOrNull
 import kotlin.math.log
 
 val DEFAULT_MENU_LIST = listOf<MenuItem>(
     menuItem<LoginActivity>("login", R.string.login, R.drawable.icon_login, requireNotLoggedIn = true, notMenuActivity = true),
     menuItem<RecommendActivity>("recommend", R.string.recommend, R.drawable.icon_featured_play_list),
+    menuItem<SettingsActivity>("settings", R.string.settings, R.drawable.icon_settings, required = true)
 )
 
 inline fun <reified T> menuItem(

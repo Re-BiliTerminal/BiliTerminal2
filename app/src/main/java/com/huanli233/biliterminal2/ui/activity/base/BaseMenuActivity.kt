@@ -44,9 +44,7 @@ abstract class BaseMenuActivity : BaseActivity() {
         super.setupTopbar()
         val topBarView = topBar ?: return
 
-        topBarView.titleTextView.setCompoundDrawablesWithIntrinsicBounds(
-            ContextCompat.getDrawable(this, R.drawable.icon_keyboard_arrow_down), null, null, null
-        )
+        topBarView.setBackIconVisible(true, R.drawable.icon_keyboard_arrow_down)
 
         topBarView.setTitle(getMenuName())
 
@@ -54,14 +52,10 @@ abstract class BaseMenuActivity : BaseActivity() {
             val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
             if (currentFragment is MenuFragment) {
                 topBar?.setTitle(getString(R.string.menu))
-                topBar?.titleTextView?.setCompoundDrawablesWithIntrinsicBounds(
-                    ContextCompat.getDrawable(this, R.drawable.icon_keyboard_arrow_left), null, null, null
-                )
+                topBar?.setBackIconVisible(true, R.drawable.icon_keyboard_arrow_left)
             } else {
                 topBar?.setTitle(getMenuName())
-                topBar?.titleTextView?.setCompoundDrawablesWithIntrinsicBounds(
-                    ContextCompat.getDrawable(this, R.drawable.icon_keyboard_arrow_down), null, null, null
-                )
+                topBar?.setBackIconVisible(true, R.drawable.icon_keyboard_arrow_down)
             }
         }
 

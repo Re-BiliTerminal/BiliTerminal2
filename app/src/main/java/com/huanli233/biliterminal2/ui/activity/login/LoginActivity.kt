@@ -34,7 +34,9 @@ class LoginActivity: BaseActivity() {
                     QrCodeLoginFragment().putArgument {
                         putBoolean(EXTRA_NAME_FROM_SETUP, fromSetup)
                     },
-                    ImportLoginFragment()
+                    ImportLoginFragment().putArgument {
+                        putBoolean(EXTRA_NAME_FROM_SETUP, fromSetup)
+                    }
                 )
             )
             setupWithDotsIndicator(binding.dotsIndicator)

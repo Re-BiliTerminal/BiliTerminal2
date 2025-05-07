@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppPreferenceSummaryTextStyle">
+        <item name="android:textAppearance">?android:attr/textAppearanceListItemSecondary</item>
+    </style>
+
+</resources>

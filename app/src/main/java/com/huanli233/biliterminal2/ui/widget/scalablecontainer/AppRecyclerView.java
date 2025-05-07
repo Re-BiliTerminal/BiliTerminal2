@@ -1,7 +1,5 @@
 package com.huanli233.biliterminal2.ui.widget.scalablecontainer;
 
-import static android.widget.AbsListView.OnScrollListener.SCROLL_STATE_FLING;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.SystemClock;
@@ -57,9 +55,14 @@ public class AppRecyclerView extends RecyclerView {
     private int lastScrollYPosition;
     private final int maxFlingVelocityY;
     private float currentOverTranslationY;
-    private int currentScrollState;
     private int activePointerId;
     private int totalScrollDistanceY;
+
+    private float mInitialTouchX;
+    private float mInitialTouchY;
+    private boolean mIsBeingDragged;
+    private final int mTouchSlop;
+
 
     public AppRecyclerView(Context context) {
         this(context, null);
@@ -83,6 +86,7 @@ public class AppRecyclerView extends RecyclerView {
                         .setStiffness(SPRING_STIFFNESS_DEFAULT));
         this.maxFlingVelocityY = ViewConfiguration.get(context).getScaledMaximumFlingVelocity() / MAX_VELOCITY_DIVIDER;
         this.activePointerId = MotionEvent.INVALID_POINTER_ID;
+        this.mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
     }
 
     public float getOverTranslationY() {
@@ -170,51 +174,94 @@ public class AppRecyclerView extends RecyclerView {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 this.activePointerId = event.getPointerId(POINTER_INDEX_PRIMARY);
+                mInitialTouchX = event.getX();
+                mInitialTouchY = event.getY();
+                mIsBeingDragged = false;
+
                 if (this.animation.isRunning() && this.currentOverTranslationY != TARGET_TRANSLATION_Y_RESET) {
                     stopSpringAnimation();
+                    mIsBeingDragged = true;
+                    ViewParent parent = getParent();
+                    if (parent != null) {
+                        parent.requestDisallowInterceptTouchEvent(true);
+                    }
                 }
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                if (this.activePointerId == MotionEvent.INVALID_POINTER_ID) break; 
+                if (this.activePointerId == MotionEvent.INVALID_POINTER_ID) {
+                    break;
+                }
                 int pointerIndex = event.findPointerIndex(this.activePointerId);
-                if (pointerIndex < 0) break;
+                if (pointerIndex < 0) {
+                    break;
+                }
 
-                if (event.getHistorySize() > 0) {
-                    float dy = event.getY(pointerIndex) - event.getHistoricalY(pointerIndex, 0);
-                    if (Math.abs(dy) < Math.abs(event.getX(pointerIndex) - event.getHistoricalX(pointerIndex, 0))) {
-                        return super.dispatchTouchEvent(event);
+                float currentY = event.getY(pointerIndex);
+                float currentX = event.getX(pointerIndex);
+                boolean justStartedDraggingThisEvent = false;
+
+                if (!mIsBeingDragged) {
+                    float dy = currentY - mInitialTouchY;
+                    float dx = currentX - mInitialTouchX;
+
+                    if (Math.abs(dy) > mTouchSlop && Math.abs(dy) > Math.abs(dx)) {
+                        mIsBeingDragged = true;
+                        justStartedDraggingThisEvent = true;
+                        ViewParent parent = getParent();
+                        if (parent != null) {
+                            parent.requestDisallowInterceptTouchEvent(true);
+                        }
+                    } else if (Math.abs(dx) > mTouchSlop && Math.abs(dx) >= Math.abs(dy)) {
+                        mIsBeingDragged = true;
+                        justStartedDraggingThisEvent = true;
+                        break;
+                    }
+                }
+
+                if (mIsBeingDragged) {
+                    if (justStartedDraggingThisEvent) {
+                        break;
                     }
 
-                    float currentTranslation = this.currentOverTranslationY;
-                    if (currentTranslation != TARGET_TRANSLATION_Y_RESET) {
-                        float newTranslation = currentTranslation + (dy / OVER_TRANSLATION_DRAG_RATIO);
-                        if ((currentTranslation > TARGET_TRANSLATION_Y_RESET && newTranslation < TARGET_TRANSLATION_Y_RESET) || 
-                            (currentTranslation < TARGET_TRANSLATION_Y_RESET && newTranslation > TARGET_TRANSLATION_Y_RESET)) {
-                            newTranslation = TARGET_TRANSLATION_Y_RESET;
+                    if (event.getHistorySize() > 0) {
+                        float historicalY = event.getHistoricalY(pointerIndex, 0);
+                        float dySinceLastEvent = currentY - historicalY;
+
+                        float historicalX = event.getHistoricalX(pointerIndex, 0);
+                        float dxSinceLastEvent = currentX - historicalX;
+                        if (this.currentOverTranslationY == TARGET_TRANSLATION_Y_RESET && Math.abs(dySinceLastEvent) < Math.abs(dxSinceLastEvent)) {
+                            break;
                         }
-                        stopSpringAnimation();
-                        setOverTranslationYInternal(newTranslation);
-                        ViewParent parent = getParent();
-                        if (parent != null) {
-                            parent.requestDisallowInterceptTouchEvent(true);
+
+                        boolean isCurrentlyOverscrolled = this.currentOverTranslationY != TARGET_TRANSLATION_Y_RESET;
+                        boolean canStartOverscrollNow = !isCurrentlyOverscrolled &&
+                                ((dySinceLastEvent > 0.1f && canOverScrollAtStart) || (dySinceLastEvent < -0.1f && canOverScrollAtEnd));
+
+                        if (isCurrentlyOverscrolled || canStartOverscrollNow) {
+                            if (isCurrentlyOverscrolled) {
+                                float newTranslation = this.currentOverTranslationY + (dySinceLastEvent / OVER_TRANSLATION_DRAG_RATIO);
+                                if ((this.currentOverTranslationY > 0 && newTranslation < 0) || (this.currentOverTranslationY < 0 && newTranslation > 0)) {
+                                    newTranslation = TARGET_TRANSLATION_Y_RESET;
+                                }
+                                setOverTranslationYInternal(newTranslation);
+                            } else {
+                                stopSpringAnimation();
+                                setOverTranslationYInternal(dySinceLastEvent / OVER_TRANSLATION_DRAG_RATIO);
+                            }
+                            return true;
                         }
-                        return true;
-                    } else if ((dy > TARGET_TRANSLATION_Y_RESET && canOverScrollAtStart) || (dy < TARGET_TRANSLATION_Y_RESET && canOverScrollAtEnd)) {
-                        stopSpringAnimation();
-                        setOverTranslationYInternal(dy / OVER_TRANSLATION_DRAG_RATIO);
-                        ViewParent parent = getParent();
-                        if (parent != null) {
-                            parent.requestDisallowInterceptTouchEvent(true);
-                        }
-                        return true;
                     }
                 }
                 break;
 
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                // boolean wasDragging = mIsBeingDragged;
+
                 this.activePointerId = MotionEvent.INVALID_POINTER_ID;
+                mIsBeingDragged = false;
+
                 if (this.currentOverTranslationY != TARGET_TRANSLATION_Y_RESET) {
                     finishOverScrollAnimation();
                 }
@@ -230,7 +277,6 @@ public class AppRecyclerView extends RecyclerView {
     }
 
     private void finishOverScrollAnimation() {
-        this.animation.setStartVelocity(0);
         this.animation.animateToFinalPosition(TARGET_TRANSLATION_Y_RESET);
     }
 
@@ -241,36 +287,30 @@ public class AppRecyclerView extends RecyclerView {
             return;
         }
 
-        if (this.currentScrollState == SCROLL_STATE_FLING && state == SCROLL_STATE_IDLE && isOverTranslationSignificant()) {
-             // This might be too late, as fling could have already overscrolled and stopped.
-             // The primary mechanism for fling overscroll should be within onScrolled or a custom fling handler.
-        }
-        this.currentScrollState = state;
-
         if (state == SCROLL_STATE_IDLE && this.currentOverTranslationY == TARGET_TRANSLATION_Y_RESET) {
             LayoutManager layoutManager = getLayoutManager();
             if (layoutManager != null && layoutManager.canScrollVertically()) {
                 boolean canFlingOverScrollStart = ViewUtils.isInAbsoluteStart(this, SCROLL_DIRECTION_VERTICAL) && this.enableStartOverScroll;
                 boolean canFlingOverScrollEnd = ViewUtils.isInAbsoluteEnd(this, SCROLL_DIRECTION_VERTICAL) && this.enableEndOverScroll;
-                
+
                 boolean shouldAnimateFling = false;
                 if (canFlingOverScrollStart && this.flingVelocityY > 0) {
                     shouldAnimateFling = true;
-                } else if (canFlingOverScrollEnd && this.flingVelocityY < 0) { // Flinging towards end
+                } else if (canFlingOverScrollEnd && this.flingVelocityY < 0) {
                     shouldAnimateFling = true;
                 }
 
                 if (shouldAnimateFling) {
                     float startVelocityForSpring = -this.flingVelocityY;
                     startVelocityForSpring = Math.max(-this.maxFlingVelocityY, Math.min(startVelocityForSpring, this.maxFlingVelocityY));
-                    
+
                     if (Math.abs(startVelocityForSpring) > 0) {
                         this.animation.setStartVelocity(startVelocityForSpring);
                         this.animation.animateToFinalPosition(TARGET_TRANSLATION_Y_RESET);
                     }
                 }
+                this.flingVelocityY = 0;
             }
         }
     }
 }
-

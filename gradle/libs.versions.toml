@@ -62,6 +62,7 @@ material = "1.11.0"
 # noinspection GradleDependency
 orgEclipseJgit = "7.2.0.202503040940-r"
 # noinspection GradleDependency
+preferenceKtx = "1.2.1"
 protobufJavalite = "3.25.1"
 # noinspection GradleDependency
 zxingCore = "3.3.0"
@@ -101,6 +102,7 @@ splittiesFunPackAndroidBase = "3.0.0"
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "androidxDatastore" }
 androidx-interpolator = { module = "androidx.interpolator:interpolator", version.ref = "interpolator" }
 androidx-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "pagingRuntimeKtx" }
+androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preferenceKtx" }
 androidx-transition = { module = "androidx.transition:transition", version.ref = "androidxTransition" }
 desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJdkLibs" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }

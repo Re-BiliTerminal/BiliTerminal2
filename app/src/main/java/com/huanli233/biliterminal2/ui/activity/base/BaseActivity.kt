@@ -133,6 +133,7 @@ open class BaseActivity : AppCompatActivity() {
 
     open fun setupTopbar() {
         val view = topBar ?: return
+        view.setBackIconVisible(true)
         if (Build.VERSION.SDK_INT > 17 && view.hasOnClickListeners()) return
         view.setOnClickListener {
             onTopbarClicked()

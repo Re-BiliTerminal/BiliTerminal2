@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        app:key="pref_key_about"
+        app:title="@string/about"
+        app:icon="@drawable/icon_info">
+        <intent
+            android:targetPackage="com.huanli233.biliterminal2"
+            android:targetClass="com.huanli233.biliterminal2.ui.activity.setting.AboutActivity" />
+    </Preference>
+
+</androidx.preference.PreferenceScreen>

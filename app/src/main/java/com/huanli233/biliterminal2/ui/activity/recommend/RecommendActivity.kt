@@ -8,15 +8,6 @@ import com.huanli233.biliterminal2.ui.activity.base.BaseMenuActivity
 import com.huanli233.biliterminal2.ui.fragment.recommend.RecommendFragment
 
 class RecommendActivity: BaseMenuActivity() {
-
-    private lateinit var binding: ActivityCommonRecyclerviewBinding
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        pageName = getString(R.string.recommend)
-    }
-
     override fun getMenuName(): String = getString(R.string.recommend)
 
     override fun onCreateFragment(savedInstanceState: Bundle?): Fragment {

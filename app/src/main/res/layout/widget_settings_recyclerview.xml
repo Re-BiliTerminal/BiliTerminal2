@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppRecyclerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/recycler_view"
+    style="?attr/preferenceFragmentListStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="0dp"
+    android:paddingBottom="0dp"
+    android:clipToPadding="false"/>

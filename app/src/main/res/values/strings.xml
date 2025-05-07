@@ -248,6 +248,7 @@
     <string name="import_success">导入成功</string>
     <string name="initialize_error">初始化失败: %1$s</string>
     <string name="auto_changed_padding">已自动调整边距</string>
+    <string name="settings">设置</string>
 
     <string-array name="icon_license">
         <item>界面设置: Newicons, MIT License</item>
