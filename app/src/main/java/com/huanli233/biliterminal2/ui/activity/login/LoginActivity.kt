@@ -11,12 +11,17 @@ import com.huanli233.biliterminal2.ui.fragment.setup.WelcomeFragment
 import com.huanli233.biliterminal2.ui.widget.pager.setupWithDotsIndicator
 import com.huanli233.biliterminal2.ui.utils.viewpager2.PagerFragmentStateAdapter
 import com.huanli233.biliterminal2.ui.utils.viewpager2.pagerFragmentAdapter
+import com.huanli233.biliterminal2.utils.extensions.putArgument
 import dagger.hilt.android.AndroidEntryPoint
+
+const val EXTRA_NAME_FROM_SETUP = "from_setup"
 
 @AndroidEntryPoint
 class LoginActivity: BaseActivity() {
 
     private lateinit var binding: ActivityCommonViewpagerBinding
+
+    private val fromSetup by lazy { intent.getBooleanExtra(EXTRA_NAME_FROM_SETUP, false) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,9 +31,9 @@ class LoginActivity: BaseActivity() {
         binding.viewPager.apply {
             adapter = pagerFragmentAdapter(
                 listOf(
-                    QrCodeLoginFragment(
-                        navigateToImport = { setCurrentItem(1, true) }
-                    ),
+                    QrCodeLoginFragment().putArgument {
+                        putBoolean(EXTRA_NAME_FROM_SETUP, fromSetup)
+                    },
                     ImportLoginFragment()
                 )
             )
@@ -36,6 +41,10 @@ class LoginActivity: BaseActivity() {
         }
 
         pageName = getString(R.string.login)
+    }
+
+    fun navigateToImport() {
+        binding.viewPager.setCurrentItem(1, true)
     }
 
 }

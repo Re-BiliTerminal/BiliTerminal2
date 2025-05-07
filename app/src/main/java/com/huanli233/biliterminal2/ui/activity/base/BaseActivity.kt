@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.Display
 import android.view.InputDevice
-import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
@@ -30,10 +29,10 @@ import com.huanli233.biliterminal2.BiliTerminal
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.data.setting.DataStore
 import com.huanli233.biliterminal2.event.SnackEvent
+import com.huanli233.biliterminal2.ui.utils.crossFadeSetText
 import com.huanli233.biliterminal2.ui.widget.components.TopBar
 import com.huanli233.biliterminal2.utils.MsgUtil
 import com.huanli233.biliterminal2.utils.Preferences
-import com.huanli233.biliterminal2.ui.utils.crossFadeSetText
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -43,7 +42,6 @@ open class BaseActivity : AppCompatActivity() {
     var windowWidth: Int = 0
     var windowHeight: Int = 0
     var originalContext: Context? = null
-    var forceSingleColumn: Boolean = false
 
     var topBar: TopBar? = null
 
@@ -100,14 +98,14 @@ open class BaseActivity : AppCompatActivity() {
 
         var density: Int
         if ((DataStore.appSettings.density.also { density = it }) >= 72) {
-            setDensity(density)
+            overrideDensity(density)
         }
     }
 
     @Deprecated("Deprecated in Java")
     @Suppress("DEPRECATION")
     override fun onBackPressed() {
-        if (!DataStore.appSettings.backDisabled) {
+        if (!DataStore.appSettings.backDisabled && Build.VERSION.SDK_INT < 33) {
             super.onBackPressed()
         }
     }
@@ -145,15 +143,6 @@ open class BaseActivity : AppCompatActivity() {
         if (!isDestroyed) {
             finish()
         }
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_MENU) {
-            if (Build.VERSION.SDK_INT < 17 || !isDestroyed) {
-                finish()
-            }
-        }
-        return super.onKeyDown(keyCode, event)
     }
 
     private var eventBusInit: Boolean = false
@@ -200,7 +189,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     @Suppress("DEPRECATION")
-    fun setDensity(targetDensityDpi: Int) {
+    fun overrideDensity(targetDensityDpi: Int) {
         if (Build.VERSION.SDK_INT < 17) return
         val resources: Resources = resources
 

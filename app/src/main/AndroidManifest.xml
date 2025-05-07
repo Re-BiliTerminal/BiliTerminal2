@@ -6,13 +6,13 @@
         tools:overrideLibrary="com.geetest.sdk,com.wolfcstech.brotlij,com.huanli233.nativebitmap" />
 
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-    <uses-permission
-        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -22,43 +22,44 @@
 
     <application
         android:name=".BiliTerminal"
-        android:enableOnBackInvokedCallback="true"
         android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/icon"
+        android:roundIcon="@mipmap/icon"
         android:label="@string/app_name"
-        android:largeHeap="true"
         android:requestLegacyExternalStorage="true"
-        android:supportsRtl="true"
         android:theme="@style/Theme.BiliTerminal2.Material3"
         android:usesCleartextTraffic="true"
-        tools:ignore="LockedOrientationActivity,RtlEnabled,DiscouragedApi"
-        tools:targetApi="33">
+        android:enableOnBackInvokedCallback="true"
+        android:supportsRtl="true"
+        tools:ignore="RtlEnabled,UnusedAttribute">
 
         <activity
-            android:name=".ui.activity.CrashActivity"
-            android:exported="false"
-            android:label="崩溃捕捉"
-            android:screenOrientation="locked" />
-
-        <activity
-            android:name=".ui.activity.SplashActivity"
+            android:name=".ui.activity.main.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.BiliTerminal2.Splash"
-            tools:ignore="DiscouragedApi">
+            android:theme="@style/Theme.BiliTerminal2.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activity.main.MainActivity" />
-
-        <activity android:name=".ui.activity.setup.SetupActivity" />
-        <activity android:name=".ui.activity.setup.UiPreviewActivity" />
-
-        <activity android:name=".ui.activity.login.LoginActivity" />
-
-        <activity android:name=".ui.activity.recommend.RecommendActivity" />
+        <activity
+            android:name=".ui.activity.CrashActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.setup.SetupActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.setup.UiPreviewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.login.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.recommend.RecommendActivity"
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

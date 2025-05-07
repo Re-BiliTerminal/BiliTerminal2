@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.drakeet.multitype.MultiTypeAdapter
 import com.huanli233.biliterminal2.R
@@ -30,13 +31,16 @@ class MenuFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerView.layoutManager = requireContext().defaultLayoutManager
+        recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+
         recyclerView.adapter = MultiTypeAdapter(
             MenuConfigManager.readMenuConfig().menuItems
         ).register {
             +MenuItemViewDelegate {
-                requireActivity().supportFragmentManager.popBackStack()
-                context?.startActivity(Intent(context, it))
+                context?.startActivity(Intent(context, it.activityClass))
+                if (!it.notMenuActivity) {
+                    requireActivity().finish()
+                }
             }
         }
     }

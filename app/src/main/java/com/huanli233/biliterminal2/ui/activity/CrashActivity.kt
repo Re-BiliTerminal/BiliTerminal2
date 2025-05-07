@@ -6,6 +6,7 @@ import android.os.Process
 import android.view.View
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.ui.activity.base.BaseActivity
+import com.huanli233.biliterminal2.ui.activity.main.MainActivity
 import com.huanli233.biliterminal2.ui.widget.views.ExpandableTextView
 import kotlin.system.exitProcess
 
@@ -32,7 +33,7 @@ class CrashActivity : BaseActivity() {
             startActivity(
                 Intent(
                     this,
-                    SplashActivity::class.java
+                    MainActivity::class.java
                 ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             )
             Process.killProcess(Process.myPid())

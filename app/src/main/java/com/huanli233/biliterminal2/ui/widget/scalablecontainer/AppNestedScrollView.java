@@ -83,7 +83,7 @@ public class AppNestedScrollView extends NestedScrollView {
         setOverScrollMode(View.OVER_SCROLL_NEVER);
 
         TypedArray obtainStyledAttributes = context.obtainStyledAttributes(attributeSet, R.styleable.AppNestedScrollView, 0, 0);
-        this.isAnimScale = obtainStyledAttributes.getBoolean(R.styleable.AppNestedScrollView_animScaleNSV, true);
+        this.isAnimScale = false; /* obtainStyledAttributes.getBoolean(R.styleable.AppNestedScrollView_animScaleNSV, true); */
         this.enableStart = obtainStyledAttributes.getBoolean(R.styleable.AppNestedScrollView_springEnableStartNSV, true);
         this.enableEnd = obtainStyledAttributes.getBoolean(R.styleable.AppNestedScrollView_springEnableEndNSV, true);
         obtainStyledAttributes.recycle();

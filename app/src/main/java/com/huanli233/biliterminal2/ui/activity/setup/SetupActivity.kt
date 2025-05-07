@@ -9,6 +9,7 @@ import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.data.setting.DataStore
 import com.huanli233.biliterminal2.databinding.ActivitySetupBinding
 import com.huanli233.biliterminal2.ui.activity.base.BaseActivity
+import com.huanli233.biliterminal2.ui.activity.login.EXTRA_NAME_FROM_SETUP
 import com.huanli233.biliterminal2.ui.activity.login.LoginActivity
 import kotlinx.coroutines.launch
 import splitties.activities.start
@@ -68,7 +69,9 @@ class SetupActivity: BaseActivity() {
                             firstRun = false
                         }
                         finish()
-                        start<LoginActivity>()
+                        start<LoginActivity> {
+                            putExtra(EXTRA_NAME_FROM_SETUP, true)
+                        }
                     }
                 }
             }

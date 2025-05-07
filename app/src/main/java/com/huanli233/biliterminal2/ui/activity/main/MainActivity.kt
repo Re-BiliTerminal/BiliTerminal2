@@ -22,6 +22,7 @@ class MainActivity: BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.Theme_BiliTerminal2_Material3)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

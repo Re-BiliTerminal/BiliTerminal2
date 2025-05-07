@@ -54,7 +54,7 @@ fun getGitHash(): String {
 
 android {
     namespace = "com.huanli233.biliterminal2"
-    compileSdk = 35
+    compileSdk = 36
 
     lint {
         baseline = file("lint-baseline.xml")
@@ -111,7 +111,6 @@ android {
 
     buildTypes {
         getByName("release") {
-            buildConfigField("boolean", "BETA", "false")
             isShrinkResources = true
             isMinifyEnabled = true
             proguardFiles(

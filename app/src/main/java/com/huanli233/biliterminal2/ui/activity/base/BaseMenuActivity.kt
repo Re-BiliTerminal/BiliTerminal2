@@ -1,6 +1,7 @@
 package com.huanli233.biliterminal2.ui.activity.base
 
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
@@ -63,6 +64,12 @@ abstract class BaseMenuActivity : BaseActivity() {
         topBarView.setOnClickListener {
             onTopbarClicked()
         }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        })
     }
 
     private val menuFragment by lazy {

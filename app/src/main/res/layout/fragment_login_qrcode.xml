@@ -56,7 +56,7 @@
             android:layout_marginTop="6dp"
             android:layout_marginEnd="4dp"
             android:layout_marginRight="4dp"
-            android:layout_marginBottom="8dp"
+            android:paddingBottom="16dp"
             android:gravity="center"
             android:text="@string/requesting_qrcode"
             android:textSize="14sp"
@@ -72,8 +72,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/qrcode_status"
-            android:layout_marginTop="16dp" />
+            app:layout_constraintTop_toBottomOf="@+id/qrcode_status" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/login_import"

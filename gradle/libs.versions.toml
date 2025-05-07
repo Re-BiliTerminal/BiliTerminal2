@@ -85,7 +85,8 @@ brotli4j = "1.16.0"
 xlog = "1.11.0"
 agp = "8.9.2"
 kotlin = "2.1.20"
-junitVersion = "1.2.1"
+# noinspection GradleDependency
+junitVersion = "1.1.5"
 espressoCore = "3.6.1"
 
 shimmer = "0.5.0"

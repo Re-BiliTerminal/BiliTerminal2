@@ -1,13 +1,40 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Theme.BiliTerminal2.Material3" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowSwipeToDismiss" tools:ignore="NewApi">true</item>
+        <item name="android:windowIsTranslucent">true</item>
 
         <item name="materialCardViewStyle">@style/Material3CardView</item>
         <item name="materialButtonStyle">@style/Material3Button</item>
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="Theme.BiliTerminal2" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Material3CardView" parent="Widget.Material3.CardView.Outlined">
+        <item name="cardBackgroundColor">?attr/colorSurfaceVariant</item>
+        <item name="android:clickable">true</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="cardElevation">3dp</item>
+    </style>
+
+    <style name="Material3Button" parent="Widget.Material3.Button">
+        <item name="cornerRadius">12dp</item>
+    </style>
+
+    <style name="Material3Button.Icon" parent="Widget.Material3.Button.Icon">
+        <item name="cornerRadius">12dp</item>
+    </style>
+
+    <style name="Theme.BiliTerminal2.Splash" parent="Theme.BiliTerminal2.Material3">
+        <item name="android:windowBackground">@drawable/splash_text</item>
+    </style>
+
+    <style name="Theme.BiliTerminal2.Player" parent="Theme.BiliTerminal2.Material3">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowSwipeToDismiss" tools:ignore="NewApi">false</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="Theme.BiliTerminal2.Deprecated" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowBackground">@color/bgblack</item>
         <item name="android:colorForeground">@color/textwhite</item>
         <item name="colorOnPrimary">@color/textwhite</item>
@@ -32,38 +59,4 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="Material3CardView" parent="Widget.Material3.CardView.Outlined">
-        <item name="cardBackgroundColor">?attr/colorSurfaceVariant</item>
-        <item name="android:clickable">true</item>
-        <item name="cornerRadius">8dp</item>
-        <item name="cardElevation">3dp</item>
-    </style>
-
-    <style name="Material3Button" parent="Widget.Material3.Button">
-        <item name="cornerRadius">12dp</item>
-    </style>
-
-    <style name="Material3Button.Icon" parent="Widget.Material3.Button.Icon">
-        <item name="cornerRadius">12dp</item>
-    </style>
-
-    <style name="Theme.BiliTerminal2.Splash" parent="Theme.BiliTerminal2">
-        <item name="android:windowBackground">@drawable/splash_text</item>
-        <item name="android:windowIsTranslucent">false</item>
-        <item name="android:windowFullscreen">true</item>
-    </style>
-
-    <style name="Theme.NoSwipe" parent="android:Theme.Black">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowSwipeToDismiss" tools:ignore="NewApi">false</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowBackground">@color/bgblack</item>
-        <item name="statusBarBackground">@color/pink</item>
-        <item name="colorOnPrimary">@color/textwhite</item>
-    </style>
-
-    <style name="Theme.NoSwipe.AppCompat" parent="Theme.BiliTerminal2">
-        <item name="android:windowSwipeToDismiss" tools:ignore="NewApi">false</item>
-    </style>
 </resources>

@@ -6,10 +6,13 @@ import com.google.gson.Gson
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.data.setting.DataStore
 import com.huanli233.biliterminal2.data.account.AccountManager
+import com.huanli233.biliterminal2.ui.activity.login.LoginActivity
 import com.huanli233.biliterminal2.ui.activity.recommend.RecommendActivity
 import kotlin.collections.firstOrNull
+import kotlin.math.log
 
 val DEFAULT_MENU_LIST = listOf<MenuItem>(
+    menuItem<LoginActivity>("login", R.string.login, R.drawable.icon_login, requireNotLoggedIn = true, notMenuActivity = true),
     menuItem<RecommendActivity>("recommend", R.string.recommend, R.drawable.icon_featured_play_list),
 )
 
@@ -17,9 +20,12 @@ inline fun <reified T> menuItem(
     id: String,
     @StringRes title: Int,
     @DrawableRes icon: Int,
-    requireLoggedIn: Boolean = false
+    requireNotLoggedIn: Boolean = false,
+    requireLoggedIn: Boolean = false,
+    required: Boolean = false,
+    notMenuActivity: Boolean = false
 ): MenuItem {
-    return MenuItem(T::class.java, id, icon, title, requireLoggedIn)
+    return MenuItem(T::class.java, id, title, icon, requireNotLoggedIn, required)
 }
 
 data class MenuItem(
@@ -27,7 +33,10 @@ data class MenuItem(
     val id: String,
     val title: Int,
     val icon: Int,
-    val requireLoggedIn: Boolean
+    val requireNotLoggedIn: Boolean = false,
+    val requireLoggedIn: Boolean = false,
+    val required: Boolean = false,
+    val notMenuActivity: Boolean = false,
 )
 
 data class MenuConfig(
@@ -36,6 +45,9 @@ data class MenuConfig(
     val menuItems: List<MenuItem>
         get() = list.map { id ->
             DEFAULT_MENU_LIST.first { it.id == id }
+        }.filter {
+            val loggedIn = AccountManager.loggedIn()
+            !it.requireLoggedIn || loggedIn && !it.requireNotLoggedIn || !loggedIn
         }
 
     val firstActivityClass: Class<*>
@@ -48,7 +60,7 @@ data class MenuConfig(
         menuItems: List<MenuItem>
     ): Class<*>? {
         return menuItems
-            .firstOrNull { !it.requireLoggedIn || AccountManager.currentAccount.accountId != 0L }
+            .firstOrNull { !it.requireNotLoggedIn }
             ?.activityClass
     }
 
@@ -60,9 +72,9 @@ data class MenuConfig(
 object MenuConfigManager {
 
     fun readMenuConfig(): MenuConfig {
-        fromString(DataStore.appSettings.menuConfig)?.let { parsed ->
-            return parsed
-        } ?: return MenuConfig(
+        return fromString(DataStore.appSettings.menuConfig)?.takeIf {
+            it.list.isNotEmpty() && it.menuItems.containsAll(DEFAULT_MENU_LIST.filter { it.required })
+        } ?: MenuConfig(
             list = DEFAULT_MENU_LIST.map { it.id }
         )
     }

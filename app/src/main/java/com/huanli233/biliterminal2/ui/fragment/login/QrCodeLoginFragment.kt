@@ -11,6 +11,8 @@ import com.ethanhua.skeleton.SkeletonScreen
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.data.menu.MenuConfigManager
 import com.huanli233.biliterminal2.databinding.FragmentLoginQrcodeBinding
+import com.huanli233.biliterminal2.ui.activity.login.EXTRA_NAME_FROM_SETUP
+import com.huanli233.biliterminal2.ui.activity.login.LoginActivity
 import com.huanli233.biliterminal2.ui.fragment.base.BaseFragment
 import com.huanli233.biliterminal2.utils.MsgUtil
 import com.huanli233.biliterminal2.utils.QRCodeUtil
@@ -18,11 +20,10 @@ import com.huanli233.biliterminal2.ui.utils.crossFadeSetText
 import com.huanli233.biliterminal2.ui.utils.image.transition
 import com.huanli233.biliterminal2.ui.utils.showSkeleton
 import dagger.hilt.android.AndroidEntryPoint
+import splitties.fragmentargs.arg
 
 @AndroidEntryPoint
-class QrCodeLoginFragment(
-    private val navigateToImport: () -> Unit
-): BaseFragment() {
+class QrCodeLoginFragment(): BaseFragment() {
 
     private lateinit var binding: FragmentLoginQrcodeBinding
     private val viewModel: QrCodeLoginViewModel by viewModels()
@@ -107,8 +108,13 @@ class QrCodeLoginFragment(
                 }
             }
         }
-        binding.skip.setOnClickListener { callAfterLoggedIn() }
-        binding.loginImport.setOnClickListener { navigateToImport() }
+        binding.skip.apply {
+            visibility = if (arguments?.getBoolean(EXTRA_NAME_FROM_SETUP) == true) View.VISIBLE else View.GONE
+            setOnClickListener { callAfterLoggedIn() }
+        }
+        binding.loginImport.setOnClickListener {
+            (requireActivity() as? LoginActivity)?.navigateToImport()
+        }
     }
 
     private fun callAfterLoggedIn() {

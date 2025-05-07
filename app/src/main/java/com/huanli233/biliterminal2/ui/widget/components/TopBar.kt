@@ -20,8 +20,19 @@ class TopBar @JvmOverloads constructor(
         findViewById(R.id.page_name)
     }
 
+    private val layoutId: Int
+        get() {
+            return if (isInEditMode) R.layout.widget_top_bar
+            else if (DataStore.appSettings.roundMode) R.layout.widget_top_bar_round
+            else R.layout.widget_top_bar
+        }
+
     init {
-        inflate(context, if (DataStore.appSettings.roundMode) R.layout.widget_top_bar_round else R.layout.widget_top_bar, this)
+        inflate(
+            context,
+            layoutId,
+            this
+        )
 
         context.obtainStyledAttributes(attrs, R.styleable.TopBar).apply {
             getString(R.styleable.TopBar_titleText)?.let {
