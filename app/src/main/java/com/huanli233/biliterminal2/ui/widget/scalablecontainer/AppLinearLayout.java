@@ -66,20 +66,20 @@ public class AppLinearLayout extends LinearLayout {
         this.lastTouchPointGlobal.set((int) event.getRawX(), (int) event.getRawY());
 
         if (UiTouchPointUtil.isTouchPointInView(this.forbidTouchDispatchView, this.lastTouchPointGlobal)) {
-            removeCallbacks(this.pressAnimationTask); // Cancel pending press task
-            post(this.releaseAnimationTask); // Ensure release animation is played
+            removeCallbacks(this.pressAnimationTask);
+            post(this.releaseAnimationTask);
             return super.dispatchTouchEvent(event);
         }
 
         int action = event.getActionMasked();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                removeCallbacks(this.releaseAnimationTask); // Cancel pending release task
+                removeCallbacks(this.releaseAnimationTask);
                 post(this.pressAnimationTask);
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                removeCallbacks(this.pressAnimationTask); // Cancel pending press task
+                removeCallbacks(this.pressAnimationTask);
                 post(this.releaseAnimationTask);
                 break;
         }

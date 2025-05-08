@@ -26,6 +26,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
+import com.elvishew.xlog.XLog
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.data.setting.DataStore
 import com.huanli233.biliterminal2.event.SnackEvent
@@ -273,18 +274,14 @@ open class BaseActivity : AppCompatActivity() {
                 for (i in 0 until vp.childCount) {
                     val viewChild: View = vp.getChildAt(i)
 
-                    val multiple: Float = when (viewChild) {
-                        is ListView -> Preferences.getFloat("ui_rotatory_list", 0f)
-                        is RecyclerView -> Preferences.getFloat("ui_rotatory_recycler", 0f)
-                        is ScrollView, is NestedScrollView -> Preferences.getFloat("ui_rotatory_scroll", 0f)
+                    when (viewChild) {
+                        is ListView, is ScrollView, is NestedScrollView, is RecyclerView -> Unit
                         else -> {
                             applyRotaryScroll(viewChild)
                             return
                         }
                     }
-                    if (multiple <= 0) return
 
-                    val finalMultiple: Float = multiple
                     viewChild.setOnGenericMotionListener { v: View?, ev: MotionEvent ->
                         if (ev.action == MotionEvent.ACTION_SCROLL && ev.source == InputDevice.SOURCE_ROTARY_ENCODER) {
                             val delta: Float = (-ev.getAxisValue(MotionEvent.AXIS_SCROLL)
@@ -295,19 +292,19 @@ open class BaseActivity : AppCompatActivity() {
 
                             if (viewChild is ScrollView) viewChild.smoothScrollBy(
                                 0,
-                                (delta * finalMultiple).roundToInt()
+                                delta.roundToInt()
                             )
                             else if (viewChild is NestedScrollView) viewChild.smoothScrollBy(
                                 0,
-                                (delta * finalMultiple).roundToInt()
+                                delta.roundToInt()
                             )
                             else if (viewChild is RecyclerView) viewChild.smoothScrollBy(
                                 0,
-                                (delta * finalMultiple).roundToInt()
+                                delta.roundToInt()
                             )
                             else (viewChild as ListView).smoothScrollBy(
                                 0,
-                                (delta * finalMultiple).roundToInt()
+                                delta.roundToInt()
                             )
 
                             viewChild.requestFocus()
@@ -318,7 +315,7 @@ open class BaseActivity : AppCompatActivity() {
                     }
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                XLog.e(e)
             }
         }
     }

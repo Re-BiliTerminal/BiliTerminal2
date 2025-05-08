@@ -5,8 +5,8 @@
     <string name="repo_url" translatable="false">https://github.com/Re-BiliTerminal/BiliTerminal2</string>
     <string name="about_to_uncle">本软件开发的目的是使配置较低的安卓手表与老旧手机能够使用B站网页端提供的部分基本功能。本软件基于B站网页端接口运行，不会对任何接口进行恶意轰炸，也不会收集任何用户隐私信息。软件不存在付费功能，代码完全开源。如果您仍然认为本软件侵犯了您的权利，请联系我们（有事好商量呜呜呜）\n同时，我们也不对学生用户在不恰当的时间、地点使用本软件导致的财产损失（设备被没收）或精神伤害（？）负责。请尽量自控，不要影响到自己的学习和生活哦！</string>
 
-    <string name="setting_ui_desc">有效范围为0.25~5.00（倍），建议每次仅进行轻微调节，调节后请预览页面，确认显示正常后完成修改，打开新页面后将会生效。\n注意：尽量不要调到两个最值处，否则你可能会后悔！若乱调此选项，导致应用无法正常使用的，请清除应用数据或卸载重装！</string>
-    <string name="setting_ui_density_desc">最低72，建议每次仅进行轻微调节，调节后请预览页面，确认显示正常后完成修改，打开新页面后将会生效。\n若乱调此选项，导致应用无法正常使用的，请清除应用数据或卸载重装！\n注：此选项可能有其他问题，没有必要请不要修改。</string>
+    <string name="setting_ui_desc">有效范围为0.25~5.00（倍）</string>
+    <string name="setting_ui_density_desc">最低72，请谨慎调整该项</string>
     <string name="setup_introduction">这是哔哩终端的Fork项目，\n\n愿你在这一方小小的屏幕中，找到属于自己的小小的快乐！\n\n暂无交流群\n反馈问题、提交建议请前往开源地址提交Issue！\n开源地址：https://github.com/Re-BiliTerminal/BiliTerminal2\n\n请注意：\n本软件永久免费开源，不会收集你的任何账号及隐私信息，请放心使用！\n若你在任何平台付费下载到哔哩终端，那么你被坑了！</string>
 
     <string name="egg_warmwords_warmworld">请记住，如果遇到心理健康相关问题：\n全国24小时免费心理咨询热线：010\-82951332\n或官方手机端哔哩哔哩，打开 我的-下滑找到推荐服务-能量加油站。\n\n如果你需要这个，那么希望这个彩蛋能帮到你。\n如果其他人需要，那就请推荐给他/她吧。</string>
@@ -148,6 +148,8 @@
     <string name="relay">转发</string>
     <string name="download">缓存</string>
 
+    <string name="not_set_text">未设置</string>
+
     <string name="dynamic_delete_success">删除成功~</string>
     <string name="dynamic_delete_failed">删除失败</string>
     <string name="dynamic_delete_already">已经删除过了哦~</string>
@@ -217,6 +219,13 @@
     <string name="cancel">取消</string>
     <string name="open">打开</string>
     <string name="group_id">群号：%1$s</string>
+    <string name="settings_ui">界面设置</string>
+    <string name="scale">大小</string>
+    <string name="preference">偏好</string>
+    <string name="disable_fullscreen_dialog">非全屏Dialog</string>
+    <string name="no_more_than_30">不能大于30</string>
+    <string name="density" translatable="false">Density</string>
+    <string name="animation">动画</string>
 
     <string-array name="icon_license">
         <item>界面设置: Newicons, MIT License</item>

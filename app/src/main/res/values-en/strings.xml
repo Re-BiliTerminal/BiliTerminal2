@@ -3,8 +3,8 @@
     <string name="about_description">Lightweight Third-Party Bilibili Client</string>
     <string name="about_to_uncle">The purpose of this software is to enable low-configuration Android watches and older mobile phones to access basic Bilibili web features. Operating through Bilibili\'s web interface, this app will neither overload any APIs nor collect user privacy data. It contains no paid functions, and its code is fully open-source. If you still believe it infringes your rights, please reach out (let\'s talk it out!)\nWe also disclaim responsibility for property loss (device confiscation) or mental distress (really?) caused by student users accessing the app at inappropriate times or locations. Please stay mindful and don\'t let it interfere with your studies or daily rhythm! Keep it balanced!</string>
 
-    <string name="setting_ui_desc">The valid range is 0.25~5.00 times. We recommend making small adjustments each time.\nAfter tweaking, preview the page and confirm the display is normal before saving changes.\nThe new settings will take effect when you open a fresh page.\n\nNote: Avoid pushing values to the extremes—you might regret it!\nIf reckless adjustments break the app, clear app data or reinstall to fix the chaos!</string>
-    <string name="setting_ui_density_desc">Minimum: 72. We recommend making minor tweaks each time.\nAfter adjusting, preview the page and confirm the display is normal before saving changes.\nSettings will activate when you open a new page.\n\nIf reckless adjustments break the app,\nclear app data or reinstall to reset the chaos!\n\nNote: This option may have hidden quirks—\nmodify only if absolutely necessary. Best left untouched!</string>
+    <string name="setting_ui_desc">The valid range is 0.25~5.00 times.</string>
+    <string name="setting_ui_density_desc">Minimum: 72.</string>
     <string name="setup_introduction">This is a Fork project of BiliClient.\n\nMay you find your own small joys within this little screen!\n\nNo discussion group available yet.\nTo report issues or suggest improvements, please visit the open-source repository to submit an Issue!\nOpen-source address: https://github.com/Re-BiliTerminal/BiliTerminal2\n\nPlease note:\nThis software is permanently free and open-source and does not collect any of your account or personal information. Use it with peace of mind!\nIf you paid to download BiliTerminal on any platform, you’ve been scammed!\n\nClick the button below to get started!</string>
 
     <string name="egg_warmwords_warmworld">Keep in mind: If you encounter mental health–related concerns,\n24/7 National Psychological Support Hotline(China only): 010–82951332\nOr open the official Bilibili app, go to My Profile → scroll down to Recommended Services → Energy Station.\n\nIf you need this, we hope this Easter egg can offer some support.\nIf someone else might benefit, feel free to share it with them.</string>
@@ -60,7 +60,7 @@
     <string name="login_qrcode_unknown_code">The QR code login API may undergo changes,\nbut you can still try scanning to log in.\nRecommend reporting this to the developers</string>
     <string name="login_qrcode_scanned">Scanned, please tap on the mobile client to log in.</string>
     <string name="restore_defaults">Restore defaults</string>
-    <string name="round_screen_adaptation">Round screen adaptation</string>
+    <string name="round_screen_adaptation">Round Mode</string>
     <string name="interface_size">Interface size</string>
     <string name="please_enter_multiple">Please enter the multiple</string>
     <string name="interface_size_tip">Valid range: 0.25x-5.00x.\nWe recommend making incremental adjustments for optimal results.</string>

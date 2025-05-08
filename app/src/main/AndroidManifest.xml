@@ -66,6 +66,8 @@
         <activity
             android:name=".ui.activity.setting.AboutActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.activity.setting.UiSettingsActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

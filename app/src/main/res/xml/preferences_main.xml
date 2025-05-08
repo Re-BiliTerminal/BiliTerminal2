@@ -5,6 +5,15 @@
 
     <Preference
         app:key="pref_key_about"
+        app:title="@string/settings_ui"
+        app:icon="@drawable/icon_computer">
+        <intent
+            android:targetPackage="com.huanli233.biliterminal2"
+            android:targetClass="com.huanli233.biliterminal2.ui.activity.setting.UiSettingsActivity" />
+    </Preference>
+
+    <Preference
+        app:key="pref_key_about"
         app:title="@string/about"
         app:icon="@drawable/icon_info">
         <intent

@@ -30,7 +30,7 @@ public class AppRelativeLayout extends RelativeLayout {
     private final PressAnimHelper pressAnimHelper;
     private final Runnable pressAnimationTask;
     private final Runnable releaseAnimationTask;
-    private View specialDispatchTargetView; // Renamed for clarity
+    private View specialDispatchTargetView;
     private OnClickListener specialViewClickListener;
     private ObjectAnimator verticalTranslationAnimator;
 
@@ -50,8 +50,8 @@ public class AppRelativeLayout extends RelativeLayout {
                 AppRelativeLayout.this.resetViewTranslation();
             }
         };
-        this.pressAnimationTask = () -> AppRelativeLayout.this.pressAnimHelper.press();
-        this.releaseAnimationTask = () -> AppRelativeLayout.this.pressAnimHelper.release();
+        this.pressAnimationTask = AppRelativeLayout.this.pressAnimHelper::press;
+        this.releaseAnimationTask = AppRelativeLayout.this.pressAnimHelper::release;
 
         if (!isClickable()) {
             setClickable(true);
@@ -90,7 +90,7 @@ public class AppRelativeLayout extends RelativeLayout {
     public void startHorizontalReturnAnimation(float fromTranslationX) {
         this.verticalTranslationAnimator.cancel();
         this.horizontalTranslationAnimator.cancel();
-        resetViewTranslation(); // Reset before starting new animation
+        resetViewTranslation();
         this.horizontalTranslationAnimator.setFloatValues(fromTranslationX, TARGET_TRANSLATION_RESET);
         this.horizontalTranslationAnimator.start();
     }
@@ -98,7 +98,7 @@ public class AppRelativeLayout extends RelativeLayout {
     public void startVerticalReturnAnimation(float fromTranslationY) {
         this.horizontalTranslationAnimator.cancel();
         this.verticalTranslationAnimator.cancel();
-        resetViewTranslation(); // Reset before starting new animation
+        resetViewTranslation();
         this.verticalTranslationAnimator.setFloatValues(fromTranslationY, TARGET_TRANSLATION_RESET);
         this.verticalTranslationAnimator.start();
     }
@@ -112,8 +112,6 @@ public class AppRelativeLayout extends RelativeLayout {
         this.specialDispatchTargetView = view;
     }
 
-    // This method seems to be intended for setting a special view and its click listener.
-    // It might be better to have separate setters if they are used independently.
     public void setSpecialDispatchTargetViewAndListener(View view, OnClickListener onClickListener) {
         this.specialDispatchTargetView = view;
         this.specialViewClickListener = onClickListener;
@@ -128,13 +126,8 @@ public class AppRelativeLayout extends RelativeLayout {
         }
 
         if (this.specialDispatchTargetView != null && UiTouchPointUtil.isTouchPointInView(this.specialDispatchTargetView, this.lastRawTouchPoint)) {
-            // If touch is on the special view, release press animation and let super handle dispatch.
             removeCallbacks(this.pressAnimationTask);
             post(this.releaseAnimationTask);
-            // If specialViewListener is set, it implies special handling for this view's touch.
-            // However, the original `dealSpecialView` was not called here. If the intent is to consume
-            // the event or trigger the listener directly, that logic should be here.
-            // For now, just passing to super.dispatchTouchEvent.
             return super.dispatchTouchEvent(event);
         }
 
@@ -153,8 +146,6 @@ public class AppRelativeLayout extends RelativeLayout {
         return super.dispatchTouchEvent(event);
     }
 
-    // This method was unused in the original dispatchTouchEvent logic for specialView.
-    // If it's intended to be called, its invocation point needs to be determined.
     private void triggerSpecialViewClick() {
         if (this.specialDispatchTargetView != null && this.specialViewClickListener != null) {
             this.specialViewClickListener.onClick(this.specialDispatchTargetView);

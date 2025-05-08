@@ -24,24 +24,26 @@
         <item name="android:textAppearance">?attr/preferenceCategoryTitleTextAppearance</item>
         <item name="android:textColor">?attr/preferenceCategoryTitleTextColor</item>
     </style>
-
     <style name="Preference.SummaryTextStyle">
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
     </style>
-
-    <style name="SwitchPreferenceCompat" parent="Preference.SwitchPreferenceCompat">
+    <style name="SwitchPreferenceCompatStyle" parent="Preference.SwitchPreferenceCompat">
         <item name="layout">@layout/item_setting</item>
         <item name="widgetLayout">@layout/widget_switch</item>
+        <item name="allowDividerBelow">false</item>
     </style>
-
+    <style name="EditTextPreferenceStyle" parent="Preference.DialogPreference.EditTextPreference.Material">
+        <item name="layout">@layout/item_setting</item>
+        <item name="allowDividerBelow">false</item>
+    </style>
     <style name="PreferenceStyle" parent="Preference.Material">
         <item name="layout">@layout/item_setting</item>
+        <item name="allowDividerBelow">false</item>
     </style>
-
     <style name="PreferenceCategoryStyle" >
         <item name="layout">@layout/item_setting</item>
+        <item name="allowDividerBelow">true</item>
     </style>
-
     <style name="PreferenceInformationStyle">
         <item name="layout">@layout/item_setting</item>
         <item name="enabled">false</item>

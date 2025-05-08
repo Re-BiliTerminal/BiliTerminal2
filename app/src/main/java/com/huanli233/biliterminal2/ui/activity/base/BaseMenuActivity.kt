@@ -1,13 +1,9 @@
 package com.huanli233.biliterminal2.ui.activity.base
 
-import android.os.Build
 import android.os.Bundle
-import android.view.Gravity
 import androidx.activity.OnBackPressedCallback
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import androidx.transition.TransitionManager
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.data.setting.DataStore
 import com.huanli233.biliterminal2.ui.fragment.menu.MenuFragment
@@ -18,7 +14,7 @@ abstract class BaseMenuActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_menu_item)
+        setContentView(R.layout.activity_common_fragment_container)
 
         val contentFragmentTag = onCreateFragment(null)::class.qualifiedName
 

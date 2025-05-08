@@ -1,10 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- App Widgets -->
     <declare-styleable name="TopBar">
         <attr name="titleText" format="string|reference"/>
         <attr name="showBackIcon" format="boolean"/>
     </declare-styleable>
+    <declare-styleable name="ExpandableTextView">
+        <attr name="maxCollapsedLines" format="integer"/>
+        <attr name="animDuration" format="integer"/>
+        <attr name="animAlphaStart" format="float"/>
+        <attr name="expandIndicator" format="reference"/>
+        <attr name="collapseIndicator" format="reference"/>
+        <attr name="expandToggleType" format="enum">
+            <enum name="ImageButton" value="0"/>
+            <enum name="TextView" value="1"/>
+        </attr>
+        <attr name="expandableTextId" format="reference"/>
+        <attr name="expandCollapseToggleId" format="reference"/>
+        <attr name="expandToggleOnTextClick" format="boolean"/>
+        <attr name="android:text" format="string"/>
+    </declare-styleable>
+    <declare-styleable name="DotsIndicatorView">
+        <attr name="dotRadius" format="dimension"/>
+        <attr name="dotSpacing" format="dimension"/>
+        <attr name="dotColor" format="color"/>
+        <attr name="selectedDotColor" format="color"/>
+        <attr name="dotShadowRadius" format="dimension"/>
+        <attr name="dotShadowDx" format="dimension"/>
+        <attr name="dotShadowDy" format="dimension"/>
+        <attr name="dotShadowColor" format="color"/>
+        <attr name="autoHideDelay" format="integer"/>
+        <attr name="hideAnimationDuration" format="integer"/>
+        <attr name="showAnimationDuration" format="integer"/>
+        <attr name="backgroundColor" format="color"/>
+        <attr name="backgroundCornerRadius" format="dimension"/>
+        <attr name="backgroundPadding" format="dimension"/>
+    </declare-styleable>
 
+    <!-- App Scalable Containers -->
     <declare-styleable name="AppScrollView">
         <attr name="animScaleSV" format="boolean" />
         <attr name="springEnableEndSV" format="boolean" />
@@ -28,36 +61,17 @@
         <attr name="useZoomForRL" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="ExpandableTextView">
-        <attr name="maxCollapsedLines" format="integer"/>
-        <attr name="animDuration" format="integer"/>
-        <attr name="animAlphaStart" format="float"/>
-        <attr name="expandIndicator" format="reference"/>
-        <attr name="collapseIndicator" format="reference"/>
-        <attr name="expandToggleType" format="enum">
-            <enum name="ImageButton" value="0"/>
-            <enum name="TextView" value="1"/>
-        </attr>
-        <attr name="expandableTextId" format="reference"/>
-        <attr name="expandCollapseToggleId" format="reference"/>
-        <attr name="expandToggleOnTextClick" format="boolean"/>
-        <attr name="android:text" format="string"/>
+    <!-- Preferences -->
+    <declare-styleable name="AppEditTextPreference">
+        <attr name="useSimpleSummaryProvider" format="boolean" />
+        <attr name="emptyAllowed" format="boolean" />
     </declare-styleable>
-
-    <declare-styleable name="DotsIndicatorView">
-        <attr name="dotRadius" format="dimension"/>
-        <attr name="dotSpacing" format="dimension"/>
-        <attr name="dotColor" format="color"/>
-        <attr name="selectedDotColor" format="color"/>
-        <attr name="dotShadowRadius" format="dimension"/>
-        <attr name="dotShadowDx" format="dimension"/>
-        <attr name="dotShadowDy" format="dimension"/>
-        <attr name="dotShadowColor" format="color"/>
-        <attr name="autoHideDelay" format="integer"/>
-        <attr name="hideAnimationDuration" format="integer"/>
-        <attr name="showAnimationDuration" format="integer"/>
-        <attr name="backgroundColor" format="color"/>
-        <attr name="backgroundCornerRadius" format="dimension"/>
-        <attr name="backgroundPadding" format="dimension"/>
+    <declare-styleable name="AppIntEditTextPreference">
+        <attr name="minIntValue" format="integer" />
+        <attr name="maxIntValue" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="AppFloatEditTextPreference">
+        <attr name="minFloatValue" format="float" />
+        <attr name="maxFloatValue" format="float" />
     </declare-styleable>
 </resources>

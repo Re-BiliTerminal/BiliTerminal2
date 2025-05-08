@@ -45,7 +45,7 @@ object Dialogs {
             .show()
     }
 
-    private fun Context.dialogBuilder() = if (DataStore.appSettings.fullScreenDialogDisabled) {
+    fun Context.dialogBuilder() = if (DataStore.appSettings.fullScreenDialogDisabled) {
         AppMaterialDialogBuilder(this)
     } else {
         AppMaterialDialogBuilder(this, R.style.Theme_BiliTerminal2_Material3_BaseFullScreenDialog)
@@ -63,7 +63,9 @@ class AppMaterialDialogBuilder(
         return super.create().apply {
             if (!DataStore.appSettings.fullScreenDialogDisabled) {
                 window?.apply {
-                    requestFeature(Window.FEATURE_NO_TITLE)
+                    runCatching {
+                        requestFeature(Window.FEATURE_NO_TITLE)
+                    }
                     setBackgroundDrawableResource(android.R.color.transparent)
                     setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
                     decorView.apply {

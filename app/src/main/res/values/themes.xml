@@ -9,7 +9,8 @@
         <item name="preferenceStyle">@style/PreferenceStyle</item>
         <item name="preferenceCategoryStyle">@style/PreferenceCategoryStyle</item>
         <item name="preferenceInformationStyle">@style/PreferenceInformationStyle</item>
-        <item name="switchPreferenceCompatStyle">@style/SwitchPreferenceCompat</item>
+        <item name="switchPreferenceCompatStyle">@style/SwitchPreferenceCompatStyle</item>
+        <item name="editTextPreferenceStyle">@style/EditTextPreferenceStyle</item>
     </style>
 
     <style name="Theme.BiliTerminal2.Material3.BaseFullScreenDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
