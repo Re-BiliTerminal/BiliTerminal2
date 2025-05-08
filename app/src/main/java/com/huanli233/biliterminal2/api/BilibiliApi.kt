@@ -202,6 +202,6 @@ class BilibiliApiException(
     val code: Int, message: String
 ): Exception(message) {
     override fun toString(): String {
-        return "${if (cause == null) "$code $message" else cause}"
+        return "${if (cause == null) "$message" else cause}"
     }
 }

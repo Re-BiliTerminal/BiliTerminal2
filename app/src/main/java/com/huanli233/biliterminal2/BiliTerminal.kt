@@ -41,7 +41,7 @@ class BiliTerminal : Application() {
             if (BuildConfig.DEBUG) LogLevel.DEBUG else LogLevel.ERROR,
             AndroidPrinter()
         )
-        contextNullable = getFitDisplayContext(this@BiliTerminal.applicationContext)
+        contextNullable = applicationContext
         DynamicColors.applyToActivitiesIfAvailable(this)
         lastThemeMode = DataStore.appSettings.nightMode.toSystemValue()
         setDefaultNightMode(lastThemeMode)
@@ -68,19 +68,6 @@ class BiliTerminal : Application() {
             AppCompatDelegate.setDefaultNightMode(mode)
         }
 
-        fun getFitDisplayContext(old: Context): Context? {
-            val dpiTimes = DataStore.appSettings.uiScale
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) return old
-            if (dpiTimes == 1.0f) return old
-            try {
-                val displayMetrics = old.resources.displayMetrics
-                val configuration = old.resources.configuration
-                configuration.densityDpi = (displayMetrics.densityDpi * dpiTimes).toInt()
-                return old.createConfigurationContext(configuration)
-            } catch (_: Exception) {
-                return old
-            }
-        }
     }
 }
 

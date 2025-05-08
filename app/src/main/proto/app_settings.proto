@@ -41,4 +41,5 @@ message AppSettings {
 
   ImageFormat image_format = 19;
   int64 last_check_cookie_refresh = 20;
+  bool full_screen_dialog_disabled = 21;
 }

@@ -49,6 +49,17 @@ sealed class LoadState<T> {
     }
 
     @OptIn(ExperimentalContracts::class)
+    inline fun onNonApiError(
+        action: (error: Throwable) -> Unit
+    ): LoadState<T> {
+        contract {
+            callsInPlace(action, InvocationKind.AT_MOST_ONCE)
+        }
+        if (isError && (this as Error).error !is BilibiliApiException) action(error)
+        return this
+    }
+
+    @OptIn(ExperimentalContracts::class)
     inline fun onApiError(
         action: (error: BilibiliApiException) -> Unit
     ): LoadState<T> {

@@ -1,31 +1,16 @@
 <resources>
     <string name="app_name">BiliTerminal2</string>
     <string name="about_description">輕量的第三方B站客戶端</string>
-    <string name="about_attention">注意：本軟件僅使用了WearBili的舊版頁面布局，與WearBili不存在任何關係！\n另外，請不要向原項目（嗶哩終端）反饋此項目的問題。</string>
-    <string name="about_opensource">本程序完全開源，代碼部分遵循GNU GPL-V3.0協議，布局（UI）部分遵循CC BY-NC-SA協議。</string>
-    <string name="about_source">本程序使用或借鑑了下列項目的部分代碼及收集的API：\nWearBili：https://github.com/SpaceXC/WearBili\n腕上嗶哩：https://github.com/luern0313/WristBilibili\nBAC Document：https://socialsisteryi.github.io/bilibili-API-collect\n小電視播放器：https://github.com/xinxiangshiicheng/xinxiangshicheng_wearbili_player\n程序的界面借鑑於WearBili的UI部分，設計者為@JesseGary_（已得到授權）\n\n本程序使用的第三方庫：\nOkHttp：https://github.com/square/okhttp\nGlide：https://github.com/bumptech/glide\nPhotoView：https://github.com/Baseflow/PhotoView\nJsoup：https://jsoup.org/\nEventBus：https://github.com/greenrobot/EventBus\nGson：https://github.com/google/gson\nretrofit：https://github.com/square/retrofit\nIjkPlayer：https://github.com/bilibili/ijkplayer\nDanmakuFlameMaster：com.github.ctiao:DanmakuFlameMaster\nGeetest：com.geetest.sensebot:sensebot\nAOSP：https://source.android.google.cn/\n\n軟件圖標提供者：銀狐enlab（原圖來自B站）\n其他部分圖標來自網絡，有修改，版權歸原作者所有</string>
     <string name="about_to_uncle">本軟件開發的目的是使配置較低的安卓手錶與老舊手機能夠使用B站網頁端提供的部分基本功能。本軟件基於B站網頁端接口運行，不會對任何接口進行惡意轟炸，也不會收集任何用戶隱私信息。軟件不存在付費功能，代碼完全開源。如果您仍然認為本軟件侵犯了您的權利，請聯繫我們（有事好商量嗚嗚嗚）\n同時，我們也不對學生用戶在不恰當的時間、地點使用本軟件導致的財產損失（設備被沒收）或精神傷害（？）負責。請盡量自控，不要影響到自己的學習和生活哦！</string>
 
-    <string name="setup_ui_desc">首次使用，非常建議調整下界面哦~\n調整下面的選項，然後查看預覽\n直到對布局滿意為止</string>
     <string name="setting_ui_desc">有效範圍為0.25~5.00（倍），建議每次僅進行輕微調節，調節後請預覽頁面，確認顯示正常後完成修改，打開新頁面後將會生效。\n注意：盡量不要調到兩個最值處，否則你可能會後悔！若亂調此選項，導致應用無法正常使用的，請清除應用數據或卸載重裝！</string>
     <string name="setting_ui_density_desc">最低72，建議每次僅進行輕微調節，調節後請預覽頁面，確認顯示正常後完成修改，打開新頁面後將會生效。\n若亂調此選項，導致應用無法正常使用的，請清除應用數據或卸載重裝！\n註：此選項可能有其他問題，沒有必要請不要修改。</string>
-    <string name="setting_ui_round_desc">開啟選項後，界面邊距會直接更改為適合圓屏手錶的大小，同時內置播放器也會更換為圓屏布局。\n這會導致顯示面積縮小，但這是目前最好且工作量最小的辦法了。</string>
-    <string name="setting_player_desc">*你也可以通過長按“播放”按鈕快速進入此頁面。若無法跳轉播放，請確保你已經安裝對應播放器且播放器和BiliTerminal2都是最新版本。</string>
     <string name="setup_introduction">這是嗶哩終端的Fork項目，\n\n願你在這一方小小的屏幕中，找到屬於自己的小小的快樂！\n\n暫無交流群\n反饋問題、提交建議請前往開源地址提交Issue！\n開源地址：https://github.com/huanli233/BiliTerminal2\n\n請注意：\n本軟件永久免費開源，不會收集你的任何賬號及隱私信息，請放心使用！\n若你在任何平台付費下載到嗶哩終端，那麼你被坑了！\n\n點擊下面的按鈕，讓我們開始吧！</string>
 
     <string name="egg_warmwords_warmworld">請記住，如果遇到心理健康相關問題：\n全國24小時免費心理諮詢熱線：010\-82951332\n或官方手機端嗶哩嗶哩，打開 我的-下滑找到推薦服務-能量加油站。\n\n如果你需要這個，那麼希望這個彩蛋能幫到你。\n如果其他人需要，那就請推薦給他/她吧。</string>
 
     <string name="special_login_desc">該功能適用於快速登錄原有賬號。\n\n方法教學：\n在另外一台設備上安裝嗶哩終端並掃碼登錄，然後在那台設備上點擊設置中的“查看登錄信息”，將顯示出來的登錄信息複製到下方的文本框中，檢查無誤後點擊“登錄”按鈕即可。\n提示：可以將登錄信息複製到一個txt中，用電腦usb傳給這台設備。若提示輸入有誤，請檢查是否有多餘或缺失字符。\n\n注意：登錄數據錄入完成後，請在另一台設備上直接【清除APP數據】或【卸載】，不要點擊【退出登錄】！</string>
     <string name="special_login_export">以下是你的登錄信息，可用於在其他設備上特殊登錄，點擊最下面的按鈕可以複製。\n登錄信息具有一定的時效性，請即取即用，導入完成請將此設備的嗶哩終端清除數據。（不要點退出登錄！）\n請勿將此頁面的信息傳給別人，以防盜號！</string>
-
-    <string name="setting_lab_ui_landscape">！此功能將不再繼續進行改進，除非開發者有時間！\n開啟選項後，軟件將會變為橫屏，部分列表會變為三列，更適合平板等默認橫屏的設備\n*注意：部分頁面仍為單列式，可能有一些頁面適配不佳，電視請移步官方電視版本或使用其他第三方軟件。</string>
-    <string name="setting_lab_ui_rotatory">為0則不使用適配方案，非0則滾動距離會乘以此值\n請從1.0開始上下調節，直至你自己滿意為止。打開新頁面才能生效。</string>
-    <string name="setting_lab_path_video">緩存的視頻將會保存到這個位置，若文件夾不存在會自動創建。之前緩存的視頻請用文件管理器手動移動到新文件夾內。\n不保證會不會出現奇怪的問題。</string>
-    <string name="setting_lab_path_pictures">下載的圖片將會保存到這個位置，若文件夾不存在會自動創建。之前下載的圖片請用文件管理器手動移動到新文件夾內。\n不保證會不會出現奇怪的問題。</string>
-    <string name="setting_lab_download_old">若後台下載在你的設備上有問題，請打開此選項以換回舊版的前台下載器。</string>
-    <string name="setting_lab_splashtext">顧名思義，可以更改開屏文字，支持換行。開屏文字在網絡請求完成後就會被打斷。</string>
-    <string name="setting_lab_jsonerr_detailed">如果你遇到了某些接口問題，開發者可能會需要你打開這個以提供更詳細的報錯信息。\n——當然開發者調試的時候也可能會用到這個。</string>
-    <string name="setting_lab_recyclererr_detailed">由於開發者技術稀爛（？），軟件中的各種列表可能會偶爾出現報錯且難以避免。\n雖然是偶爾出現，但很煩人很噁心。\n所以被逼瘋的開發者把這個報錯catch掉了，只留下一個“此錯誤無需上報”的提示框和這個用於調試的開關。</string>
 
     <string-array name="eggs">
         <item>福瑞控萬歲，毛茸茸的最可愛了！\n\n#投稿者：紅豆（君）愛福瑞\n*Robin：雖然我不是福瑞控，但是可愛捏</item>
@@ -53,20 +38,10 @@
     </string-array>
 
     <string name="desc_back_disable">有一些手錶（例如米兔等）是通過模擬按下返回鍵自行實現的右滑返回，若你在左右翻頁時因觸發滑動返回而退出頁面，請開啟此開關\n開啟後，其他設備上則為按下返回鍵也不退出頁面，並且右滑退出後會卡住。\n你可以使用菜單最下方的退出按鈕結束本軟件。\n正常用戶無需打開。</string>
-    <string name="desc_fav_single">打開此選項，添加收藏後即退出收藏頁面，取消收藏不自動退出。</string>
-    <string name="desc_fav_notice">打開此選項，退出收藏頁面會提示收藏成功。\n但其實在你框選了收藏夾的時候就已經收藏了，這個選項只是為了看上去放心（</string>
-    <string name="desc_tags_enable">打開此選項，視頻詳情頁會顯示形如“原神UP主激勵計劃/原神/納西妲/手機遊戲”的視頻標籤</string>
-    <string name="desc_new_rcmd_param_enable">打開此選項，會使用新版首頁推薦API，基本與網頁版完全一致，請自行測試體驗後決定是否開啟</string>
-    <string name="desc_related_enable">打開此選項，視頻詳情頁的評論區右側會有相關視頻推薦</string>
-    <string name="desc_creative_enable">打開此選項，在“我的”頁面會顯示創作中心（可查看投稿視頻的數據變化情況）</string>
-    <string name="desc_copy_enable">打開此選項，長按一些文字（如視頻描述或評論）可以打開複製界面以複製這些文本</string>
     <string name="desc_cover_play_enable">打開此選項，視頻詳情頁點擊封面由查看圖片變更為播放。默認根據你首次使用時點擊了視頻封面還是播放按鈕來決定開關。</string>
-    <string name="desc_img_no_load_onscroll">打開此選項，翻動列表時將不會加載圖片，鬆手後再加載，觀感可能有影響，可能增加流暢度。</string>
+    <string name="desc_img_stop_load_while_scrolling">打開此選項，翻動列表時將不會加載圖片，鬆手後再加載，觀感可能有影響，可能增加流暢度。</string>
     <string name="desc_img_request_jpg">部分雜牌手錶和安卓版本極低的設備不支持webp格式，可能導致大量圖片無法顯示。打開此選項，將會請求jpg格式的圖片以解決此問題，可能會略微延長加載時間。</string>
-    <string name="desc_link_enable">打開此選項，會識別部分文本中的鏈接/BV號/AV號/CV號並標記為鏈接，點擊可打開。</string>
     <string name="desc_async_inflate_enable">打開此選項，會對部分頁面進行異步加載（顯示一個加載中動畫，加載完成後顯示頁面）\n* 請注意，異步加載的開啟可能會觸發一些崩潰問題，但關閉會導致一些頁面在打開期間看上去像卡死了一樣，體驗不佳。請自行判斷！</string>
-    <string name="desc_load_transition">打開此選項，圖片和部分頁面加載完成時會有漸入/漸出動畫。</string>
-    <string name="desc_strict_url_match">打開此選項，會在識別鏈接時（不包含編號，如AV/BV/CV等）使用更嚴格的匹配規則以避免整段被識別為鏈接。</string>
     <string name="tutorial_pager">提示\n\n←這個頁面可以左右翻頁喵→\n\n（共有NNN頁，滑動一下不再顯示）</string>
     <string name="desc_fromlast">播放視頻時如果有超過5秒的播放歷史，將會自動從歷史位置播放</string>
     <string name="desc_showonline">播放器右下角會顯示當前視頻的實時觀看人數，在直播中則為觀看過的人數和進入直播間提醒\n如果觀看視頻中途崩潰可以嘗試關閉此開關\n該功能為內置播放器專屬</string>
@@ -76,15 +51,6 @@
     <string name="desc_videocodec">硬件解碼：使用GPU解碼，速度快，性能消耗小\n軟件解碼：使用CPU硬算，兼容性好，暖手必備</string>
     <string name="desc_audiocodec">通常使用AudioTrack即可，聲音延遲或無法播放請嘗試切換</string>
     <string name="desc_danmaku_force_r2l">除了高級彈幕以外的彈幕都會被強制以滾動彈幕的形式展示，從而避免頂部彈幕和底部彈幕遮擋畫面</string>
-    <string name="desc_danmaku_showsender">顯示直播聊天彈幕的發送者名稱</string>
-    <string name="desc_subtitle_autoshow">開啟後，播放存在字幕的視頻時，將會自動彈出字幕選擇對話框。</string>
-    <string name="desc_subtitle_ai_allowed">打開此選項，如果視頻只有一個中文AI字幕，播放時仍然會讓你選擇。\n可能比較煩人，謹慎開啟。</string>
-    <string name="desc_no_vip_color">開啟此選項後，將不會在評論區為大會員用戶顯示專屬的紅色名稱</string>
-    <string name="desc_no_medal">開啟此選項後，將不會在評論區顯示用戶的粉絲銘牌</string>
-    <string name="desc_reply_marquee_name">開啟此選項後，評論區的用戶名稱將會以跑馬燈的形式展現，而不是換行</string>
-    <string name="desc_live_by_guest">開啟此選項後，進入直播間時將會使用遊客身份\n\n注意：開啟後的漏彈幕情況將會更加嚴重</string>
-
-    <string name="err_rejected">被B站風控系統攔截了\n（無法解決）</string>
 
     <string name="desc_icon_license">以下是已知的開源圖標的開源許可證信息</string>
     <string name="login_qrcode_wating">請使用官方手機端嗶哩嗶哩掃碼登錄\n點擊二維碼可以進行放大和縮小</string>
@@ -93,7 +59,6 @@
     <string name="login_qrcode_logining">登錄中……</string>
     <string name="login_qrcode_unknown_code">二維碼登錄API可能變動，\n但你仍然可以嘗試掃碼登錄。\n建議反饋給開發者</string>
     <string name="login_qrcode_scanned">已掃描，請在手機客戶端上點擊登錄</string>
-    <string name="first_meeting">初次見面……</string>
     <string name="restore_defaults">恢復默認</string>
     <string name="round_screen_adaptation">圓屏適配</string>
     <string name="interface_size">界面大小</string>
@@ -101,18 +66,12 @@
     <string name="interface_size_tip">有效範圍：0.25倍-5.00倍，建議少量多次調節</string>
     <string name="interface_margins">界面邊距</string>
     <string name="horizontal">橫向</string>
-    <string name="percent">%</string>
     <string name="vertical">縱向</string>
     <string name="ui_margins_tip">第一個輸入框為橫向邊距，第二個輸入框為縱向邊距，單位百分比。\n出於保護，數值超過30不會保存。</string>
     <string name="view_preview">查看預覽</string>
     <string name="confirm_setting">確認設置</string>
-    <string name="enter_app">嗶哩終端，啟動！</string>
-    <string name="restore_success">恢復完成</string>
     <string name="info_open_source_icons">開源圖標的信息</string>
     <string name="about">關於</string>
-    <string name="version_name">版本名</string>
-    <string name="version_code">版本號</string>
-    <string name="debug_tip">當前版本為測試版\n不代表最終正式版</string>
     <string name="name_robin_not_bad">RobinNotBad</string>
     <string name="desc_robin_not_bad">和他的納西妲醬（項目發起者|屎山奠基人）</string>
     <string name="name_huanli233">huanli233</string>
@@ -121,8 +80,6 @@
     <string name="recommend">推薦</string>
     <string name="precious">入站必刷</string>
     <string name="popular">熱門</string>
-    <string name="prefix_live">[直播]</string>
-    <string name="prefix_series">[系列]</string>
     <string-array name="icon_license">
         <item>界面設置: Newicons, MIT License</item>
         <item>番劇: hicon, MIT License</item>

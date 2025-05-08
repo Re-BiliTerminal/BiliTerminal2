@@ -58,8 +58,8 @@ class QrCodeLoginFragment(): BaseFragment() {
             }.onApiError {
                 skeletonScreen?.hide()
                 binding.qrcodeImage.setImageResource(R.mipmap.loading_2233_error)
-                binding.qrcodeStatus.crossFadeSetText(getString(R.string.login_qrcode_api_error))
-            }.onError {
+                binding.qrcodeStatus.crossFadeSetText("$it")
+            }.onNonApiError {
                 skeletonScreen?.hide()
                 binding.qrcodeImage.setImageResource(R.mipmap.loading_2233_error)
                 binding.qrcodeStatus.crossFadeSetText(getString(R.string.login_qrcode_network_error))

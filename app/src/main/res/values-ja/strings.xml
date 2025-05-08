@@ -1,31 +1,16 @@
 <resources>
     <string name="app_name">BiliTerminal2</string>
     <string name="about_description">軽量なサードパーティー製B站アプリ</string>
-    <string name="about_attention">注意：本ソフトはWearBiliの旧バージョンのページレイアウトを使用しているだけで\nWearBiliとは一切関係ありません！\nまた、本プロジェクトに関する問題を原プロジェクト(BiliClient)へフィードバックしないようお願いします</string>
-    <string name="about_opensource">本アプリは完全オープンソースです。\nコード部分はGNU GPL-V3.0ライセンスに準拠し、レイアウト（UI）部分はCC BY-NC-SAライセンスに準拠しています。</string>
-    <string name="about_source">本プログラムは以下のプロジェクトの一部コード及び収集したAPIを使用または参考にしています：\nWearBili：https://github.com/SpaceXC/WearBili\nWristBilibili：https://github.com/luern0313/WristBilibili\nBAC Document：https://socialsisteryi.github.io/bilibili-API-collect\nWearBili Player：https://github.com/xinxiangshiicheng/xinxiangshicheng_wearbili_player\nプログラムのインターフェースはWearBiliのUI部分を参考にしています。\nデザインは@JesseGary_によるものです（許可済み）。\n\n本プログラムで使用しているサードパーティライブラリ：\nOkHttp：https://github.com/square/okhttp\nGlide：https://github.com/bumptech/glide\nPhotoView：https://github.com/Baseflow/PhotoView\nJsoup：https://jsoup.org/\nEventBus：https://github.com/greenrobot/EventBus\nGson：https://github.com/google/gson\nretrofit：https://github.com/square/retrofit\nIjkPlayer：https://github.com/bilibili/ijkplayer\nDanmakuFlameMaster：com.github.ctiao:DanmakuFlameMaster\nGeetest：com.geetest.sensebot:sensebot\nAOSP：https://source.android.google.cn/\n\nソフトウェアアイコンの提供者：銀狐enlab（原図はB站より）\nその他のアイコンはネットから取得し、修正を加えています。\n著作権は原作者に帰属します。</string>
     <string name="about_to_uncle">本アプリの開発目的は、スペックの低いAndroidスマートウォッチや\n旧型スマートフォンでもB站ウェブ版の基本機能を利用可能にすることです。\nB站のウェブ版APIを基に動作しており、APIへの過剰なリクエスト送信や\nユーザーのプライバシー情報を収集することは一切ありません。\n有料機能は一切ありませんが、コードは完全オープンソースです。\n万一当アプリが権利を侵害しているとお考えの場合は\nご連絡ください（話し合いで解決しましょうね～）\n\nまた学生ユーザーが不適切な時間・場所で使用したことによる\n財産上の損害（デバイス没収等）や精神的損害（？）について\n当方は一切責任を負いません。\n自制いただき、学業や日常生活に支障をきたさないようお願いします!</string>
 
-    <string name="setup_ui_desc">初回利用時は画面調整を強くおすすめしますね\n下部のオプションを調整したら\nプレビューを確認してください\nレイアウトが気に入るまで調整を続けましょう！</string>
     <string name="setting_ui_desc">設定可能範囲は0.25〜5.00（倍）です\n調整は少しずつ行い、プレビューで表示を確認してから\n変更を確定してください。新しいページを開くと反映されます\n\n注意：極端な最小値・最大値の設定はなるべく避けてくださいね！\n設定を誤ってアプリが正常に動作しなくなった場合は\nデータを消去するか、再インストールで対応してください！</string>
     <string name="setting_ui_density_desc">最低値は72〜\n調整は少しずつ行い、プレビューで表示を確認してから\n変更を確定してください。新しいページで反映されます\n\n設定を誤ってアプリが正常に動作しなくなった場合は\nデータを消去するか再インストールしてください！\n※この設定には予期せぬ不具合が発生する可能性があります\n特別な理由がない限り変更しないでください</string>
-    <string name="setting_ui_round_desc">このオプションを有効にすると\n画面の余白が丸型スマートウォッチ向けサイズに変更され\n組み込みプレイヤーも丸型レイアウトに切り替わります\n\n表示領域が縮小しますが\n現時点で最善策であり\n作業量も最小限で済む方法です</string>
-    <string name="setting_player_desc">*「再生」ボタンを長押しで直接このページにアクセスできます\n再生に移動できない場合は、対応プレイヤーがインストールされていること\nそしてBiliTerminal2とプレイヤーが最新バージョンであることを確認してください</string>
     <string name="setup_introduction">これはBiliClientのForkプロジェクトです。\n\nこの小さな画面の中で、あなただけの小さな楽しみを見つけられますように！\n\n現在、交流グループはありません。\n問題の報告や提案は、オープンソースのアドレスにてIssueを提出してください！\nオープンソースアドレス：https://github.com/huanli233/BiliTerminal2\n\nご注意ください：\n本ソフトウェアは永久に無料かつオープンソースで、\nあなたのアカウントやプライバシー情報を一切収集しませんので、\n安心してお使いください！\nもしあなたがどのプラットフォームでも有料でBiliTerminalをダウンロードした場合、\nそれは詐欺に遭っています！\n\n下のボタンをクリックして、始めましょう！</string>
 
     <string name="egg_warmwords_warmworld">心の健康に関わる問題に直面した時は、次の情報を覚えておいてください：\n全国24時間無料心理相談ホットライン（中国国内限定）：010‐82951332\nまたは公式アプリ「ビリビリ」で、[マイページ]→[下にスクロールしてオススメサービスを探す]→[エネルギー加油站]へ。\n\nもし必要なら、この隠し機能が役立つと嬉しいです。\n他の方が必要そうでしたら、ぜひ教えてあげてくださいね。</string>
 
     <string name="special_login_desc">この機能は既存のアカウントに素早くログインするためのものです。\n\n方法説明：\n別のデバイスにBiliTerminalをインストールし、QRコードをスキャンしてログインします。その後、そのデバイスの設定にある「ログイン情報を確認」をタップし、表示されたログイン情報を下のテキストボックスにコピーします。確認後に「ログイン」ボタンをクリックしてください。\nヒント：ログイン情報をtxtファイルにコピーし、USB経由でこのデバイスに転送することもできます。入力エラーが表示された場合は、余分な文字や不足している文字がないか確認してください。\n\n注意：ログインデータの入力が完了したら、もう一方のデバイスで直接【アプリデータを削除】するか【アンインストール】してください。【ログアウト】をクリックしないでください！</string>
     <string name="special_login_export">以下があなたのログイン情報です。他のデバイスで特別ログインする際に使用できます。一番下のボタンをクリックするとコピーできます。\nログイン情報には有効期限がありますので、取得後すぐに使用し、インポートが完了したら、このデバイスのBiliTerminalのデータを削除してください。（ログアウトはクリックしないでください！）\nこのページの情報を他人に伝えないよう注意し、アカウントの不正利用を防ぎましょう！</string>
-
-    <string name="setting_lab_ui_landscape">※本機能は開発者に時間的余裕ができた場合を除き、今後アップデートを行いません\n\n設定を有効にするとアプリが横画面表示に切り替わり、一部リストが3列表示になります（タブレット端末などの横画面デバイスにより適応）\n\n※ご注意：単一列レイアウトのページでは表示崩れが発生する場合があります。テレビ利用の場合は公式TV版アプリ、またはサードパーティ製アプリをご利用ください</string>
-    <string name="setting_lab_ui_rotatory">0を設定すると調整方式が無効化され、0以外の値ではスクロール距離に乗算されます\n\n調整は1.0を基準に増減させ、お好みの数値を見つけてください\n※新しいページを開いた時に設定が反映されます</string>
-    <string name="setting_lab_path_video">キャッシュ動画はこの場所に保存されます（フォルダが存在しない場合は自動生成されます）\n以前のキャッシュ動画はファイルマネージャーで新しいフォルダへ手動移動してください\n\n※動作不具合が発生する可能性あり</string>
-    <string name="setting_lab_path_pictures">ダウンロード画像はこの場所に保存されます（フォルダが存在しない場合は自動生成されます）\n以前のダウンロード画像はファイルマネージャーで新しいフォルダへ手動移動してください\n\n※動作不具合が発生する可能性あり</string>
-    <string name="setting_lab_download_old">端末でバックグラウンドダウンロードに問題が発生する場合は、このオプションを有効にして\n旧バージョンのフォアグラウンドダウンローダーに切り替えてください</string>
-    <string name="setting_lab_splashtext">その名の通り起動画面のテキストを変更可能で、改行もサポートしています\nテキスト表示はネットワークリクエスト完了後すぐに終了します</string>
-    <string name="setting_lab_jsonerr_detailed">API関連の問題が発生した場合、開発者が詳細なエラー情報を収集するため\nこのオプションを有効にしてください\n\n※開発者がデバッグ時にも使用する場合があります</string>
-    <string name="setting_lab_recyclererr_detailed">開発者（技術力がイマイチ？）のせいで、リスト表示がたまにエラーを吐く現象がどうしても解消できません\n\nたまに発生するけど、超ウザいしストレスたまる\n\nそこで頭を抱えた開発者はエラーをキャッチして「このエラーは報告不要」トーストとデバッグ用スイッチを仕込みました</string>
 
     <string-array name="eggs">
         <item>フーリー愛好者万歳！ふわふわの毛並みが最高にかわいい！\n\n#投稿者：紅豆（君）フーリー大好き\n*Robin：僕はフーリー好きじゃないけど、でもかわいいは正義だよね</item>
@@ -53,20 +38,10 @@
     </string-array>
 
     <string name="desc_back_disable">一部のスマートウォッチ（例：Mi Watchなど）は戻るキーの押下をエミュレートして右スワイプ戻りを実装しています\nページめくり操作で誤動作する場合はこのスイッチを有効化してください\n※有効化後は他デバイスで戻るキー操作時も終了しなくなり\n右スワイプ終了時にフリーズする場合があります\n終了時はメニュー最下部の終了ボタンをご使用ください\n通常のユーザーは有効化不要です</string>
-    <string name="desc_fav_single">このオプションを有効化すると、お気に入り追加後即時にページを終了します\nお気に入り解除時は自動終了しません</string>
-    <string name="desc_fav_notice">このオプションを有効化すると、お気に入りページ終了時に登録成功を通知します\n\n実はチェックボックスを選択した時点で登録済みです\nこのオプションは見た目の安心感のためだけのものです（</string>
-    <string name="desc_tags_enable">このオプションを有効化すると、動画詳細ページに「原神クリエイター奨励プログラム/原神/ナヒーダ/モバイルゲーム」形式のタグが表示されます</string>
-    <string name="desc_new_rcmd_param_enable">このオプションを有効化すると新バージョンのホーム推薦APIを使用します\nウェブ版と完全に同一動作となります\n実際にテスト体験した上で有効化を判断してください</string>
-    <string name="desc_related_enable">このオプションを有効化すると、動画詳細ページのコメント欄右側に\n関連動画推薦が表示されるようになります</string>
-    <string name="desc_creative_enable">このオプションを有効化すると「マイ」ページに\nクリエイターセンターが表示されます（投稿動画のデータ推移を確認可能）</string>
-    <string name="desc_copy_enable">このオプションを有効化すると、一部のテキスト（動画説明やコメントなど）を長押しすると\nコピー用インターフェースが開き、テキストをコピーできます</string>
     <string name="desc_cover_play_enable">このオプションを有効にすると、動画詳細ページでカバー画像をクリックした際の動作が、画像表示から再生に変更されます。\nデフォルトでは、初回利用時にカバー画像か再生ボタンのどちらをクリックしたかに基づいて、オン/オフが自動で設定されます。</string>
-    <string name="desc_img_no_load_onscroll">このオプションを有効にすると、リストをスクロール中は画像が読み込まれず、\n手を離したタイミングでまとめて読み込みます。表示に影響が出る場合がありますが、\n動作がよりスムーズになる可能性があります。</string>
+    <string name="desc_img_stop_load_while_scrolling">このオプションを有効にすると、リストをスクロール中は画像が読み込まれず、\n手を離したタイミングでまとめて読み込みます。表示に影響が出る場合がありますが、\n動作がよりスムーズになる可能性があります。</string>
     <string name="desc_img_request_jpg">このオプションを有効にすると、WEBP形式に対応していない\nノーブランドのスマートウォッチやAndroidのバージョンが非常に古い端末で、\n多数の画像が表示されない可能性がある問題を解決するため、\nJPG形式の画像をリクエストします。\nただし、読み込み時間が若干長くなる場合があります。</string>
-    <string name="desc_link_enable">このオプションを有効にすると、テキスト内のリンク/BV番号/AV番号/CV番号を自動検知し、\nハイパーリンクとして表示します。クリックで直接開けるようになります。</string>
     <string name="desc_async_inflate_enable">このオプションを有効にすると、一部ページを非同期読み込みします\n（ローディングアニメーションを表示し、読み込み完了後にページを表示します）\n\n※非同期読み込みの有効化はクラッシュを引き起こす可能性がありますが、\n無効にするとページ表示時にフリーズしたように見える場合があります。\nユーザー体験に影響するため、ご自身でご判断ください！</string>
-    <string name="desc_load_transition">このオプションを有効にすると、画像と一部のページの読み込みが完了した際にフェードイン/フェードアウトのアニメーションが表示されます。</string>
-    <string name="desc_strict_url_match">このオプションを有効にすると、リンクを識別する際（AV/BV/CVなどの番号は除く）、より厳格なマッチングルールが適用され、段落全体がリンクとして誤認識されるのを防ぎます。</string>
     <string name="tutorial_pager">ヒント\n\n←このページは左右にスワイプできますにゃ→\n\n（全NNNページ、スワイプすると非表示になります）</string>
     <string name="desc_fromlast">動画を再生する際、5秒以上の再生履歴がある場合、自動的に履歴の位置から再生されます。</string>
     <string name="desc_showonline">プレイヤーの右下隅には、現在の動画のリアルタイム視聴者数が表示されます。ライブ配信中の場合、視聴した人数と配信ルームへの入室通知が表示されます。\n動画視聴中にクラッシュした場合、このスイッチをオフにしてみてください。\nこの機能は内蔵プレイヤー専用です。</string>
@@ -76,15 +51,6 @@
     <string name="desc_videocodec">ハードウェアデコード：GPUを使用してデコードするため、速度が速く、パフォーマンス消費が少ない\nソフトウェアデコード：CPUで直接計算するため、互換性が高く、手を温めるのに最適</string>
     <string name="desc_audiocodec">通常はAudioTrackを使用すれば十分です。\n音声の遅延や再生できない場合は、切り替えて試してみてください</string>
     <string name="desc_danmaku_force_r2l">高级弾幕以外の弾幕はすべて強制的にスクロール弾幕として表示され、\nトップ弾幕やボトム弾幕が画面を遮ることを防ぎます</string>
-    <string name="desc_danmaku_showsender">ライブチャットの弾幕を送信したユーザーの名前を表示します</string>
-    <string name="desc_subtitle_autoshow">有効にすると、字幕が含まれる動画を再生する際、自動的に字幕選択ダイアログが表示されます。</string>
-    <string name="desc_subtitle_ai_allowed">このオプションを有効にすると、ビデオに中国語のAI字幕しかない場合でも、再生時に選択を求められます。\n少し煩わしいかもしれませんので、注意してご利用ください。</string>
-    <string name="desc_no_vip_color">このオプションを有効にすると、コメント欄で大会員ユーザーの専用赤い名前が表示されなくなります</string>
-    <string name="desc_no_medal">このオプションを有効にすると、コメント欄でユーザーのファンバッジが表示されなくなります</string>
-    <string name="desc_reply_marquee_name">このオプションを有効にすると、コメント欄のユーザー名が改行されず、\n走馬灯形式で表示されます</string>
-    <string name="desc_live_by_guest">このオプションを有効にすると、ライブルームに入る際にゲストとして参加します。\n\n注意：有効にすると、弾幕の見逃しがさらに多くなる可能性があります</string>
-
-    <string name="err_rejected">B站の風検システムに引っかかりました\n（解決不可）</string>
 
     <string name="desc_icon_license">以下は既知のオープンソースアイコンのライセンス情報です</string>
     <string name="login_qrcode_wating">公式モバイルアプリ「哔哩哔哩」でQRコードをスキャンしてログインしてください。\nQRコードをタップすると拡大や縮小ができます</string>
@@ -93,7 +59,6 @@
     <string name="login_qrcode_logining">ログイン中……</string>
     <string name="login_qrcode_unknown_code">QRコードログインAPIが変更される可能性がありますが、\n引き続きスキャンしてログインを試すことができます。\n開発者へのフィードバックを推奨します</string>
     <string name="login_qrcode_scanned">スキャンが完了しました。\nモバイルアプリでログインをクリックしてください</string>
-    <string name="first_meeting">初めまして</string>
     <string name="restore_defaults">デフォルトに戻す</string>
     <string name="round_screen_adaptation">円形ディスプレイ対応</string>
     <string name="interface_size">インターフェースサイズ</string>
@@ -101,18 +66,12 @@
     <string name="interface_size_tip">有効範囲：0.25倍～5.00倍，少量ずつ複数回の調整をおすすめします。</string>
     <string name="interface_margins">インターフェースのマージン</string>
     <string name="horizontal">横向き</string>
-    <string name="percent">%</string>
     <string name="vertical">縦向き</string>
     <string name="ui_margins_tip">一つ目の入力欄は横向きのマージン、二つ目の入力欄は縦向きのマージンです。単位はパーセント。\n保護のため、30を超える値は保存されません。</string>
     <string name="view_preview">プレビューを表示</string>
     <string name="confirm_setting">設定を確認</string>
-    <string name="enter_app">BiliTerminal、起動！</string>
-    <string name="restore_success">復元完了</string>
     <string name="info_open_source_icons">オープンソースアイコンの情報</string>
     <string name="about">について</string>
-    <string name="version_name">バージョン名</string>
-    <string name="version_code">バージョン番号</string>
-    <string name="debug_tip">現在のバージョンはテスト版です\n最終的な正式版を表すものではありません</string>
     <string name="name_robin_not_bad">RobinNotBad</string>
     <string name="desc_robin_not_bad">Robinと彼のナヒーダちゃん（プロジェクト発起者｜クソコードの礎）</string>
     <string name="name_huanli233">huanli233</string>
@@ -121,8 +80,6 @@
     <string name="recommend">おすすめ</string>
     <string name="precious">入站必見のコンテンツ</string>
     <string name="popular">人気</string>
-    <string name="prefix_live">[ライブ]</string>
-    <string name="prefix_series">[シリーズ]</string>
     <string-array name="icon_license">
         <item>インターフェース設定: Newicons, MIT ライセンス</item>
         <item>アニメ: hicon, MIT ライセンス</item>

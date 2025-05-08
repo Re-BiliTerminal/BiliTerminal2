@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="app_m3_sys_motion_duration_extra_long1">700</integer>
+    <integer name="app_m3_sys_motion_duration_extra_long2">800</integer>
+    <integer name="app_m3_sys_motion_duration_extra_long3">900</integer>
+    <integer name="app_m3_sys_motion_duration_extra_long4">1000</integer>
+    <integer name="app_m3_sys_motion_duration_long1">450</integer>
+    <integer name="app_m3_sys_motion_duration_long2">500</integer>
+    <integer name="app_m3_sys_motion_duration_long3">550</integer>
+    <integer name="app_m3_sys_motion_duration_long4">600</integer>
+    <integer name="app_m3_sys_motion_duration_medium1">250</integer>
+    <integer name="app_m3_sys_motion_duration_medium2">300</integer>
+    <integer name="app_m3_sys_motion_duration_medium3">350</integer>
+    <integer name="app_m3_sys_motion_duration_medium4">400</integer>
+    <integer name="app_m3_sys_motion_duration_short1">50</integer>
+    <integer name="app_m3_sys_motion_duration_short2">100</integer>
+    <integer name="app_m3_sys_motion_duration_short3">150</integer>
+    <integer name="app_m3_sys_motion_duration_short4">200</integer>
+    <integer name="app_m3_sys_motion_path">0</integer>
+    <item format="float" name="app_m3_sys_motion_easing_emphasized_accelerate_control_x1" type="dimen">0.3</item>
+    <item format="float" name="app_m3_sys_motion_easing_emphasized_accelerate_control_x2" type="dimen">0.8</item>
+    <item format="float" name="app_m3_sys_motion_easing_emphasized_accelerate_control_y1" type="dimen">0</item>
+    <item format="float" name="app_m3_sys_motion_easing_emphasized_accelerate_control_y2" type="dimen">0.2</item>
+    <item format="float" name="app_m3_sys_motion_easing_emphasized_decelerate_control_x1" type="dimen">0.1</item>
+    <item format="float" name="app_m3_sys_motion_easing_emphasized_decelerate_control_x2" type="dimen">0.1</item>
+    <item format="float" name="app_m3_sys_motion_easing_emphasized_decelerate_control_y1" type="dimen">0.7</item>
+    <item format="float" name="app_m3_sys_motion_easing_emphasized_decelerate_control_y2" type="dimen">1</item>
+</resources>

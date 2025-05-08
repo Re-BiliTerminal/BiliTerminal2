@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- An XML implementation of the Material fade pattern -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="@integer/app_m3_sys_motion_duration_medium4"
+    android:interpolator="@anim/app_m3_sys_motion_easing_emphasized_accelerate"
+    android:shareInterpolator="true">
+    <alpha
+        android:fromAlpha="0.0"
+        android:toAlpha="1.0" />
+    <scale
+        android:fromXScale="0.8"
+        android:fromYScale="0.8"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toXScale="1"
+        android:toYScale="1" />
+</set>

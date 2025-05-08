@@ -24,6 +24,9 @@
 -keep class tv.danmaku.ijk.media.** {*;}
 -keep class com.netease.hearttouch.brotlij.** {*;}
 
+-keep class com.huanli233.biliwebapi.** {*;}
+-keep class com.huanli233.biliterminal2.data.proto.** {*;}
+
 -keepattributes *Annotation*
 -keepclassmembers class * {
     @org.greenrobot.eventbus.Subscribe <methods>;

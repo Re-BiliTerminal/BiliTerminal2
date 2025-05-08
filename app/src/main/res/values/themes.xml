@@ -12,6 +12,23 @@
         <item name="switchPreferenceCompatStyle">@style/SwitchPreferenceCompat</item>
     </style>
 
+    <style name="Theme.BiliTerminal2.Material3.BaseFullScreenDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="android:colorBackground">?attr/colorSurfaceContainerHigh</item>
+
+        <item name="android:windowFrame">@null</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowSoftInputMode">stateUnspecified</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowActionModeOverlay">true</item>
+
+        <item name="android:colorBackgroundCacheHint">@null</item>
+
+        <item name="android:listDivider">@null</item>
+    </style>
+
     <style name="Theme.BiliTerminal2.Splash" parent="Theme.BiliTerminal2.Material3">
         <item name="android:windowBackground">@drawable/splash_text</item>
         <item name="android:windowIsTranslucent">false</item>
@@ -22,31 +39,6 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowSwipeToDismiss" tools:ignore="NewApi">false</item>
         <item name="android:windowFullscreen">true</item>
-    </style>
-
-    <style name="Theme.BiliTerminal2.Deprecated" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:windowBackground">@color/bgblack</item>
-        <item name="android:colorForeground">@color/textwhite</item>
-        <item name="colorOnPrimary">@color/textwhite</item>
-        <item name="colorPrimary">@color/textwhite</item>
-        <item name="colorOnSurface">@color/textwhite</item>
-        <item name="colorOnSurfaceVariant">@color/textwhite</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowSwipeToDismiss" tools:ignore="NewApi">true</item>
-
-        <item name="android:textViewStyle">@style/TextViewSytle</item>
-        <item name="editTextStyle">@style/EditTextStyle</item>
-        <item name="materialCardViewStyle">@style/CardStyle</item>
-        <item name="materialButtonStyle">@style/ButtonStyle</item>
-        <item name="switchStyle">@style/SwitchCompatStyle</item>
-        <item name="radioButtonStyle">@style/RadioButtonStyle</item>
-        <item name="recyclerViewStyle">@style/ListStyle</item>
-
-        <item name="colorSwitchThumbNormal">@color/textwhite</item>
-        <item name="colorControlActivated">@color/textwhite</item>
-        <item name="colorControlNormal">@color/color_ripple</item>
-        <item name="android:textColor">@color/textwhite</item>
-        <item name="android:textSize">14sp</item>
     </style>
 
 </resources>

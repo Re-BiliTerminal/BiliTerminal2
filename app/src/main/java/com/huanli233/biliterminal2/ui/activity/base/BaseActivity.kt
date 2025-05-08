@@ -1,6 +1,7 @@
 package com.huanli233.biliterminal2.ui.activity.base
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build
@@ -25,7 +26,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
-import com.huanli233.biliterminal2.BiliTerminal
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.data.setting.DataStore
 import com.huanli233.biliterminal2.event.SnackEvent
@@ -41,13 +41,82 @@ import kotlin.math.roundToInt
 open class BaseActivity : AppCompatActivity() {
     var windowWidth: Int = 0
     var windowHeight: Int = 0
-    var originalContext: Context? = null
+    private lateinit var _originalContext: Context
+    private var _lastOriginalViewContext: Context? = null
+    private var _configurationChanged = false
+    val originalViewContext: Context
+        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            _lastOriginalViewContext?.let {
+                if (!_configurationChanged) {
+                    it
+                } else {
+                    null
+                }
+            } ?: let {
+                _configurationChanged = false
+                overrideToSystemConfiguration()
+            }
+        } else {
+            this
+        }
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private fun overrideToSystemConfiguration(): Context {
+        return object : ContextWrapper(this) {
+            val mResources = baseContext.resources.run {
+                val system = Resources.getSystem()
+                @Suppress("DEPRECATION") Resources(
+                    assets,
+                    DisplayMetrics().apply {
+                        setTo(displayMetrics)
+                        density = system.displayMetrics.density
+                        densityDpi = system.displayMetrics.densityDpi
+                    },
+                    Configuration(configuration).apply {
+                        densityDpi = system.configuration.densityDpi
+                    }
+                )
+            }
+
+            override fun getResources(): Resources? {
+                return mResources
+            }
+        }.also {
+            _lastOriginalViewContext = it
+        }
+    }
 
     var topBar: TopBar? = null
 
     override fun attachBaseContext(context: Context) {
-        originalContext = context
-        super.attachBaseContext(BiliTerminal.getFitDisplayContext(context))
+        val newContext = overrideConfiguration(context)
+        super.attachBaseContext(newContext)
+        _originalContext = context
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        _configurationChanged = true
+    }
+
+    fun overrideConfiguration(baseContext: Context): Context {
+        val dpiTimes = DataStore.appSettings.uiScale
+        val density = DataStore.appSettings.density
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) return baseContext
+        return runCatching {
+            val configuration = baseContext.resources.configuration
+            if (density >= 72) {
+                configuration.densityDpi = density
+                configuration.fontScale = 1.0f
+                baseContext.createConfigurationContext(configuration)
+            } else if (dpiTimes in 0.25..5.0) {
+                val displayMetrics = baseContext.resources.displayMetrics
+                configuration.densityDpi = (displayMetrics.densityDpi * dpiTimes).toInt()
+                baseContext.createConfigurationContext(configuration)
+            } else {
+                baseContext
+            }
+        }.getOrNull() ?: baseContext
     }
 
     @Suppress("DEPRECATION")
@@ -94,11 +163,6 @@ open class BaseActivity : AppCompatActivity() {
                 v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
                 insets
             }
-        }
-
-        var density: Int
-        if ((DataStore.appSettings.density.also { density = it }) >= 72) {
-            overrideDensity(density)
         }
     }
 
@@ -189,19 +253,6 @@ open class BaseActivity : AppCompatActivity() {
         return DataStore.appSettings.snackbarEnabled
     }
 
-    @Suppress("DEPRECATION")
-    fun overrideDensity(targetDensityDpi: Int) {
-        if (Build.VERSION.SDK_INT < 17) return
-        val resources: Resources = resources
-
-        if (resources.configuration.densityDpi == targetDensityDpi) return
-
-        val configuration: Configuration = resources.configuration
-        configuration.densityDpi = targetDensityDpi
-        configuration.fontScale = 1f
-        resources.updateConfiguration(configuration, resources.displayMetrics)
-    }
-
     override fun isDestroyed(): Boolean {
         return lifecycle.currentState == Lifecycle.State.DESTROYED
     }
@@ -210,12 +261,12 @@ open class BaseActivity : AppCompatActivity() {
         super.onContentChanged()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val rootView: ViewGroup = this.window.decorView as ViewGroup
-            setRotaryScroll(rootView)
+            applyRotaryScroll(rootView)
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private fun setRotaryScroll(view: View) {
+    private fun applyRotaryScroll(view: View) {
         if (view is ViewGroup) {
             val vp: ViewGroup = view
             try {
@@ -227,7 +278,7 @@ open class BaseActivity : AppCompatActivity() {
                         is RecyclerView -> Preferences.getFloat("ui_rotatory_recycler", 0f)
                         is ScrollView, is NestedScrollView -> Preferences.getFloat("ui_rotatory_scroll", 0f)
                         else -> {
-                            setRotaryScroll(viewChild)
+                            applyRotaryScroll(viewChild)
                             return
                         }
                     }
