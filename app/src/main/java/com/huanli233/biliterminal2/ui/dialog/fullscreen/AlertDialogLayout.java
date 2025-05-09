@@ -2,27 +2,47 @@ package com.huanli233.biliterminal2.ui.dialog.fullscreen;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Space;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 
 import com.huanli233.biliterminal2.R;
+import com.huanli233.biliterminal2.ui.widget.wearable.BoxInsetLayout;
+import com.huanli233.biliterminal2.utils.SystemConfigurationKt;
+import com.huanli233.biliterminal2.utils.extensions.AndroidUtilsKt;
 
 public class AlertDialogLayout extends LinearLayoutCompat {
 
-    public AlertDialogLayout(@Nullable Context context) {
+    public AlertDialogLayout(@NonNull Context context) {
         super(context);
     }
 
-    public AlertDialogLayout(@Nullable Context context, @Nullable AttributeSet attrs) {
+    public AlertDialogLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+
+        final DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        int inset = 0;
+        int extraTopInset = 0;
+        if (SystemConfigurationKt.isRound()) {
+            inset = BoxInsetLayout.calculateInset(metrics.widthPixels, metrics.heightPixels);
+            extraTopInset = AndroidUtilsKt.dp2px(context, 14);
+        }
+        Space space = new Space(context);
+        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, inset + extraTopInset);
+        addView(space, 0, layoutParams);
     }
 
     @Override
@@ -227,90 +247,92 @@ public class AlertDialogLayout extends LinearLayoutCompat {
         return 0;
     }
 
-    @SuppressLint("RestrictedApi")
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        final int paddingLeft = getPaddingLeft();
-
-        // Where right end of child should go
-        final int width = right - left;
-        final int childRight = width - getPaddingRight();
-
-        // Space available for child
-        final int childSpace = width - paddingLeft - getPaddingRight();
-
-        final int totalLength = getMeasuredHeight();
-        final int count = getChildCount();
-        final int gravity = getGravity();
-        final int majorGravity = gravity & Gravity.VERTICAL_GRAVITY_MASK;
-        final int minorGravity = gravity & GravityCompat.RELATIVE_HORIZONTAL_GRAVITY_MASK;
-
-        int childTop;
-        switch (majorGravity) {
-            case Gravity.BOTTOM:
-                // totalLength contains the padding already
-                childTop = getPaddingTop() + bottom - top - totalLength;
-                break;
-
-            // totalLength contains the padding already
-            case Gravity.CENTER_VERTICAL:
-                childTop = getPaddingTop() + (bottom - top - totalLength) / 2;
-                break;
-
-            case Gravity.TOP:
-            default:
-                childTop = getPaddingTop();
-                break;
-        }
-
-        final Drawable dividerDrawable = getDividerDrawable();
-        final int dividerHeight = dividerDrawable == null ?
-                0 : dividerDrawable.getIntrinsicHeight();
-
-        for (int i = 0; i < count; i++) {
-            final View child = getChildAt(i);
-            if (child != null && child.getVisibility() != GONE) {
-                final int childWidth = child.getMeasuredWidth();
-                final int childHeight = child.getMeasuredHeight();
-
-                final LinearLayoutCompat.LayoutParams lp =
-                        (LinearLayoutCompat.LayoutParams) child.getLayoutParams();
-
-                int layoutGravity = lp.gravity;
-                if (layoutGravity < 0) {
-                    layoutGravity = minorGravity;
-                }
-                final int layoutDirection = ViewCompat.getLayoutDirection(this);
-                final int absoluteGravity = GravityCompat.getAbsoluteGravity(
-                        layoutGravity, layoutDirection);
-
-                final int childLeft;
-                switch (absoluteGravity & Gravity.HORIZONTAL_GRAVITY_MASK) {
-                    case Gravity.CENTER_HORIZONTAL:
-                        childLeft = paddingLeft + ((childSpace - childWidth) / 2)
-                                + lp.leftMargin - lp.rightMargin;
-                        break;
-
-                    case Gravity.RIGHT:
-                        childLeft = childRight - childWidth - lp.rightMargin;
-                        break;
-
-                    case Gravity.LEFT:
-                    default:
-                        childLeft = paddingLeft + lp.leftMargin;
-                        break;
-                }
-
-                if (hasDividerBeforeChildAt(i)) {
-                    childTop += dividerHeight;
-                }
-
-                childTop += lp.topMargin;
-                setChildFrame(child, childLeft, childTop, childWidth, childHeight);
-                childTop += childHeight + lp.bottomMargin;
-            }
-        }
-    }
+//    @SuppressLint("RestrictedApi")
+//    @Override
+//    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+//        final int paddingLeft = getPaddingLeft();
+//
+//        // Where right end of child should go
+//        final int width = right - left;
+//        final int childRight = width - getPaddingRight();
+//
+//        // Space available for child
+//        final int childSpace = width - paddingLeft - getPaddingRight();
+//
+//        final int totalLength = getMeasuredHeight();
+//        final int count = getChildCount();
+//        final int gravity = getGravity();
+//        final int majorGravity = gravity & Gravity.VERTICAL_GRAVITY_MASK;
+//        final int minorGravity = gravity & GravityCompat.RELATIVE_HORIZONTAL_GRAVITY_MASK;
+//
+//        final int inset = 0;
+//
+//        int childTop;
+//        switch (majorGravity) {
+//            case Gravity.BOTTOM:
+//                // totalLength contains the padding already
+//                childTop = getPaddingTop() + bottom - top - totalLength;
+//                break;
+//
+//            // totalLength contains the padding already
+//            case Gravity.CENTER_VERTICAL:
+//                childTop = getPaddingTop() + (bottom - top - totalLength) / 2;
+//                break;
+//
+//            case Gravity.TOP:
+//            default:
+//                childTop = getPaddingTop();
+//                break;
+//        }
+//
+//        final Drawable dividerDrawable = getDividerDrawable();
+//        final int dividerHeight = dividerDrawable == null ?
+//                0 : dividerDrawable.getIntrinsicHeight();
+//
+//        for (int i = 0; i < count; i++) {
+//            final View child = getChildAt(i);
+//            if (child != null && child.getVisibility() != GONE) {
+//                final int childWidth = child.getMeasuredWidth();
+//                int childHeight = child.getMeasuredHeight();
+//
+//                final LinearLayoutCompat.LayoutParams lp =
+//                        (LinearLayoutCompat.LayoutParams) child.getLayoutParams();
+//
+//                int layoutGravity = lp.gravity;
+//                if (layoutGravity < 0) {
+//                    layoutGravity = minorGravity;
+//                }
+//                final int layoutDirection = ViewCompat.getLayoutDirection(this);
+//                final int absoluteGravity = GravityCompat.getAbsoluteGravity(
+//                        layoutGravity, layoutDirection);
+//
+//                final int childLeft;
+//                switch (absoluteGravity & Gravity.HORIZONTAL_GRAVITY_MASK) {
+//                    case Gravity.CENTER_HORIZONTAL:
+//                        childLeft = paddingLeft + ((childSpace - childWidth) / 2)
+//                                + lp.leftMargin - lp.rightMargin;
+//                        break;
+//
+//                    case Gravity.RIGHT:
+//                        childLeft = childRight - childWidth - lp.rightMargin;
+//                        break;
+//
+//                    case Gravity.LEFT:
+//                    default:
+//                        childLeft = paddingLeft + lp.leftMargin;
+//                        break;
+//                }
+//
+//                if (hasDividerBeforeChildAt(i)) {
+//                    childTop += dividerHeight;
+//                }
+//
+//                childTop += lp.topMargin;
+//                setChildFrame(child, childLeft, childTop, childWidth, childHeight);
+//                childTop += childHeight + lp.bottomMargin;
+//            }
+//        }
+//    }
 
     private void setChildFrame(View child, int left, int top, int width, int height) {
         child.layout(left, top, left + width, top + height);

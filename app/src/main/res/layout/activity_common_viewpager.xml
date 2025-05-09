@@ -18,13 +18,21 @@
         app:layout_constraintTop_toBottomOf="@+id/top_bar"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-    <com.huanli233.biliterminal2.ui.widget.pager.DotsIndicatorView
-        android:id="@+id/dots_indicator"
+    <com.huanli233.biliterminal2.ui.widget.wearable.BoxInsetLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="4dp"/>
+        app:boxedEdges="bottom|left|right">
+        <com.huanli233.biliterminal2.ui.widget.pager.PageIndicatorView
+            android:id="@+id/dots_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:wsPageIndicatorDotColor="?attr/colorPrimary"
+            app:wsPageIndicatorDotColorSelected="?attr/colorPrimaryVariant"
+            app:wsPageIndicatorDotFadeOutDelay="3000"
+            android:layout_marginBottom="4dp"/>
+    </com.huanli233.biliterminal2.ui.widget.wearable.BoxInsetLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

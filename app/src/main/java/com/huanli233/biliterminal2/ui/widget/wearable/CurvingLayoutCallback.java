@@ -26,6 +26,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.huanli233.biliterminal2.R;
+import com.huanli233.biliterminal2.utils.SystemConfigurationKt;
 
 /**
  * An implementation of the {@link WearableLinearLayoutManager.LayoutCallback} aligning the children
@@ -54,9 +55,7 @@ public class CurvingLayoutCallback extends WearableLinearLayoutManager.LayoutCal
     public CurvingLayoutCallback(Context context) {
         mCurvePath = new Path();
         mPathMeasure = new PathMeasure();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            mIsScreenRound = context.getResources().getConfiguration().isScreenRound();
-        }
+        mIsScreenRound = SystemConfigurationKt.isRound();
         mXCurveOffset = context.getResources().getDimensionPixelSize(
                 R.dimen.ws_wrv_curve_default_x_offset);
     }

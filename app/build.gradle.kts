@@ -7,11 +7,11 @@ import java.util.stream.StreamSupport
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.protobuf)
     alias(libs.plugins.kapt)
     alias(libs.plugins.parcelize)
+    alias(libs.plugins.ksp)
 }
 
 buildscript {
@@ -86,10 +86,10 @@ android {
         multiDexEnabled = true
 
         vectorDrawables.useSupportLibrary = true
+    }
 
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
     }
 
     signingConfigs {

@@ -40,6 +40,35 @@
         <attr name="backgroundCornerRadius" format="dimension"/>
         <attr name="backgroundPadding" format="dimension"/>
     </declare-styleable>
+    <declare-styleable name="PageIndicatorView">
+        <!-- Sets the distance between dots. -->
+        <attr name="wsPageIndicatorDotSpacing" format="dimension" />
+        <!-- Sets the radius of a dot when it is not selected. -->
+        <attr name="wsPageIndicatorDotRadius" format="dimension" />
+        <!-- Sets the radius of a dot when it is selected. -->
+        <attr name="wsPageIndicatorDotRadiusSelected" format="dimension" />
+        <!-- Sets the color of a dot when it is not selected. -->
+        <attr name="wsPageIndicatorDotColor" format="color" />
+        <!-- Sets the color of a dot when it is selected. -->
+        <attr name="wsPageIndicatorDotColorSelected" format="color" />
+        <!-- Sets whether the dots should fade out after inactivity. -->
+        <attr name="wsPageIndicatorDotFadeWhenIdle" format="boolean" />
+        <!-- Sets the delay between the pager arriving at an idle state, and the fade out animation
+             beginning, in milliseconds. -->
+        <attr name="wsPageIndicatorDotFadeOutDelay" format="integer" />
+        <!-- Sets the duration of the fade out animation. -->
+        <attr name="wsPageIndicatorDotFadeOutDuration" format="integer" />
+        <!-- Sets the duration of the fade in animation. -->
+        <attr name="wsPageIndicatorDotFadeInDuration" format="integer" />
+        <!-- Sets the shadow color. -->
+        <attr name="wsPageIndicatorDotShadowColor" format="color" />
+        <!-- Sets the shadow radius. -->
+        <attr name="wsPageIndicatorDotShadowRadius" format="dimension" />
+        <!-- Sets the horizontal shadow offset. -->
+        <attr name="wsPageIndicatorDotShadowDx" format="dimension" />
+        <!-- Sets the vertical shadow offset. -->
+        <attr name="wsPageIndicatorDotShadowDy" format="dimension" />
+    </declare-styleable>
     <declare-styleable name="BoxInsetLayout">
         <attr name="boxedEdges">
             <!-- Default boxing setting. There are no insets forced on the child views. -->

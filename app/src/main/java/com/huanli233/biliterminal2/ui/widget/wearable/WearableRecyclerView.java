@@ -30,6 +30,7 @@ import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.huanli233.biliterminal2.R;
+import com.huanli233.biliterminal2.utils.SystemConfigurationKt;
 
 import org.jspecify.annotations.Nullable;
 
@@ -264,7 +265,7 @@ public class WearableRecyclerView extends RecyclerView {
      *                        with the center of the screen.
      */
     public void setEdgeItemsCenteringEnabled(boolean isEnabled) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || !getResources().getConfiguration().isScreenRound()) {
+        if (!SystemConfigurationKt.isRound()) {
             mEdgeItemsCenteringEnabled = false;
             return;
         }

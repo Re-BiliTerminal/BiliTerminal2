@@ -7,10 +7,8 @@ import com.huanli233.biliterminal2.databinding.ActivityCommonViewpagerBinding
 import com.huanli233.biliterminal2.ui.activity.base.BaseActivity
 import com.huanli233.biliterminal2.ui.fragment.login.ImportLoginFragment
 import com.huanli233.biliterminal2.ui.fragment.login.QrCodeLoginFragment
-import com.huanli233.biliterminal2.ui.fragment.setup.WelcomeFragment
-import com.huanli233.biliterminal2.ui.widget.pager.setupWithDotsIndicator
-import com.huanli233.biliterminal2.ui.utils.viewpager2.PagerFragmentStateAdapter
 import com.huanli233.biliterminal2.ui.utils.viewpager2.pagerFragmentAdapter
+import com.huanli233.biliterminal2.ui.widget.pager.setupWithIndicator
 import com.huanli233.biliterminal2.utils.extensions.putArgument
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -39,7 +37,7 @@ class LoginActivity: BaseActivity() {
                     }
                 )
             )
-            setupWithDotsIndicator(binding.dotsIndicator)
+            setupWithIndicator(binding.dotsIndicator)
         }
 
         pageName = getString(R.string.login)

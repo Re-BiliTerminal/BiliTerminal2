@@ -38,6 +38,7 @@ import androidx.annotation.UiThread;
 
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.data.setting.DataStore;
+import com.huanli233.biliterminal2.utils.SystemConfigurationKt;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -116,7 +117,7 @@ public class BoxInsetLayout extends ViewGroup {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && (isInEditMode() || DataStore.INSTANCE.getAppSettings().getRoundMode())) {
-            mIsRound = getResources().getConfiguration().isScreenRound();
+            mIsRound = SystemConfigurationKt.isRound();
             WindowInsets insets = getRootWindowInsets();
             if (insets != null) {
                 mInsets.set(insets.getSystemWindowInsetLeft(), insets.getSystemWindowInsetTop(),

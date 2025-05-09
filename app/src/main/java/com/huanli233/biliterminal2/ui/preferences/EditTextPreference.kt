@@ -112,6 +112,11 @@ open class EditTextPreference(
                     MsgUtil.showMsg(context.getString(R.string.invalid_input))
                 }
             }
+            .apply {
+                title?.takeIf { it.isNotEmpty() }?.let {
+                    setTitle(it)
+                }
+            }
             .setView(mEditText)
             .show()
     }
