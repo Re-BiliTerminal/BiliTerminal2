@@ -1,13 +1,16 @@
 package com.huanli233.biliterminal2.ui.widget.scalablecontainer;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import androidx.annotation.NonNull;
 import androidx.core.widget.NestedScrollView;
 import androidx.dynamicanimation.animation.DynamicAnimation;
 import androidx.dynamicanimation.animation.SpringAnimation;
@@ -39,6 +42,7 @@ public class AppNestedScrollView extends NestedScrollView {
     private final DynamicAnimation.OnAnimationEndListener animationEndListener;
     private boolean enableEnd;
     private boolean enableStart;
+    private boolean autoFocus;
     private int flingOverScrollState;
     private float flingVelocityY;
     private boolean isAnimScale;
@@ -71,7 +75,41 @@ public class AppNestedScrollView extends NestedScrollView {
         this.isAnimScale = obtainStyledAttributes.getBoolean(R.styleable.AppNestedScrollView_animScaleNSV, true);
         this.enableStart = obtainStyledAttributes.getBoolean(R.styleable.AppNestedScrollView_springEnableStartNSV, true);
         this.enableEnd = obtainStyledAttributes.getBoolean(R.styleable.AppNestedScrollView_springEnableEndNSV, true);
+        this.autoFocus = obtainStyledAttributes.getBoolean(R.styleable.AppNestedScrollView_autoFocusNSV, true);
         obtainStyledAttributes.recycle();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            setDefaultFocusHighlightEnabled(false);
+        }
+        if (autoFocus) {
+            setFocusable(true);
+            setFocusableInTouchMode(true);
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
+        if (isFocusable() && !isFocused()) {
+            requestFocus();
+        }
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (autoFocus && isFocusable() && !isFocused()) {
+            requestFocus();
+        }
+    }
+
+    @Override
+    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        if (autoFocus && visibility == View.VISIBLE && isFocusable() && !isFocused()) {
+            requestFocus();
+        }
     }
 
     @Override

@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <Preference
+        app:title="@string/view_preview">
+        <intent
+            android:targetPackage="com.huanli233.biliterminal2"
+            android:targetClass="com.huanli233.biliterminal2.ui.activity.setup.UiPreviewActivity" />
+    </Preference>
+
     <PreferenceCategory
         app:title="@string/scale">
         <com.huanli233.biliterminal2.ui.preferences.FloatEditTextPreference

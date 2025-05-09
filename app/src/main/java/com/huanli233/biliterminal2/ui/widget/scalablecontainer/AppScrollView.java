@@ -1,7 +1,9 @@
 package com.huanli233.biliterminal2.ui.widget.scalablecontainer;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.ScrollView;
 
+import androidx.annotation.NonNull;
 import androidx.dynamicanimation.animation.DynamicAnimation;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
@@ -34,6 +37,7 @@ public class AppScrollView extends ScrollView {
     private static final String TAG = "AppScrollView";
     public static final int TYPE_DRAG_OVER_BACK = 1;
     public static final int TYPE_FLING_BACK = 0;
+    private final boolean autoFocus;
     private SpringAnimation anim;
     private List<View> animScaleViews;
     private final DynamicAnimation.OnAnimationEndListener animationEndListener;
@@ -69,9 +73,43 @@ public class AppScrollView extends ScrollView {
         setOverScrollMode(2);
         TypedArray obtainStyledAttributes = context.obtainStyledAttributes(attributeSet, R.styleable.AppScrollView, 0, 0);
         this.isAnimScale = obtainStyledAttributes.getBoolean(R.styleable.AppScrollView_animScaleSV, true);
-        this.enableStart = obtainStyledAttributes.getBoolean(R.styleable.AppNestedScrollView_springEnableStartNSV, true);
-        this.enableEnd = obtainStyledAttributes.getBoolean(R.styleable.AppNestedScrollView_springEnableEndNSV, true);
+        this.enableStart = obtainStyledAttributes.getBoolean(R.styleable.AppScrollView_springEnableStartSV, true);
+        this.enableEnd = obtainStyledAttributes.getBoolean(R.styleable.AppScrollView_springEnableEndSV, true);
+        this.autoFocus = obtainStyledAttributes.getBoolean(R.styleable.AppScrollView_autoFocusSV, true);
         obtainStyledAttributes.recycle();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            setDefaultFocusHighlightEnabled(false);
+        }
+        if (autoFocus) {
+            setFocusable(true);
+            setFocusableInTouchMode(true);
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (isFocusable() && !isFocused()) {
+            requestFocus();
+        }
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (autoFocus && isFocusable() && !isFocused()) {
+            requestFocus();
+        }
+    }
+
+    @Override
+    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        if (autoFocus && visibility == View.VISIBLE && isFocusable() && !isFocused()) {
+            requestFocus();
+        }
     }
 
     @Override

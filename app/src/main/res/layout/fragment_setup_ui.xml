@@ -21,6 +21,12 @@
                 android:layout_height="wrap_content"
                 android:text="@string/round_screen_adaptation" />
 
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/animations"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/animation" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

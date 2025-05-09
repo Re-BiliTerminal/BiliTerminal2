@@ -1,7 +1,9 @@
 package com.huanli233.biliterminal2.ui.widget.scalablecontainer;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -9,6 +11,8 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewParent;
 
+import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
 import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
@@ -49,6 +53,7 @@ public class AppRecyclerView extends WearableRecyclerView {
     private final SpringAnimation springAnimation;
     private final boolean isSpringEnabledAtStart;
     private final boolean isSpringEnabledAtEnd;
+    private final boolean autoFocus;
     private final int maxFlingVelocityY;
 
     private int currentFlingVelocityY;
@@ -76,6 +81,9 @@ public class AppRecyclerView extends WearableRecyclerView {
         TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.AppRecyclerView);
         isSpringEnabledAtStart = attributes.getBoolean(R.styleable.AppRecyclerView_springEnableStartRV, true);
         isSpringEnabledAtEnd = attributes.getBoolean(R.styleable.AppRecyclerView_springEnableEndRV, true);
+        autoFocus = attributes.getBoolean(R.styleable.AppRecyclerView_autoFocusRV, true);
+        boolean verticalScrollBar = attributes.getBoolean(R.styleable.AppRecyclerView_verticalScroll, true);
+        boolean horizontalScrollBar = attributes.getBoolean(R.styleable.AppRecyclerView_horizontalScroll, false);
         attributes.recycle();
 
         SpringForce spring = new SpringForce()
@@ -83,8 +91,54 @@ public class AppRecyclerView extends WearableRecyclerView {
                 .setStiffness(SPRING_STIFFNESS);
         springAnimation = new SpringAnimation(this, OVER_TRANSLATION_Y_PROPERTY).setSpring(spring);
         maxFlingVelocityY = ViewConfiguration.get(context).getScaledMaximumFlingVelocity() / 2;
+
+        if (verticalScrollBar && !horizontalScrollBar) {
+            setVerticalScrollBarEnabled(true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                ViewCompat.setScrollIndicators(this, ViewCompat.SCROLL_INDICATOR_TOP | ViewCompat.SCROLL_INDICATOR_BOTTOM, ViewCompat.SCROLL_INDICATOR_TOP | ViewCompat.SCROLL_INDICATOR_BOTTOM);
+            }
+        }
+        if (horizontalScrollBar && !verticalScrollBar) {
+            setHorizontalScrollBarEnabled(true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                ViewCompat.setScrollIndicators(this, ViewCompat.SCROLL_INDICATOR_START | ViewCompat.SCROLL_INDICATOR_END, ViewCompat.SCROLL_INDICATOR_START | ViewCompat.SCROLL_INDICATOR_END);
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            setDefaultFocusHighlightEnabled(false);
+        }
+        if (autoFocus) {
+            setFocusable(true);
+            setFocusableInTouchMode(true);
+        }
     }
     // EndRegion
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (isFocusable() && !isFocused()) {
+            requestFocus();
+        }
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (autoFocus && isFocusable() && !isFocused()) {
+            requestFocus();
+        }
+    }
+
+    @Override
+    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        if (autoFocus && visibility == View.VISIBLE && isFocusable() && !isFocused()) {
+            requestFocus();
+        }
+    }
 
     // Region: Public Methods
     public float getOverTranslationY() {

@@ -72,7 +72,6 @@ class UiSetupFragment: BaseFragment() {
                 selectedThemeMode = position
                 lifecycleScope.launch {
                     with (DataStore.appSettings) {
-                        val oldThemeMode = nightMode.toSystemValue()
                         runBlocking {
                             DataStore.editData {
                                 nightMode = when (selectedThemeMode) {
@@ -92,6 +91,9 @@ class UiSetupFragment: BaseFragment() {
         binding.roundMode.setOnCheckedChangeListener { _, _ ->
             lifecycleScope.launch { save() }
         }
+        binding.animations.setOnCheckedChangeListener { _, _ ->
+            lifecycleScope.launch { save() }
+        }
         binding.uiScaleInput.addTextChangedListener {
             lifecycleScope.launch { save() }
         }
@@ -105,6 +107,7 @@ class UiSetupFragment: BaseFragment() {
 
     private fun initFields() {
         binding.roundMode.isChecked = DataStore.appSettings.roundMode
+        binding.animations.isChecked = DataStore.appSettings.animationsEnabled
         binding.uiScaleInput.setText(DataStore.appSettings.uiScale.toString())
 //        binding.uiPaddingHorizontalInput.setText(DataStore.appSettings.uiPaddingHorizontal.toString())
 //        binding.uiPaddingVerticalInput.setText(DataStore.appSettings.uiPaddingVertical.toString())
@@ -118,6 +121,7 @@ class UiSetupFragment: BaseFragment() {
 //                MsgUtil.showMsg(getString(R.string.auto_changed_padding))
 //            }
             roundMode = binding.roundMode.isChecked
+            animationsEnabled = binding.animations.isChecked
             binding.uiScaleInput.valueOrError(converter = { it.toFloatOrNull()?.takeIf { it in 0.25f..5.00f } }) {
                 uiScale = it
             }

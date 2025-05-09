@@ -100,15 +100,20 @@
         <attr name="animScaleSV" format="boolean" />
         <attr name="springEnableEndSV" format="boolean" />
         <attr name="springEnableStartSV" format="boolean" />
+        <attr name="autoFocusSV" format="boolean" />
     </declare-styleable>
     <declare-styleable name="AppNestedScrollView">
         <attr name="springEnableEndNSV" format="boolean" />
         <attr name="springEnableStartNSV" format="boolean" />
         <attr name="animScaleNSV" format="boolean" />
+        <attr name="autoFocusNSV" format="boolean" />
     </declare-styleable>
     <declare-styleable name="AppRecyclerView">
         <attr name="springEnableEndRV" format="boolean" />
         <attr name="springEnableStartRV" format="boolean" />
+        <attr name="verticalScroll" format="boolean" />
+        <attr name="horizontalScroll" format="boolean" />
+        <attr name="autoFocusRV" format="boolean" />
     </declare-styleable>
     <declare-styleable name="AppLinearLayout">
         <attr name="useAlphaForLL" format="boolean" />
