@@ -16,6 +16,8 @@
     <style name="Theme.BiliTerminal2.Material3.BaseFullScreenDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="android:colorBackground">?attr/colorSurfaceContainerHigh</item>
 
+        <item name="alertDialogStyle">@style/MaterialAlertDialog.Material3.FullScreen</item>
+        <item name="buttonBarButtonStyle">@style/Widget.Material3.Button.TextButton.Dialog.FullScreen</item>
         <item name="android:windowFrame">@null</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>

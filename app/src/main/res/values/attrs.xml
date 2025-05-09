@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="ButtonBarLayout">
+        <attr name="allowStacking" format="boolean" />
+    </declare-styleable>
+
     <!-- App Widgets -->
     <declare-styleable name="TopBar">
         <attr name="titleText" format="string|reference"/>
@@ -35,6 +39,60 @@
         <attr name="backgroundColor" format="color"/>
         <attr name="backgroundCornerRadius" format="dimension"/>
         <attr name="backgroundPadding" format="dimension"/>
+    </declare-styleable>
+    <declare-styleable name="BoxInsetLayout">
+        <attr name="boxedEdges">
+            <!-- Default boxing setting. There are no insets forced on the child views. -->
+            <flag name="none" value="0x00" />
+            <!-- The view will force an inset on the left edge of the children. -->
+            <flag name="left" value="0x01" />
+            <!-- The view will force an inset on the top edge of the children. -->
+            <flag name="top" value="0x02" />
+            <!-- The view will force an inset on the right edge of the children. -->
+            <flag name="right" value="0x04" />
+            <!-- The view will force an inset on the bottom edge of the children. -->
+            <flag name="bottom" value="0x08" />
+            <!-- The view will force an inset on all of the edges of the children. -->
+            <flag name="all" value="0x0F" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="BoxInsetLayout_Layout">
+        <!-- The types of insets this view can force on its children. The view will respect the
+             defined values of other child attributes such as ones provided by
+             {@link android.view.ViewGroup.MarginLayoutParams}, but it will add an additional inset
+              as requested -->
+        <attr name="layout_boxedEdges">
+            <!-- Default boxing setting. There are no insets forced on the child views. -->
+            <flag name="none" value="0x00" />
+            <!-- The view will force an inset on the left edge of the children. -->
+            <flag name="left" value="0x01" />
+            <!-- The view will force an inset on the top edge of the children. -->
+            <flag name="top" value="0x02" />
+            <!-- The view will force an inset on the right edge of the children. -->
+            <flag name="right" value="0x04" />
+            <!-- The view will force an inset on the bottom edge of the children. -->
+            <flag name="bottom" value="0x08" />
+            <!-- The view will force an inset on all of the edges of the children. -->
+            <flag name="all" value="0x0F" />
+        </attr>
+    </declare-styleable>
+    <!-- Attributes that can be used with any
+        WearableRecyclerView.
+        These attributes relate to the circular scrolling gesture of the view. -->
+    <declare-styleable name="WearableRecyclerView">
+        <!-- Taps within this radius and the radius of the screen are considered close enough to the
+            bezel to be candidates for circular scrolling. Expressed as a fraction of the screen's
+            radius. The default is the whole screen i.e 1.0f -->
+        <attr name="bezelWidth" format="fraction" />
+        <!-- Enables/disables circular touch scrolling for this view. When enabled, circular touch
+            gestures around the edge of the screen will cause the view to scroll up or down. -->
+        <attr name="circularScrollingGestureEnabled" format="boolean" />
+        <!-- Sets how many degrees the user has to rotate by to scroll through one screen height
+            when they are using the circular scrolling gesture. The default value equates 180
+            degrees scroll to one screen.-->
+        <attr name="scrollDegreesPerScreen" format="float" />
+        <attr name="topPadding" format="boolean" />
+        <attr name="bottomPadding" format="boolean" />
     </declare-styleable>
 
     <!-- App Scalable Containers -->

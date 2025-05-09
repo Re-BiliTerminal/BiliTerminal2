@@ -138,7 +138,7 @@ open class EditTextPreference(
                 ViewGroup.LayoutParams.WRAP_CONTENT
             ).apply {
                 if (DataStore.appSettings.fullScreenDialogDisabled) {
-                    updatePadding(top = context.dp(20), left = context.dp(12), right = context.dp(12))
+                    updatePadding(top = context.dp(22), left = context.dp(17), right = context.dp(17))
                 } else {
                     updateMargins(left = context.dp(16), right = context.dp(16))
                 }

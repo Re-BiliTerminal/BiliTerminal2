@@ -4,105 +4,111 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <com.huanli233.biliterminal2.ui.widget.wearable.BoxInsetLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="5dp"
-        android:layout_marginVertical="7dp"
-        android:orientation="vertical"
-        android:paddingBottom="30dp">
-
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/round_mode"
+        android:layout_height="wrap_content">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/round_screen_adaptation" />
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginVertical="7dp"
+            android:orientation="vertical"
+            android:paddingBottom="30dp">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu" >
-            <com.huanli233.biliterminal2.ui.widget.views.ExposedDropdownMenu
-                android:id="@+id/dark_theme_input"
-                android:hint="@string/dark_theme"
-                app:simpleItems="@array/dark_theme_modes"
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/round_mode"
                 android:layout_width="match_parent"
-                android:inputType="none"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="wrap_content"
+                android:text="@string/round_screen_adaptation" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/interface_scale"
-            android:textStyle="bold"
-            android:layout_marginTop="6dp"
-            android:textSize="17sp"/>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            app:errorEnabled="true"
-            android:hint="@string/interface_size" >
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/ui_scale_input"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:inputType="numberDecimal"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu" >
+                <com.huanli233.biliterminal2.ui.widget.views.ExposedDropdownMenu
+                    android:id="@+id/dark_theme_input"
+                    android:hint="@string/dark_theme"
+                    app:simpleItems="@array/dark_theme_modes"
+                    android:layout_width="match_parent"
+                    android:inputType="none"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/interface_size_tip"
-            android:layout_marginTop="2dp"
-            android:textSize="12sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/interface_margins"
-            android:textStyle="bold"
-            android:layout_marginTop="6dp"
-            android:textSize="17sp"/>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/horizontal"
-            android:layout_marginTop="2dp"
-            app:errorEnabled="true"
-            app:suffixText="@string/percent">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/ui_padding_horizontal_input"
-                android:inputType="number"
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="wrap_content"
+                android:text="@string/interface_scale"
+                android:textStyle="bold"
+                android:layout_marginTop="6dp"
+                android:textSize="17sp"/>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:errorEnabled="true"
-            android:hint="@string/vertical"
-            app:suffixText="@string/percent" >
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/ui_padding_vertical_input"
-                android:inputType="number"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:hint="@string/interface_size" >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ui_scale_input"
+                    android:layout_width="match_parent"
+                    android:inputType="numberDecimal"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/ui_preview_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            android:text="@string/view_preview" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/interface_size_tip"
+                android:layout_marginTop="2dp"
+                android:textSize="12sp" />
 
-    </LinearLayout>
+
+            <!-- <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/interface_margins"
+                android:textStyle="bold"
+                android:layout_marginTop="6dp"
+                android:textSize="17sp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/horizontal"
+                android:layout_marginTop="2dp"
+                app:errorEnabled="true"
+                app:suffixText="@string/percent">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ui_padding_horizontal_input"
+                    android:inputType="number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:errorEnabled="true"
+                android:hint="@string/vertical"
+                app:suffixText="@string/percent" >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ui_padding_vertical_input"
+                    android:inputType="number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            -->
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/ui_preview_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:text="@string/view_preview" />
+
+        </LinearLayout>
+    </com.huanli233.biliterminal2.ui.widget.wearable.BoxInsetLayout>
 
 </com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppNestedScrollView>

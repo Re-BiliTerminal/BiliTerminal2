@@ -15,6 +15,7 @@ import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.data.menu.MenuConfigManager
 import com.huanli233.biliterminal2.data.setting.DataStore
 import com.huanli233.biliterminal2.ui.fragment.base.BaseFragment
+import com.huanli233.biliterminal2.ui.utils.recyclerview.defaultLayoutManager
 import com.huanli233.biliterminal2.utils.multitype.register
 
 class MenuFragment: BaseFragment() {
@@ -34,7 +35,7 @@ class MenuFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        recyclerView.layoutManager = view.context.defaultLayoutManager
         recyclerView.adapter = MultiTypeAdapter(
             MenuConfigManager.readMenuConfig().menuItems
         ).register {

@@ -40,9 +40,9 @@ public class ScaleEdgeLayoutManager extends LinearLayoutManager {
             if (childAt != null) {
                 int height2 = childAt.getHeight();
                 int bottom = childAt.getBottom();
-                float f = 1.0f;
+                float f = RESET_SCALE;
                 if (height2 < height && bottom > height) {
-                    f = 0.8f + (((height2 - (bottom - height)) * 0.19999999f) / height2);
+                    f = START_SCALE + (((height2 - (bottom - height)) * 0.19999999f) / height2);
                 }
                 childAt.setPivotX(childAt.getWidth() / 2.0f);
                 childAt.setPivotY(0.0f);

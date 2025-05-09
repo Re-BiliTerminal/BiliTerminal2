@@ -12,15 +12,15 @@ import android.view.ViewParent;
 import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.huanli233.biliterminal2.R;
 import com.huanli233.biliterminal2.ui.utils.view.ViewUtils;
+import com.huanli233.biliterminal2.ui.widget.wearable.WearableRecyclerView;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class AppRecyclerView extends RecyclerView {
+public class AppRecyclerView extends WearableRecyclerView {
     // Region: Constants
     private static final int SCROLL_CALCULATION_INTERVAL_MS = 30;
     private static final float OVERSCROLL_TRANSLATION_RATIO = 2.0f;
@@ -31,7 +31,7 @@ public class AppRecyclerView extends RecyclerView {
     private static final float OVERSCROLL_DRAG_DIVIDER = 2.0f;
 
     private static final FloatPropertyCompat<AppRecyclerView> OVER_TRANSLATION_Y_PROPERTY =
-            new FloatPropertyCompat<AppRecyclerView>("overTranslationY") {
+            new FloatPropertyCompat<>("overTranslationY") {
                 @Override
                 public float getValue(AppRecyclerView view) {
                     return view.getOverTranslationY();

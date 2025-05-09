@@ -95,38 +95,38 @@ class UiSetupFragment: BaseFragment() {
         binding.uiScaleInput.addTextChangedListener {
             lifecycleScope.launch { save() }
         }
-        binding.uiPaddingHorizontalInput.addTextChangedListener {
-            lifecycleScope.launch { save() }
-        }
-        binding.uiPaddingVerticalInput.addTextChangedListener {
-            lifecycleScope.launch { save() }
-        }
+//        binding.uiPaddingHorizontalInput.addTextChangedListener {
+//            lifecycleScope.launch { save() }
+//        }
+//        binding.uiPaddingVerticalInput.addTextChangedListener {
+//            lifecycleScope.launch { save() }
+//        }
     }
 
     private fun initFields() {
         binding.roundMode.isChecked = DataStore.appSettings.roundMode
         binding.uiScaleInput.setText(DataStore.appSettings.uiScale.toString())
-        binding.uiPaddingHorizontalInput.setText(DataStore.appSettings.uiPaddingHorizontal.toString())
-        binding.uiPaddingVerticalInput.setText(DataStore.appSettings.uiPaddingVertical.toString())
+//        binding.uiPaddingHorizontalInput.setText(DataStore.appSettings.uiPaddingHorizontal.toString())
+//        binding.uiPaddingVerticalInput.setText(DataStore.appSettings.uiPaddingVertical.toString())
     }
 
     private suspend fun save() {
         DataStore.editData {
-            if (!roundMode && roundMode != binding.roundMode.isChecked) {
-                binding.uiPaddingHorizontalInput.setText(ROUND_MODE_DEFAULT_PADDING_HORIZONTAL.toString())
-                binding.uiPaddingVerticalInput.setText(ROUND_MODE_DEFAULT_PADDING_VERTICAL.toString())
-                MsgUtil.showMsg(getString(R.string.auto_changed_padding))
-            }
+//            if (!roundMode && roundMode != binding.roundMode.isChecked) {
+//                binding.uiPaddingHorizontalInput.setText(ROUND_MODE_DEFAULT_PADDING_HORIZONTAL.toString())
+//                binding.uiPaddingVerticalInput.setText(ROUND_MODE_DEFAULT_PADDING_VERTICAL.toString())
+//                MsgUtil.showMsg(getString(R.string.auto_changed_padding))
+//            }
             roundMode = binding.roundMode.isChecked
             binding.uiScaleInput.valueOrError(converter = { it.toFloatOrNull()?.takeIf { it in 0.25f..5.00f } }) {
                 uiScale = it
             }
-            binding.uiPaddingHorizontalInput.valueOrError(converter = { it.toIntOrNull()?.takeIf { it in 0..30 } }) {
-                uiPaddingHorizontal = it
-            }
-            binding.uiPaddingVerticalInput.valueOrError(converter = { it.toIntOrNull()?.takeIf { it in 0..30 } }) {
-                uiPaddingVertical = it
-            }
+//            binding.uiPaddingHorizontalInput.valueOrError(converter = { it.toIntOrNull()?.takeIf { it in 0..30 } }) {
+//                uiPaddingHorizontal = it
+//            }
+//            binding.uiPaddingVerticalInput.valueOrError(converter = { it.toIntOrNull()?.takeIf { it in 0..30 } }) {
+//                uiPaddingVertical = it
+//            }
         }
     }
 
@@ -134,9 +134,15 @@ class UiSetupFragment: BaseFragment() {
         converter: (String) -> T?,
         valueReceiver: (T) -> Unit
     ) = converter(text.toString())?.also {
-        getTextInputLayout()?.error = null
+        getTextInputLayout()?.apply {
+            isErrorEnabled = false
+            error = null
+        }
     }?.let(valueReceiver) ?: let {
-        getTextInputLayout()?.error = context.getString(R.string.invalid_value)
+        getTextInputLayout()?.apply {
+            isErrorEnabled = true
+            error = context.getString(R.string.invalid_value)
+        }
     }
 
     private fun TextInputEditText.getTextInputLayout(): TextInputLayout? {

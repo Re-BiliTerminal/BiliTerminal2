@@ -2,4 +2,5 @@
 <resources>
     <item name="expandable_text" type="id" />
     <item name="expand_collapse" type="id" />
+    <item name="topPanel" type="id" />
 </resources>

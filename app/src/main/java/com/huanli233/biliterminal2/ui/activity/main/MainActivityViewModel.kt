@@ -1,5 +1,7 @@
 package com.huanli233.biliterminal2.ui.activity.main
 
+import android.content.Context
+import android.os.Build
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,9 +17,11 @@ import com.huanli233.biliwebapi.api.interfaces.ICookieApi
 import com.huanli233.biliwebapi.api.interfaces.IMainPage
 import com.huanli233.biliwebapi.api.util.CookieRefreshUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 sealed class InitializationState {
@@ -29,6 +33,7 @@ sealed class InitializationState {
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
+    @ApplicationContext private val applicationContext: Context,
     private val accountRepository: AccountRepository
 ) : ViewModel() {
 
@@ -44,6 +49,13 @@ class MainActivityViewModel @Inject constructor(
 
         viewModelScope.launch {
             if (DataStore.appSettings.firstRun) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && applicationContext.resources.configuration.isScreenRound) {
+                    runBlocking {
+                        DataStore.editData {
+                            roundMode = true
+                        }
+                    }
+                }
                 _initializationState.value = InitializationState.NavigateToSetup
                 return@launch
             }

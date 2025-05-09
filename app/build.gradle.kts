@@ -223,6 +223,7 @@ dependencies {
     implementation(libs.androidx.interpolator)
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.preference.ktx)
+//    implementation(libs.androidx.wear)
 
     implementation(libs.protobuf.javalite)
 

@@ -65,10 +65,11 @@ orgEclipseJgit = "7.2.0.202503040940-r"
 preferenceKtx = "1.2.1"
 protobufJavalite = "3.25.1"
 # noinspection GradleDependency
+wear = "1.3.0"
 zxingCore = "3.3.0"
 
 # Kotlin
-kotlinCoroutinesAndroid = "1.10.1"
+kotlinCoroutinesAndroid = "1.10.2"
 
 # Third Party - UI/Adapters
 multitype = "4.3.0"
@@ -107,6 +108,7 @@ androidx-interpolator = { module = "androidx.interpolator:interpolator", version
 androidx-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "pagingRuntimeKtx" }
 androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preferenceKtx" }
 androidx-transition = { module = "androidx.transition:transition", version.ref = "androidxTransition" }
+androidx-wear = { module = "androidx.wear:wear", version.ref = "wear" }
 desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJdkLibs" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }

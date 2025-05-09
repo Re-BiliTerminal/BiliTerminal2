@@ -1,88 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppNestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    app:animScaleSV="false">
 
-    <LinearLayout
+    <com.huanli233.biliterminal2.ui.widget.wearable.BoxInsetLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/page_padding_horizontal"
-        android:orientation="vertical">
-
-        <TextView
+        app:boxedEdges="top|bottom">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="@string/biliterminal_crash"
-            android:gravity="center"
-            android:textSize="18sp" />
+            android:layout_marginHorizontal="@dimen/page_padding_horizontal"
+            android:orientation="vertical">
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="2dp"
-            android:layout_marginTop="4dp"
-            app:contentPadding="6dp">
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginTop="6dp"
+                android:text="@string/biliterminal_crash"
+                android:gravity="center"
+                android:textSize="18sp" />
 
-                <TextView
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="2dp"
+                android:layout_marginTop="4dp"
+                app:contentPadding="6dp">
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/crash_stack"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
+                    android:orientation="vertical">
 
-                <com.huanli233.biliterminal2.ui.widget.views.ExpandableTextView
-                    android:id="@+id/stack"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:text="xxx.xxx.xxx.xxxException\nAt ...\nAt ...\nAt ...\nAt ...\nAt ..."
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:maxCollapsedLines="4"
-                    app:animDuration="200" >
                     <TextView
-                        android:id="@id/expandable_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="13sp" />
+                        android:text="@string/crash_stack"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
 
-                    <ImageButton
-                        android:id="@id/expand_collapse"
-                        android:layout_width="wrap_content"
+                    <com.huanli233.biliterminal2.ui.widget.views.ExpandableTextView
+                        android:id="@+id/stack"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:contentDescription="@null"
-                        android:padding="10dp"
-                        android:layout_gravity="end|bottom"
-                        android:background="@android:color/transparent"
-                        app:tint="?attr/colorOnSurface" />
+                        tools:text="xxx.xxx.xxx.xxxException\nAt ...\nAt ...\nAt ...\nAt ...\nAt ..."
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:maxCollapsedLines="4"
+                        app:animDuration="200" >
+                        <TextView
+                            android:id="@id/expandable_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="13sp" />
 
-                </com.huanli233.biliterminal2.ui.widget.views.ExpandableTextView>
-            </LinearLayout>
+                        <ImageButton
+                            android:id="@id/expand_collapse"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@null"
+                            android:padding="10dp"
+                            android:layout_gravity="end|bottom"
+                            android:background="@android:color/transparent"
+                            app:tint="?attr/colorOnSurface" />
 
-        </com.google.android.material.card.MaterialCardView>
+                    </com.huanli233.biliterminal2.ui.widget.views.ExpandableTextView>
+                </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/restart_btn"
-            android:text="@string/restart_app"
-            app:icon="@drawable/icon_refresh"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/exit_btn"
-            android:text="@string/exit_app"
-            app:icon="@drawable/icon_logout"
-            android:layout_marginBottom="8dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/restart_btn"
+                android:text="@string/restart_app"
+                app:icon="@drawable/icon_refresh"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-    </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/exit_btn"
+                android:text="@string/exit_app"
+                app:icon="@drawable/icon_logout"
+                android:layout_marginBottom="8dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-</com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppNestedScrollView>
+        </LinearLayout>
+    </com.huanli233.biliterminal2.ui.widget.wearable.BoxInsetLayout>
+
+</com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppScrollView>

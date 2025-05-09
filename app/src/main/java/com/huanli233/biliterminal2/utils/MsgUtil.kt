@@ -2,20 +2,29 @@ package com.huanli233.biliterminal2.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.Typeface
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.Toast
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.snackbar.SnackbarContentLayout
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updateMargins
+import androidx.core.view.updatePadding
 import com.huanli233.biliterminal2.applicationContext
 import com.huanli233.biliterminal2.data.setting.DataStore
 import com.huanli233.biliterminal2.event.SnackEvent
+import com.huanli233.biliterminal2.ui.widget.snackbar.BaseTransientBottomBar
+import com.huanli233.biliterminal2.ui.widget.snackbar.Snackbar
+import com.huanli233.biliterminal2.ui.widget.snackbar.SnackbarContentLayout
+import com.huanli233.biliterminal2.ui.widget.wearable.BoxInsetLayout
 import com.huanli233.biliterminal2.utils.ThreadManager.runOnUiThread
 import com.huanli233.biliterminal2.utils.extensions.dp2px
 import org.greenrobot.eventbus.EventBus
+import kotlin.math.roundToInt
 
 object MsgUtil {
     private var toast: Toast? = null
@@ -96,15 +105,30 @@ object MsgUtil {
         return createSnack(view, text, duration, null)
     }
 
+    private val screenWidth: Int by lazy { Resources.getSystem().displayMetrics.widthPixels }
+    private val screenHeight: Int  by lazy { Resources.getSystem().displayMetrics.heightPixels }
+
     @SuppressLint("ClickableViewAccessibility", "RestrictedApi")
     fun createSnack(view: View, text: CharSequence, duration: Int, action: Action?): Snackbar {
         val snackbar: Snackbar = Snackbar.make(view, text, duration)
         snackbar.setBackgroundTint(Color.argb(0x85, 0x80, 0x80, 0x80))
         snackbar.setTextColor(Color.rgb(0xeb, 0xe0, 0xe2))
-        val snackBarView = snackbar.getView()
+        val snackBarView = snackbar.view
         snackBarView.setOnTouchListener(View.OnTouchListener { v: View?, event: MotionEvent? -> false })
         snackBarView.setPadding(dp2px(6f), 0, 0, 0)
-        val contentLayout = ((snackBarView as FrameLayout).getChildAt(0) as SnackbarContentLayout)
+        val snackBarLayout = (snackBarView as Snackbar.SnackbarLayout)
+        val contentLayout = (snackBarLayout.getChildAt(0) as SnackbarContentLayout)
+
+        if (DataStore.appSettings.roundMode) {
+            snackBarLayout.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                val inset = BoxInsetLayout.calculateInset(screenWidth, screenHeight)
+                updateMargins(
+                    left = (inset * 0.85).roundToInt(),
+                    right = (inset * 0.85).roundToInt(),
+                    bottom = inset
+                )
+            }
+        }
 
         if (action != null) snackbar.setAction(action.text, action.onClickListener)
         else if (duration == Snackbar.LENGTH_INDEFINITE || duration >= 5000) {

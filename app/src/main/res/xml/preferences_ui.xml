@@ -22,25 +22,6 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:title="@string/interface_margins"
-        app:summary="@string/no_more_than_30">
-        <com.huanli233.biliterminal2.ui.preferences.IntEditTextPreference
-            app:key="ui_padding_horizontal"
-            app:title="@string/horizontal"
-            app:useSimpleSummaryProvider="true"
-            app:defaultValue="0"
-            app:minIntValue="0"
-            app:maxIntValue="30" />
-        <com.huanli233.biliterminal2.ui.preferences.IntEditTextPreference
-            app:key="ui_padding_vertical"
-            app:title="@string/vertical"
-            app:useSimpleSummaryProvider="true"
-            app:defaultValue="0"
-            app:minIntValue="0"
-            app:maxIntValue="30" />
-    </PreferenceCategory>
-
-    <PreferenceCategory
         app:title="@string/preference">
         <SwitchPreferenceCompat
             app:key="round_mode"

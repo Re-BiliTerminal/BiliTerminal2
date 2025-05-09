@@ -3,7 +3,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Material3CardView" parent="Widget.Material3.CardView.Outlined">
-        <item name="cardBackgroundColor">?attr/colorSurfaceContainerHighest</item>
+        <item name="cardBackgroundColor">?attr/colorSurfaceContainerHigh</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="cardElevation">3dp</item>
@@ -53,6 +53,14 @@
     <style name="MaterialAlertDialog.Material3.Animation.App">
         <item name="android:windowEnterAnimation">@anim/m3_enter</item>
         <item name="android:windowExitAnimation">@anim/m3_exit</item>
+    </style>
+    <style name="MaterialAlertDialog.Material3.FullScreen" parent="MaterialAlertDialog.Material3">
+        <item name="android:layout">@layout/layout_m3_dialog_fullscreen</item>
+        <item name="dialogPreferredPadding">3dp</item>
+    </style>
+    <style name="Widget.Material3.Button.TextButton.Dialog.FullScreen" parent="Widget.Material3.Button.TextButton">
+        <item name="android:insetBottom">2dp</item>
+        <item name="android:insetTop">2dp</item>
     </style>
 
 </resources>
