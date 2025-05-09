@@ -51,14 +51,12 @@ object DataStore {
             }
         }
 
-    val appSettingsStateFlow: StateFlow<AppSettings?> by lazy {
-        appSettingsFlow
-            .stateIn(
-                scope = applicationScope,
-                started = SharingStarted.Eagerly,
-                initialValue = null
-            )
-    }
+    val appSettingsStateFlow: StateFlow<AppSettings?> = appSettingsFlow
+        .stateIn(
+            scope = applicationScope,
+            started = SharingStarted.Eagerly,
+            initialValue = null
+        )
 
     val appSettings: AppSettings
         get() = appSettingsStateFlow.value ?: runBlocking { appSettingsFlow.first() }

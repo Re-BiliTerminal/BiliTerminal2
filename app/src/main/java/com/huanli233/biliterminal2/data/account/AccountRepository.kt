@@ -25,15 +25,14 @@ class AccountRepository @Inject constructor(
     private val dispatcher: CoroutineContext = Dispatchers.IO
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val activeAccount: StateFlow<AccountEntity?> = getActiveAccountIdFlow()
-        .flatMapLatest { activeAccountId ->
-            if (activeAccountId != null) {
-                accountDao.getAccountById(activeAccountId)
-                    ?.let { flowOf(it) }
-                    ?: flowOf(emptyAccount)
-            } else {
-                flowOf(emptyAccount)
-            }
+    val activeAccount: StateFlow<AccountEntity?> = DataStore.appSettingsStateFlow
+        .map {
+            it?.activeAccountId
+        }
+        .mapLatest { id ->
+            id?.let {
+                accountDao.getAccountById(id)
+            } ?: emptyAccount
         }.flowOn(dispatcher).stateIn(
             scope = applicationScope,
             started = Eagerly,
@@ -42,12 +41,6 @@ class AccountRepository @Inject constructor(
 
     private val activeAccountId
         get() = DataStore.appSettings.activeAccountId
-
-    private fun getActiveAccountIdFlow(): Flow<Long?> {
-        return DataStore.appSettingsStateFlow.map {
-            it?.activeAccountId
-        }
-    }
 
     suspend fun setActiveAccount(accountId: Long) = DataStore.editData {
         activeAccountId = accountId

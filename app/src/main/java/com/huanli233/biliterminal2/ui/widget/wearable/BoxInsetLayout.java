@@ -22,6 +22,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -147,7 +148,6 @@ public class BoxInsetLayout extends ViewGroup {
         // Calculate the total effective padding of the BoxInsetLayout (including original padding, foreground padding, and added boxing padding).
         int totalEffectiveHorizontalPadding = getPaddingLeft() + mForegroundPadding.left + getPaddingRight() + mForegroundPadding.right + addedLeftPadding + addedRightPadding;
         int totalEffectiveVerticalPadding = getPaddingTop() + mForegroundPadding.top + getPaddingBottom() + mForegroundPadding.bottom + addedTopPadding + addedBottomPadding;
-
 
         // Measure children. Children are measured within the space available
         // after accounting for the layout's total effective padding and the child's own margins.

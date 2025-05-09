@@ -17,11 +17,15 @@
 <com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppNestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
     android:gravity="center"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:animScaleSV="false">
+    android:background="?attr/colorSurfaceContainerHigh"
+    android:backgroundTint="?attr/colorSurfaceContainerHigh"
+    app:animScaleNSV="false"
+    tools:ignore="UnusedAttribute">
 
     <com.huanli233.biliterminal2.ui.widget.wearable.BoxInsetLayout
         android:layout_width="match_parent"
@@ -96,8 +100,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="8dp"
-                android:paddingStart="2dp"
-                android:paddingEnd="2dp">
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp">
 
                 <FrameLayout
                     android:id="@+id/custom"
