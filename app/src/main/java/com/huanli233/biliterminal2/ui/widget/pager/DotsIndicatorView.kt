@@ -14,11 +14,11 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.animation.doOnEnd
 import com.google.android.material.color.MaterialColors
 import androidx.core.content.ContextCompat
-import androidx.viewpager2.widget.ViewPager2
-import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.huanli233.biliterminal2.R
 import kotlin.math.min
 import androidx.core.view.isVisible
+import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import kotlin.math.abs
 
 class DotsIndicatorView(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {

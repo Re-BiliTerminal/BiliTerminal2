@@ -98,6 +98,7 @@ import java.util.List;
  *
  * @param <B> The transient bottom bar subclass.
  */
+@SuppressWarnings({"unchecked", "deprecation"})
 @SuppressLint({"RestrictedApi", "PrivateResource"})
 public abstract class BaseTransientBottomBar<B extends BaseTransientBottomBar<B>> {
 

@@ -7,10 +7,14 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.InputDeviceCompat;
+import androidx.core.view.MotionEventCompat;
+import androidx.core.view.ViewConfigurationCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.dynamicanimation.animation.DynamicAnimation;
 import androidx.dynamicanimation.animation.SpringAnimation;
@@ -97,9 +101,9 @@ public class AppNestedScrollView extends NestedScrollView {
     }
 
     @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        if (autoFocus && isFocusable() && !isFocused()) {
+    public void onWindowFocusChanged(boolean hasWindowFocus) {
+        super.onWindowFocusChanged(hasWindowFocus);
+        if (hasWindowFocus && autoFocus && isFocusable() && !isFocused()) {
             requestFocus();
         }
     }
@@ -110,6 +114,25 @@ public class AppNestedScrollView extends NestedScrollView {
         if (autoFocus && visibility == View.VISIBLE && isFocusable() && !isFocused()) {
             requestFocus();
         }
+    }
+
+    @Override
+    public boolean onGenericMotionEvent(@NonNull MotionEvent event) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            if (event.getAction() == MotionEvent.ACTION_SCROLL &&
+                    event.isFromSource(InputDeviceCompat.SOURCE_ROTARY_ENCODER)
+            ) {
+                float delta = -event.getAxisValue(MotionEventCompat.AXIS_SCROLL) *
+                        ViewConfigurationCompat.getScaledVerticalScrollFactor(
+                                ViewConfiguration.get(getContext()), getContext()
+                        );
+                scrollBy(0, Math.round(delta));
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
     }
 
     @Override

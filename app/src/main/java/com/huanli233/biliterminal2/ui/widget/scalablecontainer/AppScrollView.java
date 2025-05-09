@@ -7,11 +7,15 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.InputDeviceCompat;
+import androidx.core.view.MotionEventCompat;
+import androidx.core.view.ViewConfigurationCompat;
 import androidx.dynamicanimation.animation.DynamicAnimation;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
@@ -97,9 +101,9 @@ public class AppScrollView extends ScrollView {
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        if (autoFocus && isFocusable() && !isFocused()) {
+    public void onWindowFocusChanged(boolean hasWindowFocus) {
+        super.onWindowFocusChanged(hasWindowFocus);
+        if (hasWindowFocus && autoFocus && isFocusable() && !isFocused()) {
             requestFocus();
         }
     }
@@ -222,14 +226,53 @@ public class AppScrollView extends ScrollView {
     }
 
     @Override
+    public boolean onGenericMotionEvent(MotionEvent event) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            if (event.getAction() == MotionEvent.ACTION_SCROLL &&
+                    event.isFromSource(InputDeviceCompat.SOURCE_ROTARY_ENCODER)
+            ) {
+                float delta = -event.getAxisValue(MotionEventCompat.AXIS_SCROLL) *
+                        ViewConfigurationCompat.getScaledVerticalScrollFactor(
+                                ViewConfiguration.get(getContext()), getContext()
+                        );
+                scrollBy(0, Math.round(delta));
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public boolean dispatchTouchEvent(MotionEvent motionEvent) {
         if (hasChild()) {
             View childAt = getChildAt(0);
             int action = motionEvent.getAction();
             float translationY = childAt.getTranslationY();
             SpringAnimation springAnimation = this.anim;
+            boolean animationWasRunningAndCancelled = false;
             if (springAnimation != null && springAnimation.isRunning()) {
                 this.anim.cancel();
+                animationWasRunningAndCancelled = true;
+                if(this.overScrollState == OVER_SCROLL_STATE_BACKING) {
+                    this.overScrollState = OVER_SCROLL_STATE_IDLE;
+                }
+                if(this.flingOverScrollState == OVER_SCROLL_FLING_ING) {
+                    this.flingOverScrollState = OVER_SCROLL_STATE_IDLE;
+                }
+            }
+            int actionMasked = motionEvent.getActionMasked();
+            ViewParent viewParent = getParent();
+            View child = getChildAt(0);
+            if (this.overScrollState == OVER_SCROLLING_STATE) {
+                if (viewParent != null) {
+                    viewParent.requestDisallowInterceptTouchEvent(true);
+                }
+            } else if (child.getTranslationY() != 0) {
+                if (viewParent != null) {
+                    viewParent.requestDisallowInterceptTouchEvent(true);
+                }
             }
             if (action != 1) {
                 if (action == 2) {

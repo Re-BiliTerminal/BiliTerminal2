@@ -14,13 +14,12 @@ import com.huanli233.biliterminal2.databinding.FragmentLoginQrcodeBinding
 import com.huanli233.biliterminal2.ui.activity.login.EXTRA_NAME_FROM_SETUP
 import com.huanli233.biliterminal2.ui.activity.login.LoginActivity
 import com.huanli233.biliterminal2.ui.fragment.base.BaseFragment
-import com.huanli233.biliterminal2.utils.MsgUtil
-import com.huanli233.biliterminal2.utils.QRCodeUtil
 import com.huanli233.biliterminal2.ui.utils.crossFadeSetText
 import com.huanli233.biliterminal2.ui.utils.image.transition
 import com.huanli233.biliterminal2.ui.utils.showSkeleton
+import com.huanli233.biliterminal2.utils.MsgUtil
+import com.huanli233.biliterminal2.utils.QRCodeUtil
 import dagger.hilt.android.AndroidEntryPoint
-import splitties.fragmentargs.arg
 
 @AndroidEntryPoint
 class QrCodeLoginFragment(): BaseFragment() {
