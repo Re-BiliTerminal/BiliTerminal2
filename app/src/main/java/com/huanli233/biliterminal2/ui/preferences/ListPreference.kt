@@ -217,17 +217,8 @@ open class MaterialListPreference @JvmOverloads constructor(
         val entries = mEntries!!
         val entryValues = mEntryValues!!
         val currentValue = getValue()
-        val initialSelectedIndex = findIndexOfValue(currentValue)
 
         val originalConfigContext = context.originalConfigContext
-
-        val view = LayoutInflater.from(context)
-            .cloneInContext(originalConfigContext)
-            .inflate(R.layout.dialog_list_custom, null)
-        val recyclerView = view.findViewById<AppRecyclerView>(R.id.recyclerView)
-
-        recyclerView.layoutManager = LinearLayoutManager(originalConfigContext)
-        recyclerView.adapter = SingleChoiceAdapter(entries, initialSelectedIndex) { clickedPosition -> }
 
         val checkedItem = findIndexOfValue(currentValue)
 
@@ -325,51 +316,5 @@ open class MaterialListPreference @JvmOverloads constructor(
 
     companion object {
         private val TAG = MaterialListPreference::class.java.simpleName
-    }
-}
-
-class SingleChoiceAdapter(
-    private val entries: Array<CharSequence>,
-    initialSelectedIndex: Int,
-    private val onItemClick: (position: Int) -> Unit
-) : RecyclerView.Adapter<SingleChoiceAdapter.ViewHolder>() {
-
-    private var selectedPosition = initialSelectedIndex
-
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val radioButton: CheckedTextView = itemView.findViewById(R.id.text1)
-
-        init {
-            itemView.setOnClickListener {
-                val clickedPosition = bindingAdapterPosition
-                if (clickedPosition != RecyclerView.NO_POSITION && clickedPosition != selectedPosition) {
-                    val oldSelectedPosition = selectedPosition
-                    selectedPosition = clickedPosition
-                    notifyItemChanged(oldSelectedPosition)
-                    notifyItemChanged(selectedPosition)
-                    onItemClick.invoke(selectedPosition)
-                }
-            }
-        }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .cloneInContext(parent.context)
-            .inflate(R.layout.item_single_choice, parent, false)
-        return ViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.radioButton.text = entries[position]
-        holder.radioButton.isChecked = position == selectedPosition
-    }
-
-    override fun getItemCount(): Int {
-        return entries.size
-    }
-
-    fun getSelectedPosition(): Int {
-        return selectedPosition
     }
 }

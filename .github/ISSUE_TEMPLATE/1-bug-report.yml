@@ -2,7 +2,7 @@ name: Bug 反馈 | Bug Report
 description:
   报告与预期行为不一致的Bug。Report bugs where the expected behavior does not match expectations.
 type: Bug
-labels: ["type: bug", "status: needs triage"]
+labels: ["status: needs triage"]
 body:
   - type: markdown
     attributes:

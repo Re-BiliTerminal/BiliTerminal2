@@ -76,10 +76,10 @@ open class BaseActivity : ThemedAppCompatActivity() {
 
     var topBar: TopBar? = null
 
-    override fun attachBaseContext(context: Context) {
-        val newContext = overrideConfiguration(context)
+    override fun attachBaseContext(newBase: Context) {
+        val newContext = overrideConfiguration(newBase)
         super.attachBaseContext(newContext)
-        _originalContext = context
+        _originalContext = newBase
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

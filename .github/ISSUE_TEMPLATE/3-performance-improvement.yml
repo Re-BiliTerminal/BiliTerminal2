@@ -3,7 +3,7 @@ description:
   关于提升某处功能的性能的建议。
   Suggestions for improving the performance of a function.
 type: Performance
-labels: ["type: performance", "status: needs triage"]
+labels: ["status: needs triage"]
 body:
   - type: input
     id: function
