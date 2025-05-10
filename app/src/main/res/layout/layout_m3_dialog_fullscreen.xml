@@ -18,7 +18,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scrollView"
+    android:id="@+id/rootScrollView"
     android:gravity="center"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -30,9 +30,7 @@
     <com.huanli233.biliterminal2.ui.widget.wearable.BoxInsetLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_gravity="center"
-        app:boxedEdges="bottom|top">
+        app:boxedEdges="top|bottom">
 
         <com.huanli233.biliterminal2.ui.dialog.fullscreen.AlertDialogLayout
             android:id="@+id/parentPanel"
@@ -41,6 +39,11 @@
             android:gravity="center"
             android:layout_gravity="center"
             android:orientation="vertical">
+
+            <Space
+                android:id="@+id/spacer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <include layout="@layout/layout_m3_alert_dialog_title_fullscreen"/>
 
@@ -58,31 +61,39 @@
                     android:contentDescription="@null"
                     app:backgroundTint="?android:attr/colorForeground"/>
 
-                <LinearLayout
+                <androidx.core.widget.NestedScrollView
+                    android:id="@+id/scrollView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:clipToPadding="false">
 
-                    <android.widget.Space
-                        android:id="@+id/textSpacerNoTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/abc_dialog_padding_top_material"
-                        android:visibility="gone"/>
-
-                    <TextView
-                        android:id="@android:id/message"
-                        style="?attr/materialAlertDialogBodyTextStyle"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="?attr/dialogPreferredPadding"
-                        android:paddingRight="?attr/dialogPreferredPadding"/>
+                        android:orientation="vertical">
 
-                    <android.widget.Space
-                        android:id="@+id/textSpacerNoButtons"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/abc_dialog_padding_top_material"
-                        android:visibility="gone"/>
-                </LinearLayout>
+                        <android.widget.Space
+                            android:id="@+id/textSpacerNoTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/abc_dialog_padding_top_material"
+                            android:visibility="gone"/>
+
+                        <TextView
+                            android:id="@android:id/message"
+                            style="?attr/materialAlertDialogBodyTextStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="?attr/dialogPreferredPadding"
+                            android:paddingRight="?attr/dialogPreferredPadding"/>
+
+                        <android.widget.Space
+                            android:id="@+id/textSpacerNoButtons"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/abc_dialog_padding_top_material"
+                            android:visibility="gone"/>
+                    </LinearLayout>
+
+                </androidx.core.widget.NestedScrollView>
 
                 <ImageView android:id="@+id/scrollIndicatorDown"
                     android:layout_width="match_parent"
@@ -114,6 +125,7 @@
                 android:layout_height="wrap_content"/>
 
         </com.huanli233.biliterminal2.ui.dialog.fullscreen.AlertDialogLayout>
+
     </com.huanli233.biliterminal2.ui.widget.wearable.BoxInsetLayout>
 
 </com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppNestedScrollView>

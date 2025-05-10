@@ -1,7 +1,9 @@
 package com.huanli233.biliterminal2.ui.fragment.setting
 
+import android.util.Log
 import androidx.preference.PreferenceDataStore
 import com.huanli233.biliterminal2.applicationScope
+import com.huanli233.biliterminal2.data.proto.NightMode
 import com.huanli233.biliterminal2.data.setting.DataStore
 import kotlinx.coroutines.launch
 
@@ -14,12 +16,18 @@ class SettingsDataStore: PreferenceDataStore() {
                 "ui_padding_horizontal" -> uiPaddingHorizontal.toString()
                 "ui_padding_vertical" -> uiPaddingVertical.toString()
                 "density" -> density.toString()
+                "night_mode" -> when (nightMode) {
+                    NightMode.NIGHT_MODE_AUTO -> 0
+                    NightMode.NIGHT_MODE_DAY -> 1
+                    else -> 2
+                }.toString()
                 else -> defValue
             }
         }
     }
 
     override fun putString(key: String?, value: String?) {
+        Log.d("SettingsDataStore", "putString: $key $value")
         applicationScope.launch {
             DataStore.editData {
                 when (key) {
@@ -27,6 +35,11 @@ class SettingsDataStore: PreferenceDataStore() {
                     "ui_padding_horizontal" -> uiPaddingHorizontal = value?.toIntOrNull() ?: 0
                     "ui_padding_vertical" -> uiPaddingVertical = value?.toIntOrNull() ?: 0
                     "density" -> density = value?.toIntOrNull() ?: 0
+                    "night_mode" -> nightMode = when (value?.toIntOrNull()) {
+                        0 -> NightMode.NIGHT_MODE_AUTO
+                        1 -> NightMode.NIGHT_MODE_DAY
+                        else -> NightMode.NIGHT_MODE_NIGHT
+                    }
                 }
             }
         }

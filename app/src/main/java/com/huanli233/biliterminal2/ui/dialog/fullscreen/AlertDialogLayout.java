@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,17 +33,22 @@ public class AlertDialogLayout extends LinearLayoutCompat {
 
     public AlertDialogLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+    }
 
-        final DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-        int inset = 0;
-        int extraTopInset = 0;
-        if (SystemConfigurationKt.isRound()) {
-            inset = BoxInsetLayout.calculateInset(metrics.widthPixels, metrics.heightPixels);
-            extraTopInset = AndroidUtilsKt.dp2px(context, 14);
-        }
-        Space space = new Space(context);
-        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, inset + extraTopInset);
-        addView(space, 0, layoutParams);
+    @Override
+    public void addView(View child, int index, ViewGroup.LayoutParams params) {
+        super.addView(child, index, params);
+//        if (child.getId() == R.id.spacer) {
+//            final DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+//            int inset = 0;
+//            if (SystemConfigurationKt.isRound()) {
+//                inset = (int) Math.round(BoxInsetLayout.calculateInset(metrics.widthPixels, metrics.heightPixels) * 2.5);
+//            }
+//            child.setMinimumHeight(inset);
+//            ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
+//            layoutParams.height = inset;
+//            child.setLayoutParams(layoutParams);
+//        }
     }
 
     @Override

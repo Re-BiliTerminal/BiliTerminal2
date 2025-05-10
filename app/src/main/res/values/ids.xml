@@ -3,4 +3,6 @@
     <item name="expandable_text" type="id" />
     <item name="expand_collapse" type="id" />
     <item name="topPanel" type="id" />
+    <item name="radioButton" type="id" />
+    <item name="textView" type="id" />
 </resources>

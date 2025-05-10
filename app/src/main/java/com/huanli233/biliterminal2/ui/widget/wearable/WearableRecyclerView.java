@@ -188,6 +188,14 @@ public class WearableRecyclerView extends RecyclerView {
         }
     }
 
+    public void setTopPaddingEnabled(boolean topPaddingEnabled) {
+        mTopPaddingEnabled = topPaddingEnabled;
+    }
+
+    public void setBottomPaddingEnabled(boolean bottomPaddingEnabled) {
+        mTopPaddingEnabled = bottomPaddingEnabled;
+    }
+
     /**
      * Enables/disables circular touch scrolling for this view. When enabled, circular touch
      * gestures around the edge of the screen will cause the view to scroll up or down. Related

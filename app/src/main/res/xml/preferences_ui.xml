@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <Preference
+    <com.huanli233.biliterminal2.ui.preferences.BasePreference
         app:title="@string/view_preview">
         <intent
             android:targetPackage="com.huanli233.biliterminal2"
             android:targetClass="com.huanli233.biliterminal2.ui.activity.setup.UiPreviewActivity" />
-    </Preference>
+    </com.huanli233.biliterminal2.ui.preferences.BasePreference>
 
     <PreferenceCategory
         app:title="@string/scale">
@@ -30,13 +30,19 @@
 
     <PreferenceCategory
         app:title="@string/preference">
-        <SwitchPreferenceCompat
+        <com.huanli233.biliterminal2.ui.preferences.MaterialListPreference
+            app:key="night_mode"
+            app:title="@string/dark_theme"
+            app:entries="@array/dark_theme_modes"
+            app:entryValues="@array/dark_theme_values"
+            app:useSimpleSummaryProvider="true" />
+        <com.huanli233.biliterminal2.ui.preferences.MaterialSwitchPreference
             app:key="round_mode"
             app:title="@string/round_screen_adaptation" />
-        <SwitchPreferenceCompat
+        <com.huanli233.biliterminal2.ui.preferences.MaterialSwitchPreference
             app:key="animations"
             app:title="@string/animation" />
-        <SwitchPreferenceCompat
+        <com.huanli233.biliterminal2.ui.preferences.MaterialSwitchPreference
             app:key="disable_fullscreen_dialog"
             app:title="@string/disable_fullscreen_dialog" />
     </PreferenceCategory>>

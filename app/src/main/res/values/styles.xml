@@ -31,35 +31,53 @@
         <item name="cornerRadius">12dp</item>
     </style>
 
-    <style name="AppPreferenceSummaryTextStyle">
-        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+    <!-- Preference Theme -->
+    <style name="PreferenceThemeOverlay.Material3">
+        <item name="preferenceCategoryTitleTextAppearance">@style/TextAppearance.Preference.CategoryTitle.Material3</item>
+        <item name="preferenceCategoryTitleTextColor">?colorPrimary</item>
+        <item name="preferenceStyle">@style/Preference.Material3</item>
+        <item name="preferenceCategoryStyle">@style/Preference.Category.Material3</item>
+        <item name="preferenceInformationStyle">@style/Preference.Information.Material3</item>
+        <item name="switchPreferenceCompatStyle">@style/Preference.SwitchPreferenceCompat.Material3</item>
+        <item name="materialSwitchPreferenceStyle">@style/Preference.MaterialSwitchPreference</item>
+        <item name="editTextPreferenceStyle">@style/Preference.EditTextPreference.Material3</item>
     </style>
-    <style name="Preference.TitleTextStyle">
+    <style name="TextAppearance.Preference.Title.Material3" parent="@style/TextAppearance.AppCompat.Subhead">
         <item name="android:textAppearance">?attr/preferenceCategoryTitleTextAppearance</item>
         <item name="android:textColor">?attr/preferenceCategoryTitleTextColor</item>
     </style>
-    <style name="Preference.SummaryTextStyle">
-        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+    <style name="TextAppearance.Preference.CategoryTitle.Material3"
+        parent="@style/TextAppearance.AppCompat.Medium">
+        <item name="android:textSize">14sp</item>
     </style>
-    <style name="SwitchPreferenceCompatStyle" parent="Preference.SwitchPreferenceCompat">
-        <item name="layout">@layout/item_setting</item>
+    <style name="Preference.Material3" parent="Preference.Material">
+        <item name="android:layout">@layout/item_setting</item>
+        <item name="iconSpaceReserved">false</item>
+        <item name="allowDividerBelow">false</item>
+        <item name="allowDividerAbove">false</item>
+    </style>
+    <style name="Preference.SwitchPreferenceCompat.Material3" parent="Preference.SwitchPreferenceCompat.Material">
+        <item name="android:layout">@layout/item_setting</item>
         <item name="widgetLayout">@layout/widget_switch</item>
+        <item name="iconSpaceReserved">false</item>
         <item name="allowDividerBelow">false</item>
+        <item name="allowDividerAbove">false</item>
     </style>
-    <style name="EditTextPreferenceStyle" parent="Preference.DialogPreference.EditTextPreference.Material">
-        <item name="layout">@layout/item_setting</item>
+    <style name="Preference.MaterialSwitchPreference" parent="Preference.SwitchPreferenceCompat.Material3">
+    </style>
+    <style name="Preference.EditTextPreference.Material3" parent="Preference.DialogPreference.EditTextPreference.Material">
+        <item name="android:layout">@layout/item_setting</item>
         <item name="allowDividerBelow">false</item>
+        <item name="allowDividerAbove">false</item>
     </style>
-    <style name="PreferenceStyle" parent="Preference.Material">
-        <item name="layout">@layout/item_setting</item>
+    <style name="Preference.Category.Material3" parent="@style/Preference.Category.Material">
+        <item name="android:layout">@layout/item_setting_category</item>
+        <item name="iconSpaceReserved">true</item>
         <item name="allowDividerBelow">false</item>
+        <item name="allowDividerAbove">false</item>
     </style>
-    <style name="PreferenceCategoryStyle" >
-        <item name="layout">@layout/item_setting</item>
-        <item name="allowDividerBelow">true</item>
-    </style>
-    <style name="PreferenceInformationStyle">
-        <item name="layout">@layout/item_setting</item>
+    <style name="Preference.Information.Material3" parent="@style/Preference.Information">
+        <item name="android:layout">@layout/item_setting</item>
         <item name="enabled">false</item>
         <item name="shouldDisableView">false</item>
     </style>

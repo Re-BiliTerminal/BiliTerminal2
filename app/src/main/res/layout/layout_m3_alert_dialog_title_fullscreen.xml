@@ -34,7 +34,7 @@
             style="?attr/materialAlertDialogTitleIconStyle"/>
 
         <com.huanli233.biliterminal2.ui.dialog.fullscreen.DialogTitle
-            android:id="@+id/alertTitle"
+            android:id="@id/alertTitle"
             style="?attr/materialAlertDialogTitleTextStyle"/>
     </LinearLayout>
 

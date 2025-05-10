@@ -68,6 +68,7 @@ public class BoxInsetLayout extends ViewGroup {
     private Drawable mForegroundDrawable;
 
     private final int mBoxedEdges;
+    private final boolean mDoubleTop;
 
     public BoxInsetLayout(@NonNull Context context) {
         this(context, null);
@@ -90,6 +91,7 @@ public class BoxInsetLayout extends ViewGroup {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BoxInsetLayout, defStyleAttr, 0);
         try {
             mBoxedEdges = a.getInt(R.styleable.BoxInsetLayout_boxedEdges, LayoutParams.BOX_BOTTOM);
+            mDoubleTop = a.getBoolean(R.styleable.BoxInsetLayout_doubleTop, false);
         } finally {
             a.recycle();
         }
@@ -142,7 +144,7 @@ public class BoxInsetLayout extends ViewGroup {
         // Determine the EXTRA padding that the BoxInsetLayout itself will add for boxing.
         // This is applied only on round screens based on the layout's mBoxedEdges attribute.
         int addedLeftPadding = (mIsRound && (mBoxedEdges & LayoutParams.BOX_LEFT) != 0) ? desiredInset : 0;
-        int addedTopPadding = (mIsRound && (mBoxedEdges & LayoutParams.BOX_TOP) != 0) ? desiredInset : 0;
+        int addedTopPadding = (mIsRound && (mBoxedEdges & LayoutParams.BOX_TOP) != 0) ? (mDoubleTop ? desiredInset * 2 : desiredInset) : 0;
         int addedRightPadding = (mIsRound && (mBoxedEdges & LayoutParams.BOX_RIGHT) != 0) ? desiredInset : 0;
         int addedBottomPadding = (mIsRound && (mBoxedEdges & LayoutParams.BOX_BOTTOM) != 0) ? desiredInset : 0;
 

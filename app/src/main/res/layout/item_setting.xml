@@ -14,21 +14,8 @@
     android:clipToPadding="false"
     android:baselineAligned="false">
 
-    <ImageView
-        android:id="@android:id/icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:contentDescription="@null"
-        app:maxWidth="48dp"
-        app:maxHeight="48dp"
-        android:paddingLeft="3dp"
-        android:paddingStart="3dp"
-        android:paddingRight="8dp"
-        android:paddingEnd="8dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        tools:src="@drawable/icon_menu" />
+    <include
+        layout="@layout/m3_icon_frame" />
 
     <RelativeLayout
         android:layout_width="0dp"
@@ -68,8 +55,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="end|center_vertical"
-        android:paddingLeft="16dp"
-        android:paddingStart="16dp"
+        android:paddingLeft="12dp"
+        android:paddingStart="12dp"
         android:paddingRight="0dp"
         android:paddingEnd="0dp"
         android:orientation="vertical"/>

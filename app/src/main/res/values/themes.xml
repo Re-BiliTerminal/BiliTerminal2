@@ -6,14 +6,21 @@
         <item name="materialButtonStyle">@style/Material3Button</item>
         <item name="android:textSize">14sp</item>
 
-        <item name="preferenceStyle">@style/PreferenceStyle</item>
-        <item name="preferenceCategoryStyle">@style/PreferenceCategoryStyle</item>
-        <item name="preferenceInformationStyle">@style/PreferenceInformationStyle</item>
-        <item name="switchPreferenceCompatStyle">@style/SwitchPreferenceCompatStyle</item>
-        <item name="editTextPreferenceStyle">@style/EditTextPreferenceStyle</item>
+        <item name="android:listPreferredItemPaddingLeft">12dp</item>
+        <item name="android:listPreferredItemPaddingStart">12dp</item>
+        <item name="android:listPreferredItemPaddingRight">12dp</item>
+        <item name="android:listPreferredItemPaddingEnd">12dp</item>
+
+        <item name="colorBackgroundFloating">?colorSurfaceContainerHigh</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.Material3</item>
     </style>
 
-    <style name="Theme.BiliTerminal2.Material3.BaseFullScreenDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+    <style name="Theme.BiliTerminal2.Material3.AlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="android:colorBackground">?attr/colorSurfaceContainerHigh</item>
+        <item name="listLayout">@layout/dialog_select_material</item>
+    </style>
+
+    <style name="Theme.BiliTerminal2.Material3.AlertDialog.FullScreen" parent="Theme.BiliTerminal2.Material3.AlertDialog">
         <item name="android:colorBackground">?attr/colorSurfaceContainerHigh</item>
 
         <item name="alertDialogStyle">@style/MaterialAlertDialog.Material3.FullScreen</item>

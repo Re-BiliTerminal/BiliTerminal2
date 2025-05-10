@@ -69,9 +69,7 @@ open class BaseActivity : AppCompatActivity() {
                 @Suppress("DEPRECATION") Resources(
                     assets,
                     DisplayMetrics().apply {
-                        setTo(displayMetrics)
-                        density = system.displayMetrics.density
-                        densityDpi = system.displayMetrics.densityDpi
+                        setTo(system.displayMetrics)
                     },
                     Configuration(configuration).apply {
                         densityDpi = system.configuration.densityDpi

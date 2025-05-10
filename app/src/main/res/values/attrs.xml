@@ -84,6 +84,7 @@
             <!-- The view will force an inset on all of the edges of the children. -->
             <flag name="all" value="0x0F" />
         </attr>
+        <attr name="doubleTop" format="boolean" />
     </declare-styleable>
     <declare-styleable name="BoxInsetLayout_Layout">
         <!-- The types of insets this view can force on its children. The view will respect the
@@ -154,6 +155,7 @@
     </declare-styleable>
 
     <!-- Preferences -->
+    <attr name="materialSwitchPreferenceStyle" />
     <declare-styleable name="AppEditTextPreference">
         <attr name="useSimpleSummaryProvider" format="boolean" />
         <attr name="emptyAllowed" format="boolean" />
