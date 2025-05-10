@@ -5,19 +5,15 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.Typeface
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
-import androidx.core.view.updatePadding
 import com.huanli233.biliterminal2.applicationContext
-import com.huanli233.biliterminal2.data.setting.DataStore
+import com.huanli233.biliterminal2.data.setting.LocalData
 import com.huanli233.biliterminal2.event.SnackEvent
-import com.huanli233.biliterminal2.ui.widget.snackbar.BaseTransientBottomBar
 import com.huanli233.biliterminal2.ui.widget.snackbar.Snackbar
 import com.huanli233.biliterminal2.ui.widget.snackbar.SnackbarContentLayout
 import com.huanli233.biliterminal2.ui.widget.wearable.BoxInsetLayout
@@ -31,7 +27,7 @@ object MsgUtil {
 
     @JvmStatic
     fun showMsg(str: String) {
-        if (DataStore.appSettings.snackbarEnabled) {
+        if (LocalData.settings.uiSettings.snackbarEnabled) {
             runOnUiThread(Runnable { EventBus.getDefault().postSticky(SnackEvent(str)) })
         } else {
             toast(str)
@@ -40,7 +36,7 @@ object MsgUtil {
 
     @JvmStatic
     fun showMsgLong(str: String) {
-        if (DataStore.appSettings.snackbarEnabled) {
+        if (LocalData.settings.uiSettings.snackbarEnabled) {
             runOnUiThread(Runnable { EventBus.getDefault().postSticky(SnackEvent(str)) })
         } else {
             toastLong(str)
@@ -119,7 +115,7 @@ object MsgUtil {
         val snackBarLayout = (snackBarView as Snackbar.SnackbarLayout)
         val contentLayout = (snackBarLayout.getChildAt(0) as SnackbarContentLayout)
 
-        if (DataStore.appSettings.roundMode) {
+        if (LocalData.settings.uiSettings.roundMode) {
             snackBarLayout.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 val inset = BoxInsetLayout.calculateInset(screenWidth, screenHeight)
                 updateMargins(

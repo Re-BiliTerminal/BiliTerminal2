@@ -8,14 +8,14 @@ import android.widget.TextView
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
-import com.huanli233.biliterminal2.data.setting.DataStore
+import com.huanli233.biliterminal2.data.setting.LocalData
 
 fun TextView.crossFadeSetText(
     text: CharSequence
 ) {
     animate().cancel()
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && DataStore.appSettings.animationsEnabled && text != this.text) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && LocalData.settings.theme.animationsEnabled && text != this.text) {
         animate()
             .alpha(0.7f)
             .setDuration(150)
@@ -38,7 +38,7 @@ fun TextView.crossFadeSetText(
 
 /* Skeleton */
 fun View.showSkeleton(layout: Int): SkeletonScreen? {
-    return if (DataStore.appSettings.animationsEnabled) {
+    return if (LocalData.settings.theme.animationsEnabled) {
         Skeleton
             .bind(this)
             .load(layout)

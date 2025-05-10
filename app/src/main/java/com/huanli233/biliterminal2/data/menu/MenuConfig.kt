@@ -4,13 +4,12 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.google.gson.Gson
 import com.huanli233.biliterminal2.R
-import com.huanli233.biliterminal2.data.setting.DataStore
+import com.huanli233.biliterminal2.data.setting.LocalData
 import com.huanli233.biliterminal2.data.account.AccountManager
 import com.huanli233.biliterminal2.ui.activity.login.LoginActivity
 import com.huanli233.biliterminal2.ui.activity.recommend.RecommendActivity
 import com.huanli233.biliterminal2.ui.activity.setting.SettingsActivity
 import kotlin.collections.firstOrNull
-import kotlin.math.log
 
 val DEFAULT_MENU_LIST = listOf<MenuItem>(
     menuItem<LoginActivity>("login", R.string.login, R.drawable.icon_login, requireNotLoggedIn = true, notMenuActivity = true),
@@ -83,7 +82,7 @@ data class MenuConfig(
 object MenuConfigManager {
 
     fun readMenuConfig(): MenuConfig {
-        return fromString(DataStore.appSettings.menuConfig)?.takeIf {
+        return fromString(LocalData.settings.menuConfig)?.takeIf {
             it.list.isNotEmpty() && it.menuItems.containsAll(DEFAULT_MENU_LIST.filter { it.required })
         } ?: MenuConfig(
             list = DEFAULT_MENU_LIST.map { it.id }

@@ -1,19 +1,14 @@
 package com.huanli233.biliterminal2.data.account
 
-import android.util.Log
 import com.huanli233.biliterminal2.BiliTerminal
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.applicationContext
-import com.huanli233.biliterminal2.applicationScope
 import com.huanli233.biliterminal2.data.di.AppDependenciesEntryPoint
 import com.huanli233.biliterminal2.data.account.AccountManager.currentAccount
-import com.huanli233.biliterminal2.data.setting.DataStore
 import com.huanli233.biliterminal2.utils.MsgUtil
 import com.huanli233.biliterminal2.utils.runOnUi
-import dagger.hilt.EntryPoints
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 object AccountManager {

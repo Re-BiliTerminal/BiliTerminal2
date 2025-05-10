@@ -1,19 +1,14 @@
 package com.huanli233.biliterminal2.ui.fragment.menu
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.TransitionInflater
 import com.drakeet.multitype.MultiTypeAdapter
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.data.menu.MenuConfigManager
-import com.huanli233.biliterminal2.data.setting.DataStore
 import com.huanli233.biliterminal2.ui.fragment.base.BaseFragment
 import com.huanli233.biliterminal2.ui.utils.recyclerview.defaultLayoutManager
 import com.huanli233.biliterminal2.utils.multitype.register

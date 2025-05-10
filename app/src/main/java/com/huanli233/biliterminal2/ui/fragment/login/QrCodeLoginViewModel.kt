@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.huanli233.biliterminal2.api.apiResultNonNull
 import com.huanli233.biliterminal2.api.bilibiliApi
-import com.huanli233.biliterminal2.data.setting.DataStore
+import com.huanli233.biliterminal2.data.setting.LocalData
 import com.huanli233.biliterminal2.data.account.AccountEntity
 import com.huanli233.biliterminal2.data.account.AccountRepository
 import com.huanli233.biliterminal2.utils.extensions.LoadState
@@ -97,7 +97,7 @@ class QrCodeLoginViewModel @Inject constructor(
         viewModelScope.launch {
             accountRepository.addAccount(
                 AccountEntity(
-                    accountId = DataStore.appSettings.activeAccountId,
+                    accountId = LocalData.settings.activeAccountId,
                     refreshToken = loginResult.refreshToken,
                     lastActiveTime = System.currentTimeMillis()
                 )

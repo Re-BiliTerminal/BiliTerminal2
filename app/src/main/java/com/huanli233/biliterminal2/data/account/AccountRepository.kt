@@ -1,10 +1,7 @@
 package com.huanli233.biliterminal2.data.account
 
-import android.util.Log
 import com.huanli233.biliterminal2.applicationScope
-import com.huanli233.biliterminal2.data.setting.DataStore
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import com.huanli233.biliterminal2.data.setting.LocalData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -25,7 +22,7 @@ class AccountRepository @Inject constructor(
     private val dispatcher: CoroutineContext = Dispatchers.IO
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val activeAccount: StateFlow<AccountEntity?> = DataStore.appSettingsStateFlow
+    val activeAccount: StateFlow<AccountEntity?> = LocalData.settingsStateFlow
         .map {
             it?.activeAccountId
         }
@@ -40,9 +37,9 @@ class AccountRepository @Inject constructor(
         )
 
     private val activeAccountId
-        get() = DataStore.appSettings.activeAccountId
+        get() = LocalData.settings.activeAccountId
 
-    suspend fun setActiveAccount(accountId: Long) = DataStore.editData {
+    suspend fun setActiveAccount(accountId: Long) = LocalData.edit {
         activeAccountId = accountId
     }
 
@@ -53,7 +50,7 @@ class AccountRepository @Inject constructor(
     suspend fun removeAccount(accountId: Long) = withContext(dispatcher) {
         accountDao.deleteAccountById(accountId)
         cookiesDao.deleteCookiesByAccountId(accountId)
-        if (DataStore.appSettings.activeAccountId == accountId) {
+        if (LocalData.settings.activeAccountId == accountId) {
             setActiveAccount(DEFAULT_ACCOUNT_DATA_ID)
         }
     }

@@ -5,12 +5,8 @@ import android.content.res.TypedArray
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.LinearLayout
-import androidx.core.content.res.TypedArrayUtils
-import androidx.preference.Preference
 import com.huanli233.biliterminal2.R
 import androidx.core.content.withStyledAttributes
 import androidx.core.view.updateMargins
@@ -18,11 +14,10 @@ import androidx.core.view.updatePadding
 import androidx.core.widget.addTextChangedListener
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.huanli233.biliterminal2.data.setting.DataStore
+import com.huanli233.biliterminal2.data.setting.LocalData
 import com.huanli233.biliterminal2.ui.dialog.Dialogs.dialogBuilder
 import com.huanli233.biliterminal2.utils.MsgUtil
 import com.huanli233.biliterminal2.utils.extensions.originalConfigContext
-import splitties.alertdialog.appcompat.cancelButton
 import splitties.dimensions.dp
 
 
@@ -142,7 +137,7 @@ open class EditTextPreference(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             ).apply {
-                if (DataStore.appSettings.fullScreenDialogDisabled) {
+                if (LocalData.settings.theme.fullScreenDialogDisabled) {
                     updatePadding(top = context.dp(22), left = context.dp(17), right = context.dp(17))
                 } else {
                     updateMargins(left = context.dp(16), right = context.dp(16))

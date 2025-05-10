@@ -6,7 +6,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.huanli233.biliterminal2.R
-import com.huanli233.biliterminal2.data.setting.DataStore
+import com.huanli233.biliterminal2.data.setting.LocalData
 import com.huanli233.biliterminal2.databinding.ActivitySetupBinding
 import com.huanli233.biliterminal2.ui.activity.base.BaseActivity
 import com.huanli233.biliterminal2.ui.activity.login.EXTRA_NAME_FROM_SETUP
@@ -65,7 +65,7 @@ class SetupActivity: BaseActivity() {
                 }
                 R.id.uiSetupFragment -> {
                     lifecycleScope.launch {
-                        DataStore.editData {
+                        LocalData.edit {
                             firstRun = false
                         }
                         finish()

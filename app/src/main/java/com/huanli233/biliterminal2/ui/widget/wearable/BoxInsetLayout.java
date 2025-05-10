@@ -22,7 +22,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,11 +32,10 @@ import androidx.annotation.AttrRes;
 import androidx.annotation.IntDef;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.RestrictTo;
-import androidx.annotation.StyleRes;
 import androidx.annotation.UiThread;
 
 import com.huanli233.biliterminal2.R;
-import com.huanli233.biliterminal2.data.setting.DataStore;
+import com.huanli233.biliterminal2.data.setting.LocalData;
 import com.huanli233.biliterminal2.utils.SystemConfigurationKt;
 
 import org.jspecify.annotations.NonNull;
@@ -118,7 +116,7 @@ public class BoxInsetLayout extends ViewGroup {
     @SuppressWarnings("deprecation") /* getSystemWindowInsetXXXX */
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && (isInEditMode() || DataStore.INSTANCE.getAppSettings().getRoundMode())) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && (isInEditMode() || LocalData.INSTANCE.getSettings().getUiSettings().getRoundMode())) {
             mIsRound = SystemConfigurationKt.isRound();
             WindowInsets insets = getRootWindowInsets();
             if (insets != null) {

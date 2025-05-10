@@ -2,7 +2,6 @@ package com.huanli233.biliterminal2.ui.activity.main
 
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,15 +10,12 @@ import com.huanli233.biliterminal2.api.apiResultNonNull
 import com.huanli233.biliterminal2.api.bilibiliApi
 import com.huanli233.biliterminal2.data.account.AccountManager
 import com.huanli233.biliterminal2.data.account.AccountRepository
-import com.huanli233.biliterminal2.data.proto.AppSettings
-import com.huanli233.biliterminal2.data.setting.DataStore
+import com.huanli233.biliterminal2.data.setting.LocalData
+import com.huanli233.biliterminal2.data.setting.edit
 import com.huanli233.biliwebapi.api.interfaces.ICookieApi
-import com.huanli233.biliwebapi.api.interfaces.IMainPage
 import com.huanli233.biliwebapi.api.util.CookieRefreshUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -48,11 +44,13 @@ class MainActivityViewModel @Inject constructor(
         _initializationState.value = InitializationState.Loading
 
         viewModelScope.launch {
-            if (DataStore.appSettings.firstRun) {
+            if (LocalData.settings.firstRun) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && applicationContext.resources.configuration.isScreenRound) {
                     runBlocking {
-                        DataStore.editData {
-                            roundMode = true
+                        LocalData.edit {
+                            uiSettings = uiSettings.edit {
+                                roundMode = true
+                            }
                         }
                     }
                 }
@@ -60,7 +58,8 @@ class MainActivityViewModel @Inject constructor(
                 return@launch
             }
 
-            val needCheckRefresh = (System.currentTimeMillis() - DataStore.appSettings.lastCheckCookieRefresh) > 1000 * 60 * 60 * 24
+
+            val needCheckRefresh = AccountManager.loggedIn() && (System.currentTimeMillis() - (AccountManager.currentAccount.lastCheckCookieRefresh ?: 0)) > 1000 * 60 * 60 * 24
 
             if (AccountManager.loggedIn() && needCheckRefresh) {
                 runCatching {
@@ -81,10 +80,7 @@ class MainActivityViewModel @Inject constructor(
                                     }.apiResultNonNull()
                                 }.onSuccess { refreshCookieResult ->
                                     refreshCookieResult.onSuccess {
-                                        DataStore.editData {
-                                            lastCheckCookieRefresh = System.currentTimeMillis()
-                                        }
-                                        accountRepository.updateAccount(AccountManager.currentAccount.copy(refreshToken = it.refreshToken))
+                                        accountRepository.updateAccount(AccountManager.currentAccount.copy(refreshToken = it.refreshToken, lastCheckCookieRefresh = System.currentTimeMillis()))
                                         _initializationState.value = InitializationState.Success
                                     }.onFailure { error ->
                                         _initializationState.value = InitializationState.Error(error.message ?: "Unknown refresh error")
@@ -96,9 +92,7 @@ class MainActivityViewModel @Inject constructor(
                                 _initializationState.value = InitializationState.Error(error.message ?: "Unknown cookie info error")
                             }
                         } else {
-                            DataStore.editData {
-                                lastCheckCookieRefresh = System.currentTimeMillis()
-                            }
+                            accountRepository.updateAccount(AccountManager.currentAccount.copy(lastCheckCookieRefresh = System.currentTimeMillis()))
                             _initializationState.value = InitializationState.Success
                         }
                     }.onFailure { error ->

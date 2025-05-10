@@ -1,13 +1,10 @@
 package com.huanli233.biliterminal2.ui.activity.main
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.data.menu.MenuConfigManager
-import com.huanli233.biliterminal2.data.setting.DataStore
 import com.huanli233.biliterminal2.databinding.ActivityMainBinding
 import com.huanli233.biliterminal2.ui.activity.base.BaseActivity
 import com.huanli233.biliterminal2.ui.activity.setup.SetupActivity
@@ -15,7 +12,6 @@ import com.huanli233.biliterminal2.ui.utils.crossFadeSetText
 import com.huanli233.biliterminal2.utils.extensions.invisible
 import com.huanli233.biliterminal2.utils.extensions.visible
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import splitties.activities.start
 
 @AndroidEntryPoint

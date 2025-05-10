@@ -3,10 +3,9 @@ package com.huanli233.biliterminal2.api
 import android.annotation.SuppressLint
 import android.os.Build
 import com.huanli233.biliterminal2.BiliTerminal
-import com.huanli233.biliterminal2.applicationContext
 import com.huanli233.biliterminal2.applicationScope
 import com.huanli233.biliterminal2.data.account.AccountManager
-import com.huanli233.biliterminal2.data.setting.DataStore
+import com.huanli233.biliterminal2.data.setting.LocalData
 import com.huanli233.biliterminal2.data.account.AccountRepository
 import com.huanli233.biliterminal2.data.account.CookieEntity
 import com.huanli233.biliterminal2.data.account.toCookieEntity
@@ -18,7 +17,6 @@ import com.huanli233.biliwebapi.bean.ApiResponse
 import com.huanli233.biliwebapi.httplib.CookieManager
 import com.huanli233.biliwebapi.httplib.WbiSignKeyInfo
 import dagger.hilt.EntryPoints
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -130,14 +128,16 @@ class AppCookieManager @Inject constructor(
 object WbiDataManager : com.huanli233.biliwebapi.httplib.WbiDataManager {
     override var wbiData: WbiSignKeyInfo
         get() = WbiSignKeyInfo(
-            DataStore.appSettings.wbiMixinKey,
-            DataStore.appSettings.wbiLastUpdated,
+            LocalData.settings.apiCache.wbiMixinKey,
+            LocalData.settings.apiCache.wbiLastUpdated,
         )
         set(value) {
             applicationScope.launch {
-                DataStore.editData {
-                    wbiLastUpdated = value.lastUpdated
-                    wbiMixinKey = value.mixinKey
+                LocalData.edit {
+                    apiCache = apiCache.edit {
+                        wbiLastUpdated = value.lastUpdated
+                        wbiMixinKey = value.mixinKey
+                    }
                 }
             }
         }

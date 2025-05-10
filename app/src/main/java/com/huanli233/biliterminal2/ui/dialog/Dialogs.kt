@@ -22,7 +22,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import com.google.android.material.color.MaterialColors
 import com.huanli233.biliterminal2.R
-import com.huanli233.biliterminal2.data.setting.DataStore
+import com.huanli233.biliterminal2.data.setting.LocalData
 import com.huanli233.biliterminal2.ui.dialog.app.AlertDialog
 import com.huanli233.biliterminal2.ui.dialog.app.MaterialAlertDialogBuilder
 import splitties.views.backgroundColor
@@ -55,7 +55,7 @@ object Dialogs {
             .show()
     }
 
-    fun Context.dialogBuilder() = if (DataStore.appSettings.fullScreenDialogDisabled) {
+    fun Context.dialogBuilder() = if (LocalData.settings.theme.fullScreenDialogDisabled) {
         AppMaterialDialogBuilder(this, R.style.Theme_BiliTerminal2_Material3_AlertDialog)
     } else {
         AppMaterialDialogBuilder(this, R.style.Theme_BiliTerminal2_Material3_AlertDialog_FullScreen)
@@ -71,7 +71,7 @@ class AppMaterialDialogBuilder(
 
     override fun create(): AlertDialog {
         return super.create().apply {
-            if (!DataStore.appSettings.fullScreenDialogDisabled) {
+            if (!LocalData.settings.theme.fullScreenDialogDisabled) {
                 window?.apply {
                     runCatching {
                         requestFeature(Window.FEATURE_NO_TITLE)
@@ -93,7 +93,7 @@ class AppMaterialDialogBuilder(
 
     override fun show(): AlertDialog? {
         return super.show().apply {
-            if (!DataStore.appSettings.fullScreenDialogDisabled) {
+            if (!LocalData.settings.theme.fullScreenDialogDisabled) {
                 window?.decorView?.rootView?.findViewById<View>(androidx.appcompat.R.id.parentPanel)?.let {
                     it.updateLayoutParams<FrameLayout.LayoutParams> {
                         gravity = Gravity.CENTER_VERTICAL

@@ -5,7 +5,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.huanli233.biliterminal2.R
-import com.huanli233.biliterminal2.data.setting.DataStore
+import com.huanli233.biliterminal2.data.setting.LocalData
 import com.huanli233.biliterminal2.ui.fragment.menu.MenuFragment
 
 abstract class BaseMenuActivity : BaseActivity() {
@@ -75,7 +75,7 @@ abstract class BaseMenuActivity : BaseActivity() {
         if (supportFragmentManager.findFragmentByTag(menuFragmentTag) == null) {
             supportFragmentManager.commit {
                 setReorderingAllowed(true)
-                if (DataStore.appSettings.animationsEnabled) {
+                if (LocalData.settings.theme.animationsEnabled) {
                     setCustomAnimations(
                         R.anim.slide_in_from_top,
                         R.anim.slide_out_to_bottom,

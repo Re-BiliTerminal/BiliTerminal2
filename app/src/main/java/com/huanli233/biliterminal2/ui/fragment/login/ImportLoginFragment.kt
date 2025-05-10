@@ -11,7 +11,6 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.lifecycleScope
 import com.google.gson.Gson
 import com.huanli233.biliterminal2.R
-import com.huanli233.biliterminal2.data.setting.DataStore
 import com.huanli233.biliterminal2.data.account.AccountDao
 import com.huanli233.biliterminal2.data.account.AccountEntity
 import com.huanli233.biliterminal2.data.account.AccountManager
@@ -22,11 +21,9 @@ import com.huanli233.biliterminal2.databinding.FragmentLoginImportBinding
 import com.huanli233.biliterminal2.ui.activity.login.EXTRA_NAME_FROM_SETUP
 import com.huanli233.biliterminal2.ui.fragment.base.BaseFragment
 import com.huanli233.biliterminal2.utils.MsgUtil
-import com.huanli233.biliterminal2.utils.network.Cookies
 import com.huanli233.biliwebapi.httplib.CookieManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import okhttp3.Cookie
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import javax.inject.Inject
 

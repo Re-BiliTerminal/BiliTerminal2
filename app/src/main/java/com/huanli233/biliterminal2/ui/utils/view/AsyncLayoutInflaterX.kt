@@ -14,7 +14,7 @@ import androidx.annotation.UiThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Pools
 import androidx.core.view.LayoutInflaterCompat
-import com.huanli233.biliterminal2.data.setting.DataStore
+import com.huanli233.biliterminal2.data.setting.LocalData
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadFactory
@@ -41,7 +41,7 @@ class AsyncLayoutInflaterX(context: Context) {
         parent: ViewGroup? = null,
         callback: OnInflateFinishedListener
     ) {
-        if (DataStore.appSettings.asyncInflateEnabled) {
+        if (LocalData.settings.preferences.asyncInflateEnabled) {
             val request = obtainRequest()
             request.inflater = this
             request.resid = resid

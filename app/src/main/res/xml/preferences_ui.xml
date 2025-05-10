@@ -37,6 +37,9 @@
             app:entryValues="@array/dark_theme_values"
             app:useSimpleSummaryProvider="true" />
         <com.huanli233.biliterminal2.ui.preferences.MaterialSwitchPreference
+            app:key="theme_color_system"
+            app:title="@string/system_accent_color" />
+        <com.huanli233.biliterminal2.ui.preferences.MaterialSwitchPreference
             app:key="round_mode"
             app:title="@string/round_screen_adaptation" />
         <com.huanli233.biliterminal2.ui.preferences.MaterialSwitchPreference

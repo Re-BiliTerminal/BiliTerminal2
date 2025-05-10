@@ -8,38 +8,27 @@ import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.Display
-import android.view.InputDevice
-import android.view.MotionEvent
 import android.view.View
-import android.view.ViewConfiguration
-import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.ListView
-import android.widget.ScrollView
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
-import androidx.core.view.ViewConfigurationCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Lifecycle
-import androidx.recyclerview.widget.RecyclerView
-import com.elvishew.xlog.XLog
 import com.huanli233.biliterminal2.R
-import com.huanli233.biliterminal2.data.setting.DataStore
+import com.huanli233.biliterminal2.data.setting.LocalData
 import com.huanli233.biliterminal2.event.SnackEvent
+import com.huanli233.biliterminal2.ui.activity.base.material.ThemedAppCompatActivity
 import com.huanli233.biliterminal2.ui.utils.crossFadeSetText
 import com.huanli233.biliterminal2.ui.widget.components.TopBar
 import com.huanli233.biliterminal2.utils.MsgUtil
-import com.huanli233.biliterminal2.utils.Preferences
+import com.huanli233.biliterminal2.utils.ThemeUtil
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import kotlin.math.roundToInt
 
-open class BaseActivity : AppCompatActivity() {
+open class BaseActivity : ThemedAppCompatActivity() {
     var windowWidth: Int = 0
     var windowHeight: Int = 0
     private lateinit var _originalContext: Context
@@ -99,8 +88,8 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun overrideConfiguration(baseContext: Context): Context {
-        val dpiTimes = DataStore.appSettings.uiScale
-        val density = DataStore.appSettings.density
+        val dpiTimes = LocalData.settings.uiSettings.uiScale
+        val density = LocalData.settings.uiSettings.density
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) return baseContext
         return runCatching {
             val configuration = baseContext.resources.configuration
@@ -125,8 +114,8 @@ open class BaseActivity : AppCompatActivity() {
         enableEdgeToEdge()
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
 
-        val paddingHPercent: Int = DataStore.appSettings.uiPaddingHorizontal
-        val paddingVPercent: Int = DataStore.appSettings.uiPaddingVertical
+        val paddingHPercent: Int = LocalData.settings.uiSettings.uiPaddingHorizontal
+        val paddingVPercent: Int = LocalData.settings.uiSettings.uiPaddingVertical
 
         val rootView: View = this.window.decorView.rootView
         val windowManager: WindowManager = getSystemService(WINDOW_SERVICE) as WindowManager
@@ -140,7 +129,7 @@ open class BaseActivity : AppCompatActivity() {
         if (paddingHPercent != 0 || paddingVPercent != 0) {
             val paddingHorizontal: Int = screenWidth * paddingHPercent / 100
             val paddingTop: Int = screenHeight * paddingVPercent / 100
-            val paddingBottom = if (DataStore.appSettings.roundMode) {
+            val paddingBottom = if (LocalData.settings.uiSettings.roundMode) {
                 (paddingTop + screenHeight * 0.03).toInt()
             } else {
                 paddingTop
@@ -165,10 +154,20 @@ open class BaseActivity : AppCompatActivity() {
         }
     }
 
+    override fun computeUserThemeKey(): String? {
+        return ThemeUtil.getColorTheme()
+    }
+
+    override fun onApplyUserThemeResource(theme: Resources.Theme, isDecorView: Boolean) {
+        if (!ThemeUtil.isSystemAccent()) {
+            theme.applyStyle(ThemeUtil.getColorThemeStyleRes(), true)
+        }
+    }
+
     @Deprecated("Deprecated in Java")
     @Suppress("DEPRECATION")
     override fun onBackPressed() {
-        if (!DataStore.appSettings.backDisabled && Build.VERSION.SDK_INT < 33) {
+        if (!LocalData.settings.preferences.backDisabled && Build.VERSION.SDK_INT < 33) {
             super.onBackPressed()
         }
     }
@@ -249,7 +248,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     protected open fun eventBusEnabled(): Boolean {
-        return DataStore.appSettings.snackbarEnabled
+        return LocalData.settings.uiSettings.snackbarEnabled
     }
 
     override fun isDestroyed(): Boolean {

@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 
 import com.google.android.material.textview.MaterialTextView;
-import com.huanli233.biliterminal2.data.setting.DataStore;
+import com.huanli233.biliterminal2.data.setting.LocalData;
 
 public class MarqueeTextView extends MaterialTextView {
     public MarqueeTextView(Context context, AttributeSet attrs, int defStyle) {
@@ -25,7 +25,7 @@ public class MarqueeTextView extends MaterialTextView {
 
     public void setMarquee() {
         if (!isInEditMode()) {
-            if (DataStore.INSTANCE.getAppSettings().getMarqueeEnabled()) {
+            if (LocalData.INSTANCE.getSettings().getUiSettings().getMarqueeEnabled()) {
                 setSelected(true);
                 setEllipsize(TextUtils.TruncateAt.MARQUEE);
                 setSingleLine();

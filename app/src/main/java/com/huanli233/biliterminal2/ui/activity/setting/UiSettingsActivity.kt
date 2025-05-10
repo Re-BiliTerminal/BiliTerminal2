@@ -7,6 +7,7 @@ import com.huanli233.biliterminal2.databinding.ActivityCommonFragmentContainerBi
 import com.huanli233.biliterminal2.ui.activity.base.BaseActivity
 import com.huanli233.biliterminal2.ui.fragment.setting.ARG_KEY_PREFERENCE_RESOURCE_ID
 import com.huanli233.biliterminal2.ui.fragment.setting.SettingsFragment
+import com.huanli233.biliterminal2.ui.fragment.setting.UiSettingsFragment
 import com.huanli233.biliterminal2.utils.extensions.putArgument
 
 class UiSettingsActivity: BaseActivity() {
@@ -21,9 +22,7 @@ class UiSettingsActivity: BaseActivity() {
         pageName = getString(R.string.settings_ui)
 
         supportFragmentManager.commit {
-            replace(R.id.fragment_container, SettingsFragment().putArgument {
-                putInt(ARG_KEY_PREFERENCE_RESOURCE_ID, R.xml.preferences_ui)
-            })
+            replace(R.id.fragment_container, UiSettingsFragment())
         }
     }
 

@@ -7,6 +7,8 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Parcelable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,14 +16,13 @@ import androidx.annotation.CallSuper
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceRecyclerViewAccessibilityDelegate
 import androidx.preference.PreferenceViewHolder
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.ui.fragment.setting.SettingsDataStore
 
 abstract class BasePreferenceFragment: PreferenceFragmentCompat() {
-
-    private var recyclerView: RecyclerView? = null
 
     @SuppressLint("RestrictedApi")
     override fun onCreateRecyclerView(
@@ -32,18 +33,7 @@ abstract class BasePreferenceFragment: PreferenceFragmentCompat() {
         return (inflater.inflate(R.layout.widget_settings_recyclerview, parent, false) as RecyclerView).apply {
             layoutManager = onCreateLayoutManager()
             setAccessibilityDelegateCompat(PreferenceRecyclerViewAccessibilityDelegate(this))
-            recyclerView = this
         }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val view = super.onCreateView(inflater, container, savedInstanceState)
-//        recyclerView?.removeItemDecorationAt(0)
-        return view
     }
 
     @CallSuper

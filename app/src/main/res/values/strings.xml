@@ -226,6 +226,7 @@
     <string name="no_more_than_30">不能大于30</string>
     <string name="density" translatable="false">Density</string>
     <string name="animation">动画</string>
+    <string name="system_accent_color">系统主题色</string>
 
     <string-array name="icon_license">
         <item>界面设置: Newicons, MIT License</item>

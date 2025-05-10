@@ -1,6 +1,7 @@
 package com.huanli233.biliterminal2.utils.extensions
 
 import android.annotation.SuppressLint
+import com.huanli233.biliterminal2.utils.locale.LocaleDelegate
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -16,8 +17,8 @@ fun Number.formatNumber(
 ): String {
     val num = this.toLong()
     return when {
-        num >= 100_000_000 -> "%.1f${thousand}".format(Locale.getDefault(), num / 100_000_000.0)
-        num >= 10_000 -> "%.1f${million}".format(Locale.getDefault(), num / 10_000.0)
+        num >= 100_000_000 -> "%.1f${thousand}".format(LocaleDelegate.defaultLocale, num / 100_000_000.0)
+        num >= 10_000 -> "%.1f${million}".format(LocaleDelegate.defaultLocale, num / 10_000.0)
         else -> num.toString()
     }
 }

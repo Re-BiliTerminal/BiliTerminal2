@@ -10,7 +10,7 @@ import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerDrawable
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.data.proto.ImageFormat
-import com.huanli233.biliterminal2.data.setting.DataStore
+import com.huanli233.biliterminal2.data.setting.LocalData
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 private val shimmerDrawable
@@ -25,7 +25,7 @@ fun <T: Drawable> RequestBuilder<T>.transition(): RequestBuilder<T> = this.trans
 fun <T> RequestBuilder<T>.noDiskCache(): RequestBuilder<T> = this.diskCacheStrategy(DiskCacheStrategy.NONE)
 private fun <T> RequestBuilder<T>.shimmerPlaceholder(
     @DrawableRes resId: Int
-): RequestBuilder<T> = if (DataStore.appSettings.animationsEnabled) {
+): RequestBuilder<T> = if (LocalData.settings.theme.animationsEnabled) {
     this.placeholder(shimmerDrawable)
 } else {
     this.placeholder(resId)
@@ -71,7 +71,7 @@ private fun String.applyUrlParams(
     if (httpUrl == null || httpUrl.encodedPath.contains("@") || endsWith("gif") || scheme == null || (scheme != "http" && scheme != "https")) {
         return this
     }
-    val format = when(DataStore.appSettings.imageFormat) {
+    val format = when(LocalData.settings.preferences.imageFormat) {
         ImageFormat.IMAGE_FORMAT_JPEG -> "jpeg"
         else -> "webp"
     }

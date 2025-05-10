@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.IOException
 
@@ -32,17 +31,13 @@ fun NightMode.toSystemValue() = when (this) {
     else -> -1
 }
 
-inline fun AppSettings.edit(
-    block: AppSettings.Builder.() -> Unit
-): AppSettings = toBuilder().apply(block).build()
-
-object DataStore {
+object LocalData {
 
     private val dataStore by lazy {
         applicationContext.appSettingsDataStore
     }
 
-    private val appSettingsFlow: Flow<AppSettings> = dataStore.data
+    private val settingsFlow: Flow<AppSettings> = dataStore.data
         .catch { exception ->
             if (exception is IOException) {
                 emit(AppSettingsSerializer.defaultValue)
@@ -51,21 +46,21 @@ object DataStore {
             }
         }
 
-    val appSettingsStateFlow: StateFlow<AppSettings?> = appSettingsFlow
+    val settingsStateFlow: StateFlow<AppSettings?> = settingsFlow
         .stateIn(
             scope = applicationScope,
             started = SharingStarted.Eagerly,
             initialValue = null
         )
 
-    val appSettings: AppSettings
-        get() = appSettingsStateFlow.value ?: runBlocking { appSettingsFlow.first() }
+    val settings: AppSettings
+        get() = settingsStateFlow.value ?: runBlocking { settingsFlow.first() }
 
     suspend fun updateData(transform: suspend (settings: AppSettings) -> AppSettings): AppSettings {
         return dataStore.updateData { transform(it) }
     }
 
-    suspend inline fun editData(crossinline transform: AppSettings.Builder.() -> Unit): AppSettings {
+    suspend inline fun edit(crossinline transform: AppSettings.Builder.() -> Unit): AppSettings {
         return updateData {
             it.edit(transform)
         }

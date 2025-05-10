@@ -16,4 +16,6 @@ plugins {
     alias(libs.plugins.protobuf) apply false
     alias(libs.plugins.kapt) apply false
     alias(libs.plugins.parcelize) apply false
+    alias(libs.plugins.materialthemebuilder) apply false
+    alias(libs.plugins.autoresconfig) apply false
 }

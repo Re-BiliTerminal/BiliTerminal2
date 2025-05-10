@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.huanli233.biliterminal2.data.setting.DataStore;
+import com.huanli233.biliterminal2.data.setting.LocalData;
 
 public class ImageAutoLoadScrollListener extends RecyclerView.OnScrollListener {
     @Override
@@ -41,7 +41,7 @@ public class ImageAutoLoadScrollListener extends RecyclerView.OnScrollListener {
     }
 
     public static void install(@NonNull RecyclerView recyclerView) {
-        if (DataStore.INSTANCE.getAppSettings().getStopLoadImageWhileScrolling())
+        if (LocalData.INSTANCE.getSettings().getPreferences().getStopLoadImageWhileScrolling())
             recyclerView.addOnScrollListener(new ImageAutoLoadScrollListener());
     }
 }

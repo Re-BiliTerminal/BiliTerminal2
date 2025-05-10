@@ -16,6 +16,7 @@ data class AccountEntity(
     val appKey: String? = null,
     val userName: String? = null,
     val avatarUrl: String? = null,
+    val lastCheckCookieRefresh: Long? = null,
     val lastActiveTime: Long,
 )
 
