@@ -334,15 +334,15 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
     }
 
     private static void applyAlphaAnimation(View view, float alpha) {
-        if (isPostHoneycomb()) {
-            view.setAlpha(alpha);
-        } else {
-            AlphaAnimation alphaAnimation = new AlphaAnimation(alpha, alpha);
-            // make it instant
-            alphaAnimation.setDuration(0);
-            alphaAnimation.setFillAfter(true);
-            view.startAnimation(alphaAnimation);
-        }
+//        if (isPostHoneycomb()) {
+//            view.setAlpha(alpha);
+//        } else {
+//            AlphaAnimation alphaAnimation = new AlphaAnimation(alpha, alpha);
+//            // make it instant
+//            alphaAnimation.setDuration(0);
+//            alphaAnimation.setFillAfter(true);
+//            view.startAnimation(alphaAnimation);
+//        }
     }
 
     private static Drawable getDrawable(@NonNull Context context, @DrawableRes int resId) {

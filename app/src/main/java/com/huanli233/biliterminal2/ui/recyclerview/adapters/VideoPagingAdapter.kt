@@ -1,12 +1,15 @@
 package com.huanli233.biliterminal2.ui.recyclerview.adapters
 
+import android.util.Log
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.huanli233.biliterminal2.ui.activity.video.VideoInfoActivity
 import com.huanli233.biliterminal2.ui.widget.components.VideoCard
 import com.huanli233.biliterminal2.utils.diff.VideoInfoDiffCallback
 import com.huanli233.biliterminal2.utils.extensions.formatNumber
 import com.huanli233.biliwebapi.bean.video.VideoInfo
+import splitties.activities.start
 
 class VideoViewHolder(val card: VideoCard) : RecyclerView.ViewHolder(card)
 
@@ -17,12 +20,17 @@ class VideoPagingAdapter: PagingDataAdapter<VideoInfo, VideoViewHolder>(VideoInf
     }
 
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
-        getItem(position)?.let {
+        getItem(position)?.let { info ->
             with(holder.card) {
-                setVideoTitle(it.title)
-                setVideoCover(it.pic)
-                setViews(it.stat.view.formatNumber())
-                setUploader(it.owner.name)
+                setVideoTitle(info.title)
+                setVideoCover(info.pic)
+                setViews(info.stat.view.formatNumber())
+                setUploader(info.owner.name)
+                binding.root.setOnClickListener {
+                    context.start<VideoInfoActivity> {
+                        putExtra("bvid", info.bvid)
+                    }
+                }
             }
         }
     }

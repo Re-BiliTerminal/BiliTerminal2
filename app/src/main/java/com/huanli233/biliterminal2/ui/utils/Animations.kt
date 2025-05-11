@@ -4,11 +4,13 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.os.Build
 import android.view.View
+import android.view.animation.Interpolator
 import android.widget.TextView
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
 import com.huanli233.biliterminal2.data.setting.LocalData
+import androidx.core.view.isVisible
 
 fun TextView.crossFadeSetText(
     text: CharSequence
@@ -33,6 +35,59 @@ fun TextView.crossFadeSetText(
             .start()
     } else {
         this.text = text
+    }
+}
+
+fun crossfadeViews(
+    viewToShow: View,
+    viewToHide: View,
+    duration: Long = 300
+) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && LocalData.settings.theme.animationsEnabled && viewToHide.isVisible && viewToShow.visibility != View.VISIBLE) {
+        viewToHide.animate().cancel()
+        viewToShow.animate().cancel()
+
+        val interpolator: Interpolator = FastOutSlowInInterpolator()
+        val originalHideAlpha = viewToHide.alpha
+        val originalShowAlpha = viewToShow.alpha
+
+        viewToShow.apply {
+            alpha = 0f
+            visibility = View.VISIBLE
+        }
+
+        viewToHide.animate()
+            .alpha(0f)
+            .setDuration(duration / 2)
+            .setInterpolator(interpolator)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationCancel(animation: Animator) {
+                    viewToHide.visibility = View.INVISIBLE
+                    viewToHide.alpha = originalHideAlpha
+                    viewToShow.alpha = originalShowAlpha
+                }
+            })
+            .withEndAction {
+                viewToHide.visibility = View.INVISIBLE
+                viewToHide.alpha = originalHideAlpha
+
+                viewToShow.animate()
+                    .alpha(originalShowAlpha)
+                    .setDuration(duration / 2)
+                    .setInterpolator(interpolator)
+                    .setListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationCancel(animation: Animator) {
+                            viewToShow.alpha = originalShowAlpha
+                        }
+                    })
+                    .start()
+            }
+            .start()
+    } else {
+        viewToHide.animate().cancel()
+        viewToShow.animate().cancel()
+        viewToShow.visibility = View.VISIBLE
+        viewToHide.visibility = View.INVISIBLE
     }
 }
 

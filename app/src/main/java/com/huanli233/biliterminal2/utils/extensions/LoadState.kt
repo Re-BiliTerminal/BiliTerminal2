@@ -5,6 +5,14 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
+fun anyError(vararg states: LoadState<*>): Throwable? {
+    return states.find { it is LoadState.Error }?.toError()?.error
+}
+
+fun anyLoading(vararg states: LoadState<*>): Boolean {
+    return states.any { it.isLoading }
+}
+
 sealed class LoadState<T> {
     val isLoading
         get() = this is Loading || (isSuccess || isError).not()

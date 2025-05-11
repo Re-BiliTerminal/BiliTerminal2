@@ -27,11 +27,11 @@ fun formatNumber(view: TextView, number: Int?) {
 fun loadState(view: ImageView, state: LoadState<*>?) {
     state?.let {
         state.onLoading {
-            view.setImageResource(R.mipmap.loading_2233)
+            view.setImageResource(R.drawable.loading_2233)
         }.onSuccess {
             view.gone()
         }.onError {
-            view.setImageResource(R.mipmap.loading_2233_error)
+            view.setImageResource(R.drawable.loading_2233_error)
         }
     }
 }

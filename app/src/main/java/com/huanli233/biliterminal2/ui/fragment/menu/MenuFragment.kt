@@ -1,17 +1,24 @@
 package com.huanli233.biliterminal2.ui.fragment.menu
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.drakeet.multitype.MultiTypeAdapter
 import com.huanli233.biliterminal2.R
+import com.huanli233.biliterminal2.data.account.AccountManager
+import com.huanli233.biliterminal2.data.account.AccountRepository
 import com.huanli233.biliterminal2.data.menu.MenuConfigManager
 import com.huanli233.biliterminal2.ui.fragment.base.BaseFragment
 import com.huanli233.biliterminal2.ui.utils.recyclerview.defaultLayoutManager
 import com.huanli233.biliterminal2.utils.multitype.register
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class MenuFragment: BaseFragment() {
 
@@ -27,6 +34,7 @@ class MenuFragment: BaseFragment() {
         return view
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -43,6 +51,12 @@ class MenuFragment: BaseFragment() {
                 } else {
                     requireActivity().supportFragmentManager.popBackStack()
                 }
+            }
+        }
+        lifecycleScope.launch {
+            AccountManager.repository.activeAccount.collect {
+                (recyclerView.adapter as? MultiTypeAdapter)?.items = MenuConfigManager.readMenuConfig().menuItems
+                recyclerView.adapter?.notifyDataSetChanged()
             }
         }
     }

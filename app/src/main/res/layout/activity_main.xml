@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/page_bottom_padding"
         android:paddingBottom="@dimen/page_bottom_padding" >
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
@@ -19,26 +19,16 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/text_view"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginHorizontal="6dp"
-
-            app:layout_constraintVertical_chainStyle="packed"
-            app:layout_constraintVertical_bias="0.5"
-            />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
             android:id="@+id/text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/initializing"
-
+            android:gravity="center_horizontal"
             app:layout_constraintTop_toBottomOf="@+id/progress_indicator"
-            app:layout_constraintBottom_toBottomOf="parent"
-
-            android:layout_marginTop="14dp"
             android:textSize="18sp"
-            android:gravity="center"
-
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -46,32 +36,22 @@
             android:id="@+id/error_image_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/loading_2233_error"
+            android:src="@drawable/loading_2233_error"
             android:contentDescription="@null"
-            android:visibility="invisible"
-
+            android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/error_text_view"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginHorizontal="6dp"
-
-            app:layout_constraintVertical_chainStyle="packed"
-            app:layout_constraintVertical_bias="0.5"
-            />
+            android:layout_marginHorizontal="6dp" />
 
         <TextView
             android:id="@+id/error_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="错误"
-            android:visibility="invisible"
-
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/error_image_view"
-
             android:textSize="13sp"
-            android:gravity="center_horizontal"
-
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

@@ -17,9 +17,12 @@ import com.huanli233.biliwebapi.bean.ApiResponse
 import com.huanli233.biliwebapi.httplib.CookieManager
 import com.huanli233.biliwebapi.httplib.WbiSignKeyInfo
 import dagger.hilt.EntryPoints
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -100,29 +103,65 @@ class AppCookieManager @Inject constructor(
             latestCookies.filter { cookie ->
                 cookie.accountId == null || cookie.accountId == (latestAccount?.accountId ?: 0)
             }
+        }.stateIn(
+            scope = applicationScope,
+            started = SharingStarted.Eagerly,
+            initialValue = emptyList()
+        )
+
+    private val currentAccountCookiesCache = mutableListOf<CookieEntity>()
+
+    private var activeAccountCollectorJob: Job? = null
+
+    init {
+        applicationScope.launch(Dispatchers.IO) {
+            val initialActiveAccount = accountRepository.activeAccount.first { it != null }
+            loadCookiesIntoCacheForAccount(initialActiveAccount?.accountId ?: 0)
+
+            activeAccountCollectorJob = applicationScope.launch(Dispatchers.IO) {
+                accountRepository.activeAccount.collect { account ->
+                    loadCookiesIntoCacheForAccount(account?.accountId ?: 0)
+                }
+            }
         }
-            .stateIn(
-                scope = applicationScope,
-                started = SharingStarted.Eagerly,
-                initialValue = emptyList()
-            )
+    }
+
+    private suspend fun loadCookiesIntoCacheForAccount(accountId: Long) {
+        val cookiesForAccount = accountRepository.getCookiesById(accountId)
+        synchronized(currentAccountCookiesCache) {
+            currentAccountCookiesCache.clear()
+            currentAccountCookiesCache.addAll(cookiesForAccount)
+        }
+        println("Loaded ${cookiesForAccount.size} cookies for account $accountId into cache.")
+    }
+
 
     override fun loadForRequest(url: HttpUrl): List<Cookie> {
-        return accountCookies.value.map { it.toOkHttpCookie() }
+        synchronized(currentAccountCookiesCache) {
+            return currentAccountCookiesCache.map { it.toOkHttpCookie() }
+        }
     }
 
     override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
-        val uidInCookies = cookies.find {
-            it.name == "DedeUserID"
-        }?.value?.toLongOrNull()
-        val uid = uidInCookies ?: AccountManager.currentAccount.accountId
+        val uidInCookies = cookies.find { it.name == "DedeUserID" }?.value?.toLongOrNull()
+        val uid = uidInCookies ?: accountRepository.activeAccount.value?.accountId ?: 0
         val cookieEntities = cookies.map { it.toCookieEntity(uid) }
-        if (uidInCookies != null) runBlocking {
-            accountRepository.setActiveAccount(uid)
+
+        runBlocking {
+            if (uidInCookies != null) {
+                accountRepository.setActiveAccount(uid)
+                accountRepository.activeAccount
+            }
             accountRepository.addCookies(cookieEntities)
+
+            synchronized(currentAccountCookiesCache) {
+                currentAccountCookiesCache.removeAll { it.accountId == uid && cookieEntities.any { entity -> entity.name == it.name } }
+                currentAccountCookiesCache.addAll(cookieEntities)
+            }
+
+            println("Saved ${cookieEntities.size} cookies and updated cache for account $uid.")
         }
     }
-
 }
 
 object WbiDataManager : com.huanli233.biliwebapi.httplib.WbiDataManager {
@@ -146,7 +185,7 @@ object WbiDataManager : com.huanli233.biliwebapi.httplib.WbiDataManager {
 fun <T> ApiResponse<T>?.toResult(): Result<T?> {
     return if (this?.code == 0) {
         Result.success(data)
-    } else Result.failure(BilibiliApiException(this?.code ?: Int.MIN_VALUE, "The return value is not 0: ${this?.code}"))
+    } else Result.failure(BilibiliApiException(this?.code ?: Int.MIN_VALUE, "${this?.code} ${this?.message}"))
 }
 
 fun <T> Result<ApiResponse<T>>.apiResult(): Result<T?> {
@@ -163,7 +202,7 @@ fun <T> ApiResponse<T>?.toResultNonNull(): Result<T> {
     val data = this?.data
     return if (this?.code == 0 && data != null) {
         Result.success(data)
-    } else Result.failure(BilibiliApiException(this?.code ?: Int.MIN_VALUE, "The return value is not 0 or data is null: code=${this?.code}, data=${data}"))
+    } else Result.failure(BilibiliApiException(this?.code ?: Int.MIN_VALUE, "code=${this?.code} ${this?.message}, data=${data}"))
 }
 
 fun <T> Result<ApiResponse<T>>.apiResultNonNull(): Result<T> {

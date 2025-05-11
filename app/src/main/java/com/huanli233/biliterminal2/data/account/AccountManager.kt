@@ -1,5 +1,6 @@
 package com.huanli233.biliterminal2.data.account
 
+import android.util.Log
 import com.huanli233.biliterminal2.BiliTerminal
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.applicationContext
@@ -13,7 +14,7 @@ import kotlinx.coroutines.runBlocking
 
 object AccountManager {
 
-    private val repository by lazy {
+    val repository by lazy {
         val hiltEntryPoint = EntryPointAccessors.fromApplication(
             BiliTerminal.application,
             AppDependenciesEntryPoint::class.java
@@ -22,7 +23,7 @@ object AccountManager {
     }
 
     val currentAccount: AccountEntity
-        get() = repository.activeAccount.value ?: runBlocking { repository.activeAccount.first { it != null } } ?: emptyAccount
+        get() = repository.activeAccount.value.also { Log.d("huanli233", "activeAccount=${it}") } ?: runBlocking { repository.activeAccount.first { it != null } }.also { Log.d("huanli233", "firstNotNull=${it}") } ?: emptyAccount
 
     fun loggedIn() = currentAccount.accountId != 0L
 

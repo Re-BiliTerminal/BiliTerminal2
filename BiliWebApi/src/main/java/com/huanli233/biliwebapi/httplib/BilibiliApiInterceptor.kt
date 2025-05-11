@@ -3,12 +3,14 @@ package com.huanli233.biliwebapi.httplib
 import com.huanli233.biliwebapi.BiliWebApi
 import com.huanli233.biliwebapi.api.interfaces.IRequestParamApi
 import com.huanli233.biliwebapi.api.util.BiliTicketUtil
+import com.huanli233.biliwebapi.api.util.DmImgParamUtil
 import com.huanli233.biliwebapi.api.util.RequestParamUtil
 import com.huanli233.biliwebapi.api.util.WbiUtil
 import com.huanli233.biliwebapi.bean.requestParam.Buvids
 import com.huanli233.biliwebapi.httplib.HttpUtils.parseFormBody
 import com.huanli233.biliwebapi.httplib.annotation.API
 import com.huanli233.biliwebapi.httplib.annotation.Csrf
+import com.huanli233.biliwebapi.httplib.annotation.DmImg
 import com.huanli233.biliwebapi.httplib.annotation.Fields
 import com.huanli233.biliwebapi.httplib.annotation.Queries
 import com.huanli233.biliwebapi.httplib.annotation.WbiSign
@@ -50,6 +52,7 @@ internal class BilibiliApiInterceptor(
         requestBuilder = requestBuilder.overrideUrl(invocation)
         requestBuilder = requestBuilder.processUrlParam(requestBuilder.build().url, invocation)
         requestBuilder = requestBuilder.wbiSign(requestBuilder.build().url, invocation)
+        requestBuilder = requestBuilder.dmImgPrams(requestBuilder.build().url, invocation)
         requestBuilder = requestBuilder.processFormParams(requestBuilder.build(), invocation)
 
 
@@ -104,7 +107,7 @@ internal class BilibiliApiInterceptor(
             )
         }
 
-        if ((cookies.any { it.name == "buvid3" } && (cookies.any { it.name == "buvid4" }).not())) {
+        if ((cookies.any { it.name == "buvid3" } && (cookies.any { it.name == "buvid4" })).not()) {
             runBlocking {
                 Buvids.generate(biliWebApi)
             }.data?.let {
@@ -166,6 +169,13 @@ internal class BilibiliApiInterceptor(
     private fun Request.Builder.wbiSign(url: HttpUrl, invocation: Invocation?): Request.Builder = invocation?.method()?.let {
         if (it.isAnnotationPresent(WbiSign::class.java)) {
             url(WbiUtil.signUrl(biliWebApi, url))
+        }
+        this
+    } ?: this
+
+    private fun Request.Builder.dmImgPrams(url: HttpUrl, invocation: Invocation?): Request.Builder = invocation?.method()?.let {
+        if (it.isAnnotationPresent(DmImg::class.java)) {
+            url(DmImgParamUtil.getDmImgParamsUrl(url))
         }
         this
     } ?: this

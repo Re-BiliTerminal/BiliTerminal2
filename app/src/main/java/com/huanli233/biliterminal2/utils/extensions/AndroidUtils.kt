@@ -37,9 +37,13 @@ fun RecyclerView.smoothScrollTo(position: Int) {
     layoutManager?.startSmoothScroll(LinearSmoothScroller(context).apply { targetPosition = position })
 }
 
+fun Context.dp2px(dp: Int) = this.dp2px(dp.toFloat())
+
 fun Context.dp2px(dp: Float): Int {
     return (resources.displayMetrics.density * dp + 0.5f).toInt()
 }
+
+fun dp2px(dp: Int) = dp2px(dp.toFloat())
 
 fun dp2px(dp: Float): Int {
     return applicationContext.dp2px(dp)

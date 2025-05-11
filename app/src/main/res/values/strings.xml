@@ -227,6 +227,10 @@
     <string name="density" translatable="false">Density</string>
     <string name="animation">动画</string>
     <string name="system_accent_color">系统主题色</string>
+    <string name="video_detail">视频详情</string>
+    <string name="tag">标签</string>
+    <string name="request_relation_failed">获取操作信息失败：%1$s</string>
+    <string name="like_failed_with_msg">点赞失败：%1$s</string>
 
     <string-array name="icon_license">
         <item>界面设置: Newicons, MIT License</item>

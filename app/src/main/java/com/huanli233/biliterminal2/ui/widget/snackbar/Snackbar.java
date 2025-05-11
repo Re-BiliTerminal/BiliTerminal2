@@ -515,15 +515,15 @@ public class Snackbar extends BaseTransientBottomBar<Snackbar> {
     }
   }
 
-  private TextView getMessageView() {
+  public TextView getMessageView() {
     return getContentLayout().getMessageView();
   }
 
-  private Button getActionView() {
+  public Button getActionView() {
     return getContentLayout().getActionView();
   }
 
-  private SnackbarContentLayout getContentLayout() {
+  public SnackbarContentLayout getContentLayout() {
     return (SnackbarContentLayout) view.getChildAt(0);
   }
 }

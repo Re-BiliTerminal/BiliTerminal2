@@ -1,5 +1,6 @@
 package com.huanli233.biliterminal2.data.account
 
+import android.util.Log
 import com.huanli233.biliterminal2.applicationScope
 import com.huanli233.biliterminal2.data.setting.LocalData
 import kotlinx.coroutines.Dispatchers
@@ -21,14 +22,13 @@ class AccountRepository @Inject constructor(
 
     private val dispatcher: CoroutineContext = Dispatchers.IO
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val activeAccount: StateFlow<AccountEntity?> = LocalData.settingsStateFlow
         .map {
-            it?.activeAccountId
-        }
-        .mapLatest { id ->
+            val id = it?.activeAccountId
             id?.let {
-                accountDao.getAccountById(id)
+                accountDao.getAccountById(id) ?: AccountEntity(accountId = id).also {
+                    accountDao.insertAccount(it)
+                }
             } ?: emptyAccount
         }.flowOn(dispatcher).stateIn(
             scope = applicationScope,
@@ -69,8 +69,10 @@ class AccountRepository @Inject constructor(
         cookiesDao.getCookieByName(name, activeAccountId)
     }
 
-    suspend fun getCookies() = withContext(dispatcher) {
-        cookiesDao.getCookiesByAccountId(activeAccountId)
+    suspend fun getCookies() = getCookiesById(activeAccountId)
+
+    suspend fun getCookiesById(accountId: Long) = withContext(dispatcher) {
+        cookiesDao.getCookiesByAccountId(accountId)
     }
 
     suspend fun getGuestCookies() = withContext(dispatcher) {

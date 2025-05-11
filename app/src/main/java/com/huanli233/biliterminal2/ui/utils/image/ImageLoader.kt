@@ -5,12 +5,15 @@ import androidx.annotation.DrawableRes
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerDrawable
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.data.proto.ImageFormat
 import com.huanli233.biliterminal2.data.setting.LocalData
+import com.huanli233.biliterminal2.utils.extensions.dp2px
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 private val shimmerDrawable
@@ -47,6 +50,7 @@ fun RequestManager.loadPicture(
         .shimmerPlaceholder(R.mipmap.placeholder)
         .noDiskCache()
         .transition()
+        .apply(RequestOptions.bitmapTransform(RoundedCorners(dp2px(5))))
 
 private val shimmer = Shimmer.AlphaHighlightBuilder()
     .setDuration(1800)

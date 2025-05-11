@@ -1,5 +1,6 @@
 package com.huanli233.biliwebapi.util
 
+import android.util.Log
 import com.google.gson.ExclusionStrategy
 import com.google.gson.FieldAttributes
 import com.google.gson.FieldNamingPolicy

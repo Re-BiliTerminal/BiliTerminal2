@@ -68,6 +68,8 @@
             android:exported="false" />
         <activity
             android:name=".ui.activity.setting.UiSettingsActivity" />
+        <activity
+            android:name=".ui.activity.video.VideoInfoActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

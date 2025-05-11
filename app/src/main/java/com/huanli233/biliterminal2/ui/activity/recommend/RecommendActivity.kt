@@ -6,6 +6,7 @@ import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.databinding.ActivityCommonRecyclerviewBinding
 import com.huanli233.biliterminal2.ui.activity.base.BaseMenuActivity
 import com.huanli233.biliterminal2.ui.fragment.recommend.RecommendFragment
+import dagger.hilt.android.AndroidEntryPoint
 
 class RecommendActivity: BaseMenuActivity() {
     override fun getMenuName(): String = getString(R.string.recommend)

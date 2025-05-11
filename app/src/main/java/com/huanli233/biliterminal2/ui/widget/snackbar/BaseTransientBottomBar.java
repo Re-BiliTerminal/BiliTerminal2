@@ -1152,7 +1152,7 @@ public abstract class BaseTransientBottomBar<B extends BaseTransientBottomBar<B>
 
   /** @hide */
   @RestrictTo(LIBRARY_GROUP)
-  protected static class SnackbarBaseLayout extends FrameLayout {
+  public static class SnackbarBaseLayout extends FrameLayout {
     private static final OnTouchListener consumeAllTouchListener =
         new OnTouchListener() {
           @SuppressLint("ClickableViewAccessibility")

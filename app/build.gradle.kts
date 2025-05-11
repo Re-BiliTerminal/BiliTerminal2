@@ -278,6 +278,8 @@ dependencies {
     implementation(libs.multitype)
     implementation(libs.photoview)
 
+    implementation(libs.expandablelayout)
+
     implementation(libs.splitties.fun1.pack.android.base)
     implementation(libs.splitties.fun1.pack.android.material.components)
 

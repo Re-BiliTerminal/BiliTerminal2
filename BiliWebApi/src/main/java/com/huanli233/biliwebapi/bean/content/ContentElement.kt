@@ -8,5 +8,5 @@ import kotlinx.parcelize.Parcelize
 data class ContentElement(
     @SerializedName("raw_text") val rawText: String,
     val type: Int,
-    @SerializedName("biz_id") val bizId: Int
+    @SerializedName("biz_id") val bizId: Long
 ) : Parcelable

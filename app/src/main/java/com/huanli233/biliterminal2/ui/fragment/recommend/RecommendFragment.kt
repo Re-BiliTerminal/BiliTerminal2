@@ -1,6 +1,7 @@
 package com.huanli233.biliterminal2.ui.fragment.recommend
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,14 +61,11 @@ class RecommendFragment: BaseMenuFragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 pagingAdapter.loadStateFlow.collect { loadState ->
                     if (loadState.refresh is LoadState.NotLoading && pagingAdapter.itemCount == 0 || loadState.refresh is LoadState.Error) {
-                        binding.recyclerView.invisible()
-                        binding.loadingView.error()
+                        binding.loadingView.error(view = binding.recyclerView)
                     } else if (loadState.source.refresh is LoadState.Loading) {
-                        binding.recyclerView.invisible()
-                        binding.loadingView.loading()
+                        binding.loadingView.loading(binding.recyclerView)
                     } else {
-                        binding.recyclerView.visible()
-                        binding.loadingView.hide()
+                        binding.loadingView.crossFadeHide(binding.recyclerView)
                     }
                 }
             }

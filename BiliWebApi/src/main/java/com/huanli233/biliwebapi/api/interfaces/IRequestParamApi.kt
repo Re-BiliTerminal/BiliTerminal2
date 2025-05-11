@@ -3,6 +3,7 @@ package com.huanli233.biliwebapi.api.interfaces
 import com.huanli233.biliwebapi.bean.ApiResponse
 import com.huanli233.biliwebapi.bean.requestParam.BiliTicket
 import com.huanli233.biliwebapi.bean.requestParam.Buvids
+import com.huanli233.biliwebapi.httplib.annotation.Csrf
 import com.huanli233.biliwebapi.httplib.annotation.Queries
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -15,7 +16,7 @@ interface IRequestParamApi {
     suspend fun requestBuvids(): ApiResponse<Buvids>
 
     @POST("/bapis/bilibili.api.ticket.v1.Ticket/GenWebTicket")
-    @Queries(keys = ["csrf"], values = [""])
+    @Csrf
     suspend fun genWebTicket(
         @Query("key_id") keyId: String?,
         @Query("hexsign") hexsign: String?,

@@ -16,5 +16,5 @@ inline fun View.invisible() {
 }
 
 inline fun ImageView.showError() {
-    setImageResource(R.mipmap.loading_2233_error)
+    setImageResource(R.drawable.loading_2233_error)
 }

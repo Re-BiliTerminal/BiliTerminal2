@@ -17,7 +17,7 @@ data class AccountEntity(
     val userName: String? = null,
     val avatarUrl: String? = null,
     val lastCheckCookieRefresh: Long? = null,
-    val lastActiveTime: Long,
+    val lastActiveTime: Long = System.currentTimeMillis(),
 )
 
 @Entity(tableName = "cookies")

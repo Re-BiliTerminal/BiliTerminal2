@@ -12,7 +12,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class VideoInfo(
-    @SerializedName("id") val aid: Long,
+    @SerializedName("aid", ["id"]) val aid: Long,
     val bvid: String,
     val cid: Long,
     val tid: Int,
@@ -24,8 +24,8 @@ data class VideoInfo(
     val title: String,
     @SerializedName("pubdate") val pubDate: Long,
     val ctime: Long,
-    val desc: String,
-    @SerializedName("desc_v2") val descV2: List<ContentElement>,
+    val desc: String?,
+    @SerializedName("desc_v2") val descV2: List<ContentElement>?,
     val state: Int,
     @SerializedName("redirect_url") val redirectUrl: String? = null,
     val rights: Rights,
@@ -34,7 +34,7 @@ data class VideoInfo(
     val dynamic: String,
     val pages: List<Page>,
     val subtitle: SubtitleInfo,
-    val staff: List<UserInfo>,
+    val staff: List<UserInfo>?,
     @SerializedName("is_upower_exclusive") val isUpowerExclusive: Boolean,
     @SerializedName("argue_info") val argueInfo: ArgueInfo,
     @SerializedName("is_view_self") val isViewSelf: Boolean,

@@ -25,7 +25,7 @@
 -keep class com.netease.hearttouch.brotlij.** {*;}
 
 -keep class com.huanli233.biliwebapi.bean.** {*;}
--keep class * extends androidx.datastore.preferences.protobuf.GeneratedMessageLite {*;}
+-keep class * extends com.google.protobuf.GeneratedMessageLite {*;}
 
 -keepattributes *Annotation*
 -keepclassmembers class * {

@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.Typeface
+import android.os.Build
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +22,7 @@ import com.huanli233.biliterminal2.ui.widget.wearable.BoxInsetLayout
 import com.huanli233.biliterminal2.utils.ThreadManager.runOnUiThread
 import com.huanli233.biliterminal2.utils.extensions.dp2px
 import org.greenrobot.eventbus.EventBus
+import splitties.views.backgroundColor
 import kotlin.math.roundToInt
 
 object MsgUtil {
@@ -107,7 +110,7 @@ object MsgUtil {
     @SuppressLint("ClickableViewAccessibility", "RestrictedApi")
     fun createSnack(view: View, text: CharSequence, duration: Int, action: Action?): Snackbar {
         val snackbar: Snackbar = Snackbar.make(view, text, duration)
-        snackbar.setBackgroundTint(Color.argb(0x85, 0x80, 0x80, 0x80))
+        snackbar.setBackgroundTint(Color.argb(0x90, 0x80, 0x80, 0x80))
         snackbar.setTextColor(Color.rgb(0xeb, 0xe0, 0xe2))
         val snackBarView = snackbar.view
         snackBarView.setOnTouchListener(View.OnTouchListener { v: View?, event: MotionEvent? -> false })

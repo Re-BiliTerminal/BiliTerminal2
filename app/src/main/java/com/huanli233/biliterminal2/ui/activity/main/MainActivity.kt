@@ -9,6 +9,7 @@ import com.huanli233.biliterminal2.databinding.ActivityMainBinding
 import com.huanli233.biliterminal2.ui.activity.base.BaseActivity
 import com.huanli233.biliterminal2.ui.activity.setup.SetupActivity
 import com.huanli233.biliterminal2.ui.utils.crossFadeSetText
+import com.huanli233.biliterminal2.utils.extensions.gone
 import com.huanli233.biliterminal2.utils.extensions.invisible
 import com.huanli233.biliterminal2.utils.extensions.visible
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,14 +43,14 @@ class MainActivity: BaseActivity() {
     private fun showLoadingView() {
         binding.textView.visible()
         binding.progressIndicator.visible()
-        binding.errorImageView.invisible()
-        binding.errorTextView.invisible()
+        binding.errorImageView.gone()
+        binding.errorTextView.gone()
         binding.textView.text = getString(R.string.initializing)
     }
 
     private fun showErrorView(errorMsg: String) {
-        binding.textView.invisible()
-        binding.progressIndicator.invisible()
+        binding.textView.gone()
+        binding.progressIndicator.gone()
         binding.errorImageView.visible()
         binding.errorTextView.visible()
         binding.errorTextView.crossFadeSetText(getString(R.string.initialize_error, errorMsg))
