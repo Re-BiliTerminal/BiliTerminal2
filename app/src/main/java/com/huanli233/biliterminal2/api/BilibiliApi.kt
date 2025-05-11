@@ -132,7 +132,6 @@ class AppCookieManager @Inject constructor(
             currentAccountCookiesCache.clear()
             currentAccountCookiesCache.addAll(cookiesForAccount)
         }
-        println("Loaded ${cookiesForAccount.size} cookies for account $accountId into cache.")
     }
 
 
@@ -158,8 +157,6 @@ class AppCookieManager @Inject constructor(
                 currentAccountCookiesCache.removeAll { it.accountId == uid && cookieEntities.any { entity -> entity.name == it.name } }
                 currentAccountCookiesCache.addAll(cookieEntities)
             }
-
-            println("Saved ${cookieEntities.size} cookies and updated cache for account $uid.")
         }
     }
 }

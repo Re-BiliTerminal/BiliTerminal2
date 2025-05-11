@@ -23,7 +23,7 @@ object AccountManager {
     }
 
     val currentAccount: AccountEntity
-        get() = repository.activeAccount.value.also { Log.d("huanli233", "activeAccount=${it}") } ?: runBlocking { repository.activeAccount.first { it != null } }.also { Log.d("huanli233", "firstNotNull=${it}") } ?: emptyAccount
+        get() = repository.activeAccount.value ?: runBlocking { repository.activeAccount.first { it != null } } ?: emptyAccount
 
     fun loggedIn() = currentAccount.accountId != 0L
 
