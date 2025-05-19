@@ -2,6 +2,7 @@
 # Android Tools
 desugarJdkLibs = "2.1.5"
 expandablelayout = "2.9.2"
+flexbox = "3.0.0"
 hiltAndroid = "2.56.1"
 hiltAndroidCompiler = "2.56.1"
 interpolator = "1.0.0"
@@ -114,6 +115,7 @@ androidx-transition = { module = "androidx.transition:transition", version.ref =
 androidx-wear = { module = "androidx.wear:wear", version.ref = "wear" }
 desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJdkLibs" }
 expandablelayout = { module = "com.github.cachapa:ExpandableLayout", version.ref = "expandablelayout" }
+flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 junit = { module = "junit:junit", version.ref = "junit" }

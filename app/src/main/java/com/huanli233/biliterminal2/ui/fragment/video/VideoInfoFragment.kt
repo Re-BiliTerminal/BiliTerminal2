@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.widget.LinearLayout
+import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -24,8 +25,11 @@ import com.huanli233.biliterminal2.utils.MsgUtil
 import com.huanli233.biliterminal2.utils.extensions.formatNumber
 import com.huanli233.biliterminal2.utils.extensions.formatToDate
 import com.huanli233.biliterminal2.utils.extensions.toTime
+import com.huanli233.biliterminal2.utils.extensions.updatePaddingRelativeCompat
 import kotlinx.coroutines.launch
 import net.cachapa.expandablelayout.ExpandableLayout
+import splitties.dimensions.dp
+import splitties.views.bottomPadding
 
 const val ARG_KEY_BVID = "bvid"
 
@@ -71,7 +75,11 @@ class VideoInfoFragment: BaseFragment() {
         binding.tagsIcon.setOnClickListener { binding.tagsLayout.toggle() }
         binding.tagsTip.setOnClickListener { binding.tagsLayout.toggle() }
 
-        binding.like.setOnClickListener { viewModel.like() }
+        binding.like.setOnClickListener {
+            if (!viewModel.uiState.value.isLiking) {
+                viewModel.like()
+            }
+        }
         binding.coin.setOnClickListener {
             // TODO show coin selection
         }
@@ -115,6 +123,7 @@ class VideoInfoFragment: BaseFragment() {
                     binding.tags.addView(
                         Chip(context).apply {
                             text = tag.tagName
+                            setEnsureMinTouchTargetSize(false)
                             setOnClickListener {
                                 // TODO go to search page
                             }
@@ -148,11 +157,14 @@ class VideoInfoFragment: BaseFragment() {
 
     private fun handleEvent(event: VideoEvent) {
         when (event) {
-            VideoEvent.LikeSuccess -> {
-                MsgUtil.showMsg(getString(R.string.like_success))
+            is VideoEvent.LikeSuccess -> {
+                MsgUtil.showMsg(
+                    if (event.action == 1) getString(R.string.like_success)
+                    else getString(R.string.cancel_success)
+                )
             }
             is VideoEvent.LikeFailed -> {
-                MsgUtil.showMsg(getString(R.string.like_failed_with_msg, event.message))
+                MsgUtil.showMsg(event.message.toString())
             }
             is VideoEvent.NotLoggedIn -> {
                 MsgUtil.showMsg(getString(R.string.not_logged_in))

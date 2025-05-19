@@ -12,10 +12,12 @@ import com.huanli233.biliterminal2.data.account.AccountManager
 import com.huanli233.biliterminal2.data.account.AccountRepository
 import com.huanli233.biliterminal2.data.setting.LocalData
 import com.huanli233.biliterminal2.data.setting.edit
+import com.huanli233.biliterminal2.utils.isRound
 import com.huanli233.biliwebapi.api.interfaces.ICookieApi
 import com.huanli233.biliwebapi.api.util.CookieRefreshUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -45,7 +47,7 @@ class MainActivityViewModel @Inject constructor(
 
         viewModelScope.launch {
             if (LocalData.settings.firstRun) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && applicationContext.resources.configuration.isScreenRound) {
+                if (isRound) {
                     runBlocking {
                         LocalData.edit {
                             uiSettings = uiSettings.edit {
@@ -58,10 +60,9 @@ class MainActivityViewModel @Inject constructor(
                 return@launch
             }
 
-
             val needCheckRefresh = AccountManager.loggedIn() && (System.currentTimeMillis() - (AccountManager.currentAccount.lastCheckCookieRefresh ?: 0)) > 1000 * 60 * 60 * 24
 
-            if (AccountManager.loggedIn() && needCheckRefresh) {
+            if (needCheckRefresh) {
                 runCatching {
                     bilibiliApi.api(ICookieApi::class) {
                         cookieInfo()

@@ -3,15 +3,21 @@ package com.huanli233.biliterminal2.ui.widget.scalablecontainer;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.SystemClock;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.ViewTreeObserver;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
@@ -109,6 +115,7 @@ public class AppRecyclerView extends WearableRecyclerView {
             setDefaultFocusHighlightEnabled(false);
         }
         if (autoFocus) {
+            setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             setFocusable(true);
             setFocusableInTouchMode(true);
         }
@@ -133,18 +140,10 @@ public class AppRecyclerView extends WearableRecyclerView {
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasWindowFocus) {
-        super.onWindowFocusChanged(hasWindowFocus);
-        if (hasWindowFocus && autoFocus && isFocusable() && !isFocused()) {
-            requestFocus();
-        }
-    }
-
-    @Override
     protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
         if (autoFocus && visibility == View.VISIBLE && isFocusable() && !isFocused()) {
-            requestFocus();
+            post(this::requestFocus);
         }
     }
 

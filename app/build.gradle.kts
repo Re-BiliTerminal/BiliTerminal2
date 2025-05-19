@@ -268,6 +268,8 @@ dependencies {
     implementation(libs.androidx.preference.ktx)
 //    implementation(libs.androidx.wear)
 
+    implementation(libs.flexbox)
+
     implementation(libs.protobuf.javalite)
 
     implementation(libs.hilt.android)

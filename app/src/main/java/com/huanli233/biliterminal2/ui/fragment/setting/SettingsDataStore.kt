@@ -28,7 +28,6 @@ class SettingsDataStore: PreferenceDataStore() {
     }
 
     override fun putString(key: String?, value: String?) {
-        Log.d("SettingsDataStore", "putString: $key $value")
         applicationScope.launch {
             LocalData.edit {
                 when (key) {

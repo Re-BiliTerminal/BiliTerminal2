@@ -7,16 +7,18 @@ import com.huanli233.biliterminal2.api.apiResult
 import com.huanli233.biliterminal2.api.apiResultNonNull
 import com.huanli233.biliterminal2.api.bilibiliApi
 import com.huanli233.biliterminal2.data.account.AccountManager
-import com.huanli233.biliterminal2.utils.extensions.LoadState
 import com.huanli233.biliwebapi.api.interfaces.IVideoApi
 import com.huanli233.biliwebapi.bean.video.Tag
 import com.huanli233.biliwebapi.bean.video.VideoInfo
 import com.huanli233.biliwebapi.bean.video.VideoRelation
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 data class VideoUiState(
@@ -24,11 +26,12 @@ data class VideoUiState(
     val error: String? = null,
     val videoInfo: VideoInfo? = null,
     val tags: List<Tag> = emptyList(),
-    val relation: VideoRelation? = null
+    val relation: VideoRelation? = null,
+    val isLiking: Boolean = false
 )
 
 sealed interface VideoEvent {
-    data object LikeSuccess : VideoEvent
+    data class LikeSuccess(val action: Int) : VideoEvent
     data class LikeFailed(val message: String?) : VideoEvent
     data object NotLoggedIn : VideoEvent
 }
@@ -44,6 +47,8 @@ class VideoInfoViewModel(
 
     private val _events = Channel<VideoEvent>()
     val events = _events.receiveAsFlow()
+
+    private var likeJob: Job? = null
 
     init {
         fetchData()
@@ -88,7 +93,8 @@ class VideoInfoViewModel(
     }
 
     fun like() {
-        viewModelScope.launch {
+        likeJob?.cancel()
+        likeJob = viewModelScope.launch {
             val currentUiState = _uiState.value
 
             val videoInfo = currentUiState.videoInfo ?: run {
@@ -103,24 +109,35 @@ class VideoInfoViewModel(
             val currentLikeStatus = currentRelation.like
             val action = if (currentLikeStatus) 2 else 1
 
+            val previousRelation = currentRelation
             val originalCount = videoInfo.stat.like
             val newCount = videoInfo.stat.like + if (currentLikeStatus) -1 else 1
             _uiState.value = _uiState.value.copy(
+                isLiking = true,
                 videoInfo = videoInfo.copy(stat = videoInfo.stat.copy(like = newCount)),
                 relation = currentRelation.copy(like = !currentLikeStatus)
             )
 
-            val result = bilibiliApi.api(IVideoApi::class) { likeVideo(videoInfo.aid, action) }.apiResult()
-            when {
-                result.isSuccess -> {
-                    _events.send(VideoEvent.LikeSuccess)
+            try {
+                val result = bilibiliApi.api(IVideoApi::class) { likeVideo(videoInfo.aid, action) }.apiResult()
+                when {
+                    result.isSuccess -> {
+                        _events.send(VideoEvent.LikeSuccess(action))
+                    }
+                    result.isFailure -> {
+                        _uiState.value = _uiState.value.copy(
+                            videoInfo = videoInfo.copy(stat = videoInfo.stat.copy(like = originalCount)),
+                            relation = previousRelation
+                        )
+                        _events.send(VideoEvent.LikeFailed(result.exceptionOrNull()?.message))
+                    }
                 }
-                result.isFailure -> {
-                    _uiState.value = _uiState.value.copy(
-                        videoInfo = videoInfo.copy(stat = videoInfo.stat.copy(like = originalCount)),
-                        relation = currentRelation.copy(like = currentLikeStatus)
-                    )
-                    _events.send(VideoEvent.LikeFailed(result.exceptionOrNull()?.message))
+            } catch (e: CancellationException) {
+                _uiState.value = _uiState.value.copy(relation = previousRelation)
+                throw e
+            } finally {
+                if (coroutineContext.isActive) {
+                    _uiState.value = _uiState.value.copy(isLiking = false)
                 }
             }
         }
