@@ -6,7 +6,9 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:gravity="center"
-    app:animScaleSV="false">
+    app:animScaleSV="false"
+    app:springEnableStartSV="false"
+    app:springEnableEndSV="false">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

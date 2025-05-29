@@ -134,8 +134,8 @@ android {
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     tasks.withType<JavaCompile> {
@@ -153,7 +153,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 
     applicationVariants.all variant@{
@@ -225,6 +225,7 @@ materialThemeBuilder {
 configurations.all {
     resolutionStrategy {
         force(libs.androidx.core)
+        force(libs.androidx.appcompat)
     }
 }
 
@@ -267,6 +268,13 @@ dependencies {
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.preference.ktx)
 //    implementation(libs.androidx.wear)
+
+    implementation(libs.hikage.core)
+    implementation(libs.hikage.extension)
+    implementation(libs.hikage.extension.betterandroid)
+    ksp(libs.hikage.compiler)
+    implementation(libs.hikage.widget.androidx)
+    implementation(libs.hikage.widget.material)
 
     implementation(libs.flexbox)
 

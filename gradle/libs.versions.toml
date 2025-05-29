@@ -60,6 +60,14 @@ androidxAppcompat = "1.6.1"
 # noinspection GradleDependency
 material = "1.11.0"
 
+# BetterAndroid
+hikageCore = "1.0.3-alpha02"
+hikageExtension = "1.0.1"
+hikageExtensionBetterAndroid = "1.0.1"
+hikageCompiler = "1.0.0"
+hikageWidgetAndroidX = "1.0.0"
+hikageWidgetMaterial = "1.0.0"
+
 # ZXing
 # noinspection GradleDependency
 orgEclipseJgit = "7.2.0.202503040940-r"
@@ -68,6 +76,7 @@ preferenceKtx = "1.2.1"
 protobufJavalite = "3.25.1"
 # noinspection GradleDependency
 wear = "1.3.0"
+# noinspection GradleDependency
 zxingCore = "3.3.0"
 
 # Kotlin
@@ -156,6 +165,14 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 
 # Google Material
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+# BetterAndroid
+hikage-core = { group = "com.huanli233.hikage.compat", name = "hikage-core", version.ref = "hikageCore" }
+hikage-extension = { group = "com.huanli233.hikage.compat", name = "hikage-extension", version.ref = "hikageExtension" }
+hikage-extension-betterandroid = { group = "com.huanli233.hikage.compat", name = "hikage-extension-betterandroid", version.ref = "hikageExtensionBetterAndroid" }
+hikage-compiler = { group = "com.huanli233.hikage.compat", name = "hikage-compiler", version.ref = "hikageCompiler" }
+hikage-widget-androidx = { group = "com.huanli233.hikage.compat", name = "hikage-widget-androidx", version.ref = "hikageWidgetAndroidX" }
+hikage-widget-material = { group = "com.huanli233.hikage.compat", name = "hikage-widget-material", version.ref = "hikageWidgetMaterial" }
 
 # ZXing
 org-eclipse-jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "orgEclipseJgit" }
