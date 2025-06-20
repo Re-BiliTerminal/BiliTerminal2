@@ -13,7 +13,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.materialthemebuilder)
     alias(libs.plugins.autoresconfig)
-    alias(libs.plugins.kapt)
+//    alias(libs.plugins.kapt)
 }
 
 buildscript {
@@ -148,7 +148,7 @@ android {
 
     buildFeatures {
         viewBinding = true
-        dataBinding = true
+//        dataBinding = true
         buildConfig = true
     }
 

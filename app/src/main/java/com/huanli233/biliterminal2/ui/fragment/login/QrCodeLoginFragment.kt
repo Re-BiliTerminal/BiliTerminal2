@@ -14,7 +14,7 @@ import com.huanli233.biliterminal2.databinding.FragmentLoginQrcodeBinding
 import com.huanli233.biliterminal2.ui.activity.login.EXTRA_NAME_FROM_SETUP
 import com.huanli233.biliterminal2.ui.activity.login.LoginActivity
 import com.huanli233.biliterminal2.ui.fragment.base.BaseFragment
-import com.huanli233.biliterminal2.ui.utils.crossFadeSetText
+import com.huanli233.biliterminal2.ui.utils.animateTextChange
 import com.huanli233.biliterminal2.ui.utils.image.transition
 import com.huanli233.biliterminal2.ui.utils.showSkeleton
 import com.huanli233.biliterminal2.utils.MsgUtil
@@ -47,7 +47,7 @@ class QrCodeLoginFragment(): BaseFragment() {
         viewModel.qrcodeState.observe(viewLifecycleOwner) {
             it.onLoading {
                 skeletonScreen = binding.qrcodeImage.showSkeleton(R.layout.layout_skeleton_qrcode)
-                binding.qrcodeStatus.crossFadeSetText(getString(R.string.requesting_qrcode))
+                binding.qrcodeStatus.animateTextChange(getString(R.string.requesting_qrcode))
             }.onSuccess {
                 skeletonScreen?.hide()
                 Glide.with(this)
@@ -57,11 +57,11 @@ class QrCodeLoginFragment(): BaseFragment() {
             }.onApiError {
                 skeletonScreen?.hide()
                 binding.qrcodeImage.setImageResource(R.drawable.loading_2233_error)
-                binding.qrcodeStatus.crossFadeSetText("$it")
+                binding.qrcodeStatus.animateTextChange("$it")
             }.onNonApiError {
                 skeletonScreen?.hide()
                 binding.qrcodeImage.setImageResource(R.drawable.loading_2233_error)
-                binding.qrcodeStatus.crossFadeSetText(getString(R.string.login_qrcode_network_error))
+                binding.qrcodeStatus.animateTextChange(getString(R.string.login_qrcode_network_error))
             }
         }
         viewModel.qrCodeLoginState.observe(viewLifecycleOwner) {
@@ -70,7 +70,7 @@ class QrCodeLoginFragment(): BaseFragment() {
                     MsgUtil.showMsg(getString(R.string.login_success))
                     callAfterLoggedIn()
                 } else {
-                    binding.qrcodeStatus.crossFadeSetText(
+                    binding.qrcodeStatus.animateTextChange(
                         when (it.code) {
                             0 -> getString(R.string.login_qrcode_logining)
                             86090 -> getString(R.string.login_qrcode_scanned)

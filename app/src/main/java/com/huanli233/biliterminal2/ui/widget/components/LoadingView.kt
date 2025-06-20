@@ -3,16 +3,14 @@ package com.huanli233.biliterminal2.ui.widget.components
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.databinding.WidgetLoadingViewBinding
-import com.huanli233.biliterminal2.ui.utils.crossfadeViews
 import com.huanli233.biliterminal2.utils.extensions.invisible
 import com.huanli233.biliterminal2.utils.extensions.visible
 
-private enum class LoadingState {
+enum class LoadingState {
     LOADING,
     HIDDEN,
     ERROR,
@@ -29,7 +27,8 @@ class LoadingView @JvmOverloads constructor(
         WidgetLoadingViewBinding.inflate(LayoutInflater.from(context), this, true)
 
     private var onRetry: (() -> Unit)? = null
-    private var state: LoadingState = LoadingState.LOADING
+    var state: LoadingState = LoadingState.LOADING
+        private set
 
     init {
         layoutParams = ViewGroup.LayoutParams(
@@ -46,22 +45,17 @@ class LoadingView @JvmOverloads constructor(
         }
     }
 
-    fun loading(
-        view: View? = null
-    ) {
+    fun loading() {
         state = LoadingState.LOADING
-        if (view == null) show() else crossFadeShow(view)
+        show()
         binding.loadingImage.setImageResource(R.drawable.loading_2233)
         binding.loadingProgress.visible()
         binding.loadingText.invisible()
     }
 
-    fun error(
-        message: String? = null,
-        view: View? = null
-    ) {
+    fun error(message: String? = null,) {
         state = LoadingState.ERROR
-        if (view == null) show() else crossFadeShow(view)
+        show()
         binding.loadingImage.setImageResource(R.drawable.loading_2233_error)
         binding.loadingProgress.invisible()
         if (message != null) {
@@ -72,11 +66,9 @@ class LoadingView @JvmOverloads constructor(
         }
     }
 
-    fun empty(
-        view: View? = null
-    ) {
+    fun empty() {
         state = LoadingState.EMPTY
-        if (view == null) show() else crossFadeShow(view)
+        show()
         binding.loadingImage.setImageResource(R.drawable.loading_2233_empty)
         binding.loadingProgress.invisible()
         binding.loadingText.text = context.getString(R.string.empty_tip)
@@ -90,14 +82,6 @@ class LoadingView @JvmOverloads constructor(
     fun hide() {
         state = LoadingState.HIDDEN
         invisible()
-    }
-
-    fun crossFadeShow(view: View) {
-        crossfadeViews(this, view)
-    }
-
-    fun crossFadeHide(view: View) {
-        crossfadeViews(view, this)
     }
 
     fun onRetry(retry: () -> Unit) {

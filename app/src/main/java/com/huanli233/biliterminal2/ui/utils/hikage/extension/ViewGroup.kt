@@ -7,7 +7,8 @@ import com.highcapable.hikage.core.base.HikageFactoryBuilder
 import com.highcapable.hikage.core.base.HikagePerformer
 import com.highcapable.hikage.core.base.Hikageable
 
-inline fun <reified T: ViewGroup.LayoutParams> ViewGroup.Hikage(
+inline fun <reified T: ViewGroup.LayoutParams> ViewGroup.attach(
     factory: HikageFactoryBuilder.() -> Unit = {},
+    attachToParent: Boolean = true,
     performer: HikagePerformer<T>
-) = Hikageable<T>(context = context, parent = this, factory = factory, performer = performer)
+) = Hikageable<T>(context = context, parent = this, attachToParent = attachToParent, factory = factory, performer = performer)

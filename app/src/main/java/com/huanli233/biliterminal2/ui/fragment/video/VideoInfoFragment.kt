@@ -20,12 +20,17 @@ import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.data.account.AccountManager
 import com.huanli233.biliterminal2.databinding.FragmentVideoInfoBinding
 import com.huanli233.biliterminal2.ui.fragment.base.BaseFragment
+import com.huanli233.biliterminal2.ui.utils.beginDelayedFade
+import com.huanli233.biliterminal2.ui.utils.beginDelayedMaterialFade
 import com.huanli233.biliterminal2.ui.utils.image.loadPicture
+import com.huanli233.biliterminal2.ui.utils.playAnimation
 import com.huanli233.biliterminal2.utils.MsgUtil
 import com.huanli233.biliterminal2.utils.extensions.formatNumber
 import com.huanli233.biliterminal2.utils.extensions.formatToDate
+import com.huanli233.biliterminal2.utils.extensions.invisible
 import com.huanli233.biliterminal2.utils.extensions.toTime
 import com.huanli233.biliterminal2.utils.extensions.updatePaddingRelativeCompat
+import com.huanli233.biliterminal2.utils.extensions.visible
 import kotlinx.coroutines.launch
 import net.cachapa.expandablelayout.ExpandableLayout
 import splitties.dimensions.dp
@@ -89,18 +94,24 @@ class VideoInfoFragment: BaseFragment() {
     }
 
     private fun updateUi(uiState: VideoUiState) {
-        when {
-            uiState.isLoading -> {
-                binding.loadingView.loading(binding.scrollView)
+        with (binding) {
+            playAnimation {
+                root.beginDelayedFade()
             }
-            uiState.error != null -> {
-                binding.loadingView.error(uiState.error, binding.scrollView)
-            }
-            uiState.videoInfo != null -> {
-                binding.loadingView.crossFadeHide(binding.scrollView)
+            when {
+                uiState.isLoading -> {
+                    contentLayout.invisible()
+                    binding.loadingView.loading()
+                }
+                uiState.error != null -> {
+                    contentLayout.invisible()
+                    binding.loadingView.error(uiState.error)
+                }
+                uiState.videoInfo != null -> {
+                    loadingView.hide()
+                    contentLayout.visible()
 
-                val info = uiState.videoInfo
-                with(binding) {
+                    val info = uiState.videoInfo
                     title.text = info.title
                     Glide.with(this@VideoInfoFragment)
                         .loadPicture(info.pic)
@@ -116,29 +127,27 @@ class VideoInfoFragment: BaseFragment() {
                     bvid.text = info.bvid
                     // TODO desc_v2 parser
                     desc.text = info.desc
-                }
 
-                binding.tags.removeAllViews()
-                uiState.tags.forEach { tag ->
-                    binding.tags.addView(
-                        Chip(context).apply {
-                            text = tag.tagName
-                            setEnsureMinTouchTargetSize(false)
-                            setOnClickListener {
-                                // TODO go to search page
-                            }
-                        },
-                        LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.WRAP_CONTENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    tags.removeAllViews()
+                    uiState.tags.forEach { tag ->
+                        binding.tags.addView(
+                            Chip(context).apply {
+                                text = tag.tagName
+                                setEnsureMinTouchTargetSize(false)
+                                setOnClickListener {
+                                    // TODO go to search page
+                                }
+                            },
+                            LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                            )
                         )
-                    )
-                }
+                    }
 
-                val relation = uiState.relation
-                val colorActivate = MaterialColors.getColor(requireContext(), androidx.appcompat.R.attr.colorPrimary, 0)
-                val colorDeactivate = MaterialColors.getColor(requireContext(), androidx.appcompat.R.attr.colorAccent, 0) // Or a default grey
-                with(binding) {
+                    val relation = uiState.relation
+                    val colorActivate = MaterialColors.getColor(requireContext(), androidx.appcompat.R.attr.colorPrimary, 0)
+                    val colorDeactivate = MaterialColors.getColor(requireContext(), androidx.appcompat.R.attr.colorAccent, 0)
                     like.isEnabled = relation != null
                     coin.isEnabled = relation != null
                     favorite.isEnabled = relation != null
@@ -147,10 +156,10 @@ class VideoInfoFragment: BaseFragment() {
                     coin.iconTint = ColorStateList.valueOf(if (relation?.coin?.let { it > 0 } == true) colorActivate else colorDeactivate)
                     favorite.iconTint = ColorStateList.valueOf(if (relation?.favorite == true) colorActivate else colorDeactivate)
                 }
-            }
-            else -> {
-                binding.loadingView.error("No data available.")
-                binding.scrollView.visibility = View.GONE
+                else -> {
+                    contentLayout.invisible()
+                    loadingView.error("No data available.")
+                }
             }
         }
     }

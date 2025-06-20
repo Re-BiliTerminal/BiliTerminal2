@@ -30,7 +30,7 @@ class VideoInfoActivity: BaseActivity() {
                     },
                 )
             )
-            setupWithIndicator(binding.dotsIndicator)
+            binding.dotsIndicator.attachTo(this)
         }
 
         pageName = getString(R.string.video_detail)

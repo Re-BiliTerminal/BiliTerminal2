@@ -1,12 +1,14 @@
 package com.huanli233.biliterminal2.ui.activity.base
 
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.data.setting.LocalData
 import com.huanli233.biliterminal2.ui.fragment.menu.MenuFragment
+import com.huanli233.biliterminal2.ui.utils.beginDelayedTransition
 
 abstract class BaseMenuActivity : BaseActivity() {
 

@@ -15,6 +15,8 @@ import com.huanli233.biliterminal2.databinding.LayoutCommonSwiperefreshRecyclerv
 import com.huanli233.biliterminal2.ui.fragment.base.BaseFragment
 import com.huanli233.biliterminal2.ui.fragment.base.BaseMenuFragment
 import com.huanli233.biliterminal2.ui.recyclerview.adapters.VideoPagingAdapter
+import com.huanli233.biliterminal2.ui.utils.beginDelayedMaterialFade
+import com.huanli233.biliterminal2.ui.utils.hikage.extension.invisibleIf
 import com.huanli233.biliterminal2.ui.utils.loadstate.LoadStateAdapter
 import com.huanli233.biliterminal2.ui.utils.recyclerview.defaultLayoutManager
 import com.huanli233.biliterminal2.utils.MsgUtil
@@ -60,12 +62,18 @@ class RecommendFragment: BaseMenuFragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 pagingAdapter.loadStateFlow.collect { loadState ->
-                    if (loadState.refresh is LoadState.NotLoading && pagingAdapter.itemCount == 0 || loadState.refresh is LoadState.Error) {
-                        binding.loadingView.error(view = binding.recyclerView)
-                    } else if (loadState.source.refresh is LoadState.Loading) {
-                        binding.loadingView.loading(binding.recyclerView)
-                    } else {
-                        binding.loadingView.crossFadeHide(binding.recyclerView)
+                    with (binding) {
+                        root.beginDelayedMaterialFade()
+                        if (loadState.refresh is LoadState.NotLoading && pagingAdapter.itemCount == 0 || loadState.refresh is LoadState.Error) {
+                            recyclerView.invisible()
+                            loadingView.error()
+                        } else if (loadState.source.refresh is LoadState.Loading) {
+                            recyclerView.invisible()
+                            loadingView.loading()
+                        } else {
+                            loadingView.hide()
+                            recyclerView.visible()
+                        }
                     }
                 }
             }

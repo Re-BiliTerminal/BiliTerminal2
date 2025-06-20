@@ -5,4 +5,6 @@
     <item name="topPanel" type="id" />
     <item name="radioButton" type="id" />
     <item name="textView" type="id" />
+    <item name="page_name" type="id" />
+    <item name="text_clock" type="id" />
 </resources>

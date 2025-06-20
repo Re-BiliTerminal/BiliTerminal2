@@ -61,12 +61,12 @@ androidxAppcompat = "1.6.1"
 material = "1.11.0"
 
 # BetterAndroid
-hikageCore = "1.0.3-alpha02"
-hikageExtension = "1.0.1"
+hikageCore = "1.0.3"
+hikageExtension = "1.0.2"
 hikageExtensionBetterAndroid = "1.0.1"
-hikageCompiler = "1.0.0"
-hikageWidgetAndroidX = "1.0.0"
-hikageWidgetMaterial = "1.0.0"
+hikageCompiler = "1.0.1"
+hikageWidgetAndroidX = "1.0.1"
+hikageWidgetMaterial = "1.0.1"
 
 # ZXing
 # noinspection GradleDependency

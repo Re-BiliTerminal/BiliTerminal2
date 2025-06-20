@@ -4,13 +4,10 @@ import android.content.Context
 import android.os.Build
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.Log
-import android.view.View
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.highcapable.betterandroid.ui.extension.view.LayoutParamsMatchParent
 import com.highcapable.betterandroid.ui.extension.view.LayoutParamsWrapContent
 import com.highcapable.betterandroid.ui.extension.view.updateCompoundDrawablesWithIntrinsicBounds
 import com.highcapable.betterandroid.ui.extension.view.updateMargins
@@ -25,10 +22,9 @@ import com.highcapable.hikage.widget.com.google.android.material.divider.Materia
 import com.highcapable.hikage.widget.com.huanli233.biliterminal2.ui.widget.views.AppTextClock
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.data.setting.LocalData
-import com.huanli233.biliterminal2.ui.utils.crossFadeSetText
-import com.huanli233.biliterminal2.ui.utils.hikage.extension.Hikage
+import com.huanli233.biliterminal2.ui.utils.animateTextChange
+import com.huanli233.biliterminal2.ui.utils.hikage.extension.attach
 import com.huanli233.biliterminal2.ui.utils.hikage.extension.boldTypeFace
-import com.huanli233.biliterminal2.ui.utils.view.ViewHierarchyPrinter
 import com.huanli233.biliterminal2.utils.extensions.editModeText
 import com.huanli233.biliterminal2.utils.extensions.updateMarginsRelativeCompat
 import com.huanli233.biliterminal2.utils.extensions.updatePaddingRelativeCompat
@@ -46,16 +42,10 @@ class TopBar @JvmOverloads constructor(
         findViewById(R.id.page_name)
     }
 
-    override fun addView(child: View?) {
-        super.addView(child)
-        ViewHierarchyPrinter.printViewHierarchy(child)
-    }
-
     val roundMode = !isInEditMode && LocalData.settings.uiSettings.roundMode
 
     init {
-
-        Hikage<LayoutParams> {
+        attach<LayoutParams> {
             TextView(
                 lparams = LayoutParams(width = if (roundMode) LayoutParamsWrapContent else 0, height = LayoutParamsWrapContent) {
                     if (roundMode) {
@@ -108,7 +98,7 @@ class TopBar @JvmOverloads constructor(
             ) {
                 id = R.id.text_clock
                 boldTypeFace()
-                gravity = gravityCenterVertical and gravityEnd
+                gravity = gravityCenterVertical or gravityEnd
                 textSize = 12f
                 editModeText = "12:08"
 
@@ -145,9 +135,7 @@ class TopBar @JvmOverloads constructor(
             recycle()
         }
 
-        if (id == NO_ID) {
-            id = R.id.top_bar
-        }
+        id = R.id.top_bar
     }
 
     private fun updateBackIconVisibility(
@@ -180,7 +168,7 @@ class TopBar @JvmOverloads constructor(
     }
 
     fun setTitle(text: CharSequence) {
-        titleTextView.crossFadeSetText(text)
+        titleTextView.animateTextChange(text)
     }
 
     fun setBackIconVisible(

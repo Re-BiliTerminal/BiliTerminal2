@@ -37,7 +37,7 @@ class LoginActivity: BaseActivity() {
                     }
                 )
             )
-            setupWithIndicator(binding.dotsIndicator)
+            binding.dotsIndicator.attachTo(this)
         }
 
         pageName = getString(R.string.login)

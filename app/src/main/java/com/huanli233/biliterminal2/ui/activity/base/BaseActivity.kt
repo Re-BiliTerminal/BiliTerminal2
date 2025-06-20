@@ -20,7 +20,7 @@ import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.data.setting.LocalData
 import com.huanli233.biliterminal2.event.SnackEvent
 import com.huanli233.biliterminal2.ui.activity.base.material.ThemedAppCompatActivity
-import com.huanli233.biliterminal2.ui.utils.crossFadeSetText
+import com.huanli233.biliterminal2.ui.utils.animateTextChange
 import com.huanli233.biliterminal2.ui.widget.components.TopBar
 import com.huanli233.biliterminal2.utils.MsgUtil
 import com.huanli233.biliterminal2.utils.ThemeUtil
@@ -186,7 +186,7 @@ open class BaseActivity : ThemedAppCompatActivity() {
         val textView = topBar?.titleTextView ?: return
         name?.let {
             if (animation) {
-                textView.crossFadeSetText(it)
+                textView.animateTextChange(it)
             } else {
                 textView.text = it
             }

@@ -8,9 +8,8 @@ import com.huanli233.biliterminal2.data.menu.MenuConfigManager
 import com.huanli233.biliterminal2.databinding.ActivityMainBinding
 import com.huanli233.biliterminal2.ui.activity.base.BaseActivity
 import com.huanli233.biliterminal2.ui.activity.setup.SetupActivity
-import com.huanli233.biliterminal2.ui.utils.crossFadeSetText
+import com.huanli233.biliterminal2.ui.utils.animateTextChange
 import com.huanli233.biliterminal2.utils.extensions.gone
-import com.huanli233.biliterminal2.utils.extensions.invisible
 import com.huanli233.biliterminal2.utils.extensions.visible
 import dagger.hilt.android.AndroidEntryPoint
 import splitties.activities.start
@@ -53,7 +52,7 @@ class MainActivity: BaseActivity() {
         binding.progressIndicator.gone()
         binding.errorImageView.visible()
         binding.errorTextView.visible()
-        binding.errorTextView.crossFadeSetText(getString(R.string.initialize_error, errorMsg))
+        binding.errorTextView.animateTextChange(getString(R.string.initialize_error, errorMsg))
     }
 
     private fun runAfterInitialized() {
