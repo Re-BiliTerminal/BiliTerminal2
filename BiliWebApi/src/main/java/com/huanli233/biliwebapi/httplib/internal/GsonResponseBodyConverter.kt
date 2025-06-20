@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.huanli233.biliwebapi.httplib.internal
 
 import com.google.gson.Gson
@@ -25,14 +27,15 @@ internal class GsonResponseBodyConverter<T>(
             if (jsonReader.peek() != JsonToken.END_DOCUMENT) {
                 throw JsonIOException("JSON document was not fully consumed.")
             }
-            return result.also { it ->
-                if (it is ApiResponse<*>) {
-                    it.data?.let { data ->
-                        if (data is ApiData) data.api = apiInstance
-                        data.javaClass.fields.forEach { injectApiInstance(data, it) }
-                    }
-                }
-            }
+            return result
+//            return result.also { it ->
+//                if (it is ApiResponse<*>) {
+//                    it.data?.let { data ->
+//                        if (data is ApiData) data.api = apiInstance
+//                        data.javaClass.fields.forEach { injectApiInstance(data, it) }
+//                    }
+//                }
+//            }
         }
     }
 
@@ -51,17 +54,8 @@ internal class GsonResponseBodyConverter<T>(
         Double::class.java
     )
 
-    private fun injectApiInstance(instance: Any, field: Field) {
-        if (isFieldPrimitiveOrWrapper(field)) return
-        field.isAccessible = true
-        val value = field.get(instance)
-        if (value is ApiData) {
-            value.api = apiInstance
-        }
-        value.javaClass.fields.forEach {
-            if (value != null) {
-                injectApiInstance(value, it)
-            }
-        }
-    }
+//    private fun injectApiInstance(instance: Any, field: Field) {
+//        if (isFieldPrimitiveOrWrapper(field)) return
+//        field.isAccessible = true
+//    }
 }
