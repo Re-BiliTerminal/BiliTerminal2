@@ -15,6 +15,7 @@ import com.huanli233.biliterminal2.databinding.LayoutCommonSwiperefreshRecyclerv
 import com.huanli233.biliterminal2.ui.fragment.base.BaseFragment
 import com.huanli233.biliterminal2.ui.fragment.base.BaseMenuFragment
 import com.huanli233.biliterminal2.ui.recyclerview.adapters.VideoPagingAdapter
+import com.huanli233.biliterminal2.ui.utils.beginDelayedFade
 import com.huanli233.biliterminal2.ui.utils.beginDelayedMaterialFade
 import com.huanli233.biliterminal2.ui.utils.hikage.extension.invisibleIf
 import com.huanli233.biliterminal2.ui.utils.loadstate.LoadStateAdapter
@@ -63,7 +64,7 @@ class RecommendFragment: BaseMenuFragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 pagingAdapter.loadStateFlow.collect { loadState ->
                     with (binding) {
-                        root.beginDelayedMaterialFade()
+                        root.beginDelayedFade()
                         if (loadState.refresh is LoadState.NotLoading && pagingAdapter.itemCount == 0 || loadState.refresh is LoadState.Error) {
                             recyclerView.invisible()
                             loadingView.error()

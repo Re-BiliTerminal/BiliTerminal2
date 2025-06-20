@@ -56,3 +56,11 @@
 -dontwarn master.flame.danmaku.danmaku.parser.IDataSource
 -dontwarn master.flame.danmaku.danmaku.parser.android.BiliDanmukuParser
 -dontwarn androidx.navigation.NavType$Companion
+
+-keepclassmembers class * extends android.view.View {
+    <init>(android.content.Context);
+    <init>(android.content.Context, android.util.AttributeSet);
+}
+-keepclassmembers class * extends android.view.ViewGroup$LayoutParams {
+    <init>(int, int);
+}

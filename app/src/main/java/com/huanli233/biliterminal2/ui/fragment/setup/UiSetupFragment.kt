@@ -1,6 +1,7 @@
 package com.huanli233.biliterminal2.ui.fragment.setup
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +10,11 @@ import android.widget.AdapterView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
+import androidx.transition.Slide
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.transition.MaterialSharedAxis
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.data.proto.NightMode
 import com.huanli233.biliterminal2.data.setting.LocalData

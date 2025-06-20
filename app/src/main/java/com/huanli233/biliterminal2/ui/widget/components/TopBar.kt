@@ -47,7 +47,7 @@ class TopBar @JvmOverloads constructor(
     init {
         attach<LayoutParams> {
             TextView(
-                lparams = LayoutParams(width = if (roundMode) LayoutParamsWrapContent else 0, height = LayoutParamsWrapContent) {
+                lparams = LayoutParams {
                     if (roundMode) {
                         updateMargins(horizontal = 4.dp)
                         updateMargins(top = 2.dp)
@@ -57,7 +57,8 @@ class TopBar @JvmOverloads constructor(
                     } else {
                         updateMarginsRelativeCompat(end = 8.dp)
                         startToParent()
-                        endToStart = viewId("guideline")
+                        endToEnd = viewId("guideline")
+                        horizontalBias = 0f
                         topToParent()
                         bottomToParent()
                     }

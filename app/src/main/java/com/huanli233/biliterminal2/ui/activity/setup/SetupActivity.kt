@@ -5,6 +5,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.transition.Slide
+import com.google.android.material.transition.MaterialSharedAxis
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.data.setting.LocalData
 import com.huanli233.biliterminal2.databinding.ActivitySetupBinding

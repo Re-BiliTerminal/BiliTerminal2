@@ -173,6 +173,7 @@ fun TextView.animateTextChange(
         onTransitionEnd?.invoke()
         return
     }
+    animate()?.cancel()
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && newText != this.text) {
         val parent = parent as? ViewGroup
