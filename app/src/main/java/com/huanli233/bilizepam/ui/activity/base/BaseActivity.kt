@@ -1,5 +1,6 @@
 package com.huanli233.bilizepam.ui.activity.base
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Configuration
@@ -171,6 +172,7 @@ open class BaseActivity : ThemedAppCompatActivity() {
         }
     }
 
+    @SuppressLint("GestureBackNavigation")
     @Deprecated("Deprecated in Java")
     @Suppress("DEPRECATION")
     override fun onBackPressed() {
