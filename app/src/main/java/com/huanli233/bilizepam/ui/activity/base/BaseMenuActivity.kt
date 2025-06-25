@@ -7,6 +7,7 @@ import androidx.fragment.app.commit
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.data.setting.LocalData
 import com.huanli233.bilizepam.ui.fragment.menu.MenuFragment
+import com.huanli233.bilizepam.ui.widget.components.TopBar
 
 abstract class BaseMenuActivity : BaseActivity() {
 
@@ -40,18 +41,14 @@ abstract class BaseMenuActivity : BaseActivity() {
         super.setupTopbar()
         val topBarView = topBar ?: return
 
-        topBarView.setBackIconVisible(true, R.drawable.icon_keyboard_arrow_down)
-
-        topBarView.setTitle(getMenuName())
+        topBarView.setState(TopBar.State.PAGE) { getMenuName() }
 
         supportFragmentManager.addOnBackStackChangedListener {
             val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
             if (currentFragment is MenuFragment) {
-                topBar?.setTitle(getString(R.string.menu))
-                topBar?.setBackIconVisible(true, R.drawable.icon_keyboard_arrow_left)
+                topBar?.setState(TopBar.State.MENU) { getMenuName() }
             } else {
-                topBar?.setTitle(getMenuName())
-                topBar?.setBackIconVisible(true, R.drawable.icon_keyboard_arrow_down)
+                topBarView.setState(TopBar.State.PAGE) { getMenuName() }
             }
         }
 

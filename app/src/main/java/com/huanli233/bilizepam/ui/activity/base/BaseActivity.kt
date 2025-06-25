@@ -183,23 +183,14 @@ open class BaseActivity : ThemedAppCompatActivity() {
 
     open var pageName: String? = null
         set(value) {
-            val oldValue = field
             field = value
-            setTopbarTitle(value, oldValue != null)
+            value?.let { setTopbarTitle(it) }
         }
 
     private fun setTopbarTitle(
-        name: String?,
-        animation: Boolean = false
+        name: String
     ) {
-        val textView = topBar?.titleTextView ?: return
-        name?.let {
-            if (animation) {
-                textView.animateTextChange(it)
-            } else {
-                textView.text = it
-            }
-        }
+        val textView = topBar?.setTitle(name)
     }
 
     open fun setupTopbar() {
@@ -232,7 +223,7 @@ open class BaseActivity : ThemedAppCompatActivity() {
         if (topBar == null) {
             topBar = findViewById(R.id.top_bar)
             setupTopbar()
-            setTopbarTitle(pageName)
+            pageName?.let { setTopbarTitle(it) }
         }
         if (eventBusEnabled()) {
             var snackEvent: SnackEvent

@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.os.Build
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -19,6 +20,8 @@ import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
 import com.google.android.material.transition.MaterialFade
 import com.huanli233.bilizepam.data.setting.LocalData
+import com.huanli233.bilizepam.utils.extensions.invisible
+import com.huanli233.bilizepam.utils.extensions.visible
 
 inline fun playAnimation(block: () -> Unit) {
     if (LocalData.settings.theme.animationsEnabled) {
@@ -138,6 +141,11 @@ inline fun ViewGroup.beginDelayedTransition(
 }
 
 @Suppress("NOTHING_TO_INLINE")
+inline fun ViewGroup.endTransitions() {
+    TransitionManager.endTransitions(this)
+}
+
+@Suppress("NOTHING_TO_INLINE")
 inline fun ViewGroup.beginDelayedMaterialFade(
     duration: Long? = null,
     targetBuilder: (TransitionTargetBuilder.() -> Unit) = {}
@@ -173,7 +181,6 @@ fun TextView.animateTextChange(
         onTransitionEnd?.invoke()
         return
     }
-    animate()?.cancel()
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && newText != this.text) {
         val parent = parent as? ViewGroup
@@ -185,72 +192,13 @@ fun TextView.animateTextChange(
 
         val transition = buildTransitionSet {
             +AutoTransition()
-            +TextFadeTransition()
+        }.addTargets {
+            +this@animateTextChange
         }.setInterpolator(FastOutSlowInInterpolator()).duration(duration)
-        transition.listen {
-            onEnd { onTransitionEnd?.invoke() }
-        }
         parent.beginDelayedTransition(transition)
-    }
-    this.text = newText
-}
-
-class TextFadeTransition : Transition() {
-
-    private companion object {
-        private const val PROPNAME_TEXT = "com.huanli233.textfade:text"
-    }
-
-    override fun captureStartValues(transitionValues: TransitionValues) {
-        captureValues(transitionValues)
-    }
-
-    override fun captureEndValues(transitionValues: TransitionValues) {
-        captureValues(transitionValues)
-    }
-
-    private fun captureValues(transitionValues: TransitionValues) {
-        (transitionValues.view as? TextView)?.let { textView ->
-            transitionValues.values[PROPNAME_TEXT] = textView.text
-        }
-    }
-
-    override fun createAnimator(
-        sceneRoot: ViewGroup,
-        startValues: TransitionValues?,
-        endValues: TransitionValues?
-    ): Animator? {
-        if (startValues == null || endValues == null ||
-            startValues.view !is TextView || endValues.view !is TextView
-        ) {
-            return null
-        }
-
-        val startTextView = startValues.view as TextView
-        val endTextView = endValues.view as TextView
-
-        val startText = startValues.values[PROPNAME_TEXT] as? CharSequence
-        val endText = endValues.values[PROPNAME_TEXT] as? CharSequence
-
-        if (startText != null && endText != null && startText != endText) {
-            val fadeOut = ObjectAnimator.ofFloat(startTextView, "alpha", 1f, 0.3f)
-            fadeOut.addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    endTextView.text = endText
-                }
-            })
-            fadeOut.interpolator = FastOutSlowInInterpolator()
-            fadeOut.setDuration(duration)
-
-            val fadeIn = ObjectAnimator.ofFloat(endTextView, "alpha", 0.3f, 1f)
-            fadeIn.interpolator = FastOutSlowInInterpolator()
-            fadeIn.setDuration(duration)
-
-            return AnimatorSet().apply {
-                playTogether(fadeOut, fadeIn)
-            }
-        }
-        return null
+        this.text = newText
+    } else {
+        this.text = newText
     }
 }
 

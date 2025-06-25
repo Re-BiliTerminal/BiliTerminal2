@@ -17,6 +17,7 @@ import com.huanli233.bilizepam.ui.utils.loadstate.LoadStateAdapter
 import com.huanli233.bilizepam.ui.utils.recyclerview.defaultLayoutManager
 import com.huanli233.bilizepam.utils.extensions.invisible
 import com.huanli233.bilizepam.utils.extensions.visible
+import com.huanli233.hikage.recyclerview.error
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -61,7 +62,7 @@ class RecommendFragment: BaseMenuFragment() {
                         root.beginDelayedFade()
                         if (loadState.refresh is LoadState.NotLoading && pagingAdapter.itemCount == 0 || loadState.refresh is LoadState.Error) {
                             recyclerView.invisible()
-                            loadingView.error()
+                            loadingView.error((loadState.refresh as? LoadState.Error)?.error.toString())
                         } else if (loadState.source.refresh is LoadState.Loading) {
                             recyclerView.invisible()
                             loadingView.loading()
