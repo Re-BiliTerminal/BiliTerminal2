@@ -6,12 +6,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     app:animScaleSV="false">
 
-    <com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppScrollView
+    <com.huanli233.bilizepam.ui.widget.scalablecontainer.AppScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:animScaleSV="false">
-        <com.huanli233.biliterminal2.ui.widget.wearable.BoxInsetLayout
+        <com.huanli233.bilizepam.ui.widget.wearable.BoxInsetLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -113,7 +113,7 @@
                     android:drawablePadding="2dp"
                     tools:text="BVMAIMAI" />
 
-                <com.huanli233.biliterminal2.ui.widget.views.ExpandableTextView
+                <com.huanli233.bilizepam.ui.widget.views.ExpandableTextView
                     android:id="@+id/desc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -141,7 +141,7 @@
                         android:layout_gravity="end|bottom"
                         android:background="@android:color/transparent"
                         app:tint="?attr/colorOnSurface" />
-                </com.huanli233.biliterminal2.ui.widget.views.ExpandableTextView>
+                </com.huanli233.bilizepam.ui.widget.views.ExpandableTextView>
 
                 <ImageView
                     android:id="@+id/tags_icon"
@@ -153,7 +153,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/desc"
                     app:layout_constraintStart_toStartOf="parent" />
 
-                <com.huanli233.biliterminal2.ui.widget.views.NoSpaceTextView
+                <com.huanli233.bilizepam.ui.widget.views.NoSpaceTextView
                     android:id="@+id/tags_tip"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -259,10 +259,10 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </com.huanli233.biliterminal2.ui.widget.wearable.BoxInsetLayout>
-    </com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppScrollView>
+        </com.huanli233.bilizepam.ui.widget.wearable.BoxInsetLayout>
+    </com.huanli233.bilizepam.ui.widget.scalablecontainer.AppScrollView>
 
-    <com.huanli233.biliterminal2.ui.widget.components.LoadingView
+    <com.huanli233.bilizepam.ui.widget.components.LoadingView
         android:id="@+id/loading_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -9,13 +9,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppRecyclerView
+        <com.huanli233.bilizepam.ui.widget.scalablecontainer.AppRecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:springEnableStartRV="false" />
 
-        <com.huanli233.biliterminal2.ui.widget.components.LoadingView
+        <com.huanli233.bilizepam.ui.widget.components.LoadingView
             android:id="@+id/loading_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

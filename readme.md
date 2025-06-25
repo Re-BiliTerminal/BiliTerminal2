@@ -1,7 +1,7 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <div align="center">
 
-# BiliTerminal2
+# BiliZepam
 
 轻量的第三方B站Android客户端
 

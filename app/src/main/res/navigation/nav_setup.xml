@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/welcomeFragment"
-        android:name="com.huanli233.biliterminal2.ui.fragment.setup.WelcomeFragment"
+        android:name="com.huanli233.bilizepam.ui.fragment.setup.WelcomeFragment"
         tools:layout="@layout/fragment_setup_welcome">
         <action
             android:id="@+id/action_toUiFragment"
@@ -20,7 +20,7 @@
 
     <fragment
         android:id="@+id/uiSetupFragment"
-        android:name="com.huanli233.biliterminal2.ui.fragment.setup.UiSetupFragment"
+        android:name="com.huanli233.bilizepam.ui.fragment.setup.UiSetupFragment"
         tools:layout="@layout/fragment_setup_ui">
     </fragment>
 

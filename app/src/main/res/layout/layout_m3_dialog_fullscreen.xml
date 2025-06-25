@@ -14,7 +14,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppNestedScrollView
+<com.huanli233.bilizepam.ui.widget.scalablecontainer.AppNestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -27,12 +27,12 @@
     app:animScaleNSV="false"
     tools:ignore="UnusedAttribute">
 
-    <com.huanli233.biliterminal2.ui.widget.wearable.BoxInsetLayout
+    <com.huanli233.bilizepam.ui.widget.wearable.BoxInsetLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:boxedEdges="top|bottom">
 
-        <com.huanli233.biliterminal2.ui.dialog.fullscreen.AlertDialogLayout
+        <com.huanli233.bilizepam.ui.dialog.fullscreen.AlertDialogLayout
             android:id="@+id/parentPanel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -124,8 +124,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-        </com.huanli233.biliterminal2.ui.dialog.fullscreen.AlertDialogLayout>
+        </com.huanli233.bilizepam.ui.dialog.fullscreen.AlertDialogLayout>
 
-    </com.huanli233.biliterminal2.ui.widget.wearable.BoxInsetLayout>
+    </com.huanli233.bilizepam.ui.widget.wearable.BoxInsetLayout>
 
-</com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppNestedScrollView>
+</com.huanli233.bilizepam.ui.widget.scalablecontainer.AppNestedScrollView>

@@ -8,8 +8,8 @@
         app:title="@string/settings_ui"
         app:icon="@drawable/icon_computer">
         <intent
-            android:targetPackage="com.huanli233.biliterminal2"
-            android:targetClass="com.huanli233.biliterminal2.ui.activity.setting.UiSettingsActivity" />
+            android:targetPackage="com.huanli233.bilizepam"
+            android:targetClass="com.huanli233.bilizepam.ui.activity.setting.UiSettingsActivity" />
     </Preference>
 
     <Preference
@@ -17,8 +17,8 @@
         app:title="@string/about"
         app:icon="@drawable/icon_info">
         <intent
-            android:targetPackage="com.huanli233.biliterminal2"
-            android:targetClass="com.huanli233.biliterminal2.ui.activity.setting.AboutActivity" />
+            android:targetPackage="com.huanli233.bilizepam"
+            android:targetClass="com.huanli233.bilizepam.ui.activity.setting.AboutActivity" />
     </Preference>
 
 </androidx.preference.PreferenceScreen>

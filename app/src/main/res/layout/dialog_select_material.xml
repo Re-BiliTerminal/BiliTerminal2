@@ -24,7 +24,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/select_dialog_listview"
     style="@style/Widget.AppCompat.ListView"
-    class="com.huanli233.biliterminal2.ui.dialog.app.AlertController$RecycleListView"
+    class="com.huanli233.bilizepam.ui.dialog.app.AlertController$RecycleListView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="start"

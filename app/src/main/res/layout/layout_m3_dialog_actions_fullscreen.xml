@@ -33,7 +33,7 @@
         app:dividerInsetStart="14dp"
         app:dividerInsetEnd="14dp" />
 
-    <com.huanli233.biliterminal2.ui.dialog.fullscreen.ButtonBarLayout
+    <com.huanli233.bilizepam.ui.dialog.fullscreen.ButtonBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layoutDirection="locale"
@@ -67,6 +67,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-    </com.huanli233.biliterminal2.ui.dialog.fullscreen.ButtonBarLayout>
+    </com.huanli233.bilizepam.ui.dialog.fullscreen.ButtonBarLayout>
 
 </LinearLayout>

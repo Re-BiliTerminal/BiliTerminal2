@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.huanli233.bilizepam.ui.widget.scalablecontainer.AppScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:animScaleSV="false"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
-    <com.huanli233.biliterminal2.ui.widget.wearable.BoxInsetLayout
+    <com.huanli233.bilizepam.ui.widget.wearable.BoxInsetLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
@@ -28,6 +28,6 @@
                 android:layout_marginHorizontal="5dp"
                 android:textSize="12sp" />
         </LinearLayout>
-    </com.huanli233.biliterminal2.ui.widget.wearable.BoxInsetLayout>
+    </com.huanli233.bilizepam.ui.widget.wearable.BoxInsetLayout>
 
-</com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppScrollView>
+</com.huanli233.bilizepam.ui.widget.scalablecontainer.AppScrollView>

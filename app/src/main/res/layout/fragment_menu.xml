@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppRecyclerView
+    <com.huanli233.bilizepam.ui.widget.scalablecontainer.AppRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"

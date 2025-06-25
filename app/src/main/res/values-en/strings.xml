@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">BiliTerminal2</string>
+    <string name="app_name">BiliZepam</string>
     <string name="about_description">Lightweight Third-Party Bilibili Client</string>
     <string name="about_to_uncle">The purpose of this software is to enable low-configuration Android watches and older mobile phones to access basic Bilibili web features. Operating through Bilibili\'s web interface, this app will neither overload any APIs nor collect user privacy data. It contains no paid functions, and its code is fully open-source. If you still believe it infringes your rights, please reach out (let\'s talk it out!)\nWe also disclaim responsibility for property loss (device confiscation) or mental distress (really?) caused by student users accessing the app at inappropriate times or locations. Please stay mindful and don\'t let it interfere with your studies or daily rhythm! Keep it balanced!</string>
 
     <string name="setting_ui_desc">The valid range is 0.25~5.00 times.</string>
     <string name="setting_ui_density_desc">Minimum: 72.</string>
-    <string name="setup_introduction">This is a Fork project of BiliClient.\n\nMay you find your own small joys within this little screen!\n\nNo discussion group available yet.\nTo report issues or suggest improvements, please visit the open-source repository to submit an Issue!\nOpen-source address: https://github.com/Re-BiliTerminal/BiliTerminal2\n\nPlease note:\nThis software is permanently free and open-source and does not collect any of your account or personal information. Use it with peace of mind!\nIf you paid to download BiliTerminal on any platform, you’ve been scammed!\n\nClick the button below to get started!</string>
+    <string name="setup_introduction">This is a Fork project of BiliClient.\n\nMay you find your own small joys within this little screen!\n\nNo discussion group available yet.\nTo report issues or suggest improvements, please visit the open-source repository to submit an Issue!\nOpen-source address: https://github.com/Re-BiliTerminal/BiliZepam\n\nPlease note:\nThis software is permanently free and open-source and does not collect any of your account or personal information. Use it with peace of mind!\nIf you paid to download BiliTerminal on any platform, you’ve been scammed!\n\nClick the button below to get started!</string>
 
     <string name="egg_warmwords_warmworld">Keep in mind: If you encounter mental health–related concerns,\n24/7 National Psychological Support Hotline(China only): 010–82951332\nOr open the official Bilibili app, go to My Profile → scroll down to Recommended Services → Energy Station.\n\nIf you need this, we hope this Easter egg can offer some support.\nIf someone else might benefit, feel free to share it with them.</string>
 
@@ -17,7 +17,6 @@
         <item>Don\'t be afraid of the long way because you have the ability to write a long story.\nWhen facing hurdles or setbacks, don\'t feel defeated.\nKeep your heart open, stay optimistic, and look forward—\nthe future holds countless beautiful moments waiting for you.\n\nSincere apologies! Robin found this in old notes\nand can’t remember who originally shared it!!!TAT\nIf this belongs to you, come claim it!</item>
         <item>In your hands, every page chronicles my victories.\n\n#Contributor: MOSS</item>
         <item>Let this moonlit radiance illuminate every peak and stream!\n\n#Contributor: Anonymous\n#To: 镜流</item>
-        <item>Don’t regret or blame—your own life.\nDon’t deny—the desire for happiness.\nDon’t speak—those sorrowful words of abandoning life\nor seeking escape from pain.\nDon’t believe—you were born to suffer.\nThat notion—\nit’s utterly untrue.\n\n#Contributor: huanli233</item>
         <item>Android 3.0 — The world may have forgotten it,\nbut never abandoned it.\n\n#Contributor: 船魔苏心</item>
         <item>May the Mother Goddess thrice close Her eyes upon you,\nLet your veins surge eternal,\nYour journey stay unshaken,\nAnd schemes stay veiled forever.\n\n#Contributor: 白什盘</item>
         <item>\"Phonk is the real music!" (personal opinion)\n\n#Contributor: DICK</item>

@@ -17,7 +17,7 @@
 
 <view
     xmlns:android="http://schemas.android.com/apk/res/android"
-    class="com.huanli233.biliterminal2.ui.widget.snackbar.SnackbarContentLayout"
+    class="com.huanli233.bilizepam.ui.widget.snackbar.SnackbarContentLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"

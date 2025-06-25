@@ -33,7 +33,7 @@
             tools:ignore="ContentDescription"
             style="?attr/materialAlertDialogTitleIconStyle"/>
 
-        <com.huanli233.biliterminal2.ui.dialog.fullscreen.DialogTitle
+        <com.huanli233.bilizepam.ui.dialog.fullscreen.DialogTitle
             android:id="@id/alertTitle"
             style="?attr/materialAlertDialogTitleTextStyle"/>
     </LinearLayout>

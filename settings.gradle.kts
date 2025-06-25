@@ -21,7 +21,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "BiliTerminal2"
+rootProject.name = "BiliZepam"
 include(":app")
 include(":ijkplayer-java")
 include(":DanmakuFlameMaster")

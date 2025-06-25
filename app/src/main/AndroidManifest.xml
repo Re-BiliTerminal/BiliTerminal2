@@ -29,7 +29,7 @@
         android:roundIcon="@mipmap/icon"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
-        android:theme="@style/Theme.BiliTerminal2.Material3"
+        android:theme="@style/Theme.BiliZepam.Material3"
         android:usesCleartextTraffic="true"
         android:enableOnBackInvokedCallback="true"
         android:supportsRtl="true"
@@ -38,7 +38,7 @@
         <activity
             android:name=".ui.activity.main.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.BiliTerminal2.Splash">
+            android:theme="@style/Theme.BiliZepam.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -75,7 +75,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.huanli233.biliterminal2.fileprovider"
+            android:authorities="com.huanli233.bilizepam.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

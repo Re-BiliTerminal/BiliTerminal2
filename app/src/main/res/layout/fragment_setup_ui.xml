@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppNestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.huanli233.bilizepam.ui.widget.scalablecontainer.AppNestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.huanli233.biliterminal2.ui.widget.wearable.BoxInsetLayout
+    <com.huanli233.bilizepam.ui.widget.wearable.BoxInsetLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu" >
-                <com.huanli233.biliterminal2.ui.widget.views.ExposedDropdownMenu
+                <com.huanli233.bilizepam.ui.widget.views.ExposedDropdownMenu
                     android:id="@+id/dark_theme_input"
                     android:hint="@string/dark_theme"
                     app:simpleItems="@array/dark_theme_modes"
@@ -117,6 +117,6 @@
                 android:text="@string/view_preview" />
 
         </LinearLayout>
-    </com.huanli233.biliterminal2.ui.widget.wearable.BoxInsetLayout>
+    </com.huanli233.bilizepam.ui.widget.wearable.BoxInsetLayout>
 
-</com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppNestedScrollView>
+</com.huanli233.bilizepam.ui.widget.scalablecontainer.AppNestedScrollView>

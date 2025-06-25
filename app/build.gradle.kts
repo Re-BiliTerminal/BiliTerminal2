@@ -55,7 +55,7 @@ fun getGitHash(): String {
 }
 
 android {
-    namespace = "com.huanli233.biliterminal2"
+    namespace = "com.huanli233.bilizepam"
     compileSdk = 36
 
     lint {
@@ -79,7 +79,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.huanli233.biliterminal2"
+        applicationId = "com.huanli233.bilizepam"
         minSdk = 15
         targetSdk = 36
         versionCode = getGitCommitCount()
@@ -161,7 +161,7 @@ android {
             val versionName = this@variant.versionName
             val abi = filters.find { it.filterType == "ABI" }?.identifier ?: "universal"
             (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                "BiliTerminal2-${this@variant.name}-${versionName}-${abi}.apk"
+                "BiliZepam-${this@variant.name}-${versionName}-${abi}.apk"
         }
     }
 }
@@ -183,7 +183,7 @@ protobuf {
 
 autoResConfig {
     generateClass = true
-    generatedClassFullName = "com.huanli233.biliterminal2.Locales"
+    generatedClassFullName = "com.huanli233.bilizepam.Locales"
     generateRes = true
     generatedResPrefix = null
     generatedArrayFirstItem = "SYSTEM"

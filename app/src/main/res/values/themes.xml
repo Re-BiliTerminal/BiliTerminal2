@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.BiliTerminal2.Material3" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.BiliZepam.Material3" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowSwipeToDismiss" tools:ignore="NewApi">true</item>
 
         <item name="materialCardViewStyle">@style/Material3CardView</item>
@@ -15,12 +15,12 @@
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.Material3</item>
     </style>
 
-    <style name="Theme.BiliTerminal2.Material3.AlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+    <style name="Theme.BiliZepam.Material3.AlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="android:colorBackground">?attr/colorSurfaceContainerHigh</item>
         <item name="listLayout">@layout/dialog_select_material</item>
     </style>
 
-    <style name="Theme.BiliTerminal2.Material3.AlertDialog.FullScreen" parent="Theme.BiliTerminal2.Material3.AlertDialog">
+    <style name="Theme.BiliZepam.Material3.AlertDialog.FullScreen" parent="Theme.BiliZepam.Material3.AlertDialog">
         <item name="android:colorBackground">?attr/colorSurfaceContainerHigh</item>
 
         <item name="alertDialogStyle">@style/MaterialAlertDialog.Material3.FullScreen</item>
@@ -39,12 +39,12 @@
         <item name="android:listDivider">@null</item>
     </style>
 
-    <style name="Theme.BiliTerminal2.Splash" parent="Theme.BiliTerminal2.Material3">
+    <style name="Theme.BiliZepam.Splash" parent="Theme.BiliZepam.Material3">
         <item name="android:windowBackground">@drawable/splash_text</item>
         <item name="android:windowIsTranslucent">false</item>
     </style>
 
-    <style name="Theme.BiliTerminal2.Player" parent="Theme.BiliTerminal2.Material3">
+    <style name="Theme.BiliZepam.Player" parent="Theme.BiliZepam.Material3">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowSwipeToDismiss" tools:ignore="NewApi">false</item>

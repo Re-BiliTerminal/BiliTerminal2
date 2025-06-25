@@ -4,13 +4,13 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.huanli233.biliterminal2.ui.widget.components.TopBar
+    <com.huanli233.bilizepam.ui.widget.components.TopBar
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.huanli233.biliterminal2.ui.widget.scalablecontainer.AppRecyclerView
+    <com.huanli233.bilizepam.ui.widget.scalablecontainer.AppRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"

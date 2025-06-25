@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.huanli233.biliterminal2.ui.preferences.BasePreference
+    <com.huanli233.bilizepam.ui.preferences.BasePreference
         app:title="@string/view_preview">
         <intent
-            android:targetPackage="com.huanli233.biliterminal2"
-            android:targetClass="com.huanli233.biliterminal2.ui.activity.setup.UiPreviewActivity" />
-    </com.huanli233.biliterminal2.ui.preferences.BasePreference>
+            android:targetPackage="com.huanli233.bilizepam"
+            android:targetClass="com.huanli233.bilizepam.ui.activity.setup.UiPreviewActivity" />
+    </com.huanli233.bilizepam.ui.preferences.BasePreference>
 
     <PreferenceCategory
         app:title="@string/scale">
-        <com.huanli233.biliterminal2.ui.preferences.FloatEditTextPreference
+        <com.huanli233.bilizepam.ui.preferences.FloatEditTextPreference
             app:key="ui_scale"
             app:title="@string/interface_scale"
             app:summary="@string/setting_ui_desc"
             app:defaultValue="1.0"
             app:minFloatValue="0.25"
             app:maxFloatValue="5.0" />
-        <com.huanli233.biliterminal2.ui.preferences.IntEditTextPreference
+        <com.huanli233.bilizepam.ui.preferences.IntEditTextPreference
             app:key="density"
             app:title="@string/density"
             app:summary="@string/setting_ui_density_desc"
@@ -30,28 +30,28 @@
 
     <PreferenceCategory
         app:title="@string/preference">
-        <com.huanli233.biliterminal2.ui.preferences.MaterialListPreference
+        <com.huanli233.bilizepam.ui.preferences.MaterialListPreference
             app:key="night_mode"
             app:title="@string/dark_theme"
             app:entries="@array/dark_theme_modes"
             app:entryValues="@array/dark_theme_values"
             app:useSimpleSummaryProvider="true" />
-        <com.huanli233.biliterminal2.ui.preferences.MaterialSwitchPreference
+        <com.huanli233.bilizepam.ui.preferences.MaterialSwitchPreference
             app:key="theme_color_system"
             app:title="@string/system_accent_color" />
-        <com.huanli233.biliterminal2.ui.preferences.BasePreference
+        <com.huanli233.bilizepam.ui.preferences.BasePreference
             app:title="@string/theme_color">
             <intent
-                android:targetPackage="com.huanli233.biliterminal2"
-                android:targetClass="com.huanli233.biliterminal2.ui.activity.setting.ThemeColorActivity" />
-        </com.huanli233.biliterminal2.ui.preferences.BasePreference>
-        <com.huanli233.biliterminal2.ui.preferences.MaterialSwitchPreference
+                android:targetPackage="com.huanli233.bilizepam"
+                android:targetClass="com.huanli233.bilizepam.ui.activity.setting.ThemeColorActivity" />
+        </com.huanli233.bilizepam.ui.preferences.BasePreference>
+        <com.huanli233.bilizepam.ui.preferences.MaterialSwitchPreference
             app:key="round_mode"
             app:title="@string/round_screen_adaptation" />
-        <com.huanli233.biliterminal2.ui.preferences.MaterialSwitchPreference
+        <com.huanli233.bilizepam.ui.preferences.MaterialSwitchPreference
             app:key="animations"
             app:title="@string/animation" />
-        <com.huanli233.biliterminal2.ui.preferences.MaterialSwitchPreference
+        <com.huanli233.bilizepam.ui.preferences.MaterialSwitchPreference
             app:key="disable_fullscreen_dialog"
             app:title="@string/disable_fullscreen_dialog" />
     </PreferenceCategory>>
