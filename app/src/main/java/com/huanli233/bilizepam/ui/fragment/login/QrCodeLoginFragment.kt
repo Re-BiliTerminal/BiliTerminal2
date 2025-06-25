@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import androidx.transition.AutoTransition
 import com.bumptech.glide.Glide
 import com.ethanhua.skeleton.SkeletonScreen
 import com.huanli233.bilizepam.R
@@ -15,7 +17,9 @@ import com.huanli233.bilizepam.ui.activity.login.EXTRA_NAME_FROM_SETUP
 import com.huanli233.bilizepam.ui.activity.login.LoginActivity
 import com.huanli233.bilizepam.ui.fragment.base.BaseFragment
 import com.huanli233.bilizepam.ui.utils.animateTextChange
+import com.huanli233.bilizepam.ui.utils.beginDelayedTransition
 import com.huanli233.bilizepam.ui.utils.image.transition
+import com.huanli233.bilizepam.ui.utils.playAnimation
 import com.huanli233.bilizepam.ui.utils.showSkeleton
 import com.huanli233.bilizepam.utils.MsgUtil
 import com.huanli233.bilizepam.utils.QRCodeUtil
@@ -90,6 +94,11 @@ class QrCodeLoginFragment(): BaseFragment() {
                 val guidelineLeft = binding.guideline33
                 val guidelineRight = binding.guideline34
 
+                playAnimation {
+                    binding.root.beginDelayedTransition(
+                        AutoTransition().setInterpolator(FastOutSlowInInterpolator())
+                    )
+                }
                 when (qrScale) {
                     0 -> {
                         guidelineLeft.setGuidelinePercent(0.00f)

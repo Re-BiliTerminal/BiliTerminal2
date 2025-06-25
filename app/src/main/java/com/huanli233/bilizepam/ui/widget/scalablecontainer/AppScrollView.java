@@ -66,6 +66,7 @@ public class AppScrollView extends ScrollView {
 
     public AppScrollView(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
+        mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         this.overScrollState = 0;
         this.flingOverScrollState = 0;
         this.enableStart = true;
@@ -244,89 +245,79 @@ public class AppScrollView extends ScrollView {
         return false;
     }
 
+    private int mTouchSlop;
+    private float mLastMotionX;
+    private float mLastMotionY;
+    private boolean mIsBeingDragged = false;
+
     @Override
-    public boolean dispatchTouchEvent(MotionEvent motionEvent) {
-        if (hasChild()) {
-            View childAt = getChildAt(0);
-            int action = motionEvent.getAction();
-            float translationY = childAt.getTranslationY();
-            SpringAnimation springAnimation = this.anim;
-            boolean animationWasRunningAndCancelled = false;
-            if (springAnimation != null && springAnimation.isRunning()) {
-                this.anim.cancel();
-                animationWasRunningAndCancelled = true;
-                if(this.overScrollState == OVER_SCROLL_STATE_BACKING) {
-                    this.overScrollState = OVER_SCROLL_STATE_IDLE;
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (!hasChild()) {
+            return super.dispatchTouchEvent(ev);
+        }
+
+        final int action = ev.getActionMasked();
+        View child = getChildAt(0);
+
+        if (action == MotionEvent.ACTION_DOWN) {
+            if (anim != null && anim.isRunning()) {
+                anim.cancel();
+                if (overScrollState == OVER_SCROLL_STATE_BACKING) {
+                    overScrollState = OVER_SCROLL_STATE_IDLE;
                 }
-                if(this.flingOverScrollState == OVER_SCROLL_FLING_ING) {
-                    this.flingOverScrollState = OVER_SCROLL_STATE_IDLE;
-                }
-            }
-            int actionMasked = motionEvent.getActionMasked();
-            ViewParent viewParent = getParent();
-            View child = getChildAt(0);
-            if (this.overScrollState == OVER_SCROLLING_STATE) {
-                if (viewParent != null) {
-                    viewParent.requestDisallowInterceptTouchEvent(true);
-                }
-            } else if (child.getTranslationY() != 0) {
-                if (viewParent != null) {
-                    viewParent.requestDisallowInterceptTouchEvent(true);
+                if (flingOverScrollState == OVER_SCROLL_FLING_ING) {
+                    flingOverScrollState = OVER_SCROLL_STATE_IDLE;
                 }
             }
-            if (action != 1) {
-                if (action == 2) {
-                    if (motionEvent.getHistorySize() != 0) {
-                        float y = motionEvent.getY(0) - motionEvent.getHistoricalY(0, 0);
-                        if (Math.abs(y) >= Math.abs(motionEvent.getX(0) - motionEvent.getHistoricalX(0, 0))) {
-                            int i = y > 0.0f ? 1 : 2;
-                            boolean z = ViewUtils.isInAbsoluteStart(this, 1) && this.enableStart;
-                            boolean z2 = ViewUtils.isInAbsoluteEnd(this, 1) && this.enableEnd;
-                            if (this.overScrollState == 0) {
-                                if ((i == 1 && z) || (i == 2 && z2)) {
-                                    this.startPointId = motionEvent.getPointerId(0);
-                                    this.startDragSide = i;
-                                    this.overScrollState = 1;
-                                }
-                            }
-                            if (this.overScrollState == 1) {
-                                if (this.startPointId != motionEvent.getPointerId(0)) {
-                                    finishOverScroll();
-                                } else {
-                                    float f = translationY + (y / 1.5f);
-                                    int i2 = this.startDragSide;
-                                    if (i != i2 && ((i2 == 1 && f <= 0.0f) || (this.startDragSide == 2 && f > 0.0f))) {
-                                        this.overScrollState = 0;
-                                    } else {
-                                        ViewParent parent = getParent();
-                                        if (parent != null) {
-                                            parent.requestDisallowInterceptTouchEvent(true);
-                                        }
-                                        childAt.setTranslationY(f);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } else if (action == 3) {
-                    int i3 = this.overScrollState;
-                    if (i3 != 2) {
-                        if (i3 == 1) {
-                            finishOverScroll();
-                        } else if (this.flingOverScrollState == 0) {
-                            this.flingVelocityY = 0.0f;
-                            this.lastY = getScrollY();
-                            this.flingOverScrollState = 3;
-                            this.lastTrackTime = System.currentTimeMillis();
-                            doScrollChanged();
-                        }
+        }
+
+
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                mLastMotionX = ev.getX();
+                mLastMotionY = ev.getY();
+                mIsBeingDragged = false;
+
+                if (child.getTranslationY() != 0) {
+                    getParent().requestDisallowInterceptTouchEvent(true);
+                    mIsBeingDragged = true; // 已经是拖拽状
+                }
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                final float x = ev.getX();
+                final float y = ev.getY();
+                final float xDiff = x - mLastMotionX;
+                final float yDiff = y - mLastMotionY;
+
+                if (!mIsBeingDragged) {
+                    if (Math.abs(yDiff) > mTouchSlop && Math.abs(yDiff) > Math.abs(xDiff)) {
+                        mIsBeingDragged = true;
+                        getParent().requestDisallowInterceptTouchEvent(true);
                     }
                 }
-                return super.dispatchTouchEvent(motionEvent);
-            }
-            int i3 = this.overScrollState;
-            if (i3 != 2) {
-                if (i3 == 1) {
+
+                if (mIsBeingDragged) {
+                    boolean canPullDown = ViewUtils.isInAbsoluteStart(this, 1) && this.enableStart;
+                    boolean canPullUp = ViewUtils.isInAbsoluteEnd(this, 1) && this.enableEnd;
+
+                    if ((canPullDown && yDiff > 0) || (canPullUp && yDiff < 0)) {
+                        this.overScrollState = 1;
+                        float newTranslationY = child.getTranslationY() + yDiff / 1.8f;
+                        child.setTranslationY(newTranslationY);
+
+                        mLastMotionY = y;
+                        mLastMotionX = x;
+                        return true;
+                    }
+                }
+                mLastMotionY = y;
+                mLastMotionX = x;
+                break;
+
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                if (this.overScrollState == 1) {
                     finishOverScroll();
                 } else if (this.flingOverScrollState == 0) {
                     this.flingVelocityY = 0.0f;
@@ -335,10 +326,11 @@ public class AppScrollView extends ScrollView {
                     this.lastTrackTime = System.currentTimeMillis();
                     doScrollChanged();
                 }
-            }
-            return super.dispatchTouchEvent(motionEvent);
+                mIsBeingDragged = false;
+                break;
         }
-        return super.dispatchTouchEvent(motionEvent);
+
+        return super.dispatchTouchEvent(ev);
     }
 
     private void finishOverScroll() {

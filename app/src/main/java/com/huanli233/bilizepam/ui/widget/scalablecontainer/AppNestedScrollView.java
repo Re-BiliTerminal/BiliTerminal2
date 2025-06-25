@@ -66,6 +66,7 @@ public class AppNestedScrollView extends NestedScrollView {
 
     public AppNestedScrollView(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
+        mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         this.overScrollState = 0;
         this.flingOverScrollState = 0;
         this.enableStart = true;
@@ -244,69 +245,89 @@ public class AppNestedScrollView extends NestedScrollView {
         }
     }
 
+    private int mTouchSlop;
+    private float mLastMotionX;
+    private float mLastMotionY;
+    private boolean mIsBeingDragged = false;
+    private int mActivePointerId = -1;
+
     @Override
-    public boolean dispatchTouchEvent(MotionEvent motionEvent) {
-        if (hasChild()) {
-            View childAt = getChildAt(0);
-            int action = motionEvent.getAction();
-            float translationY = childAt.getTranslationY();
-            SpringAnimation springAnimation = this.anim;
-            if (springAnimation != null && springAnimation.isRunning()) {
-                this.anim.cancel();
-            }
-            if (action != 1) {
-                if (action == 2) {
-                    if (motionEvent.getHistorySize() != 0) {
-                        float y = motionEvent.getY(0) - motionEvent.getHistoricalY(0, 0);
-                        if (Math.abs(y) >= Math.abs(motionEvent.getX(0) - motionEvent.getHistoricalX(0, 0))) {
-                            int i = y > 0.0f ? 1 : 2;
-                            boolean z = ViewUtils.isInAbsoluteStart(this, 1) && this.enableStart;
-                            boolean z2 = ViewUtils.isInAbsoluteEnd(this, 1) && this.enableEnd;
-                            if (this.overScrollState == 0) {
-                                if ((i == 1 && z) || (i == 2 && z2)) {
-                                    this.startPointId = motionEvent.getPointerId(0);
-                                    this.startDragSide = i;
-                                    this.overScrollState = 1;
-                                }
-                            }
-                            if (this.overScrollState == 1) {
-                                if (this.startPointId != motionEvent.getPointerId(0)) {
-                                    finishOverScroll();
-                                } else {
-                                    float f = translationY + (y / 1.5f);
-                                    int i2 = this.startDragSide;
-                                    if (i != i2 && ((i2 == 1 && f <= 0.0f) || (this.startDragSide == 2 && f > 0.0f))) {
-                                        this.overScrollState = 0;
-                                    } else {
-                                        ViewParent parent = getParent();
-                                        if (parent != null) {
-                                            parent.requestDisallowInterceptTouchEvent(true);
-                                        }
-                                        childAt.setTranslationY(f);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } else if (action == 3) {
-                    int i3 = this.overScrollState;
-                    if (i3 != 2) {
-                        if (i3 == 1) {
-                            finishOverScroll();
-                        } else if (this.flingOverScrollState == 0) {
-                            this.flingVelocityY = 0.0f;
-                            this.lastY = getScrollY();
-                            this.flingOverScrollState = 3;
-                            this.lastTrackTime = System.currentTimeMillis();
-                            doScrollChanged(this.lastY);
-                        }
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (!hasChild()) {
+            return super.dispatchTouchEvent(ev);
+        }
+
+        final int action = ev.getActionMasked();
+        View child = getChildAt(0);
+
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                mActivePointerId = ev.getPointerId(0);
+
+                mLastMotionX = ev.getX();
+                mLastMotionY = ev.getY();
+
+                mIsBeingDragged = false;
+                if (this.anim != null && this.anim.isRunning()) {
+                    this.anim.cancel();
+                }
+
+                if (child.getTranslationY() != 0) {
+                    getParent().requestDisallowInterceptTouchEvent(true);
+                    mIsBeingDragged = true;
+                }
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                if (mActivePointerId == -1) {
+                    break;
+                }
+                final int pointerIndex = ev.findPointerIndex(mActivePointerId);
+                if (pointerIndex < 0) {
+                    break;
+                }
+
+                final float x = ev.getX(pointerIndex);
+                final float y = ev.getY(pointerIndex);
+                final float yDiff = y - mLastMotionY;
+                final float xDiff = x - mLastMotionX;
+
+                if (!mIsBeingDragged) {
+                    if (Math.abs(yDiff) > mTouchSlop && Math.abs(yDiff) > Math.abs(xDiff)) {
+                        mIsBeingDragged = true;
+
+                        getParent().requestDisallowInterceptTouchEvent(true);
+
+                        mLastMotionY = y - (yDiff > 0 ? -mTouchSlop : mTouchSlop);
                     }
                 }
-                return super.dispatchTouchEvent(motionEvent);
-            }
-            int i3 = this.overScrollState;
-            if (i3 != 2) {
-                if (i3 == 1) {
+
+                if (mIsBeingDragged) {
+                    boolean canPullDown = ViewUtils.isInAbsoluteStart(this, 1) && this.enableStart;
+                    boolean canPullUp = ViewUtils.isInAbsoluteEnd(this, 1) && this.enableEnd;
+
+                    if ((canPullDown && yDiff > 0) || (canPullUp && yDiff < 0)) {
+                        this.overScrollState = 1;
+
+                        float currentTranslationY = child.getTranslationY();
+                        float newTranslationY = currentTranslationY + (y - mLastMotionY) / 1.5f;
+
+                        child.setTranslationY(newTranslationY);
+
+                        mLastMotionY = y;
+                        mLastMotionX = x;
+                        return true;
+                    }
+                }
+
+                // 更新最后的位置
+                mLastMotionY = y;
+                mLastMotionX = x;
+                break;
+
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                if (this.overScrollState == 1) {
                     finishOverScroll();
                 } else if (this.flingOverScrollState == 0) {
                     this.flingVelocityY = 0.0f;
@@ -315,10 +336,13 @@ public class AppNestedScrollView extends NestedScrollView {
                     this.lastTrackTime = System.currentTimeMillis();
                     doScrollChanged(this.lastY);
                 }
-            }
-            return super.dispatchTouchEvent(motionEvent);
+                mIsBeingDragged = false;
+                mActivePointerId = -1;
+                break;
         }
-        return super.dispatchTouchEvent(motionEvent);
+
+        // 对于其他所有情况，都沿用父类的默认实现
+        return super.dispatchTouchEvent(ev);
     }
 
     private void finishOverScroll() {
