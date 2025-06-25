@@ -14,6 +14,7 @@ import com.highcapable.hikage.widget.android.widget.FrameLayout
 import com.highcapable.hikage.widget.android.widget.ImageView
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.ui.utils.hikage.extension.attach
+import com.huanli233.biliterminal2.utils.extensions.setBackgroundCompat
 import splitties.views.gravityCenter
 import splitties.views.gravityCenterVertical
 

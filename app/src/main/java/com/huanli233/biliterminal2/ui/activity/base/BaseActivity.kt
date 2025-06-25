@@ -29,6 +29,9 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 open class BaseActivity : ThemedAppCompatActivity() {
+
+    open val rootViewPaddingEnabled = true
+
     var windowWidth: Int = 0
     var windowHeight: Int = 0
     private lateinit var _originalContext: Context
@@ -138,18 +141,22 @@ open class BaseActivity : ThemedAppCompatActivity() {
             windowWidth = screenWidth - paddingHorizontal - paddingHorizontal
             windowHeight = screenHeight - paddingTop - (paddingBottom - paddingTop)
             rootView.setPadding(paddingHorizontal, paddingTop, paddingHorizontal, paddingBottom)
-            ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
-                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-                v.setPadding(systemBars.left + paddingHorizontal, systemBars.top + paddingTop, systemBars.right + paddingHorizontal, systemBars.bottom + paddingBottom)
-                insets
+            if (rootViewPaddingEnabled) {
+                ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
+                    val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                    v.setPadding(systemBars.left + paddingHorizontal, systemBars.top + paddingTop, systemBars.right + paddingHorizontal, systemBars.bottom + paddingBottom)
+                    insets
+                }
             }
         } else {
             windowWidth = screenWidth
             windowHeight = screenHeight
-            ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
-                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-                insets
+            if (rootViewPaddingEnabled) {
+                ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
+                    val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                    v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+                    insets
+                }
             }
         }
     }

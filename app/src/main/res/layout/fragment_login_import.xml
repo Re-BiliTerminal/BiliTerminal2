@@ -8,9 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/page_padding_horizontal"
-        android:focusable="true"
-        android:focusableInTouchMode="true">
+        android:layout_marginHorizontal="@dimen/page_padding_horizontal">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/token_input_layout"

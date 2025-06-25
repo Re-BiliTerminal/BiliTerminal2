@@ -62,7 +62,7 @@ material = "1.11.0"
 
 # BetterAndroid
 hikageCore = "1.0.4"
-hikageRecyclerView = "1.0.0"
+hikageRecyclerView = "1.0.1-alpha01"
 hikageExtension = "1.0.2"
 hikageExtensionBetterAndroid = "1.0.1"
 hikageCompiler = "1.0.1"

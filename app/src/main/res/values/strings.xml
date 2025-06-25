@@ -231,6 +231,27 @@
     <string name="tag">标签</string>
     <string name="request_relation_failed">获取操作信息失败：%1$s</string>
     <string name="like_failed_with_msg">点赞失败：%1$s</string>
+    <string name="theme_color">主题颜色</string>
+
+    <string name="color_sakura">櫻花</string>
+    <string name="color_red">紅色</string>
+    <string name="color_pink">粉色</string>
+    <string name="color_purple">紫色</string>
+    <string name="color_deep_purple">深紫</string>
+    <string name="color_indigo">靛青</string>
+    <string name="color_blue">藍色</string>
+    <string name="color_light_blue">淺藍</string>
+    <string name="color_cyan">青色</string>
+    <string name="color_teal">青綠</string>
+    <string name="color_green">綠色</string>
+    <string name="color_light_green">淺綠</string>
+    <string name="color_lime">萊姆綠</string>
+    <string name="color_yellow">黃色</string>
+    <string name="color_amber">琥珀</string>
+    <string name="color_orange">橙色</string>
+    <string name="color_deep_orange">深橙</string>
+    <string name="color_brown">棕色</string>
+    <string name="color_blue_grey">藍灰</string>
 
     <string-array name="icon_license">
         <item>界面设置: Newicons, MIT License</item>

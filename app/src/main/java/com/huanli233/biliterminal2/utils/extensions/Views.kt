@@ -77,6 +77,10 @@ inline fun View.updatePaddingRelativeCompat(
     ViewCompat.setPaddingRelative(this, start, top, end, bottom)
 }
 
+fun View.setBackgroundCompat(background: Drawable?) {
+    ViewCompat.setBackground(this, background)
+}
+
 val View.paddingStartCompat: Int
     get() = ViewCompat.getPaddingStart(this)
 val View.paddingEndCompat: Int get() = ViewCompat.getPaddingEnd(this)

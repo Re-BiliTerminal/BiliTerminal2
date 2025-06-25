@@ -69,6 +69,8 @@
         <activity
             android:name=".ui.activity.setting.UiSettingsActivity" />
         <activity
+            android:name=".ui.activity.setting.ThemeColorActivity" />
+        <activity
             android:name=".ui.activity.video.VideoInfoActivity" />
 
         <provider

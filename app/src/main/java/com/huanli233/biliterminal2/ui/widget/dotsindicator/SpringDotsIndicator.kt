@@ -23,6 +23,7 @@ import com.highcapable.hikage.extension.widget.centerInParent
 import com.highcapable.hikage.widget.android.widget.ImageView
 import com.highcapable.hikage.widget.android.widget.RelativeLayout
 import com.huanli233.biliterminal2.ui.utils.hikage.extension.attach
+import com.huanli233.biliterminal2.utils.extensions.setBackgroundCompat
 import splitties.views.gravityCenterVertical
 
 class SpringDotsIndicator @JvmOverloads constructor(

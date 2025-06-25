@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.TypedValue
 import android.view.View
+import androidx.core.view.ViewCompat
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 
@@ -35,11 +36,3 @@ internal val ViewPager.isNotEmpty: Boolean get() = (adapter?.count ?: 0) > 0
 internal val ViewPager2.isNotEmpty: Boolean get() = (adapter?.itemCount ?: 0) > 0
 internal val ViewPager?.isEmpty: Boolean get() = this?.adapter?.count == 0
 internal val ViewPager2?.isEmpty: Boolean get() = this?.adapter?.itemCount == 0
-
-fun View.setBackgroundCompat(background: Drawable?) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-        this.background = background
-    } else {
-        setBackgroundCompat(background)
-    }
-}

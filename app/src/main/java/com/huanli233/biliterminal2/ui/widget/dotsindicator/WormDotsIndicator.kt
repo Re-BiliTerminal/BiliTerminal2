@@ -29,6 +29,7 @@ import com.huanli233.biliterminal2.ui.utils.hikage.extension.attach
 import splitties.views.gravityCenterVertical
 import androidx.core.content.withStyledAttributes
 import androidx.core.view.contains
+import com.huanli233.biliterminal2.utils.extensions.setBackgroundCompat
 
 class WormDotsIndicator @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null,
