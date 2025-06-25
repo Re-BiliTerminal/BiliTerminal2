@@ -46,7 +46,7 @@ public class AppNestedScrollView extends NestedScrollView {
     private final DynamicAnimation.OnAnimationEndListener animationEndListener;
     private boolean enableEnd;
     private boolean enableStart;
-    private boolean autoFocus;
+    private final boolean autoFocus;
     private int flingOverScrollState;
     private float flingVelocityY;
     private boolean isAnimScale;
@@ -245,7 +245,7 @@ public class AppNestedScrollView extends NestedScrollView {
         }
     }
 
-    private int mTouchSlop;
+    private final int mTouchSlop;
     private float mLastMotionX;
     private float mLastMotionY;
     private boolean mIsBeingDragged = false;

@@ -245,7 +245,7 @@ public class AppScrollView extends ScrollView {
         return false;
     }
 
-    private int mTouchSlop;
+    private final int mTouchSlop;
     private float mLastMotionX;
     private float mLastMotionY;
     private boolean mIsBeingDragged = false;

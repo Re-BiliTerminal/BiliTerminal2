@@ -53,7 +53,7 @@ open class MaterialListPreference @JvmOverloads constructor(
 
             if (TypedArrayUtils.getBoolean(this, PreferenceR.styleable.ListPreference_useSimpleSummaryProvider,
                     PreferenceR.styleable.ListPreference_useSimpleSummaryProvider, false)) {
-                setSummaryProvider(SimpleSummaryProvider.getInstance());
+                setSummaryProvider(SimpleSummaryProvider.getInstance())
             }
         }
     }
@@ -283,7 +283,7 @@ open class MaterialListPreference @JvmOverloads constructor(
 
         override fun provideSummary(preference: MaterialListPreference): CharSequence {
             return if (TextUtils.isEmpty(preference.getEntry())) {
-                preference.context.getString(com.huanli233.bilizepam.R.string.not_set_text)
+                preference.context.getString(R.string.not_set_text)
             } else {
                 preference.getEntry()!!
             }

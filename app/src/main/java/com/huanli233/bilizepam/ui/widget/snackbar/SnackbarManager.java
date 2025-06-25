@@ -93,7 +93,6 @@ class SnackbarManager {
       if (currentSnackbar != null
           && cancelSnackbarLocked(currentSnackbar, Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE)) {
         // If we currently have a Snackbar, try and cancel it and wait in line
-        return;
       } else {
         // Clear out the current snackbar
         currentSnackbar = null;

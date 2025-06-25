@@ -211,7 +211,7 @@ class WormDotsIndicator @JvmOverloads constructor(
         }
         val dot = dotHikage.root
         if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
-            dot.layoutDirection = View.LAYOUT_DIRECTION_LTR
+            dot.layoutDirection = LAYOUT_DIRECTION_LTR
         }
         val dotImageView = dotHikage.get<View>("worm_dot")
         dotImageView.setBackgroundResource(

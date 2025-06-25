@@ -21,7 +21,6 @@ import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.data.setting.LocalData
 import com.huanli233.bilizepam.event.SnackEvent
 import com.huanli233.bilizepam.ui.activity.base.material.ThemedAppCompatActivity
-import com.huanli233.bilizepam.ui.utils.animateTextChange
 import com.huanli233.bilizepam.ui.widget.components.TopBar
 import com.huanli233.bilizepam.utils.MsgUtil
 import com.huanli233.bilizepam.utils.ThemeUtil
@@ -190,12 +189,12 @@ open class BaseActivity : ThemedAppCompatActivity() {
     private fun setTopbarTitle(
         name: String
     ) {
-        val textView = topBar?.setTitle(name)
+        topBar?.setTitle(name)
     }
 
     open fun setupTopbar() {
         val view = topBar ?: return
-        view.setBackIconVisible(true)
+        view.setIcon(true)
         if (Build.VERSION.SDK_INT > 17 && view.hasOnClickListeners()) return
         view.setOnClickListener {
             onTopbarClicked()

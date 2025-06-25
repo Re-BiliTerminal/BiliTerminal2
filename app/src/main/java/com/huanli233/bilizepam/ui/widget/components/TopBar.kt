@@ -1,7 +1,6 @@
 package com.huanli233.bilizepam.ui.widget.components
 
 import android.content.Context
-import android.os.Build
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.animation.AnimationUtils
@@ -17,17 +16,20 @@ import com.highcapable.hikage.extension.widget.bottomToParent
 import com.highcapable.hikage.extension.widget.endToParent
 import com.highcapable.hikage.extension.widget.startToParent
 import com.highcapable.hikage.extension.widget.topToParent
-import com.highcapable.hikage.widget.android.widget.TextSwitcher
 import com.highcapable.hikage.widget.androidx.constraintlayout.widget.Guideline
 import com.highcapable.hikage.widget.com.google.android.material.divider.MaterialDivider
+import com.highcapable.hikage.widget.com.huanli233.bilizepam.ui.widget.views.AnimateBoundsTextSwitcher
 import com.highcapable.hikage.widget.com.huanli233.bilizepam.ui.widget.views.AppTextClock
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.data.setting.LocalData
 import com.huanli233.bilizepam.ui.utils.hikage.extension.attach
 import com.huanli233.bilizepam.ui.utils.hikage.extension.boldTypeFace
 import com.huanli233.bilizepam.utils.extensions.editModeText
+import com.huanli233.bilizepam.utils.extensions.updateCompoundDrawablesRelativeWithIntrinsicBounds
 import com.huanli233.bilizepam.utils.extensions.updateMarginsRelativeCompat
 import com.huanli233.bilizepam.utils.extensions.updatePaddingRelativeCompat
+import splitties.views.gravityCenter
+import splitties.views.gravityCenterHorizontal
 import splitties.views.gravityCenterVertical
 import splitties.views.gravityEnd
 
@@ -51,7 +53,7 @@ class TopBar @JvmOverloads constructor(
 
     init {
         attach<LayoutParams> {
-            TextSwitcher(
+            AnimateBoundsTextSwitcher(
                 lparams = LayoutParams {
                     if (roundMode) {
                         updateMargins(horizontal = 4.dp)
@@ -76,14 +78,15 @@ class TopBar @JvmOverloads constructor(
                             maxLines = 1
                             ellipsize = TextUtils.TruncateAt.END
                             boldTypeFace()
-                            gravity = gravityCenterVertical
+                            gravity = gravityCenterVertical or gravityCenterHorizontal
                             editModeText = "Page Name"
                             updateCompoundDrawablesWithIntrinsicBounds(
-                                left = drawableResource(R.drawable.icon_chevron_right)
+                                left = drawableResource(R.drawable.icon_keyboard_arrow_left)
                             )
 
                             if (roundMode) {
                                 textSize = 14f
+                                gravity = gravityCenter
                             } else {
                                 updatePaddingRelativeCompat(top = 4.dp, start = 7.dp)
                                 textSize = 12f
@@ -146,7 +149,7 @@ class TopBar @JvmOverloads constructor(
             }
 
             val showIcon = getBoolean(R.styleable.TopBar_showBackIcon, true)
-            setBackIconVisible(showIcon)
+            setIcon(showIcon)
 
             recycle()
         }
@@ -165,33 +168,16 @@ class TopBar @JvmOverloads constructor(
         }
 
         val currentView = titleTextSwitcher.currentView as TextView
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            val drawables = currentView.compoundDrawablesRelative
-            currentView.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                drawable,
-                drawables[1],
-                drawables[2],
-                drawables[3]
-            )
-        } else {
-            val drawables = currentView.compoundDrawables
-            currentView.setCompoundDrawablesWithIntrinsicBounds(
-                drawable,
-                drawables[1],
-                drawables[2],
-                drawables[3]
-            )
-        }
+        currentView.updateCompoundDrawablesRelativeWithIntrinsicBounds(start = drawable)
     }
 
     fun setTitle(text: CharSequence) {
         titleTextSwitcher.setText(text)
     }
 
-    fun setBackIconVisible(
-        visible: Boolean,
-        @DrawableRes icon: Int = R.drawable.icon_chevron_left
+    fun setIcon(
+        visible: Boolean = true,
+        @DrawableRes icon: Int = R.drawable.icon_keyboard_arrow_left
     ) {
         updateBackIconVisibility(visible, icon)
     }
@@ -207,7 +193,7 @@ class TopBar @JvmOverloads constructor(
                     outAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_out_to_bottom)
                 }
                 setTitle(context.getString(R.string.menu))
-                setBackIconVisible(true, R.drawable.icon_keyboard_arrow_left)
+                setIcon(true, R.drawable.icon_keyboard_arrow_left)
             }
             State.PAGE -> {
                 when (state) {
@@ -221,7 +207,7 @@ class TopBar @JvmOverloads constructor(
                     }
                 }
                 setTitle(pageName())
-                setBackIconVisible(true, R.drawable.icon_keyboard_arrow_down)
+                setIcon(true, R.drawable.icon_keyboard_arrow_down)
             }
         }
         state = newState

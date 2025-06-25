@@ -55,7 +55,7 @@ class SpringDotsIndicator @JvmOverloads constructor(
         setPadding(horizontalPadding.toInt(), 0, horizontalPadding.toInt(), 0)
         strokeDotsLinearLayout.orientation = HORIZONTAL
         addView(
-            strokeDotsLinearLayout, ViewGroup.LayoutParams.WRAP_CONTENT,
+            strokeDotsLinearLayout, LayoutParams.WRAP_CONTENT,
             LayoutParams.WRAP_CONTENT
         )
 

@@ -2,11 +2,13 @@
 
 package com.huanli233.bilizepam.ui.widget
 
+import androidx.constraintlayout.helper.widget.Flow
 import androidx.constraintlayout.widget.Guideline
 import com.highcapable.hikage.annotation.HikageViewDeclaration
 import com.huanli233.bilizepam.ui.widget.scalablecontainer.AppNestedScrollView
 import com.huanli233.bilizepam.ui.widget.scalablecontainer.AppRecyclerView
 import com.huanli233.bilizepam.ui.widget.scalablecontainer.AppScrollView
+import com.huanli233.bilizepam.ui.widget.views.AnimateBoundsTextSwitcher
 import com.huanli233.bilizepam.ui.widget.views.MarqueeTextView
 import com.huanli233.bilizepam.ui.widget.views.TextClock
 import com.huanli233.bilizepam.ui.widget.wearable.BoxInsetLayout
@@ -30,5 +32,10 @@ object AppRecyclerViewDeclaration
 @HikageViewDeclaration(BoxInsetLayout::class)
 object BoxInsetLayoutDeclaration
 
+@HikageViewDeclaration(Flow::class)
+object FlowDeclaration
+
 @HikageViewDeclaration(MarqueeTextView::class)
 object MarqueeTextViewDeclaration
+@HikageViewDeclaration(AnimateBoundsTextSwitcher::class)
+object AnimateBoundsTextSwitcherDeclaration

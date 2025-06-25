@@ -301,7 +301,7 @@ public abstract class BaseTransientBottomBar<B extends BaseTransientBottomBar<B>
           }
 
           LayoutParams layoutParams = view.getLayoutParams();
-          if (!(layoutParams instanceof MarginLayoutParams)) {
+          if (!(layoutParams instanceof MarginLayoutParams marginParams)) {
             Log.w(
                 TAG,
                 "Unable to apply gesture inset because layout params are not MarginLayoutParams");
@@ -311,8 +311,7 @@ public abstract class BaseTransientBottomBar<B extends BaseTransientBottomBar<B>
           appliedBottomMarginGestureInset = extraBottomMarginGestureInset;
 
           // Move view outside of bottom gesture area
-          MarginLayoutParams marginParams = (MarginLayoutParams) layoutParams;
-          marginParams.bottomMargin += extraBottomMarginGestureInset - currentInsetBottom;
+            marginParams.bottomMargin += extraBottomMarginGestureInset - currentInsetBottom;
           view.requestLayout();
         }
       };
@@ -455,7 +454,7 @@ public abstract class BaseTransientBottomBar<B extends BaseTransientBottomBar<B>
 
   private void updateMargins() {
     LayoutParams layoutParams = view.getLayoutParams();
-    if (!(layoutParams instanceof MarginLayoutParams)) {
+    if (!(layoutParams instanceof MarginLayoutParams marginParams)) {
       Log.w(TAG, "Unable to update margins because layout params are not MarginLayoutParams");
       return;
     }
@@ -474,8 +473,7 @@ public abstract class BaseTransientBottomBar<B extends BaseTransientBottomBar<B>
     int extraBottomMargin =
         getAnchorView() != null ? extraBottomMarginAnchorView : extraBottomMarginWindowInset;
 
-    MarginLayoutParams marginParams = (MarginLayoutParams) layoutParams;
-    int newBottomMargin = view.originalMargins.bottom + extraBottomMargin;
+      int newBottomMargin = view.originalMargins.bottom + extraBottomMargin;
     int newLeftMargin = view.originalMargins.left + extraLeftMarginWindowInset;
     int newRightMargin = view.originalMargins.right + extraRightMarginWindowInset;
     int newTopMargin = view.originalMargins.top;

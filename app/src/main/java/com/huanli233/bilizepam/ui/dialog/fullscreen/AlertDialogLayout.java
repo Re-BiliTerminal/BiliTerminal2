@@ -230,8 +230,7 @@ public class AlertDialogLayout extends LinearLayoutCompat {
             return minHeight;
         }
 
-        if (v instanceof ViewGroup) {
-            final ViewGroup vg = (ViewGroup) v;
+        if (v instanceof ViewGroup vg) {
             if (vg.getChildCount() == 1) {
                 return resolveMinimumHeight(vg.getChildAt(0));
             }

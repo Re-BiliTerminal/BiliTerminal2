@@ -211,7 +211,7 @@ class DotsIndicator @JvmOverloads constructor(
         elevationItem.invalidate()
     }
 
-    override val type get() = BaseDotsIndicator.Type.DEFAULT
+    override val type get() = Type.DEFAULT
 
     //*********************************************************
     // Users Methods

@@ -125,7 +125,7 @@ public class AppRelativeLayout extends RelativeLayout {
             this.lastRawTouchPoint.set((int) event.getRawX(), (int) event.getRawY());
         }
 
-        if (this.specialDispatchTargetView != null && UiTouchPointUtil.isTouchPointInView(this.specialDispatchTargetView, this.lastRawTouchPoint)) {
+        if (UiTouchPointUtil.isTouchPointInView(this.specialDispatchTargetView, this.lastRawTouchPoint)) {
             removeCallbacks(this.pressAnimationTask);
             post(this.releaseAnimationTask);
             return super.dispatchTouchEvent(event);

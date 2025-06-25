@@ -151,7 +151,6 @@ public class WearableRecyclerView extends RecyclerView {
 
     private void setupOriginalPadding() {
         if (mOriginalPaddingTop == NO_VALUE) {
-            return;
         } else {
             setPadding(getPaddingLeft(), mOriginalPaddingTop, getPaddingRight(),
                     mOriginalPaddingBottom);

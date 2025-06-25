@@ -18,7 +18,7 @@ package master.flame.danmaku.danmaku.model;
 
 public class DanmakuTimer {
     public long currMillisecond;
-    private static long current = System.currentTimeMillis();
+    private static final long current = System.currentTimeMillis();
     private long lastInterval;
 
     public void setSpeed(long speed) {

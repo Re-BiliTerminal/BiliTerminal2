@@ -7,4 +7,5 @@
     <item name="textView" type="id" />
     <item name="page_name" type="id" />
     <item name="text_clock" type="id" />
+    <item name="back_icon" type="id" />
 </resources>
