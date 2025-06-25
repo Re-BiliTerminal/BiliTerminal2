@@ -1,35 +1,31 @@
 package com.huanli233.biliterminal2.ui.recyclerview.adapters
 
-import android.util.Log
-import android.view.ViewGroup
-import androidx.paging.PagingDataAdapter
-import androidx.recyclerview.widget.RecyclerView
+import com.highcapable.hikage.core.Hikage
+import com.highcapable.hikage.core.base.Hikageable
+import com.highcapable.hikage.widget.com.huanli233.biliterminal2.ui.widget.components.VideoCard
 import com.huanli233.biliterminal2.ui.activity.video.VideoInfoActivity
 import com.huanli233.biliterminal2.ui.widget.components.VideoCard
 import com.huanli233.biliterminal2.utils.diff.VideoInfoDiffCallback
 import com.huanli233.biliterminal2.utils.extensions.formatNumber
 import com.huanli233.biliwebapi.bean.video.VideoInfo
+import com.huanli233.hikage.recyclerview.HikagePagingAdapter
 import splitties.activities.start
 
-class VideoViewHolder(val card: VideoCard) : RecyclerView.ViewHolder(card)
+class VideoPagingAdapter: HikagePagingAdapter<VideoInfo>(VideoInfoDiffCallback()) {
 
-class VideoPagingAdapter: PagingDataAdapter<VideoInfo, VideoViewHolder>(VideoInfoDiffCallback()) {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
-        return VideoViewHolder(VideoCard(parent.context))
+    override fun createView(): Hikage.Delegate<*> = Hikageable {
+        VideoCard(id = "card", lparams = widthMatchParent())
     }
 
-    override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
-        getItem(position)?.let { info ->
-            with(holder.card) {
-                setVideoTitle(info.title)
-                setVideoCover(info.pic)
-                setViews(info.stat.view.formatNumber())
-                setUploader(info.owner.name)
-                binding.root.setOnClickListener {
-                    context.start<VideoInfoActivity> {
-                        putExtra("bvid", info.bvid)
-                    }
+    override fun bindView(hikage: Hikage, item: VideoInfo) {
+        hikage.get<VideoCard>("card").apply {
+            setVideoTitle(item.title)
+            setVideoCover(item.pic)
+            setViews(item.stat.view.formatNumber())
+            setUploader(item.owner.name)
+            binding.root.setOnClickListener {
+                context.start<VideoInfoActivity> {
+                    putExtra("bvid", item.bvid)
                 }
             }
         }

@@ -9,6 +9,7 @@ import com.huanli233.biliterminal2.databinding.ActivityMainBinding
 import com.huanli233.biliterminal2.ui.activity.base.BaseActivity
 import com.huanli233.biliterminal2.ui.activity.setup.SetupActivity
 import com.huanli233.biliterminal2.ui.utils.animateTextChange
+import com.huanli233.biliterminal2.ui.utils.beginDelayedFade
 import com.huanli233.biliterminal2.utils.extensions.gone
 import com.huanli233.biliterminal2.utils.extensions.visible
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,6 +28,7 @@ class MainActivity: BaseActivity() {
         setContentView(binding.root)
 
         viewModel.initializationState.observe(this) { state ->
+            binding.root.beginDelayedFade()
             when (state) {
                 InitializationState.Loading -> showLoadingView()
                 InitializationState.Success -> runAfterInitialized()

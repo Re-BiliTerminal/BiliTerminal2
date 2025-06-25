@@ -1,24 +1,32 @@
 package com.huanli233.biliterminal2.ui.fragment.menu
 
-import android.content.Context
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.drakeet.multitype.ItemViewDelegate
+import com.google.android.material.button.MaterialButton
+import com.highcapable.betterandroid.ui.extension.view.updateMargins
+import com.highcapable.hikage.core.Hikage
+import com.highcapable.hikage.core.base.Hikageable
+import com.highcapable.hikage.widget.com.google.android.material.button.MaterialButton
 import com.huanli233.biliterminal2.data.menu.MenuItem
 import com.huanli233.biliterminal2.databinding.ItemMenuBinding
+import com.huanli233.hikage.recyclerview.ItemHikageDelegate
 
-class MenuItemViewDelegate(
+class MenuItemDelegate(
     private val onSwitch: (MenuItem) -> Unit
-): ItemViewDelegate<MenuItem, MenuItemViewDelegate.ViewHolder>() {
+): ItemHikageDelegate<MenuItem>() {
 
-    override fun onCreateViewHolder(context: Context, parent: ViewGroup): ViewHolder {
-        return ViewHolder(ItemMenuBinding.inflate(LayoutInflater.from(context), parent, false))
+    override fun createView(): Hikage.Delegate<*> = Hikageable<ViewGroup.MarginLayoutParams> {
+        MaterialButton(
+            id = "menu_btn",
+            lparams = widthMatchParent {
+                updateMargins(horizontal = 12.dp, vertical = 2.dp)
+            }
+        )
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, item: MenuItem) {
-        with (holder.binding.root) {
+    override fun bindView(hikage: Hikage, item: MenuItem) {
+        hikage.get<MaterialButton>("menu_btn").apply {
             text = context.getString(item.title)
             icon = ContextCompat.getDrawable(context, item.icon)
             setOnClickListener {
@@ -27,5 +35,4 @@ class MenuItemViewDelegate(
         }
     }
 
-    class ViewHolder(val binding: ItemMenuBinding): RecyclerView.ViewHolder(binding.root)
 }

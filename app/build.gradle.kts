@@ -270,6 +270,7 @@ dependencies {
 //    implementation(libs.androidx.wear)
 
     implementation(libs.hikage.core)
+    implementation(libs.hikage.recyclerview)
     implementation(libs.hikage.extension)
     implementation(libs.hikage.extension.betterandroid)
     ksp(libs.hikage.compiler)

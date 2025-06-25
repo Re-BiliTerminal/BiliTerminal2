@@ -11,14 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.drakeet.multitype.MultiTypeAdapter
 import com.huanli233.biliterminal2.R
 import com.huanli233.biliterminal2.data.account.AccountManager
-import com.huanli233.biliterminal2.data.account.AccountRepository
 import com.huanli233.biliterminal2.data.menu.MenuConfigManager
 import com.huanli233.biliterminal2.ui.fragment.base.BaseFragment
 import com.huanli233.biliterminal2.ui.utils.recyclerview.defaultLayoutManager
 import com.huanli233.biliterminal2.utils.multitype.register
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class MenuFragment: BaseFragment() {
 
@@ -42,7 +39,7 @@ class MenuFragment: BaseFragment() {
         recyclerView.adapter = MultiTypeAdapter(
             MenuConfigManager.readMenuConfig().menuItems
         ).register {
-            +MenuItemViewDelegate {
+            +MenuItemDelegate {
                 if (!it.activityClass.isInstance(requireActivity())) {
                     context?.startActivity(Intent(context, it.activityClass))
                     if (!it.notMenuActivity) {

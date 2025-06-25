@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.bumptech.glide.Glide
+import com.highcapable.hikage.annotation.HikageView
 import com.huanli233.biliterminal2.databinding.ItemVideoCardBinding
 import com.huanli233.biliterminal2.ui.utils.image.loadPicture
 
+@HikageView
 class VideoCard @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

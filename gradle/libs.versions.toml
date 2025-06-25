@@ -61,7 +61,8 @@ androidxAppcompat = "1.6.1"
 material = "1.11.0"
 
 # BetterAndroid
-hikageCore = "1.0.3"
+hikageCore = "1.0.4"
+hikageRecyclerView = "1.0.0"
 hikageExtension = "1.0.2"
 hikageExtensionBetterAndroid = "1.0.1"
 hikageCompiler = "1.0.1"
@@ -168,6 +169,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 
 # BetterAndroid
 hikage-core = { group = "com.huanli233.hikage.compat", name = "hikage-core", version.ref = "hikageCore" }
+hikage-recyclerview = { group = "com.huanli233.hikage.compat", name = "hikage-recyclerview", version.ref = "hikageRecyclerView" }
 hikage-extension = { group = "com.huanli233.hikage.compat", name = "hikage-extension", version.ref = "hikageExtension" }
 hikage-extension-betterandroid = { group = "com.huanli233.hikage.compat", name = "hikage-extension-betterandroid", version.ref = "hikageExtensionBetterAndroid" }
 hikage-compiler = { group = "com.huanli233.hikage.compat", name = "hikage-compiler", version.ref = "hikageCompiler" }
