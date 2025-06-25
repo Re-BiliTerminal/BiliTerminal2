@@ -43,9 +43,6 @@ class BiliTerminal : Application() {
             AndroidPrinter()
         )
         contextNullable = applicationContext
-//        if (LocalData.settings.theme.followSystemAccent) {
-//            DynamicColors.applyToActivitiesIfAvailable(this)
-//        }
         LocaleDelegate.defaultLocale = getLocale()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             @Suppress("DEPRECATION") resources.updateConfiguration(resources.configuration.apply {

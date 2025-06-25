@@ -22,6 +22,7 @@
 
 package com.huanli233.bilizepam.ui.dialog.material
 
+import android.annotation.SuppressLint
 import android.app.ActionBar
 import android.content.Context
 import android.content.DialogInterface
@@ -72,6 +73,7 @@ open class MaterialDialog : AppCompatDialog, TranslucentSystemBars {
         }
     }
 
+    @SuppressLint("GestureBackNavigation")
     override fun onBackPressed() {
         if (parent?.onBackPressed() == true) {
             super.onBackPressed()

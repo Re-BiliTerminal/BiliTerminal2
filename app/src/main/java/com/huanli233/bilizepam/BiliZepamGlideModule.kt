@@ -8,7 +8,7 @@ import com.bumptech.glide.module.AppGlideModule
 import com.bumptech.glide.request.RequestOptions
 
 @GlideModule
-class BiliTerminalGlideModule: AppGlideModule() {
+class BiliZepamGlideModule: AppGlideModule() {
 
     override fun applyOptions(context: Context, builder: GlideBuilder) {
         super.applyOptions(context, builder)
