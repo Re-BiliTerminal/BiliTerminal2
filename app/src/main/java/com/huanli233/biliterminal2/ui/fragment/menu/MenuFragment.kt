@@ -15,6 +15,7 @@ import com.huanli233.biliterminal2.data.menu.MenuConfigManager
 import com.huanli233.biliterminal2.ui.fragment.base.BaseFragment
 import com.huanli233.biliterminal2.ui.utils.recyclerview.defaultLayoutManager
 import com.huanli233.biliterminal2.utils.multitype.register
+import com.huanli233.hikage.recyclerview.register
 import kotlinx.coroutines.launch
 
 class MenuFragment: BaseFragment() {
