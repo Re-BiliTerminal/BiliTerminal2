@@ -31,6 +31,7 @@ message Theme {
   string color_theme = 3;
   bool full_screen_dialog_disabled = 4;
   bool animations_enabled = 5;
+  bool new_loading_widget_enabled = 6;
 }
 
 message ApiCache {

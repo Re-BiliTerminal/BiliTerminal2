@@ -258,6 +258,7 @@
     <string name="hint_end_pos">结束位置</string>
     <string name="copy_all">复制全部</string>
     <string name="copied">已复制</string>
+    <string name="new_loading_animation">新的加载动画</string>
 
     <string-array name="icon_license">
         <item>界面设置: Newicons, MIT License</item>

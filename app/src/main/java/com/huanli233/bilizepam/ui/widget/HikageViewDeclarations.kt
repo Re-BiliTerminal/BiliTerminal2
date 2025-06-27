@@ -5,6 +5,7 @@ package com.huanli233.bilizepam.ui.widget
 import androidx.constraintlayout.helper.widget.Flow
 import androidx.constraintlayout.widget.Guideline
 import com.google.android.material.button.MaterialButtonToggleGroup
+import com.google.android.material.loadingindicator.LoadingIndicator
 import com.highcapable.hikage.annotation.HikageViewDeclaration
 import com.huanli233.bilizepam.ui.widget.scalablecontainer.AppNestedScrollView
 import com.huanli233.bilizepam.ui.widget.scalablecontainer.AppRecyclerView
@@ -20,8 +21,13 @@ import com.huanli233.bilizepam.ui.widget.wearable.BoxInsetLayout
 )
 object TextClockDeclaration
 
+@HikageViewDeclaration(LoadingIndicator::class)
+object LoadingIndicatorDeclaration
+
 @HikageViewDeclaration(Guideline::class)
 object GuidelineDeclaration
+@HikageViewDeclaration(Flow::class)
+object FlowDeclaration
 
 @HikageViewDeclaration(AppScrollView::class)
 object AppScrollViewDeclaration
@@ -32,9 +38,6 @@ object AppRecyclerViewDeclaration
 
 @HikageViewDeclaration(BoxInsetLayout::class)
 object BoxInsetLayoutDeclaration
-
-@HikageViewDeclaration(Flow::class)
-object FlowDeclaration
 
 @HikageViewDeclaration(MarqueeTextView::class)
 object MarqueeTextViewDeclaration

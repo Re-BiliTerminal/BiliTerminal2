@@ -53,6 +53,7 @@ class SettingsDataStore: PreferenceDataStore() {
                 "disable_fullscreen_dialog" -> theme.fullScreenDialogDisabled
                 "animations" -> theme.animationsEnabled
                 "theme_color_system" -> theme.followSystemAccent
+                "new_loading_widget" -> theme.newLoadingWidgetEnabled
                 else -> defValue
             }
         }
@@ -66,6 +67,7 @@ class SettingsDataStore: PreferenceDataStore() {
                     "disable_fullscreen_dialog" -> theme = theme.edit { fullScreenDialogDisabled = value }
                     "animations" -> theme = theme.edit { animationsEnabled = value }
                     "theme_color_system" -> theme = theme.edit { followSystemAccent = value }
+                    "new_loading_widget" -> theme = theme.edit { newLoadingWidgetEnabled = value }
                 }
             }
         }

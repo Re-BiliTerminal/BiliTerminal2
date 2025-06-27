@@ -54,6 +54,9 @@
         <com.huanli233.bilizepam.ui.preferences.MaterialSwitchPreference
             app:key="disable_fullscreen_dialog"
             app:title="@string/disable_fullscreen_dialog" />
+        <com.huanli233.bilizepam.ui.preferences.MaterialSwitchPreference
+            app:key="new_loading_widget"
+            app:title="@string/new_loading_animation" />
     </PreferenceCategory>>
 
 </androidx.preference.PreferenceScreen>

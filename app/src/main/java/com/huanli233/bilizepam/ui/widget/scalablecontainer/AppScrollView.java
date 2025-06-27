@@ -9,7 +9,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
@@ -132,19 +131,19 @@ public class AppScrollView extends ScrollView {
         this.isAnimScale = z;
     }
 
-    public boolean isEnableStart() {
+    public boolean isSpringEnableStart() {
         return this.enableStart;
     }
 
-    public void setEnableStart(boolean z) {
+    public void setSpringEnableStart(boolean z) {
         this.enableStart = z;
     }
 
-    public boolean isEnableEnd() {
+    public boolean isSpringEnableEnd() {
         return this.enableEnd;
     }
 
-    public void setEnableEnd(boolean z) {
+    public void setSpringEnableEnd(boolean z) {
         this.enableEnd = z;
     }
 
