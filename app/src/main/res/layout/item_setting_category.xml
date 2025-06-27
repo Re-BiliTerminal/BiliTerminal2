@@ -29,7 +29,8 @@
     android:layout_marginTop="16dp"
     android:gravity="center_vertical">
 
-    <include layout="@layout/m3_icon_frame"/>
+    <include
+        layout="@layout/m3_icon_frame" />
 
     <RelativeLayout
         android:layout_width="0dp"

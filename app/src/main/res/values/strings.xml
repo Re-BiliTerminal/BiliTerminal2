@@ -251,6 +251,13 @@
     <string name="color_deep_orange">深橙</string>
     <string name="color_brown">棕色</string>
     <string name="color_blue_grey">藍灰</string>
+    <string name="text">文本</string>
+    <string name="select_range">选择范围</string>
+    <string name="hint_start_pos">起始位置</string>
+    <string name="tilde">~</string>
+    <string name="hint_end_pos">结束位置</string>
+    <string name="copy_all">复制全部</string>
+    <string name="copied">已复制</string>
 
     <string-array name="icon_license">
         <item>界面设置: Newicons, MIT License</item>

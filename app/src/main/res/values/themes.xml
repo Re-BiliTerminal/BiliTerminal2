@@ -2,6 +2,7 @@
     <style name="Theme.BiliZepam.Material3" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowSwipeToDismiss" tools:ignore="NewApi">true</item>
 
+        <item name="circularProgressIndicatorStyle">@style/Material3CircularProgressIndicator</item>
         <item name="materialCardViewStyle">@style/Material3CardView</item>
         <item name="materialButtonStyle">@style/Material3Button</item>
         <item name="android:textSize">14sp</item>

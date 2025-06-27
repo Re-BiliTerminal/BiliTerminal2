@@ -137,7 +137,9 @@ inline fun Transition.duration(duration: Long?) = apply { duration?.let { this.d
 inline fun ViewGroup.beginDelayedTransition(
     transition: Transition = AutoTransition()
 ) {
-    TransitionManager.beginDelayedTransition(this, transition)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        TransitionManager.beginDelayedTransition(this, transition)
+    }
 }
 
 @Suppress("NOTHING_TO_INLINE")

@@ -226,6 +226,8 @@ configurations.all {
     resolutionStrategy {
         force(libs.androidx.core)
         force(libs.androidx.appcompat)
+        force(libs.androidx.transition)
+        exclude(group = "com.google.android.material", module = "material")
     }
 }
 

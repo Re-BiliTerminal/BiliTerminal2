@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.huanli233.skeleton"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 15

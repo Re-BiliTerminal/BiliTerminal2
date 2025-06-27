@@ -17,6 +17,7 @@ import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.databinding.FragmentVideoInfoBinding
 import com.huanli233.bilizepam.ui.fragment.base.BaseFragment
 import com.huanli233.bilizepam.ui.utils.beginDelayedFade
+import com.huanli233.bilizepam.ui.utils.hikage.extension.copyable
 import com.huanli233.bilizepam.ui.utils.image.loadPicture
 import com.huanli233.bilizepam.ui.utils.playAnimation
 import com.huanli233.bilizepam.utils.MsgUtil
@@ -105,6 +106,7 @@ class VideoInfoFragment: BaseFragment() {
 
                     val info = uiState.videoInfo
                     title.text = info.title
+                    title.copyable()
                     Glide.with(this@VideoInfoFragment)
                         .loadPicture(info.pic)
                         .centerCrop()

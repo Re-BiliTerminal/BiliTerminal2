@@ -76,7 +76,8 @@ import com.google.android.material.shape.MaterialShapeDrawable;
 public class MaterialAlertDialogBuilder extends AlertDialog.Builder {
 
     @AttrRes
-    private static final int DEF_STYLE_ATTR = R.attr.alertDialogStyle;
+    private static final int DEF_STYLE_ATTR = androidx.appcompat.R.attr.alertDialogStyle;
+    @SuppressLint("PrivateResource")
     @StyleRes
     private static final int DEF_STYLE_RES = R.style.MaterialAlertDialog_MaterialComponents;
 

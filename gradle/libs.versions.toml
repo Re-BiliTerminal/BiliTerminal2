@@ -3,8 +3,8 @@
 desugarJdkLibs = "2.1.5"
 expandablelayout = "2.9.2"
 flexbox = "3.0.0"
-hiltAndroid = "2.56.1"
-hiltAndroidCompiler = "2.56.1"
+hiltAndroid = "2.56.2"
+hiltAndroidCompiler = "2.56.2"
 interpolator = "1.0.0"
 junit = "4.13.2"
 multidex = "2.0.1"
@@ -96,15 +96,15 @@ glide = "4.16.0"
 
 # Third Party - Other
 eventbus = "3.3.1"
-geetestSensebot = "4.4.2.1"
+geetestSensebot = "4.4.4"
 brotliDec = "0.1.2"
-brotli4j = "1.16.0"
-xlog = "1.11.0"
+brotli4j = "1.18.0"
+xlog = "1.11.1"
 agp = "8.11.0"
 kotlin = "2.1.20"
 ksp = "2.1.20-1.0.31"
-hilt = "2.56.1"
-protobufPlugin = "0.9.4"
+hilt = "2.56.2"
+protobufPlugin = "0.9.5"
 # noinspection GradleDependency
 junitVersion = "1.1.5"
 espressoCore = "3.6.1"
@@ -165,7 +165,9 @@ androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppcompat" }
 
 # Google Material
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+# material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+# Use forked materialcompat library
+material = { group = "com.huanli233.materialcompat", name = "material", version.ref = "material" }
 
 # BetterAndroid
 hikage-core = { group = "com.huanli233.hikage.compat", name = "hikage-core", version.ref = "hikageCore" }
