@@ -3,36 +3,25 @@ package com.huanli233.bilizepam.ui.preferences
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import android.util.TypedValue
 import androidx.preference.Preference
-import androidx.preference.PreferenceViewHolder
 import com.huanli233.bilizepam.R
 
 @SuppressLint("PrivateResource")
-open class BasePreference(
+open class BasePreference @JvmOverloads constructor(
     context: Context,
-    attrs: AttributeSet?,
-    defStyleAttr: Int,
-    defStyleRes: Int
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = getAttr(context, androidx.preference.R.attr.preferenceStyle, android.R.attr.preferenceStyle),
+    defStyleRes: Int = 0
 ): Preference(context, attrs, defStyleAttr, defStyleRes) {
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(
-        context,
-        attrs,
-        defStyleAttr,
-        0
-    )
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0, 0)
-    constructor(context: Context) : this(context, null)
-
-    init {
-        if (layoutResource == androidx.preference.R.layout.preference) {
-            layoutResource = R.layout.item_setting
+    companion object {
+        fun getAttr(context: Context, attr: Int, fallbackAttr: Int): Int {
+            val value = TypedValue()
+            context.theme.resolveAttribute(attr, value, true)
+            if (value.resourceId != 0) {
+                return attr
+            }
+            return fallbackAttr
         }
     }
-
-    override fun onBindViewHolder(holder: PreferenceViewHolder) {
-        super.onBindViewHolder(holder)
-        holder.isDividerAllowedBelow = false
-    }
-
 }

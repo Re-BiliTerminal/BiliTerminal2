@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.huanli233.bilizepam.ui.preferences.BasePreference
+    <Preference
         app:title="@string/view_preview">
         <intent
             android:targetPackage="com.huanli233.bilizepam"
             android:targetClass="com.huanli233.bilizepam.ui.activity.setup.UiPreviewActivity" />
-    </com.huanli233.bilizepam.ui.preferences.BasePreference>
+    </Preference>
 
     <PreferenceCategory
         app:title="@string/scale">
@@ -39,12 +38,12 @@
         <com.huanli233.materialpreferences.MaterialSwitchPreference
             app:key="theme_color_system"
             app:title="@string/system_accent_color" />
-        <com.huanli233.bilizepam.ui.preferences.BasePreference
+        <Preference
             app:title="@string/theme_color">
             <intent
                 android:targetPackage="com.huanli233.bilizepam"
                 android:targetClass="com.huanli233.bilizepam.ui.activity.setting.ThemeColorActivity" />
-        </com.huanli233.bilizepam.ui.preferences.BasePreference>
+        </Preference>
         <com.huanli233.materialpreferences.MaterialSwitchPreference
             app:key="round_mode"
             app:title="@string/round_screen_adaptation" />

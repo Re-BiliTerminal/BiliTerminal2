@@ -21,16 +21,12 @@ import com.huanli233.bilizepam.utils.extensions.originalConfigContext
 import splitties.dimensions.dp
 
 
-open class EditTextPreference(
+open class EditTextPreference @JvmOverloads constructor(
     context: Context,
-    attrs: AttributeSet?,
-    defStyleAttr: Int,
-    defStyleRes: Int
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = getAttr(context, androidx.preference.R.attr.editTextPreferenceStyle, android.R.attr.editTextPreferenceStyle),
+    defStyleRes: Int = 0
 ): BasePreference(context, attrs, defStyleAttr, defStyleRes) {
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): this(context, attrs, defStyleAttr, 0)
-    constructor(context: Context, attrs: AttributeSet?): this(context, attrs, 0, 0)
-    constructor(context: Context): this(context, null)
 
     var emptyAllowed = false
 

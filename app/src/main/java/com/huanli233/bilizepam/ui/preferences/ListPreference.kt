@@ -15,19 +15,20 @@ import androidx.preference.R as PreferenceR
 import androidx.core.content.withStyledAttributes
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.ui.dialog.Dialogs.dialogBuilder
+import com.huanli233.bilizepam.ui.preferences.BasePreference.Companion.getAttr
 import com.huanli233.bilizepam.utils.extensions.originalConfigContext
 
 /**
  * A [Preference] that displays a list of entries as a Material Design dialog.
  *
  * This preference saves a string value. This string will be the value from the
- * [entryValues] array.
+ * [mEntryValues] array.
  */
 @SuppressLint("PrivateResource")
 open class MaterialListPreference @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = TypedArrayUtils.getAttr(context, PreferenceR.attr.preferenceStyle, android.R.attr.preferenceStyle),
+    defStyleAttr: Int = getAttr(context, PreferenceR.attr.preferenceStyle, android.R.attr.preferenceStyle),
     defStyleRes: Int = 0
 ) : Preference(context, attrs, defStyleAttr, defStyleRes) {
 
@@ -62,7 +63,7 @@ open class MaterialListPreference @JvmOverloads constructor(
      * Sets the human-readable entries to be shown in the list. This will be shown in subsequent
      * dialogs.
      *
-     * Each entry must have a corresponding index in [entryValues].
+     * Each entry must have a corresponding index in [mEntryValues].
      *
      * @param entries The entries
      * @see #setEntryValues

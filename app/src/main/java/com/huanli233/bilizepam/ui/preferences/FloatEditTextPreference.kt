@@ -7,16 +7,12 @@ import androidx.core.content.withStyledAttributes
 import com.google.android.material.textfield.TextInputLayout
 import com.huanli233.bilizepam.R
 
-class FloatEditTextPreference(
+class FloatEditTextPreference @JvmOverloads constructor(
     context: Context,
-    attrs: AttributeSet?,
-    defStyleAttr: Int,
-    defStyleRes: Int
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = getAttr(context, androidx.preference.R.attr.editTextPreferenceStyle, android.R.attr.editTextPreferenceStyle),
+    defStyleRes: Int = 0
 ): EditTextPreference(context, attrs, defStyleAttr, defStyleRes) {
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): this(context, attrs, defStyleAttr, 0)
-    constructor(context: Context, attrs: AttributeSet?): this(context, attrs, 0, 0)
-    constructor(context: Context): this(context, null)
 
     var minValue: Float = Float.MIN_VALUE
     var maxValue: Float = Float.MAX_VALUE

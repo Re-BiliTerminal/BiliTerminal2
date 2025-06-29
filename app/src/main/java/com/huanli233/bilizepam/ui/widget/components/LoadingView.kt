@@ -159,6 +159,7 @@ class LoadingView @JvmOverloads constructor(
         state = LoadingState.ERROR
         show()
         loadingImage.setImageResource(R.drawable.loading_2233_error)
+        loadingImage.visible()
         loadingProgress.invisible()
         if (message != null) {
             loadingText.text = message
