@@ -256,6 +256,7 @@ dependencies {
     implementation(libs.zxing.core)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.materialpreferences)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.asynclayoutinflater)
     implementation(libs.androidx.recyclerview)

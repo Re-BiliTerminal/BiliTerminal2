@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.preference.Preference
 import com.google.android.material.color.DynamicColors
 import com.huanli233.bilizepam.R
-import com.huanli233.bilizepam.ui.preferences.MaterialSwitchPreference
+import com.huanli233.materialpreferences.MaterialSwitchPreference
 
 open class UiSettingsFragment: SettingsFragment() {
 

@@ -36,7 +36,7 @@
             app:entries="@array/dark_theme_modes"
             app:entryValues="@array/dark_theme_values"
             app:useSimpleSummaryProvider="true" />
-        <com.huanli233.bilizepam.ui.preferences.MaterialSwitchPreference
+        <com.huanli233.materialpreferences.MaterialSwitchPreference
             app:key="theme_color_system"
             app:title="@string/system_accent_color" />
         <com.huanli233.bilizepam.ui.preferences.BasePreference
@@ -45,16 +45,16 @@
                 android:targetPackage="com.huanli233.bilizepam"
                 android:targetClass="com.huanli233.bilizepam.ui.activity.setting.ThemeColorActivity" />
         </com.huanli233.bilizepam.ui.preferences.BasePreference>
-        <com.huanli233.bilizepam.ui.preferences.MaterialSwitchPreference
+        <com.huanli233.materialpreferences.MaterialSwitchPreference
             app:key="round_mode"
             app:title="@string/round_screen_adaptation" />
-        <com.huanli233.bilizepam.ui.preferences.MaterialSwitchPreference
+        <com.huanli233.materialpreferences.MaterialSwitchPreference
             app:key="animations"
             app:title="@string/animation" />
-        <com.huanli233.bilizepam.ui.preferences.MaterialSwitchPreference
+        <com.huanli233.materialpreferences.MaterialSwitchPreference
             app:key="disable_fullscreen_dialog"
             app:title="@string/disable_fullscreen_dialog" />
-        <com.huanli233.bilizepam.ui.preferences.MaterialSwitchPreference
+        <com.huanli233.materialpreferences.MaterialSwitchPreference
             app:key="new_loading_widget"
             app:title="@string/new_loading_animation" />
     </PreferenceCategory>>

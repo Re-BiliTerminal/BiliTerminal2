@@ -21,6 +21,11 @@ import com.huanli233.bilizepam.ui.fragment.setting.SettingsDataStore
 
 abstract class BasePreferenceFragment: PreferenceFragmentCompat() {
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        context?.theme?.applyStyle(com.huanli233.materialpreferences.R.style.ThemeOverlay_Material3_Preference, true)
+    }
+
     @SuppressLint("RestrictedApi")
     override fun onCreateRecyclerView(
         inflater: LayoutInflater,
