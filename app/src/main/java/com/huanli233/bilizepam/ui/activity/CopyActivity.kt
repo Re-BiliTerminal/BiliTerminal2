@@ -112,7 +112,8 @@ class CopyActivity: BaseActivity() {
                                     whenAvailableTyped<TextInputLayout>("end") { endEditText ->
                                         beginEditText.text.toString().toIntOrNull()?.also { begin ->
                                             endEditText.text.toString().toIntOrNull()?.also { end ->
-                                                if (abs(begin - end) <= (content.editText?.text?.length ?: 0)) {
+                                                val textLength = content.editText?.text?.length ?: 0
+                                                if (begin >= 0 && end >= 0 && begin <= textLength && end <= textLength) {
                                                     content.editText?.setSelection(begin, end)
                                                 }
                                             }
@@ -217,10 +218,11 @@ class CopyActivity: BaseActivity() {
                             ) {
                                 text = ">"
                                 onClick {
+                                    val length = content.editText?.text?.length ?: 0
                                     beginTextInputLayout.editText?.setText(
-                                        beginTextInputLayout.editText?.text?.toString()?.toIntOrNull()?.plus(1)?.takeIf { it >= 0 }
-                                            ?.toString()
-                                            ?: "0"
+                                        beginTextInputLayout.editText?.text?.toString()?.toIntOrNull()?.plus(1)?.takeIf {
+                                            it <= length
+                                        }?.toString() ?: (length).toString()
                                     )
                                 }
                             }
@@ -249,10 +251,11 @@ class CopyActivity: BaseActivity() {
                             ) {
                                 text = ">"
                                 onClick {
+                                    val length = content.editText?.text?.length ?: 0
                                     endTextInputLayout.editText?.setText(
-                                        endTextInputLayout.editText?.text?.toString()?.toIntOrNull()?.plus(1)?.takeIf { it >= 0 }
-                                            ?.toString()
-                                            ?: "0"
+                                        endTextInputLayout.editText?.text?.toString()?.toIntOrNull()?.plus(1)?.takeIf {
+                                            it <= length
+                                        }?.toString() ?: (length).toString()
                                     )
                                 }
                             }
