@@ -2,8 +2,10 @@
 
 package com.huanli233.bilizepam.ui.widget
 
+import android.widget.LinearLayout
 import androidx.constraintlayout.helper.widget.Flow
 import androidx.constraintlayout.widget.Guideline
+import com.google.android.material.button.MaterialButtonGroup
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.loadingindicator.LoadingIndicator
 import com.highcapable.hikage.annotation.HikageViewDeclaration
@@ -28,6 +30,9 @@ object LoadingIndicatorDeclaration
 object GuidelineDeclaration
 @HikageViewDeclaration(Flow::class)
 object FlowDeclaration
+
+@HikageViewDeclaration(MaterialButtonGroup::class, lparams = LinearLayout.LayoutParams::class)
+object MaterialButtonGroupDeclaration
 
 @HikageViewDeclaration(AppScrollView::class)
 object AppScrollViewDeclaration

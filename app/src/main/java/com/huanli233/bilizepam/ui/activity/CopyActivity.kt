@@ -23,6 +23,7 @@ import com.highcapable.hikage.extension.widget.topToParent
 import com.highcapable.hikage.widget.android.widget.TextView
 import com.highcapable.hikage.widget.androidx.constraintlayout.widget.ConstraintLayout
 import com.highcapable.hikage.widget.com.google.android.material.button.MaterialButton
+import com.highcapable.hikage.widget.com.google.android.material.button.MaterialButtonGroup
 import com.highcapable.hikage.widget.com.google.android.material.textfield.TextInputEditText
 import com.highcapable.hikage.widget.com.google.android.material.textfield.TextInputLayout
 import com.highcapable.hikage.widget.com.huanli233.bilizepam.ui.widget.components.TopBar
@@ -181,76 +182,79 @@ class CopyActivity: BaseActivity() {
                                 addTextChangedListener(textWatcher)
                             }
                         }
-                        MaterialButton(
-                            attr = R.layout.style_view_icon_button,
-                            id = "begin_left",
-                            lparams = LayoutParams(width = 0) {
+                        MaterialButtonGroup(
+                            id = "action_buttons",
+                            lparams = widthMatchParent {
                                 topToBottom = viewId("begin")
                                 startToParent()
-                                endToStart = viewId("begin_right")
+                            },
+                            init = {
+                                spacing = 2.dp
                             }
                         ) {
-                            text = "<"
-                            onClick {
-                                beginTextInputLayout.editText?.setText(
-                                    beginTextInputLayout.editText?.text?.toString()?.toIntOrNull()?.minus(1)?.takeIf { it >= 0 }
-                                        ?.toString()
-                                        ?: "0"
-                                )
+                            MaterialButton(
+                                attr = R.layout.style_view_icon_button,
+                                id = "begin_left",
+                                lparams = LayoutParams(width = 0) {
+                                    weight = 0.25f
+                                }
+                            ) {
+                                text = "<"
+                                onClick {
+                                    beginTextInputLayout.editText?.setText(
+                                        beginTextInputLayout.editText?.text?.toString()?.toIntOrNull()?.minus(1)?.takeIf { it >= 0 }
+                                            ?.toString()
+                                            ?: "0"
+                                    )
+                                }
                             }
-                        }
-                        MaterialButton(
-                            attr = R.layout.style_view_icon_button,
-                            id = "begin_right",
-                            lparams = LayoutParams(width = 0) {
-                                topToTop = viewId("begin_left")
-                                startToEnd = viewId("begin_left")
-                                endToStart = viewId("end_left")
+                            MaterialButton(
+                                attr = R.layout.style_view_icon_button,
+                                id = "begin_right",
+                                lparams = LayoutParams(width = 0) {
+                                    weight = 0.25f
+                                }
+                            ) {
+                                text = ">"
+                                onClick {
+                                    beginTextInputLayout.editText?.setText(
+                                        beginTextInputLayout.editText?.text?.toString()?.toIntOrNull()?.plus(1)?.takeIf { it >= 0 }
+                                            ?.toString()
+                                            ?: "0"
+                                    )
+                                }
                             }
-                        ) {
-                            text = ">"
-                            onClick {
-                                beginTextInputLayout.editText?.setText(
-                                    beginTextInputLayout.editText?.text?.toString()?.toIntOrNull()?.plus(1)?.takeIf { it >= 0 }
-                                        ?.toString()
-                                        ?: "0"
-                                )
+                            MaterialButton(
+                                attr = R.layout.style_view_icon_button,
+                                id = "end_left",
+                                lparams = LayoutParams(width = 0) {
+                                    weight = 0.25f
+                                }
+                            ) {
+                                text = "<"
+                                onClick {
+                                    endTextInputLayout.editText?.setText(
+                                        endTextInputLayout.editText?.text?.toString()?.toIntOrNull()?.minus(1)?.takeIf { it >= 0 }
+                                            ?.toString()
+                                            ?: "0"
+                                    )
+                                }
                             }
-                        }
-                        MaterialButton(
-                            attr = R.layout.style_view_icon_button,
-                            id = "end_left",
-                            lparams = LayoutParams(width = 0) {
-                                topToTop = viewId("begin_left")
-                                startToEnd = viewId("begin_right")
-                                endToStart = viewId("end_right")
-                            }
-                        ) {
-                            text = "<"
-                            onClick {
-                                endTextInputLayout.editText?.setText(
-                                    endTextInputLayout.editText?.text?.toString()?.toIntOrNull()?.minus(1)?.takeIf { it >= 0 }
-                                        ?.toString()
-                                        ?: "0"
-                                )
-                            }
-                        }
-                        MaterialButton(
-                            attr = R.layout.style_view_icon_button,
-                            id = "end_right",
-                            lparams = LayoutParams(width = 0) {
-                                topToTop = viewId("begin_left")
-                                startToEnd = viewId("end_left")
-                                endToParent()
-                            }
-                        ) {
-                            text = ">"
-                            onClick {
-                                endTextInputLayout.editText?.setText(
-                                    endTextInputLayout.editText?.text?.toString()?.toIntOrNull()?.plus(1)?.takeIf { it >= 0 }
-                                        ?.toString()
-                                        ?: "0"
-                                )
+                            MaterialButton(
+                                attr = R.layout.style_view_icon_button,
+                                id = "end_right",
+                                lparams = LayoutParams(width = 0) {
+                                    weight = 0.25f
+                                }
+                            ) {
+                                text = ">"
+                                onClick {
+                                    endTextInputLayout.editText?.setText(
+                                        endTextInputLayout.editText?.text?.toString()?.toIntOrNull()?.plus(1)?.takeIf { it >= 0 }
+                                            ?.toString()
+                                            ?: "0"
+                                    )
+                                }
                             }
                         }
                         MaterialButton(
@@ -259,7 +263,7 @@ class CopyActivity: BaseActivity() {
                                 updateMargins(top = 6.dp)
                                 startToParent()
                                 endToStart = viewId("copy_all")
-                                topToBottom = viewId("begin_left")
+                                topToBottom = viewId("action_buttons")
                             }
                         ) {
                             textRes = R.string.copy
