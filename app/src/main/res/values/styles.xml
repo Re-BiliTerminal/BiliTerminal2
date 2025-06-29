@@ -23,9 +23,8 @@
         <item name="indeterminateAnimationTypeCircular">advance</item>
     </style>
     <style name="Material3CardView" parent="Widget.Material3.CardView.Outlined">
-        <item name="cardBackgroundColor">?attr/colorSurfaceContainerHigh</item>
+        <item name="cardBackgroundColor">?attr/colorSurfaceContainer</item>
         <item name="android:clickable">true</item>
-        <item name="cardElevation">3dp</item>
     </style>
     <style name="Material3Button" parent="Widget.Material3.Button">
         <item name="cornerRadius">12dp</item>
