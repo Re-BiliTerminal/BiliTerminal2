@@ -89,6 +89,7 @@ class LoadingView @JvmOverloads constructor(
                     }
                     if (newLayoutEnabled()) {
                         LoadingIndicator(
+                            attr = R.layout.style_view_material_loading_indicator_contained,
                             id = "loading_progress",
                             lparams = LayoutParams(0, 0) {
                                 bottomToParent()

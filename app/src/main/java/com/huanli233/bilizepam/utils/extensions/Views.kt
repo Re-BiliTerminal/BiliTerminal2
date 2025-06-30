@@ -54,8 +54,7 @@ var ViewGroup.MarginLayoutParams.marginEndCompat: Int
         MarginLayoutParamsCompat.setMarginEnd(this, value)
     }
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun ViewGroup.MarginLayoutParams.updateMarginsRelativeCompat(
+fun ViewGroup.MarginLayoutParams.updateMarginsRelativeCompat(
     @Px start: Int = marginStartCompat,
     @Px top: Int = topMargin,
     @Px end: Int = marginEndCompat,

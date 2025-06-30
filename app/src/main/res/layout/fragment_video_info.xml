@@ -188,17 +188,15 @@
                 <com.google.android.material.button.MaterialButton
                     style="?attr/materialIconButtonFilledStyle"
                     android:id="@+id/play"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:icon="@drawable/icon_play_circle"
-                    app:iconPadding="3dp"
                     android:text="@string/play"
+                    app:icon="@drawable/icon_play_circle"
+                    app:iconPadding="5dp"
                     android:layout_marginTop="10dp"
                     app:layout_constraintTop_toBottomOf="@id/tags_layout"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintWidth_min="wrap"
-                    app:layout_constraintWidth_percent="0.5"/>
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
                 <HorizontalScrollView
                     android:id="@+id/toolbar1"

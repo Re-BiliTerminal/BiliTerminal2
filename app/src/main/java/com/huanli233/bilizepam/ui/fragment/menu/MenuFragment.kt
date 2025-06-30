@@ -15,6 +15,7 @@ import com.huanli233.bilizepam.data.account.AccountManager
 import com.huanli233.bilizepam.data.menu.MenuConfigManager
 import com.huanli233.bilizepam.ui.fragment.base.BaseFragment
 import com.huanli233.bilizepam.ui.utils.recyclerview.defaultLayoutManager
+import com.huanli233.hikage.recyclerview.initMultiType
 import com.huanli233.hikage.recyclerview.register
 import kotlinx.coroutines.launch
 
@@ -37,9 +38,7 @@ class MenuFragment: BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        recyclerView.adapter = MultiTypeAdapter(
-            MenuConfigManager.readMenuConfig().menuItems
-        ).register {
+        recyclerView.initMultiType {
             +MenuItemDelegate {
                 if (!it.activityClass.isInstance(requireActivity())) {
                     context?.startActivity(Intent(context, it.activityClass))

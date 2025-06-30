@@ -194,8 +194,6 @@ fun TextView.animateTextChange(
 
         val transition = buildTransitionSet {
             +AutoTransition()
-        }.addTargets {
-            +this@animateTextChange
         }.setInterpolator(FastOutSlowInInterpolator()).duration(duration)
         parent.beginDelayedTransition(transition)
         this.text = newText
