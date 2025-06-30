@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.databinding.ActivityCommonViewpagerBinding
 import com.huanli233.bilizepam.ui.activity.base.BaseActivity
+import com.huanli233.bilizepam.ui.fragment.video.ARG_KEY_AVID
 import com.huanli233.bilizepam.ui.fragment.video.ARG_KEY_BVID
 import com.huanli233.bilizepam.ui.fragment.video.VideoInfoFragment
 import com.huanli233.bilizepam.ui.utils.viewpager2.pagerFragmentAdapter
@@ -22,6 +23,7 @@ class VideoInfoActivity: BaseActivity() {
             adapter = pagerFragmentAdapter(
                 listOf(
                     VideoInfoFragment().putArgument {
+                        putLong(ARG_KEY_AVID, intent.getLongExtra("avid", 0))
                         putString(ARG_KEY_BVID, intent.getStringExtra("bvid"))
                     },
                 )

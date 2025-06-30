@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.highcapable.betterandroid.ui.extension.view.updateMargins
 import com.highcapable.hikage.extension.widget.bottomToParent
 import com.highcapable.hikage.extension.widget.endToParent
@@ -18,7 +19,6 @@ import com.highcapable.hikage.widget.android.widget.ImageView
 import com.highcapable.hikage.widget.android.widget.TextView
 import com.highcapable.hikage.widget.androidx.constraintlayout.widget.ConstraintLayout
 import com.highcapable.hikage.widget.com.google.android.material.loadingindicator.LoadingIndicator
-import com.highcapable.hikage.widget.com.google.android.material.progressindicator.CircularProgressIndicator
 import com.highcapable.hikage.widget.com.google.android.material.progressindicator.LinearProgressIndicator
 import com.highcapable.hikage.widget.com.huanli233.bilizepam.ui.widget.scalablecontainer.AppScrollView
 import com.huanli233.bilizepam.R
@@ -97,7 +97,9 @@ class LoadingView @JvmOverloads constructor(
                                 endToParent()
                                 topToParent()
                                 matchConstraintPercentWidth = 0.5f
-                                matchConstraintPercentHeight = 0.5f
+                                matchConstraintDefaultWidth =
+                                    ConstraintLayout.LayoutParams.MATCH_CONSTRAINT_PERCENT
+                                dimensionRatio = "1:1"
                             }
                         )
                     } else {
@@ -156,7 +158,7 @@ class LoadingView @JvmOverloads constructor(
         }
     }
 
-    fun error(message: String? = null,) {
+    fun error(message: String? = null) {
         state = LoadingState.ERROR
         show()
         loadingImage.setImageResource(R.drawable.loading_2233_error)

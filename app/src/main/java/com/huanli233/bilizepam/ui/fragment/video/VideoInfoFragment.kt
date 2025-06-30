@@ -16,6 +16,7 @@ import com.google.android.material.color.MaterialColors
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.databinding.FragmentVideoInfoBinding
 import com.huanli233.bilizepam.ui.fragment.base.BaseFragment
+import com.huanli233.bilizepam.ui.span.linkable
 import com.huanli233.bilizepam.ui.utils.beginDelayedFade
 import com.huanli233.bilizepam.ui.utils.hikage.extension.copyable
 import com.huanli233.bilizepam.ui.utils.image.loadPicture
@@ -26,9 +27,11 @@ import com.huanli233.bilizepam.utils.extensions.formatToDate
 import com.huanli233.bilizepam.utils.extensions.invisible
 import com.huanli233.bilizepam.utils.extensions.toTime
 import com.huanli233.bilizepam.utils.extensions.visible
+import com.huanli233.bilizepam.utils.parser.ContentElementParser
 import kotlinx.coroutines.launch
 import net.cachapa.expandablelayout.ExpandableLayout
 
+const val ARG_KEY_AVID = "avid"
 const val ARG_KEY_BVID = "bvid"
 
 class VideoInfoFragment: BaseFragment() {
@@ -119,8 +122,10 @@ class VideoInfoFragment: BaseFragment() {
                     coin.text = info.stat.coin.formatNumber()
                     favorite.text = info.stat.favorite.formatNumber()
                     bvid.text = info.bvid
-                    // TODO desc_v2 parser
-                    desc.text = info.desc
+                    desc.text = info.descV2?.let {
+                        desc.textView.linkable()
+                        ContentElementParser.parseDescription(it)
+                    } ?: info.desc.orEmpty()
 
                     tags.removeAllViews()
                     uiState.tags.forEach { tag ->

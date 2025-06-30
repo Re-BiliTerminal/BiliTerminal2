@@ -41,7 +41,8 @@ class VideoInfoViewModel(
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private val bvid = savedStateHandle.get<String>("bvid") ?: throw IllegalArgumentException("bvid is null")
+    private val avid = savedStateHandle.get<Long>("avid") ?: 0
+    private val bvid = savedStateHandle.get<String>("bvid").orEmpty()
 
     private val _uiState = MutableStateFlow(VideoUiState())
     val uiState: StateFlow<VideoUiState> = _uiState.asStateFlow()
@@ -58,7 +59,7 @@ class VideoInfoViewModel(
     fun fetchData() {
         viewModelScope.launch {
             val videoInfoResult = bilibiliApi.api(IVideoApi::class) {
-                getVideoInfo(aid = 0, bvid = bvid)
+                getVideoInfo(aid = avid, bvid = bvid)
             }.apiResultNonNull()
             val tagsResult = bilibiliApi.api(IVideoApi::class) {
                 getVideoTags(aid = 0, bvid = bvid)
