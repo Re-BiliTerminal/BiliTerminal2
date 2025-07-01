@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.Display
 import android.view.View
+import android.view.Window
 import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
@@ -17,10 +18,14 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
+import com.google.android.material.color.MaterialColors
+import com.google.android.material.transition.platform.MaterialContainerTransform
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.data.setting.LocalData
 import com.huanli233.bilizepam.event.SnackEvent
 import com.huanli233.bilizepam.ui.activity.base.material.ThemedAppCompatActivity
+import com.huanli233.bilizepam.ui.utils.playAnimation
 import com.huanli233.bilizepam.ui.widget.components.TopBar
 import com.huanli233.bilizepam.utils.MsgUtil
 import com.huanli233.bilizepam.utils.ThemeUtil
@@ -31,6 +36,11 @@ import org.greenrobot.eventbus.ThreadMode
 open class BaseActivity : ThemedAppCompatActivity() {
 
     open val rootViewPaddingEnabled = true
+    open val transitionEnabled = false
+
+    var contentTransitionName
+        get() = ViewCompat.getTransitionName(findViewById(android.R.id.content))
+        set(value) = ViewCompat.setTransitionName(findViewById(android.R.id.content), value)
 
     var windowWidth: Int = 0
     var windowHeight: Int = 0
@@ -112,9 +122,21 @@ open class BaseActivity : ThemedAppCompatActivity() {
 
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        if (transitionEnabled) {
+            configBaseTransition()
+        }
 
         enableEdgeToEdge()
+        if (rootViewPaddingEnabled) {
+            ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { v, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+                insets
+            }
+        }
+
+        super.onCreate(savedInstanceState)
+
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
 
         val paddingHPercent: Int = LocalData.settings.uiSettings.uiPaddingHorizontal
@@ -141,22 +163,45 @@ open class BaseActivity : ThemedAppCompatActivity() {
             windowWidth = screenWidth - paddingHorizontal - paddingHorizontal
             windowHeight = screenHeight - paddingTop - (paddingBottom - paddingTop)
             rootView.setPadding(paddingHorizontal, paddingTop, paddingHorizontal, paddingBottom)
-            if (rootViewPaddingEnabled) {
-                ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
-                    val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-                    v.setPadding(systemBars.left + paddingHorizontal, systemBars.top + paddingTop, systemBars.right + paddingHorizontal, systemBars.bottom + paddingBottom)
-                    insets
-                }
-            }
         } else {
             windowWidth = screenWidth
             windowHeight = screenHeight
-            if (rootViewPaddingEnabled) {
-                ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
-                    val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-                    v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-                    insets
-                }
+        }
+    }
+
+    fun configBaseTransition() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            playAnimation {
+                window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
+                configTransition()
+            }
+        }
+    }
+
+    @RequiresApi(21)
+    open fun configTransition() = Unit
+
+    fun setupSharedElementTransitionExit() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
+            window.sharedElementsUseOverlay = false
+        }
+    }
+
+    fun setupSharedElementTransitionEnter() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setEnterSharedElementCallback(MaterialContainerTransformSharedElementCallback())
+            window.sharedElementEnterTransition = MaterialContainerTransform().apply {
+                addTarget(android.R.id.content)
+                duration = 300L
+                setAllContainerColors(
+                    MaterialColors.getColor(findViewById(android.R.id.content), com.google.android.material.R.attr.colorSurface))
+            }
+            window.sharedElementReturnTransition = MaterialContainerTransform().apply {
+                addTarget(android.R.id.content)
+                duration = 250L
+                setAllContainerColors(
+                    MaterialColors.getColor(findViewById(android.R.id.content), com.google.android.material.R.attr.colorSurface))
             }
         }
     }

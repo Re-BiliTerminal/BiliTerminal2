@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +14,11 @@ import com.drakeet.multitype.MultiTypeAdapter
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.data.account.AccountManager
 import com.huanli233.bilizepam.data.menu.MenuConfigManager
+import com.huanli233.bilizepam.ui.activity.base.BaseActivity
 import com.huanli233.bilizepam.ui.fragment.base.BaseFragment
+import com.huanli233.bilizepam.ui.utils.animationsEnabled
+import com.huanli233.bilizepam.ui.utils.hikage.extension.transitionNameCompat
+import com.huanli233.bilizepam.ui.utils.makeSceneTransitionAnimation
 import com.huanli233.bilizepam.ui.utils.recyclerview.defaultLayoutManager
 import com.huanli233.hikage.recyclerview.initMultiType
 import com.huanli233.hikage.recyclerview.register
@@ -39,9 +44,22 @@ class MenuFragment: BaseFragment() {
 
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         recyclerView.initMultiType {
-            +MenuItemDelegate {
+            +MenuItemDelegate { it, view ->
                 if (!it.activityClass.isInstance(requireActivity())) {
-                    context?.startActivity(Intent(context, it.activityClass))
+                    view.transitionNameCompat = "menu_item"
+                    val intent = Intent(context, it.activityClass).apply {
+                        putExtra("transition_name", "menu_item")
+                    }
+//                    val activity = activity
+//                    if (animationsEnabled && activity != null) {
+//                        (activity as? BaseActivity)?.setupSharedElementTransitionExit()
+//                        ContextCompat.startActivity(requireContext(), intent,
+//                            activity.makeSceneTransitionAnimation(view, "menu_item")
+//                                .toBundle()
+//                        )
+//                    } else {
+                        context?.startActivity(intent)
+//                    }
                     if (!it.notMenuActivity) {
                         requireActivity().finish()
                     }

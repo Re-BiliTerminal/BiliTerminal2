@@ -11,6 +11,10 @@ import com.huanli233.bilizepam.ui.widget.components.TopBar
 
 abstract class BaseMenuActivity : BaseActivity() {
 
+    override val transitionEnabled = true
+
+    private val transitionName by lazy { intent.getStringExtra("transition_name").orEmpty() }
+
     private lateinit var contentFragment: Fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,5 +90,10 @@ abstract class BaseMenuActivity : BaseActivity() {
         } else {
             supportFragmentManager.popBackStack()
         }
+    }
+
+    override fun configTransition() {
+        contentTransitionName = transitionName
+        setupSharedElementTransitionEnter()
     }
 }

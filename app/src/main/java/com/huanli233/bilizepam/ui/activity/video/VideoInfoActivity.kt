@@ -1,6 +1,8 @@
 package com.huanli233.bilizepam.ui.activity.video
 
+import android.os.Build
 import android.os.Bundle
+import androidx.annotation.RequiresApi
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.databinding.ActivityCommonViewpagerBinding
 import com.huanli233.bilizepam.ui.activity.base.BaseActivity
@@ -14,6 +16,12 @@ class VideoInfoActivity: BaseActivity() {
 
     private lateinit var binding: ActivityCommonViewpagerBinding
 
+    override val transitionEnabled = true
+
+    private val avid by lazy { intent.getLongExtra("avid", 0) }
+    private val bvid by lazy { intent.getStringExtra("bvid") }
+    private val transitionName by lazy { intent.getStringExtra("transition_name") }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCommonViewpagerBinding.inflate(layoutInflater)
@@ -23,8 +31,8 @@ class VideoInfoActivity: BaseActivity() {
             adapter = pagerFragmentAdapter(
                 listOf(
                     VideoInfoFragment().putArgument {
-                        putLong(ARG_KEY_AVID, intent.getLongExtra("avid", 0))
-                        putString(ARG_KEY_BVID, intent.getStringExtra("bvid"))
+                        putLong(ARG_KEY_AVID, avid)
+                        putString(ARG_KEY_BVID, bvid)
                     },
                 )
             )
@@ -32,6 +40,12 @@ class VideoInfoActivity: BaseActivity() {
         }
 
         pageName = getString(R.string.video_detail)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    override fun configTransition() {
+        contentTransitionName = transitionName
+        setupSharedElementTransitionEnter()
     }
 
 }

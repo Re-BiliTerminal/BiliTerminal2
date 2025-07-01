@@ -17,6 +17,7 @@ import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.databinding.FragmentVideoInfoBinding
 import com.huanli233.bilizepam.ui.fragment.base.BaseFragment
 import com.huanli233.bilizepam.ui.span.linkable
+import com.huanli233.bilizepam.ui.span.setupLink
 import com.huanli233.bilizepam.ui.utils.beginDelayedFade
 import com.huanli233.bilizepam.ui.utils.hikage.extension.copyable
 import com.huanli233.bilizepam.ui.utils.image.loadPicture
@@ -123,9 +124,9 @@ class VideoInfoFragment: BaseFragment() {
                     favorite.text = info.stat.favorite.formatNumber()
                     bvid.text = info.bvid
                     desc.text = info.descV2?.let {
-                        desc.textView.linkable()
                         ContentElementParser.parseDescription(it)
                     } ?: info.desc.orEmpty()
+                    desc.textView.setupLink(requireActivity())
 
                     tags.removeAllViews()
                     uiState.tags.forEach { tag ->

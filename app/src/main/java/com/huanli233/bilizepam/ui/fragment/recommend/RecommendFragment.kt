@@ -38,7 +38,7 @@ class RecommendFragment: BaseMenuFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.recyclerView.layoutManager = requireContext().defaultLayoutManager
-        val pagingAdapter = VideoPagingAdapter()
+        val pagingAdapter = VideoPagingAdapter(activity)
         val loadStateAdapter = LoadStateAdapter {
             pagingAdapter.retry()
         }

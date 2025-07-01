@@ -2,6 +2,7 @@ package com.huanli233.bilizepam.ui.fragment.menu
 
 import android.content.res.ColorStateList
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -26,7 +27,7 @@ import splitties.views.appcompat.imgTintList
 import splitties.views.padding
 
 class MenuItemDelegate(
-    private val onSwitch: (MenuItem) -> Unit
+    private val onSwitch: (MenuItem, View) -> Unit
 ): ItemHikageDelegate<MenuItem>() {
 
     override fun createView(): Hikage.Delegate<*> = Hikageable<ViewGroup.MarginLayoutParams> {
@@ -41,6 +42,7 @@ class MenuItemDelegate(
             }
         ) {
             MaterialCardView(
+                id = "card",
                 lparams = LayoutParams(64.dp, 48.dp) {
                     gravity = Gravity.CENTER
                 },
@@ -72,7 +74,7 @@ class MenuItemDelegate(
 
     override fun bindView(hikage: Hikage, item: MenuItem) {
         hikage.root.setOnClickListener {
-            onSwitch(item)
+            onSwitch(item, hikage["card"])
         }
         hikage.get<TextView>("text").apply {
             text = context.getString(item.title)

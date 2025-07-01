@@ -7,10 +7,15 @@ import com.huanli233.bilizepam.ui.activity.base.BaseMenuActivity
 import com.huanli233.bilizepam.ui.fragment.recommend.RecommendFragment
 
 class RecommendActivity: BaseMenuActivity() {
+
     override fun getMenuName(): String = getString(R.string.recommend)
 
     override fun onCreateFragment(savedInstanceState: Bundle?): Fragment {
         return RecommendFragment()
+    }
+
+    override fun configTransition() {
+        setupSharedElementTransitionExit()
     }
 
 }

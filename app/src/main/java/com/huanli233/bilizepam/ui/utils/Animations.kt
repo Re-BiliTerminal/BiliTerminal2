@@ -4,11 +4,13 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.app.Activity
 import android.os.Build
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.app.ActivityOptionsCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.transition.AutoTransition
 import androidx.transition.Fade
@@ -23,10 +25,17 @@ import com.huanli233.bilizepam.data.setting.LocalData
 import com.huanli233.bilizepam.utils.extensions.invisible
 import com.huanli233.bilizepam.utils.extensions.visible
 
+inline val animationsEnabled
+    get() = LocalData.settings.theme.animationsEnabled
+
 inline fun playAnimation(block: () -> Unit) {
     if (LocalData.settings.theme.animationsEnabled) {
         block()
     }
+}
+
+fun Activity.makeSceneTransitionAnimation(view: View, transitionName: String): ActivityOptionsCompat {
+    return ActivityOptionsCompat.makeSceneTransitionAnimation(this, view, transitionName)
 }
 
 class TransitionTargetBuilder(private val transition: Transition) {
