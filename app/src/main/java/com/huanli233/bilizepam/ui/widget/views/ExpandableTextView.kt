@@ -65,16 +65,14 @@ class ExpandableTextView @JvmOverloads constructor(
         textView.text = text
         currentAnimator?.cancel()
 
-        post {
-            if (textView.lineCount <= collapsedLines) {
-                toggleArea.isVisible = false
-                isClickable = false
-                textView.maxLines = Int.MAX_VALUE
-            } else {
-                toggleArea.isVisible = true
-                isClickable = true
-                collapse(false)
-            }
+        if (textView.lineCount <= collapsedLines) {
+            toggleArea.isVisible = false
+            isClickable = false
+            textView.maxLines = Int.MAX_VALUE
+        } else {
+            toggleArea.isVisible = true
+            isClickable = true
+            collapse(false)
         }
     }
 

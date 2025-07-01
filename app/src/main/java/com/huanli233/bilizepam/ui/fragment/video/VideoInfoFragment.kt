@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.updateMargins
+import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -147,9 +148,7 @@ class VideoInfoFragment: BaseHikageFragment() {
                         }
                     ) {
                         boldTypeFace()
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            setTextAppearance(getThemeId(com.google.android.material.R.attr.textAppearanceBodySmall))
-                        }
+                        TextViewCompat.setTextAppearance(this, com.google.android.material.R.style.TextAppearance_Material3_BodySmall)
                         uiState.observe { state ->
                             state.videoInfo?.title?.let { text = it }
                         }
@@ -237,6 +236,7 @@ class VideoInfoFragment: BaseHikageFragment() {
                                 }
                             }
                             textView.setupLink(requireActivity())
+                            textView.textSize = 13f
                         }
                     )
                     val tagsIcon = ImageView(
