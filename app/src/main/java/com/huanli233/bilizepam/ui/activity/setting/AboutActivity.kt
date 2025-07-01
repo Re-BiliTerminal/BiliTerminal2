@@ -65,8 +65,8 @@ class AboutActivity: BaseActivity() {
                         ConstraintLayout(
                             lparams = widthMatchParent(),
                             init = {
-                                updatePadding(horizontal = 6.dp)
-                                updatePaddingRelativeCompat(bottom = 16.dp)
+                                updatePadding(horizontal = dimenRes(R.dimen.page_padding_horizontal).toInt())
+                                updatePaddingRelativeCompat(bottom = dimenRes(R.dimen.page_bottom_padding).toInt())
                             }
                         ) {
                             ImageView(

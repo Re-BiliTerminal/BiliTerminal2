@@ -9,21 +9,6 @@
         <attr name="titleText" format="string|reference"/>
         <attr name="showBackIcon" format="boolean"/>
     </declare-styleable>
-    <declare-styleable name="ExpandableTextView">
-        <attr name="maxCollapsedLines" format="integer"/>
-        <attr name="animDuration" format="integer"/>
-        <attr name="animAlphaStart" format="float"/>
-        <attr name="expandIndicator" format="reference"/>
-        <attr name="collapseIndicator" format="reference"/>
-        <attr name="expandToggleType" format="enum">
-            <enum name="ImageButton" value="0"/>
-            <enum name="TextView" value="1"/>
-        </attr>
-        <attr name="expandableTextId" format="reference"/>
-        <attr name="expandCollapseToggleId" format="reference"/>
-        <attr name="expandToggleOnTextClick" format="boolean"/>
-        <attr name="android:text" format="string"/>
-    </declare-styleable>
     <declare-styleable name="PageIndicatorView">
         <!-- Sets the distance between dots. -->
         <attr name="wsPageIndicatorDotSpacing" format="dimension" />
@@ -199,5 +184,11 @@
         <attr name="dotsStrokeWidth" />
         <attr name="dotsStrokeColor" />
         <attr name="dotsClickable" />
+    </declare-styleable>
+
+    <declare-styleable name="ExpandableTextView">
+        <attr name="e_collapsedLines" format="integer" />
+        <attr name="e_animationDuration" format="integer" />
+        <attr name="e_text" format="string" />
     </declare-styleable>
 </resources>

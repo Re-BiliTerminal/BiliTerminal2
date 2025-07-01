@@ -60,7 +60,7 @@ class LoadingView @JvmOverloads constructor(
                 ConstraintLayout(
                     lparams = widthMatchParent {
                         gravity = gravityCenter
-                        updateMargins(horizontal = 6.dp)
+                        updateMargins(horizontal = dimenRes(R.dimen.page_padding_horizontal).toInt())
                     }
                 ) {
                     ImageView(

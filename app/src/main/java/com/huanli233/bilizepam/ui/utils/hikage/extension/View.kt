@@ -2,6 +2,7 @@ package com.huanli233.bilizepam.ui.utils.hikage.extension
 
 import android.view.View
 import androidx.core.view.ViewCompat
+import com.highcapable.betterandroid.ui.extension.view.updatePadding
 
 fun View.visibleIf(condition: Boolean) {
     visibility = if (condition) View.VISIBLE else View.GONE

@@ -47,26 +47,9 @@
                         android:id="@+id/stack"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:text="xxx.xxx.xxx.xxxException\nAt ...\nAt ...\nAt ...\nAt ...\nAt ..."
+                        app:e_text="xxx.xxx.xxx.xxxException\nAt ...\nAt ...\nAt ...\nAt ...\nAt ..."
                         app:layout_constraintTop_toTopOf="parent"
-                        app:maxCollapsedLines="4"
-                        app:animDuration="200" >
-                        <TextView
-                            android:id="@id/expandable_text"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textSize="13sp" />
-
-                        <ImageButton
-                            android:id="@id/expand_collapse"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@null"
-                            android:padding="10dp"
-                            android:layout_gravity="end|bottom"
-                            android:background="@android:color/transparent"
-                            app:tint="?attr/colorOnSurface" />
-
+                        app:e_collapsedLines="4">
                     </com.huanli233.bilizepam.ui.widget.views.ExpandableTextView>
                 </LinearLayout>
 

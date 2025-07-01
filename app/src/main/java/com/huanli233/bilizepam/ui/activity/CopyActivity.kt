@@ -31,6 +31,7 @@ import com.highcapable.hikage.widget.com.huanli233.bilizepam.ui.widget.scalablec
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.ui.activity.base.BaseActivity
 import com.huanli233.bilizepam.utils.MsgUtil
+import com.huanli233.bilizepam.utils.extensions.updatePaddingRelativeCompat
 import splitties.views.InputType
 import splitties.views.material.text
 import splitties.views.onClick
@@ -68,6 +69,7 @@ class CopyActivity: BaseActivity() {
                             updatePadding(
                                 horizontal = dimenRes(R.dimen.page_padding_horizontal).roundToInt()
                             )
+                            updatePaddingRelativeCompat(bottom = dimenRes(R.dimen.page_bottom_padding).toInt())
                         }
                     ) {
                         val content = TextInputLayout(
