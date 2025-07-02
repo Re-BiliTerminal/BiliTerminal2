@@ -42,6 +42,8 @@ open class BaseActivity : ThemedAppCompatActivity() {
         set(value) = ViewCompat.setTransitionName(findViewById(android.R.id.content), value)
 
     val configurationController = ConfigurationOverrideController(this)
+    val originalViewContext
+        get() = configurationController.originalViewContext
     val uiPaddingManager = UiPaddingManager(this)
 
     var topBar: TopBar? = null
