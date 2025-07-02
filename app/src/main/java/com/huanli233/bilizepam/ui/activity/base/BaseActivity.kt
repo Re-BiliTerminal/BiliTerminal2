@@ -2,7 +2,6 @@ package com.huanli233.bilizepam.ui.activity.base
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build
@@ -42,82 +41,20 @@ open class BaseActivity : ThemedAppCompatActivity() {
         get() = ViewCompat.getTransitionName(findViewById(android.R.id.content))
         set(value) = ViewCompat.setTransitionName(findViewById(android.R.id.content), value)
 
-    var windowWidth: Int = 0
-    var windowHeight: Int = 0
-    private lateinit var _originalContext: Context
-    private var _lastOriginalViewContext: Context? = null
-    private var _configurationChanged = false
-    val originalViewContext: Context
-        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            _lastOriginalViewContext?.let {
-                if (!_configurationChanged) {
-                    it
-                } else {
-                    null
-                }
-            } ?: let {
-                _configurationChanged = false
-                overrideToSystemConfiguration()
-            }
-        } else {
-            this
-        }
-
-    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private fun overrideToSystemConfiguration(): Context {
-        return object : ContextWrapper(this) {
-            val mResources = baseContext.resources.run {
-                val system = Resources.getSystem()
-                @Suppress("DEPRECATION") Resources(
-                    assets,
-                    DisplayMetrics().apply {
-                        setTo(system.displayMetrics)
-                    },
-                    Configuration(configuration).apply {
-                        densityDpi = system.configuration.densityDpi
-                    }
-                )
-            }
-
-            override fun getResources(): Resources? {
-                return mResources
-            }
-        }.also {
-            _lastOriginalViewContext = it
-        }
-    }
+    val configurationController = ConfigurationOverrideController(this)
+    val uiPaddingManager = UiPaddingManager(this)
 
     var topBar: TopBar? = null
 
     override fun attachBaseContext(newBase: Context) {
-        val newContext = overrideConfiguration(newBase)
+        val newContext = configurationController.overrideConfiguration(newBase)
         super.attachBaseContext(newContext)
-        _originalContext = newBase
+        configurationController.attachContext(newBase)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        _configurationChanged = true
-    }
-
-    fun overrideConfiguration(baseContext: Context): Context {
-        val dpiTimes = LocalData.settings.uiSettings.uiScale
-        val density = LocalData.settings.uiSettings.density
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) return baseContext
-        return runCatching {
-            val configuration = baseContext.resources.configuration
-            if (density >= 72) {
-                configuration.densityDpi = density
-                configuration.fontScale = 1.0f
-                baseContext.createConfigurationContext(configuration)
-            } else if (dpiTimes in 0.25..5.0) {
-                val displayMetrics = baseContext.resources.displayMetrics
-                configuration.densityDpi = (displayMetrics.densityDpi * dpiTimes).toInt()
-                baseContext.createConfigurationContext(configuration)
-            } else {
-                baseContext
-            }
-        }.getOrNull() ?: baseContext
+        configurationController.configurationChanged()
     }
 
     @Suppress("DEPRECATION")
@@ -138,35 +75,7 @@ open class BaseActivity : ThemedAppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-
-        val paddingHPercent: Int = LocalData.settings.uiSettings.uiPaddingHorizontal
-        val paddingVPercent: Int = LocalData.settings.uiSettings.uiPaddingVertical
-
-        val rootView: View = this.window.decorView.rootView
-        val windowManager: WindowManager = getSystemService(WINDOW_SERVICE) as WindowManager
-        val display: Display = windowManager.defaultDisplay
-        val metrics = DisplayMetrics()
-        if (Build.VERSION.SDK_INT >= 17) display.getRealMetrics(metrics)
-        else display.getMetrics(metrics)
-
-        val screenWidth: Int = metrics.widthPixels
-        val screenHeight: Int = metrics.heightPixels
-        if (paddingHPercent != 0 || paddingVPercent != 0) {
-            val paddingHorizontal: Int = screenWidth * paddingHPercent / 100
-            val paddingTop: Int = screenHeight * paddingVPercent / 100
-            val paddingBottom = if (LocalData.settings.uiSettings.roundMode) {
-                (paddingTop + screenHeight * 0.03).toInt()
-            } else {
-                paddingTop
-            }
-
-            windowWidth = screenWidth - paddingHorizontal - paddingHorizontal
-            windowHeight = screenHeight - paddingTop - (paddingBottom - paddingTop)
-            rootView.setPadding(paddingHorizontal, paddingTop, paddingHorizontal, paddingBottom)
-        } else {
-            windowWidth = screenWidth
-            windowHeight = screenHeight
-        }
+        uiPaddingManager.applyRootViewPadding(window.decorView.rootView)
     }
 
     fun configBaseTransition() {
