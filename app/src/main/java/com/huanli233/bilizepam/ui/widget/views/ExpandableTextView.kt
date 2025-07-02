@@ -3,6 +3,7 @@ package com.huanli233.bilizepam.ui.widget.views
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
@@ -65,6 +66,16 @@ class ExpandableTextView @JvmOverloads constructor(
         textView.text = text
         currentAnimator?.cancel()
 
+        if (textView.lineCount == 0) {
+            textView.post {
+                updateLayout()
+            }
+        } else {
+            updateLayout()
+        }
+    }
+
+    fun updateLayout() {
         if (textView.lineCount <= collapsedLines) {
             toggleArea.isVisible = false
             isClickable = false

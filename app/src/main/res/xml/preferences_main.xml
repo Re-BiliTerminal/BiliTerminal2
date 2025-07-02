@@ -21,4 +21,9 @@
             android:targetClass="com.huanli233.bilizepam.ui.activity.setting.AboutActivity" />
     </Preference>
 
+    <Preference
+        app:key="debug_crash"
+        app:title="Debug Crash"
+        app:icon="@drawable/icon_bug_report" />
+
 </androidx.preference.PreferenceScreen>

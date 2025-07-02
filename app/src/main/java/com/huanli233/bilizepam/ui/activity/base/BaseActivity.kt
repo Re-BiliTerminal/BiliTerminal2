@@ -248,7 +248,7 @@ open class BaseActivity : ThemedAppCompatActivity() {
 
     open fun onTopbarClicked() {
         if (!isDestroyed) {
-            finish()
+            onBackPressedDispatcher.onBackPressed()
         }
     }
 

@@ -19,7 +19,8 @@ apply plugin: 'com.android.library'
 def SourcePath = 'src/main/'
 
 android {
-    compileSdk 35
+    namespace = 'master.flame.danmaku'
+    compileSdk = libs.versions.compileSdk.get().toInteger()
 
     buildTypes {
         release {
@@ -38,19 +39,17 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.toVersion(libs.versions.javaVersion.get())
+        targetCompatibility = JavaVersion.toVersion(libs.versions.javaVersion.get())
     }
 
     tasks.withType(JavaCompile).configureEach {
         options.compilerArgs << "-Xlint:deprecation" << "-Xlint:unchecked"
     }
 
-    namespace 'master.flame.danmaku'
     defaultConfig {
-        minSdkVersion 14
-        // noinspection ExpiredTargetSdkVersion
-        targetSdkVersion 22
+        minSdkVersion libs.versions.minSdk.get().toInteger()
+        targetSdkVersion libs.versions.targetSdk.get().toInteger()
     }
 }
 

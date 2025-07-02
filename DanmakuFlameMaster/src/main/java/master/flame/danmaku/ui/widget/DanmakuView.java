@@ -493,6 +493,7 @@ public class DanmakuView extends View implements IDanmakuView, IDanmakuViewContr
     }
 
     @Override
+    @SuppressWarnings("all")
     public void clear() {
         if (!isViewReady()) {
             return;

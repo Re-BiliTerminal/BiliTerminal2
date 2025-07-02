@@ -184,7 +184,7 @@
     <string name="user_follow_failed">操作失败（原因未知）：%1$d</string>
     <string name="user_followed">已关注</string>
     <string name="user_follow">关注</string>
-    <string name="biliterminal_crash">哔哩终端崩溃了</string>
+    <string name="bilizepam_crash">BiliZepam崩溃了</string>
     <string name="crash_stack">崩溃堆栈：</string>
     <string name="restart_app">重启应用</string>
     <string name="exit_app">退出应用</string>

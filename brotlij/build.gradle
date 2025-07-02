@@ -4,19 +4,20 @@ version = '0.0.1-SNAPSHOT'
 group = 'com.netease.hearttouch'
 
 android {
-    namespace 'com.wolfcstech.brotlij'
+    namespace = 'com.wolfcstech.brotlij'
+    ndkVersion = libs.versions.ndkVersion.get()
+    compileSdk =  libs.versions.compileSdk.get().toInteger()
 
-    compileSdk 35
-    ndkVersion "24.0.8215888"
+    android.experimentalProperties["android.ndk.suppressMinSdkVersionError"] = 21
 
     defaultConfig {
-        minSdk = 19
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        minSdk = libs.versions.minSdk.get().toInteger()
+        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.toVersion(libs.versions.javaVersion.get())
+        targetCompatibility = JavaVersion.toVersion(libs.versions.javaVersion.get())
     }
 
     buildTypes {

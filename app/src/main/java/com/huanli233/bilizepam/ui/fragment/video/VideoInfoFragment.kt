@@ -56,7 +56,6 @@ import com.huanli233.bilizepam.utils.extensions.updateCompoundDrawablesRelativeW
 import com.huanli233.bilizepam.utils.extensions.updateMarginsRelativeCompat
 import com.huanli233.bilizepam.utils.extensions.updatePaddingRelativeCompat
 import com.huanli233.bilizepam.utils.extensions.visible
-import com.huanli233.bilizepam.utils.getThemeId
 import com.huanli233.bilizepam.utils.parser.ContentElementParser
 import com.huanli233.bilizepam.utils.selectableItemBackground
 import kotlinx.coroutines.launch
@@ -144,11 +143,11 @@ class VideoInfoFragment: BaseHikageFragment() {
                             topToBottom = viewId("cover")
                             startToParent()
 
-                            updateMargins(horizontal = 3.dp)
+                            updateMargins(horizontal = 3.dp, vertical = 3.dp)
                         }
                     ) {
                         boldTypeFace()
-                        TextViewCompat.setTextAppearance(this, com.google.android.material.R.style.TextAppearance_Material3_BodySmall)
+                        TextViewCompat.setTextAppearance(this, com.google.android.material.R.style.TextAppearance_Material3_TitleSmall)
                         uiState.observe { state ->
                             state.videoInfo?.title?.let { text = it }
                         }

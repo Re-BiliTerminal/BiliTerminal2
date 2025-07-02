@@ -21,7 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="@string/biliterminal_crash"
+                android:text="@string/bilizepam_crash"
                 android:gravity="center"
                 android:textSize="18sp" />
 
@@ -47,10 +47,10 @@
                         android:id="@+id/stack"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:e_text="xxx.xxx.xxx.xxxException\nAt ...\nAt ...\nAt ...\nAt ...\nAt ..."
+                        tools:e_text="xxx.xxx.xxx.xxxException\nAt ...\nAt ...\nAt ...\nAt ...\nAt ..."
                         app:layout_constraintTop_toTopOf="parent"
-                        app:e_collapsedLines="4">
-                    </com.huanli233.bilizepam.ui.widget.views.ExpandableTextView>
+                        app:e_collapsedLines="4"/>
+
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>

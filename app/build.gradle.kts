@@ -56,7 +56,7 @@ fun getGitHash(): String {
 
 android {
     namespace = "com.huanli233.bilizepam"
-    compileSdk = 36
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     lint {
         baseline = file("lint-baseline.xml")
@@ -80,8 +80,8 @@ android {
 
     defaultConfig {
         applicationId = "com.huanli233.bilizepam"
-        minSdk = 15
-        targetSdk = 36
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = getGitCommitCount()
         versionName = "${readVersion()}+${getGitHash()}"
 

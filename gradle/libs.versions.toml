@@ -1,4 +1,10 @@
 [versions]
+minSdk = "14"
+targetSdk = "36"
+compileSdk = "36"
+ndkVersion = "28.0.13004108"
+javaVersion = "17"
+
 # Android Tools
 desugarJdkLibs = "2.1.5"
 expandablelayout = "2.9.2"
