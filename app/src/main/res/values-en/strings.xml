@@ -2,7 +2,9 @@
     <string name="app_name">BiliZepam</string>
     <string name="about_description">Lightweight Third-Party Bilibili Client</string>
     <string name="about_opensource">This program is completely open-source,\nthe code adheres to the GNU GPL-V3.0 license</string>
-    <string name="repo_url" translatable="false">https://github.com/Re-BiliTerminal/BiliZepam</string>
+    <string
+        name="repo_url"
+        translatable="false">https://github.com/Re-BiliTerminal/BiliZepam</string>
     <string name="about_to_uncle">The purpose of this software is to enable low-configuration Android watches and older mobile phones to access basic Bilibili web features. Operating through Bilibili\'s web interface, this app will neither overload any APIs nor collect user privacy data. It contains no paid functions, and its code is fully open-source. If you still believe it infringes your rights, please reach out (let\'s talk it out!)\nWe also disclaim responsibility for property loss (device confiscation) or mental distress (really?) caused by student users accessing the app at inappropriate times or locations. Please stay mindful and don\'t let it interfere with your studies or daily rhythm! Keep it balanced!</string>
 
     <string name="setting_ui_desc">The valid range is 0.25~5.00 times.</string>
@@ -38,8 +40,12 @@
         <item>Hmm? Looks like no more easter eggs here~\n\nFeel free to share yours~</item>
     </string-array>
 
-    <string name="player_aliang_package" translatable="false">com.aliangmaker.media</string>
-    <string name="player_mtv_package" translatable="false">com.xinxiangshicheng.wearbiliplayer.cn</string>
+    <string
+        name="player_aliang_package"
+        translatable="false">com.aliangmaker.media</string>
+    <string
+        name="player_mtv_package"
+        translatable="false">com.xinxiangshicheng.wearbiliplayer.cn</string>
 
     <string name="desc_back_disable">Some watches (e.g. MiTu) enable swipe-right-to-go-back by simulating the back button. Enable this switch if accidental swipes exit pages during left/right navigation.\n\nNote: Enabling will disable back-button exits on other devices, and may cause interface freezes after swipe-back gestures.\nUse the Exit button at the bottom menu to close the app.\nMost users can keep this off.</string>
     <string name="desc_cover_play_enable">Enabling this option changes tapping the cover on the video details page from viewing the image to starting playback. By default, the setting is determined by whether you first tapped the video cover or the play button during initial use.</string>
@@ -70,7 +76,9 @@
     <string name="interface_size_tip">Valid range: 0.25x-5.00x.\nWe recommend making incremental adjustments for optimal results.</string>
     <string name="interface_margins">Interface margin</string>
     <string name="horizontal">Horizontal</string>
-    <string name="percent" translatable="false">%</string>
+    <string
+        name="percent"
+        translatable="false">%</string>
     <string name="vertical">Vertical</string>
     <string name="ui_margins_tip">The first input field controls horizontal margins, the second adjusts vertical margins (Unit: Percentage).\nFor security purposes, values exceeding 30 will not be saved.</string>
     <string name="view_preview">View Preview</string>
@@ -114,7 +122,7 @@
     <string name="send_success">Successfully sent! (ﾉ◕ヮ◕)ﾉ</string>
     <string name="send_failed_with_msg">Send failed: %1$s</string>
     <string name="delete_success">Successfully deleted~</string>
-    <string name="no_such_reply">Comment doesn't exist!</string>
+    <string name="no_such_reply">Comment doesn\'t exist!</string>
     <string name="no_permission">Insufficient permissions!</string>
     <string name="action_failed_with_msg">Operation failed: %1$s</string>
     <string name="favorite">Favorite</string>
@@ -146,7 +154,7 @@
     <string name="watch_later">Watch Later</string>
     <string name="relay">Repost</string>
     <string name="download">Download</string>
-    
+
     <string name="not_set_text">Not set</string>
 
     <string name="dynamic_delete_success">Successfully deleted~</string>
@@ -180,7 +188,7 @@
     <string name="user_official_unknown_person">Unknown Individual</string>
     <string name="user_official_known_person">Public Figure</string>
     <string name="user_follow_success">Operation successful meow~</string>
-    <string name="user_follow_blocked">Blocked by Bilibili's security system\n(Cannot be resolved)</string>
+    <string name="user_follow_blocked">Blocked by Bilibili\'s security system\n(Cannot be resolved)</string>
     <string name="user_follow_failed">Operation failed (Unknown reason): %1$d</string>
     <string name="user_followed">Followed</string>
     <string name="user_follow">Follow</string>
@@ -223,7 +231,9 @@
     <string name="preference">Preferences</string>
     <string name="disable_fullscreen_dialog">Non-Fullscreen Dialog</string>
     <string name="no_more_than_30">Cannot exceed 30</string>
-    <string name="density" translatable="false">Density</string>
+    <string
+        name="density"
+        translatable="false">Density</string>
     <string name="animation">Animation</string>
     <string name="system_accent_color">System Accent Color</string>
     <string name="video_detail">Video Details</string>
@@ -266,7 +276,9 @@
         <item>Log Out: scarlab | MIT License</item>
     </string-array>
 
-    <string-array name="dark_theme_values" translatable="false">
+    <string-array
+        name="dark_theme_values"
+        translatable="false">
         <item>0</item>
         <item>1</item>
         <item>2</item>

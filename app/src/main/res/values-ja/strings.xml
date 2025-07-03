@@ -2,7 +2,9 @@
     <string name="app_name">BiliZepam</string>
     <string name="about_description">軽量なサードパーティー製B站アプリ</string>
     <string name="about_opensource">このプログラムは完全にオープンソースであり、コード部分はGNU GPL-V3.0ライセンスに従います</string>
-    <string name="repo_url" translatable="false">https://github.com/Re-BiliTerminal/BiliZepam</string>
+    <string
+        name="repo_url"
+        translatable="false">https://github.com/Re-BiliTerminal/BiliZepam</string>
     <string name="about_to_uncle">本アプリの開発目的は、スペックの低いAndroidスマートウォッチや\n旧型スマートフォンでもB站ウェブ版の基本機能を利用可能にすることです。\nB站のウェブ版APIを基に動作しており、APIへの過剰なリクエスト送信や\nユーザーのプライバシー情報を収集することは一切ありません。\n有料機能は一切ありませんが、コードは完全オープンソースです。\n万一当アプリが権利を侵害しているとお考えの場合は\nご連絡ください（話し合いで解決しましょうね～）\n\nまた学生ユーザーが不適切な時間・場所で使用したことによる\n財産上の損害（デバイス没収等）や精神的損害（？）について\n当方は一切責任を負いません。\n自制いただき、学業や日常生活に支障をきたさないようお願いします!</string>
 
     <string name="setting_ui_desc">設定可能範囲は0.25〜5.00（倍）です\n調整は少しずつ行い、プレビューで表示を確認してから\n変更を確定してください。新しいページを開くと反映されます\n\n注意：極端な最小値・最大値の設定はなるべく避けてくださいね！\n設定を誤ってアプリが正常に動作しなくなった場合は\nデータを消去するか、再インストールで対応してください！</string>
@@ -38,8 +40,12 @@
         <item>んん？ここにはもう隠し要素がないみたいだよ＞﹏＜\n\nあなたの投稿をお待ちしてまーす？</item>
     </string-array>
 
-    <string name="player_aliang_package" translatable="false">com.aliangmaker.media</string>
-    <string name="player_mtv_package" translatable="false">com.xinxiangshicheng.wearbiliplayer.cn</string>
+    <string
+        name="player_aliang_package"
+        translatable="false">com.aliangmaker.media</string>
+    <string
+        name="player_mtv_package"
+        translatable="false">com.xinxiangshicheng.wearbiliplayer.cn</string>
 
     <string name="desc_back_disable">一部のスマートウォッチ（例：Mi Watchなど）は戻るキーの押下をエミュレートして右スワイプ戻りを実装しています\nページめくり操作で誤動作する場合はこのスイッチを有効化してください\n※有効化後は他デバイスで戻るキー操作時も終了しなくなり\n右スワイプ終了時にフリーズする場合があります\n終了時はメニュー最下部の終了ボタンをご使用ください\n通常のユーザーは有効化不要です</string>
     <string name="desc_cover_play_enable">このオプションを有効にすると、動画詳細ページでカバー画像をクリックした際の動作が、画像表示から再生に変更されます。\nデフォルトでは、初回利用時にカバー画像か再生ボタンのどちらをクリックしたかに基づいて、オン/オフが自動で設定されます。</string>
@@ -70,7 +76,9 @@
     <string name="interface_size_tip">有効範囲：0.25倍～5.00倍，少量ずつ複数回の調整をおすすめします。</string>
     <string name="interface_margins">インターフェースのマージン</string>
     <string name="horizontal">横向き</string>
-    <string name="percent" translatable="false">%</string>
+    <string
+        name="percent"
+        translatable="false">%</string>
     <string name="vertical">縦向き</string>
     <string name="ui_margins_tip">一つ目の入力欄は横向きのマージン、二つ目の入力欄は縦向きのマージンです。単位はパーセント。\n保護のため、30を超える値は保存されません。</string>
     <string name="view_preview">プレビューを表示</string>
@@ -223,7 +231,9 @@
     <string name="preference">プリファレンス</string>
     <string name="disable_fullscreen_dialog">非フルスクリーンダイナログ</string>
     <string name="no_more_than_30">30より大きくできません</string>
-    <string name="density" translatable="false">Density</string>
+    <string
+        name="density"
+        translatable="false">Density</string>
     <string name="animation">アニメーション</string>
     <string name="system_accent_color">システムアクセントカラー</string>
     <string name="video_detail">動画詳細</string>
@@ -265,8 +275,10 @@
         <item>アニメ: hicon, MIT ライセンス</item>
         <item>ログアウト: scarlab, MIT ライセンス</item>
     </string-array>
-    
-    <string-array name="dark_theme_values" translatable="false">
+
+    <string-array
+        name="dark_theme_values"
+        translatable="false">
         <item>0</item>
         <item>1</item>
         <item>2</item>
