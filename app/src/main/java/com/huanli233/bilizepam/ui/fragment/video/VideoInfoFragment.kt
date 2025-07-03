@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.updateMargins
+import androidx.core.view.updatePadding
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -43,6 +44,7 @@ import com.huanli233.bilizepam.ui.utils.beginDelayedFade
 import com.huanli233.bilizepam.ui.utils.hikage.extension.AppScrollViewWithBoxInset
 import com.huanli233.bilizepam.ui.utils.hikage.extension.FullFrameLayout
 import com.huanli233.bilizepam.ui.utils.hikage.extension.boldTypeFace
+import com.huanli233.bilizepam.ui.utils.hikage.extension.copyable
 import com.huanli233.bilizepam.ui.utils.image.loadPicture
 import com.huanli233.bilizepam.ui.utils.playAnimation
 import com.huanli233.bilizepam.ui.widget.views.NoSpaceTextView
@@ -60,6 +62,7 @@ import com.huanli233.bilizepam.utils.parser.ContentElementParser
 import com.huanli233.bilizepam.utils.selectableItemBackground
 import kotlinx.coroutines.launch
 import net.cachapa.expandablelayout.ExpandableLayout
+import splitties.views.padding
 
 const val ARG_KEY_AVID = "avid"
 const val ARG_KEY_BVID = "bvid"
@@ -146,8 +149,9 @@ class VideoInfoFragment: BaseHikageFragment() {
                             updateMargins(horizontal = 3.dp, vertical = 3.dp)
                         }
                     ) {
-                        boldTypeFace()
                         TextViewCompat.setTextAppearance(this, com.google.android.material.R.style.TextAppearance_Material3_TitleSmall)
+                        boldTypeFace()
+                        copyable()
                         uiState.observe { state ->
                             state.videoInfo?.title?.let { text = it }
                         }
@@ -293,13 +297,16 @@ class VideoInfoFragment: BaseHikageFragment() {
                             id = "tags",
                             lparams = widthMatchParent(),
                             init = {
+                                updatePadding(top = 3.dp)
                                 chipSpacingHorizontal = 3.dp
                                 chipSpacingVertical = 2.dp
                             }
                         ) {
-                            this.UpdateScope(uiState, diff = { previousValue.tags == currentValue.tags }) {
+                            UpdateScope(uiState, diff = { previousValue.tags == currentValue.tags }) {
                                 value.tags.forEach { tag ->
                                     Chip {
+                                        setEnsureMinTouchTargetSize(false)
+                                        padding = 2.dp
                                         text = tag.tagName
                                         onClick {
                                             // TODO go to search page
