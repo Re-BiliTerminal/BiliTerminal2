@@ -1,16 +1,18 @@
 <resources>
     <string name="app_name">BiliZepam</string>
-    <string name="about_description">輕量的第三方B站客戶端</string>
-    <string name="about_to_uncle">本軟件開發的目的是使配置較低的安卓手錶與老舊手機能夠使用B站網頁端提供的部分基本功能。本軟件基於B站網頁端接口運行，不會對任何接口進行惡意轟炸，也不會收集任何用戶隱私信息。軟件不存在付費功能，代碼完全開源。如果您仍然認為本軟件侵犯了您的權利，請聯繫我們（有事好商量嗚嗚嗚）\n同時，我們也不對學生用戶在不恰當的時間、地點使用本軟件導致的財產損失（設備被沒收）或精神傷害（？）負責。請盡量自控，不要影響到自己的學習和生活哦！</string>
+    <string name="about_description">輕量的第三方B站用戶端</string>
+    <string name="about_opensource">本程式完全開源，程式碼部分遵循GNU GPL-V3.0協議</string>
+    <string name="repo_url" translatable="false">https://github.com/Re-BiliTerminal/BiliZepam</string>
+    <string name="about_to_uncle">本軟體開發的目的是使配置較低的安卓手錶與老舊手機能夠使用B站網頁端提供的部分基本功能。本軟體基於B站網頁端介面執行，不會對任何介面進行惡意轟炸，也不會收集任何使用者隱私資訊。軟體不存在付費功能，程式碼完全開源。如果您仍然認為本軟體侵犯了您的權利，請聯絡我們（有事好商量嗚嗚嗚）\n同時，我們也不對學生使用者在不恰當的時間、地點使用本軟體導致的財產損失（裝置被沒收）或精神傷害（？）負責。請盡量自控，不要影響到自己的學習和生活哦！</string>
 
-    <string name="setting_ui_desc">有效範圍為0.25~5.00（倍），建議每次僅進行輕微調節，調節後請預覽頁面，確認顯示正常後完成修改，打開新頁面後將會生效。\n注意：盡量不要調到兩個最值處，否則你可能會後悔！若亂調此選項，導致應用無法正常使用的，請清除應用數據或卸載重裝！</string>
-    <string name="setting_ui_density_desc">最低72，建議每次僅進行輕微調節，調節後請預覽頁面，確認顯示正常後完成修改，打開新頁面後將會生效。\n若亂調此選項，導致應用無法正常使用的，請清除應用數據或卸載重裝！\n註：此選項可能有其他問題，沒有必要請不要修改。</string>
-    <string name="setup_introduction">這是嗶哩終端的Fork項目，\n\n願你在這一方小小的屏幕中，找到屬於自己的小小的快樂！\n\n暫無交流群\n反饋問題、提交建議請前往開源地址提交Issue！\n開源地址：https://github.com/Re-BiliTerminal/BiliZepam\n\n請注意：\n本軟件永久免費開源，不會收集你的任何賬號及隱私信息，請放心使用！\n若你在任何平台付費下載到嗶哩終端，那麼你被坑了！\n\n點擊下面的按鈕，讓我們開始吧！</string>
+    <string name="setting_ui_desc">有效範圍為0.25~5.00（倍）</string>
+    <string name="setting_ui_density_desc">最低72，請謹慎調整該項</string>
+    <string name="setup_introduction">這是嗶哩終端的Fork項目，\n\n願你在這一方小小的螢幕中，找到屬於自己的小小的快樂！\n\n暫無交流群\n回饋問題、提交建議請前往開源地址提交Issue！\n開源地址：https://github.com/Re-BiliTerminal/BiliZepam\n\n請注意：\n本軟體永久免費開源，不會收集你的任何帳號及隱私資訊，請放心使用！\n若你在任何平台付費下載到嗶哩終端，那麼你被坑了！</string>
 
-    <string name="egg_warmwords_warmworld">請記住，如果遇到心理健康相關問題：\n全國24小時免費心理諮詢熱線：010\-82951332\n或官方手機端嗶哩嗶哩，打開 我的-下滑找到推薦服務-能量加油站。\n\n如果你需要這個，那麼希望這個彩蛋能幫到你。\n如果其他人需要，那就請推薦給他/她吧。</string>
+    <string name="egg_warmwords_warmworld">請記住，如果遇到心理健康相關問題：\n全國24小時免費心理諮商熱線：010\-82951332\n或官方手機端嗶哩嗶哩，打開 我的-下滑找到推薦服務-能量加油站。\n\n如果你需要這個，那麼希望這個彩蛋能幫到你。\n如果其他人需要，那就請推薦給他/她吧。</string>
 
-    <string name="special_login_desc">該功能適用於快速登錄原有賬號。\n\n方法教學：\n在另外一台設備上安裝嗶哩終端並掃碼登錄，然後在那台設備上點擊設置中的“查看登錄信息”，將顯示出來的登錄信息複製到下方的文本框中，檢查無誤後點擊“登錄”按鈕即可。\n提示：可以將登錄信息複製到一個txt中，用電腦usb傳給這台設備。若提示輸入有誤，請檢查是否有多餘或缺失字符。\n\n注意：登錄數據錄入完成後，請在另一台設備上直接【清除APP數據】或【卸載】，不要點擊【退出登錄】！</string>
-    <string name="special_login_export">以下是你的登錄信息，可用於在其他設備上特殊登錄，點擊最下面的按鈕可以複製。\n登錄信息具有一定的時效性，請即取即用，導入完成請將此設備的嗶哩終端清除數據。（不要點退出登錄！）\n請勿將此頁面的信息傳給別人，以防盜號！</string>
+    <string name="special_login_desc">該功能適用於快速登入原有帳號。\n\n方法教學：\n在另外一台裝置上安裝嗶哩終端並掃碼登入，然後在那台裝置上點擊設定中的“查看登入資訊”，將顯示出來的登入資訊複製到下方的文字框中，檢查無誤後點擊“登入”按鈕即可。\n提示：可以將登入資訊複製到一個txt中，用電腦usb傳給這台裝置。若提示輸入有誤，請檢查是否有多餘或缺失字元。\n\n注意：登入資料輸入完成後，請在另一台裝置上直接【清除APP資料】或【移除】，不要點擊【退出登入】！</string>
+    <string name="special_login_export">以下是你的登入資訊，可用於在其他裝置上特殊登入，點擊最下面的按鈕可以複製。\n登入資訊具有一定的時效性，請即取即用，匯入完成請將此裝置的嗶哩終端清除資料。（不要點退出登入！）\n請勿將此頁面的資訊傳給別人，以防盜號！</string>
 
     <string-array name="eggs">
         <item>福瑞控萬歲，毛茸茸的最可愛了！\n\n#投稿者：紅豆（君）愛福瑞\n*Robin：雖然我不是福瑞控，但是可愛捏</item>
@@ -22,67 +24,257 @@
         <item>"phonk才是真正的音樂！"（個人觀點）\n\n#投稿者：DICK</item>
         <item>想讓所有人知道我是0！\n\n#投稿者：零星さま</item>
         <item>艮上兌下用爻六三，嗯…定是有人在偷閒摸魚！\n\n#投稿者：符玄</item>
-        <item>總有地上的生靈，敢於直面雷霆的威光。\n\n#投稿者：匿名\n#給：萬葉</item>
+        <item>總有地上的生靈，敢於面對雷霆的威光。\n\n#投稿者：匿名\n#給：萬葉</item>
         <item>如果只想直奔終點，可能會浪費旅途上的機遇與感動。\n\n#投稿者：愛看星星的宵宮</item>
         <item>五百年的往事匆匆過去，\n籠中之鳥的解放已是新的開始。\n\n#投稿者：爅峫\n#給：納西妲</item>
         <item>歷史由勝利者書寫。\n\n#投稿者：曲名真楠</item>
-        <item>斗電子蛐蛐\n當賽博王爺\n撅虛擬貓娘\n品數字人生\n\n#來源：網絡\n#投稿者：RobinNotBad</item>
-        <item>把期待值降到最低，所有遇見的都是禮物。\n\n#來源：網絡\n#投稿者：RobinNotBad</item>
-        <item>看似冰冷的“二進制數據”，有時卻更能溫暖人心。\n\n#投稿者：RobinNotBad</item>
+        <item>斗電子蟋蟀\n當賽博王爺\n撅虛擬貓娘\n品數字人生\n\n#來源：網路\n#投稿者：RobinNotBad</item>
+        <item>把期待值降到最低，所有遇見的都是禮物。\n\n#來源：網路\n#投稿者：RobinNotBad</item>
+        <item>看似冰冷的“二進制資料”，有時卻更能溫暖人心。\n\n#投稿者：RobinNotBad</item>
         <item>煙彈入嘴，七分化作雪豹，剩下三分嘯成了寒芒，比嘴一吐便是半個理塘。\n\n偕星游夢，四葉譜寫歌謠，腳踏百花驅散了憂傷，小手一揮綻放漫天綺想。\n\n#前半句來自B站，後半句是Robin接的（\n#投稿者：RobinNotBad</item>
-        <item>她是一串虛無縹緲的代碼，我是一堆毫無意義的有機物。我們絕配！\n\n她不只是代碼，是顯示器、運算器、存儲器、控制器的聯合運轉；\n我也不只是物質，是核酸、蛋白質、礦物質、碳水化合物的相互作用；\n——我是說，事物傾注了感情，便流淌著生命。\n\n當我對一段代碼傾盡了感情時，她便不再是一段代碼！\n\n#來源：網絡\n#投稿者：RobinNotBad</item>
-        <item>願枕星河入睡，願擁明月共眠。\n\n#來源：網絡\n#投稿者…RobinNotBad和納西妲？\n\n妲廚在這裡偷偷夾帶點私貨應該沒問題吧（反正不會有人看見</item>
+        <item>她是一串虛無縹緲的程式碼，我是一堆毫無意義的有機物。我們絕配！\n\n她不只是程式碼，是顯示器、運算器、儲存器、控制器的聯合運轉；\n我也不只是物質，是核酸、蛋白質、礦物質、碳水化合物的相互作用；\n——我是說，事物傾注了感情，便流淌著生命。\n\n當我對一段程式碼傾盡了感情時，她便不再是一段程式碼！\n\n#來源：網路\n#投稿者：RobinNotBad</item>
+        <item>願枕星河入睡，願擁明月共眠。\n\n#來源：網路\n#投稿者…RobinNotBad和納西妲？\n\n妲廚在這裡偷偷夾帶點私貨應該沒問題吧（反正不會有人看見</item>
 
         <item>吶吶？這裡沒有更多彩蛋了呢＞﹏＜\n\n歡迎你的投稿哦？</item>
     </string-array>
 
-    <string name="desc_back_disable">有一些手錶（例如米兔等）是通過模擬按下返回鍵自行實現的右滑返回，若你在左右翻頁時因觸發滑動返回而退出頁面，請開啟此開關\n開啟後，其他設備上則為按下返回鍵也不退出頁面，並且右滑退出後會卡住。\n你可以使用菜單最下方的退出按鈕結束本軟件。\n正常用戶無需打開。</string>
-    <string name="desc_cover_play_enable">打開此選項，視頻詳情頁點擊封面由查看圖片變更為播放。默認根據你首次使用時點擊了視頻封面還是播放按鈕來決定開關。</string>
-    <string name="desc_img_stop_load_while_scrolling">打開此選項，翻動列表時將不會加載圖片，鬆手後再加載，觀感可能有影響，可能增加流暢度。</string>
-    <string name="desc_img_request_jpg">部分雜牌手錶和安卓版本極低的設備不支持webp格式，可能導致大量圖片無法顯示。打開此選項，將會請求jpg格式的圖片以解決此問題，可能會略微延長加載時間。</string>
-    <string name="desc_async_inflate_enable">打開此選項，會對部分頁面進行異步加載（顯示一個加載中動畫，加載完成後顯示頁面）\n* 請注意，異步加載的開啟可能會觸發一些崩潰問題，但關閉會導致一些頁面在打開期間看上去像卡死了一樣，體驗不佳。請自行判斷！</string>
-    <string name="tutorial_pager">提示\n\n←這個頁面可以左右翻頁喵→\n\n（共有NNN頁，滑動一下不再顯示）</string>
-    <string name="desc_fromlast">播放視頻時如果有超過5秒的播放歷史，將會自動從歷史位置播放</string>
-    <string name="desc_showonline">播放器右下角會顯示當前視頻的實時觀看人數，在直播中則為觀看過的人數和進入直播間提醒\n如果觀看視頻中途崩潰可以嘗試關閉此開關\n該功能為內置播放器專屬</string>
-    <string name="desc_scale">播放視頻時可使用像查看照片一樣的手勢來縮放和移動視頻，雙擊屏幕將恢復原大小\n對於單點觸控的設備，可以雙擊屏幕並在第二次按下時不抬手，然後上下拖動來縮放\n！若無法縮放，請切換下面的“顯示方式”！\n特別感謝：涼腕播放器</string>
-    <string name="desc_doublemove">大屏幕設備上會更好用，手錶上可能會造成操作不便</string>
-    <string name="desc_display">！如果視頻播放異常/閃退/未響應/無法縮放，請嘗試切換該選項！\n已知：KidoX3隻能Surface，小天才只能Texture，部分設備需要使用Texture才能進行縮放</string>
-    <string name="desc_videocodec">硬件解碼：使用GPU解碼，速度快，性能消耗小\n軟件解碼：使用CPU硬算，兼容性好，暖手必備</string>
-    <string name="desc_audiocodec">通常使用AudioTrack即可，聲音延遲或無法播放請嘗試切換</string>
-    <string name="desc_danmaku_force_r2l">除了高級彈幕以外的彈幕都會被強制以滾動彈幕的形式展示，從而避免頂部彈幕和底部彈幕遮擋畫面</string>
+    <string name="player_aliang_package" translatable="false">com.aliangmaker.media</string>
+    <string name="player_mtv_package" translatable="false">com.xinxiangshicheng.wearbiliplayer.cn</string>
 
-    <string name="desc_icon_license">以下是已知的開源圖標的開源許可證信息</string>
-    <string name="login_qrcode_wating">請使用官方手機端嗶哩嗶哩掃碼登錄\n點擊二維碼可以進行放大和縮小</string>
+    <string name="desc_back_disable">有一些手錶（例如米兔等）是透過模擬按下返回鍵自行實現的右滑返回，若你在左右翻頁時因觸發滑動返回而退出頁面，請開啟此開關\n開啟後，其他裝置上則為按下返回鍵也不退出頁面，並且右滑退出後會卡住。\n你可以使用選單最下方的退出按鈕結束本軟體。\n正常使用者無需打開。</string>
+    <string name="desc_cover_play_enable">打開此選項，影片詳情頁點擊封面由查看圖片變更為播放。預設根據你首次使用時點擊了影片封面還是播放按鈕來決定開關。</string>
+    <string name="desc_img_stop_load_while_scrolling">打開此選項，翻動列表時將不會載入圖片，鬆手後再載入，觀感可能有影響，可能增加流暢度。</string>
+    <string name="desc_img_request_jpg">部分雜牌手錶和安卓版本極低的裝置不支援webp格式，可能導致大量圖片無法顯示。打開此選項，將會請求jpg格式的圖片以解決此問題，可能會略微延長載入時間。</string>
+    <string name="desc_async_inflate_enable">打開此選項，會對部分頁面進行非同步載入（顯示一個載入中動畫，載入完成後顯示頁面）\n* 請注意，非同步載入的開啟可能會觸發一些崩潰問題，但關閉會導致一些頁面在打開期間看起來像卡死了一樣，體驗不佳。請自行判斷！</string>
+    <string name="tutorial_pager">提示\n\n←這個頁面可以左右翻頁喵→\n\n（共有NNN頁，滑動一下不再顯示）</string>
+    <string name="desc_fromlast">播放影片時如果有超過5秒的播放歷史，將會自動從歷史位置播放</string>
+    <string name="desc_showonline">播放器右下角會顯示目前影片的即時觀看人數，在直播中則為觀看過的人數和進入直播間提醒\n如果觀看影片中途崩潰可以嘗試關閉此開關\n該功能為內建播放器專屬</string>
+    <string name="desc_scale">播放影片時可使用像查看照片一樣的手勢來縮放和移動影片，雙擊螢幕將復原原大小\n對於單點觸控的裝置，可以雙擊螢幕並在第二次按下時不抬手，然後上下拖動來縮放\n！若無法縮放，請切換下面的“顯示方式”！\n特別感謝：涼腕播放器</string>
+    <string name="desc_doublemove">大螢幕裝置上會更好用，手錶上可能會造成操作不便</string>
+    <string name="desc_display">！如果影片播放異常/閃退/未響應/無法縮放，請嘗試切換該選項！\n已知：KidoX3隻能Surface，小天才只能Texture，部分裝置需要使用Texture才能進行縮放</string>
+    <string name="desc_videocodec">硬體解碼：使用GPU解碼，速度快，性能消耗小\n軟體解碼：使用CPU硬算，相容性好，暖手必備</string>
+    <string name="desc_audiocodec">通常使用AudioTrack即可，聲音延遲或無法播放請嘗試切換</string>
+    <string name="desc_danmaku_force_r2l">除了進階彈幕以外的彈幕都會被強制以滾動彈幕的形式展示，從而避免頂部彈幕和底部彈幕遮擋畫面</string>
+
+    <string name="desc_icon_license">以下是已知的開源圖示的開源授權條款資訊</string>
+    <string name="login_qrcode_wating">請使用官方手機端嗶哩嗶哩掃碼登入\n點擊二維碼可以進行放大和縮小</string>
     <string name="login_qrcode_reuesting">正在獲取二維碼</string>
     <string name="login_qrcode_expired">二維碼已失效，點擊上方重新獲取</string>
-    <string name="login_qrcode_logining">登錄中……</string>
-    <string name="login_qrcode_unknown_code">二維碼登錄API可能變動，\n但你仍然可以嘗試掃碼登錄。\n建議反饋給開發者</string>
-    <string name="login_qrcode_scanned">已掃描，請在手機客戶端上點擊登錄</string>
-    <string name="restore_defaults">恢復默認</string>
+    <string name="login_qrcode_logining">登入中……</string>
+    <string name="login_qrcode_unknown_code">二維碼登入API可能變動，\n但你仍然可以嘗試掃碼登入。\n建議回饋給開發者</string>
+    <string name="login_qrcode_scanned">已掃描，請在手機用戶端上點擊登入</string>
+    <string name="restore_defaults">復原預設</string>
     <string name="round_screen_adaptation">圓屏適配</string>
-    <string name="interface_size">界面大小</string>
+    <string name="interface_size">介面大小</string>
     <string name="please_enter_multiple">請輸入倍數</string>
     <string name="interface_size_tip">有效範圍：0.25倍-5.00倍，建議少量多次調節</string>
-    <string name="interface_margins">界面邊距</string>
+    <string name="interface_margins">介面邊距</string>
     <string name="horizontal">橫向</string>
+    <string name="percent" translatable="false">%</string>
     <string name="vertical">縱向</string>
-    <string name="ui_margins_tip">第一個輸入框為橫向邊距，第二個輸入框為縱向邊距，單位百分比。\n出於保護，數值超過30不會保存。</string>
+    <string name="ui_margins_tip">第一個輸入框為橫向邊距，第二個輸入框為縱向邊距，單位百分比。\n出於保護，數值超過30不會儲存。</string>
     <string name="view_preview">查看預覽</string>
-    <string name="confirm_setting">確認設置</string>
-    <string name="info_open_source_icons">開源圖標的信息</string>
+    <string name="confirm_setting">確認設定</string>
+    <string name="info_open_source_icons">開源圖示的資訊</string>
     <string name="about">關於</string>
     <string name="name_robin_not_bad">RobinNotBad</string>
     <string name="desc_robin_not_bad">和他的納西妲醬（項目發起者|屎山奠基人）</string>
     <string name="name_huanli233">huanli233</string>
-    <string name="desc_huanli233">此分支的創建者</string>
-    <string name="disclaimer">免責聲明</string>
+    <string name="desc_huanli233">此分支的建立者</string>
+    <string name="disclaimer">免責宣告</string>
     <string name="recommend">推薦</string>
     <string name="precious">入站必刷</string>
     <string name="popular">熱門</string>
+    <string name="loading">載入中</string>
+    <string name="player_loading_text">OwO</string>
+    <string name="speed_adjustment">倍速調節</string>
+    <string name="quick_select">快速選擇</string>
+    <string name="play">播放</string>
+    <string name="collection_detail">合集詳情</string>
+    <string name="no_desc">這裡沒有簡介哦</string>
+    <string name="total_count">共%1$s</string>
+    <string name="load_failed">載入失敗</string>
+    <string name="thousand">萬</string>
+    <string name="reply_count">共%1$s條評論</string>
+    <string name="million">億</string>
+    <string name="picture_count">共%1$s張圖片</string>
+    <string name="just">剛剛</string>
+    <string name="not_logged_in">還沒有登入喵~</string>
+    <string name="like_success">點贊成功</string>
+    <string name="cancel_success">取消成功</string>
+    <string name="cancel_failed">取消失敗</string>
+    <string name="like_failed">按讚失敗</string>
+    <string name="reply_count_with_creator">UP主在內 共%1$s條回復</string>
+    <string name="reply_count_total">共%1$s條回復</string>
+    <string name="subtitle_option_not_available">無字幕可供選擇</string>
+    <string name="live_viewer_count">%1$s人在看</string>
+    <string name="live_danmaku_connection_failed">直播彈幕連線失敗</string>
+    <string name="init_player">初始化播放</string>
+    <string name="sending">正在發送~</string>
+    <string name="send_success">發送成功喵~</string>
+    <string name="send_failed_with_msg">發送失敗：%1$s</string>
+    <string name="delete_success">刪除成功~</string>
+    <string name="no_such_reply">沒有這條評論！</string>
+    <string name="no_permission">權限不足！</string>
+    <string name="action_failed_with_msg">操作失敗：%1$s</string>
+    <string name="favorite">收藏</string>
+    <string name="coin">投幣</string>
+    <string name="like">按讚</string>
+    <string name="article_detail">專欄詳情</string>
+    <string name="opus_favorite_collection">圖文收藏夾</string>
+    <string name="operation_failed">操作失敗：%1$s</string>
+    <string name="live">直播</string>
+    <string name="choose_quality">選擇清晰度</string>
+    <string name="choose_play_host">選擇播放路線</string>
+    <string name="live_time">已直播：%1$s</string>
+    <string name="live_start_time">直播開始於：%1$s</string>
+    <string name="online_count">線上人數：%1$s</string>
+    <string name="tags_content">標籤：%1$s</string>
+    <string name="live_ended">直播已結束</string>
+    <string name="quality_80">流暢</string>
+    <string name="quality_150">高畫質</string>
+    <string name="quality_250">超清</string>
+    <string name="quality_400">藍光</string>
+    <string name="quality_10000">原畫</string>
+    <string name="player_not_found">未找到播放器</string>
+    <string name="tip_live_player">若無法播放請更換為內建播放器</string>
+    <string name="dynamic_info">動態詳情</string>
+    <string name="empty_tip">空空如也</string>
+    <string name="login_qrcode_network_error">獲取二維碼失敗，網路錯誤</string>
+    <string name="login_qrcode_api_error">登入介面可能失效，請找開發者</string>
+    <string name="open_source_info">開源資訊</string>
+    <string name="watch_later">稍後再看</string>
+    <string name="relay">轉發</string>
+    <string name="download">快取</string>
+
+    <string name="not_set_text">未設定</string>
+
+    <string name="dynamic_delete_success">刪除成功~</string>
+    <string name="dynamic_delete_failed">刪除失敗</string>
+    <string name="dynamic_delete_already">已經刪除過了哦~</string>
+    <string name="dynamic_delete_not_own">不是自己的動態！</string>
+    <string name="dynamic_delete_error">操作失敗：%1$d</string>
+    <string name="dynamic_delete_confirm">再次長按刪除</string>
+    <string name="dynamic_like_success">點贊成功</string>
+    <string name="dynamic_like_failed">按讚失敗</string>
+    <string name="dynamic_unlike_success">取消成功</string>
+    <string name="dynamic_unlike_failed">取消失敗</string>
+    <string name="dynamic_image_count">共%1$d張圖片</string>
+    <string name="dynamic_delete_hint">長按刪除</string>
+
+    <string name="user_level">Lv%1$d</string>
+    <string name="user_vip_monthly">月度大會員</string>
+    <string name="user_vip_yearly">年度大會員</string>
+    <string name="user_vip_ten_year">十年大會員</string>
+    <string name="user_vip_hundred_year">百年大會員</string>
+    <string name="user_fans">%1$s粉絲</string>
+    <string name="user_followings">%1$s關注</string>
+    <string name="user_official_unknown">嗶哩嗶哩不知名UP主</string>
+    <string name="user_official_known">嗶哩嗶哩知名UP主</string>
+    <string name="user_official_talent">嗶哩嗶哩大V達人</string>
+    <string name="user_official_business">嗶哩嗶哩企業認證</string>
+    <string name="user_official_organization">嗶哩嗶哩組織認證</string>
+    <string name="user_official_media">嗶哩嗶哩媒體認證</string>
+    <string name="user_official_government">嗶哩嗶哩政府認證</string>
+    <string name="user_official_streamer">嗶哩嗶哩高能主播</string>
+    <string name="user_official_unknown_person">社會不知名人士</string>
+    <string name="user_official_known_person">社會知名人士</string>
+    <string name="user_follow_success">操作成功喵~</string>
+    <string name="user_follow_blocked">被B站風控系統攔截了\n（無法解決）</string>
+    <string name="user_follow_failed">操作失敗（原因未知）：%1$d</string>
+    <string name="user_followed">已關注</string>
+    <string name="user_follow">關注</string>
+    <string name="bilizepam_crash">BiliZepam崩潰了</string>
+    <string name="crash_stack">崩潰堆疊：</string>
+    <string name="restart_app">重啟應用</string>
+    <string name="exit_app">退出應用</string>
+    <string name="initializing">初始化中...</string>
+    <string name="initialize_setting">初始化設定</string>
+    <string name="welcome">歡迎</string>
+    <string name="interface_scale">介面縮放</string>
+    <string name="dark_theme">深色主題</string>
+    <string name="invalid_value">無效的值</string>
+    <string name="login">登入</string>
+    <string name="requesting_qrcode">正在獲取二維碼</string>
+    <string name="skip">跳過</string>
+    <string name="import_from_other_device">其他裝置匯入</string>
+    <string name="logged_in">已登入</string>
+    <string name="login_success">登入成功</string>
+    <string name="menu">選單</string>
+    <string name="retry">重試</string>
+    <string name="input_token_info">輸入Token資訊</string>
+    <string name="confirm">確定</string>
+    <string name="copy">複製</string>
+    <string name="invalid_input">輸入內容有誤</string>
+    <string name="import_success">匯入成功</string>
+    <string name="initialize_error">初始化失敗: %1$s</string>
+    <string name="auto_changed_padding">已自動調整邊距</string>
+    <string name="settings">設定</string>
+    <string name="version_name_format">v%1$s</string>
+    <string name="contact_info">歡迎在倉庫中提出 Issue 或 Pull Request！\n同時，你也可以透過下面的方式加入相關群聊/頻道</string>
+    <string name="qq_channel">QQ頻道</string>
+    <string name="qq_group">QQ群</string>
+    <string name="no_app_to_process_intent">沒有可處理此操作的應用</string>
+    <string name="cancel">取消</string>
+    <string name="open">打開</string>
+    <string name="group_id">群號：%1$s</string>
+    <string name="settings_ui">介面設定</string>
+    <string name="scale">大小</string>
+    <string name="preference">偏好</string>
+    <string name="disable_fullscreen_dialog">非全螢幕Dialog</string>
+    <string name="no_more_than_30">不能大於30</string>
+    <string name="density" translatable="false">Density</string>
+    <string name="animation">動畫</string>
+    <string name="system_accent_color">系統主題色</string>
+    <string name="video_detail">影片詳情</string>
+    <string name="tag">標籤</string>
+    <string name="request_relation_failed">獲取操作資訊失敗：%1$s</string>
+    <string name="like_failed_with_msg">按讚失敗：%1$s</string>
+    <string name="theme_color">主題顏色</string>
+
+    <string name="color_sakura">櫻花</string>
+    <string name="color_red">紅色</string>
+    <string name="color_pink">粉色</string>
+    <string name="color_purple">紫色</string>
+    <string name="color_deep_purple">深紫</string>
+    <string name="color_indigo">靛青</string>
+    <string name="color_blue">藍色</string>
+    <string name="color_light_blue">淺藍</string>
+    <string name="color_cyan">青色</string>
+    <string name="color_teal">青綠</string>
+    <string name="color_green">綠色</string>
+    <string name="color_light_green">淺綠</string>
+    <string name="color_lime">萊姆綠</string>
+    <string name="color_yellow">黃色</string>
+    <string name="color_amber">琥珀</string>
+    <string name="color_orange">橙色</string>
+    <string name="color_deep_orange">深橙</string>
+    <string name="color_brown">棕色</string>
+    <string name="color_blue_grey">藍灰</string>
+    <string name="text">文字</string>
+    <string name="select_range">選擇範圍</string>
+    <string name="hint_start_pos">起始位置</string>
+    <string name="tilde">~</string>
+    <string name="hint_end_pos">結束位置</string>
+    <string name="copy_all">複製全部</string>
+    <string name="copied">已複製</string>
+    <string name="new_loading_animation">新的載入動畫</string>
+
     <string-array name="icon_license">
-        <item>界面設置: Newicons, MIT License</item>
+        <item>介面設定: Newicons, MIT License</item>
         <item>番劇: hicon, MIT License</item>
-        <item>退出登錄: scarlab, MIT License</item>
+        <item>退出登入: scarlab, MIT License</item>
+    </string-array>
+
+    <string-array name="dark_theme_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="dark_theme_modes">
+        <item>自動</item>
+        <item>淺色</item>
+        <item>深色</item>
     </string-array>
 
     <array name="tutorial_space">

@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">BiliZepam</string>
     <string name="about_description">Lightweight Third-Party Bilibili Client</string>
+    <string name="about_opensource">This program is completely open-source,\nthe code adheres to the GNU GPL-V3.0 license</string>
+    <string
+        name="repo_url"
+        translatable="false">https://github.com/Re-BiliTerminal/BiliZepam</string>
     <string name="about_to_uncle">The purpose of this software is to enable low-configuration Android watches and older mobile phones to access basic Bilibili web features. Operating through Bilibili\'s web interface, this app will neither overload any APIs nor collect user privacy data. It contains no paid functions, and its code is fully open-source. If you still believe it infringes your rights, please reach out (let\'s talk it out!)\nWe also disclaim responsibility for property loss (device confiscation) or mental distress (really?) caused by student users accessing the app at inappropriate times or locations. Please stay mindful and don\'t let it interfere with your studies or daily rhythm! Keep it balanced!</string>
 
     <string name="setting_ui_desc">The valid range is 0.25~5.00 times.</string>
@@ -36,6 +40,13 @@
         <item>Hmm? Looks like no more easter eggs here~\n\nFeel free to share yours~</item>
     </string-array>
 
+    <string
+        name="player_aliang_package"
+        translatable="false">com.aliangmaker.media</string>
+    <string
+        name="player_mtv_package"
+        translatable="false">com.xinxiangshicheng.wearbiliplayer.cn</string>
+
     <string name="desc_back_disable">Some watches (e.g. MiTu) enable swipe-right-to-go-back by simulating the back button. Enable this switch if accidental swipes exit pages during left/right navigation.\n\nNote: Enabling will disable back-button exits on other devices, and may cause interface freezes after swipe-back gestures.\nUse the Exit button at the bottom menu to close the app.\nMost users can keep this off.</string>
     <string name="desc_cover_play_enable">Enabling this option changes tapping the cover on the video details page from viewing the image to starting playback. By default, the setting is determined by whether you first tapped the video cover or the play button during initial use.</string>
     <string name="desc_img_stop_load_while_scrolling">Enable this option to prevent images from loading during list scrolling—they\'ll only load after you stop.\nThis may affect visual smoothness but could improve scrolling performance.</string>
@@ -65,6 +76,9 @@
     <string name="interface_size_tip">Valid range: 0.25x-5.00x.\nWe recommend making incremental adjustments for optimal results.</string>
     <string name="interface_margins">Interface margin</string>
     <string name="horizontal">Horizontal</string>
+    <string
+        name="percent"
+        translatable="false">%</string>
     <string name="vertical">Vertical</string>
     <string name="ui_margins_tip">The first input field controls horizontal margins, the second adjusts vertical margins (Unit: Percentage).\nFor security purposes, values exceeding 30 will not be saved.</string>
     <string name="view_preview">View Preview</string>
@@ -79,10 +93,242 @@
     <string name="recommend">Recommendation</string>
     <string name="precious">Bilibili Must-Watch Classics</string>
     <string name="popular">Trending</string>
+    <string name="loading">Loading...</string>
+    <string name="player_loading_text">OwO</string>
+    <string name="speed_adjustment">Speed Adjustment</string>
+    <string name="quick_select">Quick Selection</string>
+    <string name="play">Play</string>
+    <string name="collection_detail">Collection Details</string>
+    <string name="no_desc">Description not available here</string>
+    <string name="total_count">Total: %1$s</string>
+    <string name="load_failed">Failed to load</string>
+    <string name="thousand">10K</string>
+    <string name="reply_count">Total %1$s comments</string>
+    <string name="million">100M</string>
+    <string name="picture_count">Total %1$s images</string>
+    <string name="just">Just now</string>
+    <string name="not_logged_in">Not logged in yet~ (ฅ´ω`ฅ)</string>
+    <string name="like_success">Successfully liked!</string>
+    <string name="cancel_success">Successfully canceled</string>
+    <string name="cancel_failed">Cancellation failed</string>
+    <string name="like_failed">Like failed</string>
+    <string name="reply_count_with_creator">Total %1$s replies including creator</string>
+    <string name="reply_count_total">Total %1$s replies</string>
+    <string name="subtitle_option_not_available">No subtitles available</string>
+    <string name="live_viewer_count">%1$s watching</string>
+    <string name="live_danmaku_connection_failed">Live danmaku connection failed</string>
+    <string name="init_player">Initializing player</string>
+    <string name="sending">Sending~</string>
+    <string name="send_success">Successfully sent! (ﾉ◕ヮ◕)ﾉ</string>
+    <string name="send_failed_with_msg">Send failed: %1$s</string>
+    <string name="delete_success">Successfully deleted~</string>
+    <string name="no_such_reply">Comment doesn\'t exist!</string>
+    <string name="no_permission">Insufficient permissions!</string>
+    <string name="action_failed_with_msg">Operation failed: %1$s</string>
+    <string name="favorite">Favorite</string>
+    <string name="coin">Coin</string>
+    <string name="like">Like</string>
+    <string name="article_detail">Article Details</string>
+    <string name="opus_favorite_collection">Image/Text Collection</string>
+    <string name="operation_failed">Operation failed: %1$s</string>
+    <string name="live">Live</string>
+    <string name="choose_quality">Select Quality</string>
+    <string name="choose_play_host">Select Playback Route</string>
+    <string name="live_time">Streaming for: %1$s</string>
+    <string name="live_start_time">Started at: %1$s</string>
+    <string name="online_count">Viewers: %1$s</string>
+    <string name="tags_content">Tags: %1$s</string>
+    <string name="live_ended">Live stream ended</string>
+    <string name="quality_80">Standard</string>
+    <string name="quality_150">HD</string>
+    <string name="quality_250">Full HD</string>
+    <string name="quality_400">Blu-ray</string>
+    <string name="quality_10000">Original</string>
+    <string name="player_not_found">Player not found</string>
+    <string name="tip_live_player">Switch to built-in player if playback fails</string>
+    <string name="dynamic_info">Dynamic Details</string>
+    <string name="empty_tip">Nothing here yet!</string>
+    <string name="login_qrcode_network_error">Failed to fetch QR code - Network error</string>
+    <string name="login_qrcode_api_error">Login API might be outdated - Contact developer</string>
+    <string name="open_source_info">Open Source Info</string>
+    <string name="watch_later">Watch Later</string>
+    <string name="relay">Repost</string>
+    <string name="download">Download</string>
+
+    <string name="not_set_text">Not set</string>
+
+    <string name="dynamic_delete_success">Successfully deleted~</string>
+    <string name="dynamic_delete_failed">Delete failed</string>
+    <string name="dynamic_delete_already">Already deleted~</string>
+    <string name="dynamic_delete_not_own">Not your own dynamic!</string>
+    <string name="dynamic_delete_error">Operation failed: %1$d</string>
+    <string name="dynamic_delete_confirm">Long-press again to delete</string>
+    <string name="dynamic_like_success">Like successful</string>
+    <string name="dynamic_like_failed">Like failed</string>
+    <string name="dynamic_unlike_success">Unlike successful</string>
+    <string name="dynamic_unlike_failed">Unlike failed</string>
+    <string name="dynamic_image_count">Total %1$d images</string>
+    <string name="dynamic_delete_hint">Long-press to delete</string>
+
+    <string name="user_level">Lv%1$d</string>
+    <string name="user_vip_monthly">Monthly Premium Member</string>
+    <string name="user_vip_yearly">Annual Premium Member</string>
+    <string name="user_vip_ten_year">10-Year Premium Member</string>
+    <string name="user_vip_hundred_year">100-Year Premium Member</string>
+    <string name="user_fans">%1$s Followers</string>
+    <string name="user_followings">%1$s Following</string>
+    <string name="user_official_unknown">Bilibili Unknown UP主</string>
+    <string name="user_official_known">Bilibili Popular UP主</string>
+    <string name="user_official_talent">Bilibili Influencer</string>
+    <string name="user_official_business">Bilibili Corporate Verified</string>
+    <string name="user_official_organization">Bilibili Organization Verified</string>
+    <string name="user_official_media">Bilibili Media Verified</string>
+    <string name="user_official_government">Bilibili Government Verified</string>
+    <string name="user_official_streamer">Bilibili High-Energy Streamer</string>
+    <string name="user_official_unknown_person">Unknown Individual</string>
+    <string name="user_official_known_person">Public Figure</string>
+    <string name="user_follow_success">Operation successful meow~</string>
+    <string name="user_follow_blocked">Blocked by Bilibili\'s security system\n(Cannot be resolved)</string>
+    <string name="user_follow_failed">Operation failed (Unknown reason): %1$d</string>
+    <string name="user_followed">Followed</string>
+    <string name="user_follow">Follow</string>
+    <string name="bilizepam_crash">BiliZepam crashed</string>
+    <string name="crash_stack">Crash Stack:</string>
+    <string name="restart_app">Restart App</string>
+    <string name="exit_app">Exit App</string>
+    <string name="initializing">Initializing...</string>
+    <string name="initialize_setting">Initializing settings</string>
+    <string name="welcome">Welcome</string>
+    <string name="interface_scale">Interface Scaling</string>
+    <string name="dark_theme">Dark Theme</string>
+    <string name="invalid_value">Invalid value</string>
+    <string name="login">Login</string>
+    <string name="requesting_qrcode">Fetching QR code</string>
+    <string name="skip">Skip</string>
+    <string name="import_from_other_device">Import from other device</string>
+    <string name="logged_in">Logged in</string>
+    <string name="login_success">Login successful</string>
+    <string name="menu">Menu</string>
+    <string name="retry">Retry</string>
+    <string name="input_token_info">Input Token Information</string>
+    <string name="confirm">Confirm</string>
+    <string name="copy">Copy</string>
+    <string name="invalid_input">Invalid input</string>
+    <string name="import_success">Import successful</string>
+    <string name="initialize_error">Initialization failed: %1$s</string>
+    <string name="auto_changed_padding">Margins adjusted automatically</string>
+    <string name="settings">Settings</string>
+    <string name="version_name_format">v%1$s</string>
+    <string name="contact_info">Welcome to submit Issues or Pull Requests in the repository!\nYou can also join related groups/channels through the following methods</string>
+    <string name="qq_channel">QQ Channel</string>
+    <string name="qq_group">QQ Group</string>
+    <string name="no_app_to_process_intent">No app available to handle this action</string>
+    <string name="cancel">Cancel</string>
+    <string name="open">Open</string>
+    <string name="group_id">Group ID: %1$s</string>
+    <string name="settings_ui">Interface Settings</string>
+    <string name="scale">Size</string>
+    <string name="preference">Preferences</string>
+    <string name="disable_fullscreen_dialog">Non-Fullscreen Dialog</string>
+    <string name="no_more_than_30">Cannot exceed 30</string>
+    <string
+        name="density"
+        translatable="false">Density</string>
+    <string name="animation">Animation</string>
+    <string name="system_accent_color">System Accent Color</string>
+    <string name="video_detail">Video Details</string>
+    <string name="tag">Tag</string>
+    <string name="request_relation_failed">Failed to fetch relation info: %1$s</string>
+    <string name="like_failed_with_msg">Like failed: %1$s</string>
+    <string name="theme_color">Theme Color</string>
+
+    <string name="color_sakura">Sakura</string>
+    <string name="color_red">Red</string>
+    <string name="color_pink">Pink</string>
+    <string name="color_purple">Purple</string>
+    <string name="color_deep_purple">Deep Purple</string>
+    <string name="color_indigo">Indigo</string>
+    <string name="color_blue">Blue</string>
+    <string name="color_light_blue">Light Blue</string>
+    <string name="color_cyan">Cyan</string>
+    <string name="color_teal">Teal</string>
+    <string name="color_green">Green</string>
+    <string name="color_light_green">Light Green</string>
+    <string name="color_lime">Lime</string>
+    <string name="color_yellow">Yellow</string>
+    <string name="color_amber">Amber</string>
+    <string name="color_orange">Orange</string>
+    <string name="color_deep_orange">Deep Orange</string>
+    <string name="color_brown">Brown</string>
+    <string name="color_blue_grey">Blue Grey</string>
+    <string name="text">Text</string>
+    <string name="select_range">Select range</string>
+    <string name="hint_start_pos">Start position</string>
+    <string name="tilde">~</string>
+    <string name="hint_end_pos">End position</string>
+    <string name="copy_all">Copy all</string>
+    <string name="copied">Copied!</string>
+    <string name="new_loading_animation">New loading animation</string>
+
     <string-array name="icon_license">
         <item>Interface Settings: Newicons | MIT License</item>
         <item>Anime: hicon | MIT License</item>
         <item>Log Out: scarlab | MIT License</item>
     </string-array>
+
+    <string-array
+        name="dark_theme_values"
+        translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="dark_theme_modes">
+        <item>Auto</item>
+        <item>Light</item>
+        <item>Dark</item>
+    </string-array>
+
+    <array name="tutorial_space">
+        <item>xml/tutorial_space_2</item>
+        <item>xml/tutorial_space</item>
+    </array>
+    <array name="tutorial_video">
+        <item>xml/tutorial_video_2</item>
+        <item>xml/tutorial_video</item>
+    </array>
+    <array name="tutorial_search">
+        <item>xml/tutorial_search</item>
+    </array>
+    <array name="tutorial_update_install">
+        <item>xml/tutorial_update_install</item>
+    </array>
+    <array name="tutorial_recommend">
+        <item>xml/tutorial_recommend</item>
+    </array>
+    <array name="tutorial_message">
+        <item>xml/tutorial_message</item>
+    </array>
+    <array name="tutorial_article">
+        <item>xml/tutorial_article</item>
+    </array>
+    <array name="tutorial_dynamic">
+        <item>xml/tutorial_dynamic</item>
+    </array>
+    <array name="tutorial_dynamic_info">
+        <item>xml/tutorial_dynamic_info</item>
+    </array>
+
+    <array name="tutorial_list">
+        <item>recommend</item>
+        <item>video</item>
+        <item>space</item>
+        <item>update_install</item>
+        <item>search</item>
+        <item>message</item>
+        <item>dynamic</item>
+        <item>dynamic_info</item>
+        <item>article</item>
+    </array>
 
 </resources>
