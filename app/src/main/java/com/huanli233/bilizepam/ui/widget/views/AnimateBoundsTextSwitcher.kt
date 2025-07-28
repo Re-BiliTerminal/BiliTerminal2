@@ -5,11 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.TextSwitcher
 
-/**
- * 一个自定义的 TextSwitcher，它会在切换子视图时测量两个子视图（当前和下一个），
- * 并将自己的边界设置为能容纳两者的最大宽度和高度。
- * 这解决了在子视图尺寸不同时，使用 wrap_content 会导致动画跳动或裁剪的问题。
- */
 class AnimateBoundsTextSwitcher @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null

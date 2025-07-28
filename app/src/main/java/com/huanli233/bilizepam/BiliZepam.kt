@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
+import androidx.multidex.MultiDexApplication
 import com.elvishew.xlog.LogLevel
 import com.elvishew.xlog.XLog
 import com.elvishew.xlog.printer.AndroidPrinter
@@ -22,7 +23,7 @@ import kotlinx.coroutines.withContext
 import java.util.Locale
 
 @HiltAndroidApp
-class BiliTerminal : Application() {
+class BiliTerminal : MultiDexApplication() {
 
     init {
         application = this
@@ -31,7 +32,6 @@ class BiliTerminal : Application() {
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
         contextNullable = base
-        MultiDex.install(this)
     }
 
     private var lastThemeMode: Int = -1

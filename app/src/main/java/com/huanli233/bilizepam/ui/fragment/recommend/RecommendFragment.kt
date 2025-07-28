@@ -18,6 +18,7 @@ import com.huanli233.bilizepam.ui.utils.recyclerview.defaultLayoutManager
 import com.huanli233.bilizepam.utils.extensions.invisible
 import com.huanli233.bilizepam.utils.extensions.visible
 import com.huanli233.hikage.recyclerview.error
+import com.huanli233.hikage.recyclerview.withLoadStateFooter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -39,14 +40,15 @@ class RecommendFragment: BaseMenuFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.recyclerView.layoutManager = requireContext().defaultLayoutManager
         val pagingAdapter = VideoPagingAdapter(activity)
-        val loadStateAdapter = LoadStateAdapter {
-            pagingAdapter.retry()
-        }
         binding.swipeRefreshLayout.setOnRefreshListener {
             pagingAdapter.refresh()
             binding.swipeRefreshLayout.isRefreshing = false
         }
-        binding.recyclerView.adapter = pagingAdapter.withLoadStateFooter(loadStateAdapter)
+        binding.recyclerView.adapter = pagingAdapter.withLoadStateFooter {
+            LoadStateAdapter {
+                it.retry()
+            }
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
