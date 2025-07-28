@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">BiliZepam</string>
     <string name="about_description">軽量なサードパーティー製B站アプリ</string>
+    <string name="about_opensource">このプログラムは完全にオープンソースであり、コード部分はGNU GPL-V3.0ライセンスに従います</string>
+    <string
+        name="repo_url"
+        translatable="false">https://github.com/Re-BiliTerminal/BiliZepam</string>
     <string name="about_to_uncle">本アプリの開発目的は、スペックの低いAndroidスマートウォッチや\n旧型スマートフォンでもB站ウェブ版の基本機能を利用可能にすることです。\nB站のウェブ版APIを基に動作しており、APIへの過剰なリクエスト送信や\nユーザーのプライバシー情報を収集することは一切ありません。\n有料機能は一切ありませんが、コードは完全オープンソースです。\n万一当アプリが権利を侵害しているとお考えの場合は\nご連絡ください（話し合いで解決しましょうね～）\n\nまた学生ユーザーが不適切な時間・場所で使用したことによる\n財産上の損害（デバイス没収等）や精神的損害（？）について\n当方は一切責任を負いません。\n自制いただき、学業や日常生活に支障をきたさないようお願いします!</string>
 
     <string name="setting_ui_desc">設定可能範囲は0.25〜5.00（倍）です\n調整は少しずつ行い、プレビューで表示を確認してから\n変更を確定してください。新しいページを開くと反映されます\n\n注意：極端な最小値・最大値の設定はなるべく避けてくださいね！\n設定を誤ってアプリが正常に動作しなくなった場合は\nデータを消去するか、再インストールで対応してください！</string>
@@ -36,6 +40,13 @@
         <item>んん？ここにはもう隠し要素がないみたいだよ＞﹏＜\n\nあなたの投稿をお待ちしてまーす？</item>
     </string-array>
 
+    <string
+        name="player_aliang_package"
+        translatable="false">com.aliangmaker.media</string>
+    <string
+        name="player_mtv_package"
+        translatable="false">com.xinxiangshicheng.wearbiliplayer.cn</string>
+
     <string name="desc_back_disable">一部のスマートウォッチ（例：Mi Watchなど）は戻るキーの押下をエミュレートして右スワイプ戻りを実装しています\nページめくり操作で誤動作する場合はこのスイッチを有効化してください\n※有効化後は他デバイスで戻るキー操作時も終了しなくなり\n右スワイプ終了時にフリーズする場合があります\n終了時はメニュー最下部の終了ボタンをご使用ください\n通常のユーザーは有効化不要です</string>
     <string name="desc_cover_play_enable">このオプションを有効にすると、動画詳細ページでカバー画像をクリックした際の動作が、画像表示から再生に変更されます。\nデフォルトでは、初回利用時にカバー画像か再生ボタンのどちらをクリックしたかに基づいて、オン/オフが自動で設定されます。</string>
     <string name="desc_img_stop_load_while_scrolling">このオプションを有効にすると、リストをスクロール中は画像が読み込まれず、\n手を離したタイミングでまとめて読み込みます。表示に影響が出る場合がありますが、\n動作がよりスムーズになる可能性があります。</string>
@@ -65,6 +76,9 @@
     <string name="interface_size_tip">有効範囲：0.25倍～5.00倍，少量ずつ複数回の調整をおすすめします。</string>
     <string name="interface_margins">インターフェースのマージン</string>
     <string name="horizontal">横向き</string>
+    <string
+        name="percent"
+        translatable="false">%</string>
     <string name="vertical">縦向き</string>
     <string name="ui_margins_tip">一つ目の入力欄は横向きのマージン、二つ目の入力欄は縦向きのマージンです。単位はパーセント。\n保護のため、30を超える値は保存されません。</string>
     <string name="view_preview">プレビューを表示</string>
@@ -79,10 +93,200 @@
     <string name="recommend">おすすめ</string>
     <string name="precious">入站必見のコンテンツ</string>
     <string name="popular">人気</string>
+    <string name="loading">読み込み中…</string>
+    <string name="player_loading_text">OwO</string>
+    <string name="speed_adjustment">再生速度調整</string>
+    <string name="quick_select">クイック選択</string>
+    <string name="play">再生</string>
+    <string name="collection_detail">コンプリート詳細</string>
+    <string name="no_desc">ここには紹介文がないですよ～</string>
+    <string name="total_count">全%1$s件</string>
+    <string name="load_failed">読み込みに失敗しました</string>
+    <string name="thousand">万</string>
+    <string name="reply_count">全%1$s件のコメント</string>
+    <string name="million">億</string>
+    <string name="picture_count">全%1$s枚の画像</string>
+    <string name="just">ほんの今し方</string>
+    <string name="not_logged_in">まだログインしてないニャ～</string>
+    <string name="like_success">いいね成功！</string>
+    <string name="cancel_success">キャンセル成功！</string>
+    <string name="cancel_failed">キャンセル失敗…</string>
+    <string name="like_failed">いいね失敗…</string>
+    <string name="reply_count_with_creator">UP主含め 全%1$s件の返信</string>
+    <string name="reply_count_total">全%1$s件の返信</string>
+    <string name="subtitle_option_not_available">字幕選択不可</string>
+    <string name="live_viewer_count">%1$s人が視聴中</string>
+    <string name="live_danmaku_connection_failed">ライブ弾幕接続失敗</string>
+    <string name="init_player">プレイヤー初期化</string>
+    <string name="sending">送信中～</string>
+    <string name="send_success">送信成功ニャ～</string>
+    <string name="send_failed_with_msg">送信失敗：%1$s</string>
+    <string name="delete_success">削除成功～</string>
+    <string name="no_such_reply">このコメントは存在しません！</string>
+    <string name="no_permission">権限が不足しています！</string>
+    <string name="action_failed_with_msg">操作失敗：%1$s</string>
+    <string name="favorite">お気に入り</string>
+    <string name="coin">コイン投げた！</string>
+    <string name="like">いいね</string>
+    <string name="article_detail">コラム詳細</string>
+    <string name="opus_favorite_collection">図文お気に入りフォルダ</string>
+    <string name="operation_failed">操作失敗：%1$s</string>
+    <string name="live">ライブ</string>
+    <string name="choose_quality">画質選択</string>
+    <string name="choose_play_host">再生ルート選択</string>
+    <string name="live_time">配信済：%1$s</string>
+    <string name="live_start_time">ライブ開始：%1$s</string>
+    <string name="online_count">オンライン人数：%1$s</string>
+    <string name="tags_content">タグ：%1$s</string>
+    <string name="live_ended">ライブは終了しました</string>
+    <string name="quality_80">スムーズ</string>
+    <string name="quality_150">高画質</string>
+    <string name="quality_250">超高画質</string>
+    <string name="quality_400">ブルーレイ</string>
+    <string name="quality_10000">オリジナル画質</string>
+    <string name="player_not_found">プレイヤーが見つかりません</string>
+    <string name="tip_live_player">再生できない場合は内蔵プレイヤーを試してください</string>
+    <string name="dynamic_info">ダイナミック詳細</string>
+    <string name="empty_tip">空っぽですわ～</string>
+    <string name="login_qrcode_network_error">QRコード取得失敗、ネットワークエラー</string>
+    <string name="login_qrcode_api_error">ログインAPIが無効かもしれません、開発者にご連絡ください</string>
+    <string name="open_source_info">オープンソース情報</string>
+    <string name="watch_later">あとで見る</string>
+    <string name="relay">転送</string>
+    <string name="download">キャッシュ</string>
+
+    <string name="not_set_text">未設定</string>
+
+    <string name="dynamic_delete_success">削除成功～～</string>
+    <string name="dynamic_delete_failed">削除失敗</string>
+    <string name="dynamic_delete_already">すでに削除済みですよ～</string>
+    <string name="dynamic_delete_not_own">自分の動画じゃないですよ！</string>
+    <string name="dynamic_delete_error">操作失敗：%1$d</string>
+    <string name="dynamic_delete_confirm">再度長押しで削除</string>
+    <string name="dynamic_like_success">いいね成功</string>
+    <string name="dynamic_like_failed">いいね失敗</string>
+    <string name="dynamic_unlike_success">キャンセル成功</string>
+    <string name="dynamic_unlike_failed">キャンセル失敗</string>
+    <string name="dynamic_image_count">全%1$d枚の画像</string>
+    <string name="dynamic_delete_hint">長押しで削除</string>
+
+    <string name="user_level">Lv%1$d</string>
+    <string name="user_vip_monthly">月度大会員</string>
+    <string name="user_vip_yearly">年度大会員</string>
+    <string name="user_vip_ten_year">十年大会員</string>
+    <string name="user_vip_hundred_year">百年大会員</string>
+    <string name="user_fans">%1$sフォロワー</string>
+    <string name="user_followings">%1$sフォロー</string>
+    <string name="user_official_unknown">ビリビリ不知名UP主</string>
+    <string name="user_official_known">ビリビリ知名UP主</string>
+    <string name="user_official_talent">ビリビリ大V達人</string>
+    <string name="user_official_business">ビリビリ企業認証</string>
+    <string name="user_official_organization">ビリビリ組織認証</string>
+    <string name="user_official_media">ビリビリメディア認証</string>
+    <string name="user_official_government">ビリビリ政府認証</string>
+    <string name="user_official_streamer">ビリビリ高能配信者</string>
+    <string name="user_official_unknown_person">社会不知名人物</string>
+    <string name="user_official_known_person">社会知名人物</string>
+    <string name="user_follow_success">操作成功ニャ～</string>
+    <string name="user_follow_blocked">Bサイトのリスク制御システムに遮断されました\n（対応不可）</string>
+    <string name="user_follow_failed">操作失敗（原因不明）：%1$d</string>
+    <string name="user_followed">フォロー済</string>
+    <string name="user_follow">フォロー</string>
+    <string name="bilizepam_crash">BiliZepamがクラッシュしました</string>
+    <string name="crash_stack">クラッシュスタック：</string>
+    <string name="restart_app">アプリを再起動</string>
+    <string name="exit_app">アプリ終了</string>
+    <string name="initializing">初期化中...</string>
+    <string name="initialize_setting">設定初期化</string>
+    <string name="welcome">ようこそ</string>
+    <string name="interface_scale">インターフェーススケール</string>
+    <string name="dark_theme">ダークテーマ</string>
+    <string name="invalid_value">無効な値</string>
+    <string name="login">ログイン</string>
+    <string name="requesting_qrcode">QRコード取得中</string>
+    <string name="skip">スキップ</string>
+    <string name="import_from_other_device">他デバイスからインポート</string>
+    <string name="logged_in">ログイン済み</string>
+    <string name="login_success">ログイン成功</string>
+    <string name="menu">メニュー</string>
+    <string name="retry">再試行</string>
+    <string name="input_token_info">トークン情報を入力</string>
+    <string name="confirm">決定</string>
+    <string name="copy">コピー</string>
+    <string name="invalid_input">入力内容が不正です</string>
+    <string name="import_success">インポート成功</string>
+    <string name="initialize_error">初期化失敗: %1$s</string>
+    <string name="auto_changed_padding">自動で余白調整しました</string>
+    <string name="settings">設定</string>
+    <string name="version_name_format">v%1$s</string>
+    <string name="contact_info">開発リポジトリでIssueやPull Requestを投稿することを歓迎します！\nまた、以下の方法で関連するグループチャット/チャンネルに参加することもできます</string>
+    <string name="qq_channel">QQチャンネル</string>
+    <string name="qq_group">QQグループ</string>
+    <string name="no_app_to_process_intent">この操作に対応するアプリがありません</string>
+    <string name="cancel">キャンセル</string>
+    <string name="open">開く</string>
+    <string name="group_id">グループ番号：%1$s</string>
+    <string name="settings_ui">インターフェース設定</string>
+    <string name="scale">サイズ</string>
+    <string name="preference">プリファレンス</string>
+    <string name="disable_fullscreen_dialog">非フルスクリーンダイナログ</string>
+    <string name="no_more_than_30">30より大きくできません</string>
+    <string
+        name="density"
+        translatable="false">Density</string>
+    <string name="animation">アニメーション</string>
+    <string name="system_accent_color">システムアクセントカラー</string>
+    <string name="video_detail">動画詳細</string>
+    <string name="tag">タグ</string>
+    <string name="request_relation_failed">操作情報取得失敗：%1$s</string>
+    <string name="like_failed_with_msg">いいね失敗：%1$s</string>
+    <string name="theme_color">テーマカラー</string>
+
+    <string name="color_sakura">桜花</string>
+    <string name="color_red">紅色</string>
+    <string name="color_pink">ピンク</string>
+    <string name="color_purple">紫色</string>
+    <string name="color_deep_purple">濃紫</string>
+    <string name="color_indigo">インディゴ</string>
+    <string name="color_blue">青色</string>
+    <string name="color_light_blue">淡青</string>
+    <string name="color_cyan">シアン</string>
+    <string name="color_teal">水色</string>
+    <string name="color_green">緑色</string>
+    <string name="color_light_green">淡緑</string>
+    <string name="color_lime">ライム</string>
+    <string name="color_yellow">黄色</string>
+    <string name="color_amber">アンバー</string>
+    <string name="color_orange">オレンジ</string>
+    <string name="color_deep_orange">濃オレンジ</string>
+    <string name="color_brown">茶色</string>
+    <string name="color_blue_grey">青灰</string>
+    <string name="text">テキスト</string>
+    <string name="select_range">範囲選択</string>
+    <string name="hint_start_pos">開始位置</string>
+    <string name="tilde">〜</string>
+    <string name="hint_end_pos">終了位置</string>
+    <string name="copy_all">すべてコピー</string>
+    <string name="copied">コピー完了</string>
+    <string name="new_loading_animation">新読み込みアニメ</string>
+
     <string-array name="icon_license">
         <item>インターフェース設定: Newicons, MIT ライセンス</item>
         <item>アニメ: hicon, MIT ライセンス</item>
         <item>ログアウト: scarlab, MIT ライセンス</item>
+    </string-array>
+
+    <string-array
+        name="dark_theme_values"
+        translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="dark_theme_modes">
+        <item>自動</item>
+        <item>ライト</item>
+        <item>ダーク</item>
     </string-array>
 
     <array name="tutorial_space">

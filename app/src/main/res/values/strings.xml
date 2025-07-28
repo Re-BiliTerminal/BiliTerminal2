@@ -2,7 +2,9 @@
     <string name="app_name">BiliZepam</string>
     <string name="about_description">轻量的第三方B站客户端</string>
     <string name="about_opensource">本程序完全开源，代码部分遵循GNU GPL-V3.0协议</string>
-    <string name="repo_url" translatable="false">https://github.com/Re-BiliTerminal/BiliZepam</string>
+    <string
+        name="repo_url"
+        translatable="false">https://github.com/Re-BiliTerminal/BiliZepam</string>
     <string name="about_to_uncle">本软件开发的目的是使配置较低的安卓手表与老旧手机能够使用B站网页端提供的部分基本功能。本软件基于B站网页端接口运行，不会对任何接口进行恶意轰炸，也不会收集任何用户隐私信息。软件不存在付费功能，代码完全开源。如果您仍然认为本软件侵犯了您的权利，请联系我们（有事好商量呜呜呜）\n同时，我们也不对学生用户在不恰当的时间、地点使用本软件导致的财产损失（设备被没收）或精神伤害（？）负责。请尽量自控，不要影响到自己的学习和生活哦！</string>
 
     <string name="setting_ui_desc">有效范围为0.25~5.00（倍）</string>
@@ -38,8 +40,12 @@
         <item>呐呐？这里没有更多彩蛋了呢＞﹏＜\n\n欢迎你的投稿哦？</item>
     </string-array>
 
-    <string name="player_aliang_package" translatable="false">com.aliangmaker.media</string>
-    <string name="player_mtv_package" translatable="false">com.xinxiangshicheng.wearbiliplayer.cn</string>
+    <string
+        name="player_aliang_package"
+        translatable="false">com.aliangmaker.media</string>
+    <string
+        name="player_mtv_package"
+        translatable="false">com.xinxiangshicheng.wearbiliplayer.cn</string>
 
     <string name="desc_back_disable">有一些手表（例如米兔等）是通过模拟按下返回键自行实现的右滑返回，若你在左右翻页时因触发滑动返回而退出页面，请开启此开关\n开启后，其他设备上则为按下返回键也不退出页面，并且右滑退出后会卡住。\n你可以使用菜单最下方的退出按钮结束本软件。\n正常用户无需打开。</string>
     <string name="desc_cover_play_enable">打开此选项，视频详情页点击封面由查看图片变更为播放。默认根据你首次使用时点击了视频封面还是播放按钮来决定开关。</string>
@@ -70,7 +76,9 @@
     <string name="interface_size_tip">有效范围：0.25倍-5.00倍，建议少量多次调节</string>
     <string name="interface_margins">界面边距</string>
     <string name="horizontal">横向</string>
-    <string name="percent" translatable="false">%</string>
+    <string
+        name="percent"
+        translatable="false">%</string>
     <string name="vertical">纵向</string>
     <string name="ui_margins_tip">第一个输入框为横向边距，第二个输入框为纵向边距，单位百分比。\n出于保护，数值超过30不会保存。</string>
     <string name="view_preview">查看预览</string>
@@ -223,7 +231,9 @@
     <string name="preference">偏好</string>
     <string name="disable_fullscreen_dialog">非全屏Dialog</string>
     <string name="no_more_than_30">不能大于30</string>
-    <string name="density" translatable="false">Density</string>
+    <string
+        name="density"
+        translatable="false">Density</string>
     <string name="animation">动画</string>
     <string name="system_accent_color">系统主题色</string>
     <string name="video_detail">视频详情</string>
@@ -266,7 +276,9 @@
         <item>退出登录: scarlab, MIT License</item>
     </string-array>
 
-    <string-array name="dark_theme_values" translatable="false">
+    <string-array
+        name="dark_theme_values"
+        translatable="false">
         <item>0</item>
         <item>1</item>
         <item>2</item>
