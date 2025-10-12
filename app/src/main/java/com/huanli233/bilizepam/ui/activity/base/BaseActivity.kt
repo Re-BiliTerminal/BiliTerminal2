@@ -3,38 +3,31 @@ package com.huanli233.bilizepam.ui.activity.base
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
-import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.view.Display
 import android.view.View
 import android.view.Window
-import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
-import com.huanli233.bilizepam.R
+import com.huanli233.bilizepam.data.proto.AppSettings
 import com.huanli233.bilizepam.data.setting.LocalData
-import com.huanli233.bilizepam.event.SnackEvent
 import com.huanli233.bilizepam.ui.activity.base.material.ThemedAppCompatActivity
-import com.huanli233.bilizepam.ui.utils.playAnimation
-import com.huanli233.bilizepam.ui.widget.components.TopBar
-import com.huanli233.bilizepam.utils.MsgUtil
-import com.huanli233.bilizepam.utils.ThemeUtil
+import com.huanli233.bilizepam.ui.animations.playAnimation
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 open class BaseActivity : ThemedAppCompatActivity() {
 
-    open val rootViewPaddingEnabled = true
+    open val rootViewPaddingEnabled = false
     open val transitionEnabled = false
 
     var contentTransitionName
@@ -45,8 +38,6 @@ open class BaseActivity : ThemedAppCompatActivity() {
     val originalViewContext
         get() = configurationController.originalViewContext
     val uiPaddingManager = UiPaddingManager(this)
-
-    var topBar: TopBar? = null
 
     override fun attachBaseContext(newBase: Context) {
         val newContext = configurationController.overrideConfiguration(newBase)
@@ -67,8 +58,8 @@ open class BaseActivity : ThemedAppCompatActivity() {
 
         enableEdgeToEdge()
         if (rootViewPaddingEnabled) {
-            ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { v, insets ->
-                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            findViewById<View>(android.R.id.content).setOnApplyWindowInsetsListener { v, insets ->
+                val systemBars = WindowInsetsCompat.toWindowInsetsCompat(insets).getInsets(WindowInsetsCompat.Type.systemBars())
                 v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
                 insets
             }
@@ -78,53 +69,79 @@ open class BaseActivity : ThemedAppCompatActivity() {
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         uiPaddingManager.applyRootViewPadding(window.decorView.rootView)
+
+        // Add a listener for settings changes
+        observeSettingsChanges()
+    }
+
+    var lastSettings = LocalData.settingsStateFlow.value
+
+    private fun observeSettingsChanges() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                LocalData.settingsStateFlow.filterNotNull().collect { newSettings ->
+                    lastSettings?.let {
+                        handleSettingsChange(it, newSettings)
+                    }
+                    lastSettings = newSettings
+                }
+            }
+        }
+    }
+
+    private fun handleSettingsChange(oldSettings: AppSettings, newSettings: AppSettings) {
+        // Check for changes that require the activity to be recreated
+        val needsRecreate = oldSettings.uiSettings.uiScale != newSettings.uiSettings.uiScale ||
+                oldSettings.uiSettings.density != newSettings.uiSettings.density || oldSettings.theme.nightMode != newSettings.theme.nightMode ||
+                oldSettings.theme.colorTheme != newSettings.theme.colorTheme || oldSettings.theme.followSystemAccent != newSettings.theme.followSystemAccent
+
+        if (needsRecreate) {
+            recreate()
+            return // No need to process other changes if we are recreating
+        }
+
+        // Check for padding changes that can be applied live
+        val paddingChanged = oldSettings.uiSettings.uiPaddingHorizontal != newSettings.uiSettings.uiPaddingHorizontal ||
+                oldSettings.uiSettings.uiPaddingVertical != newSettings.uiSettings.uiPaddingVertical ||
+                oldSettings.uiSettings.roundMode != newSettings.uiSettings.roundMode
+
+        if (paddingChanged) {
+            uiPaddingManager.applyRootViewPadding(window.decorView.rootView)
+        }
     }
 
     fun configBaseTransition() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            playAnimation {
-                window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
-                configTransition()
-            }
+        playAnimation {
+            window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
+            configTransition()
         }
     }
 
-    @RequiresApi(21)
     open fun configTransition() = Unit
 
     fun setupSharedElementTransitionExit() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
-            window.sharedElementsUseOverlay = false
-        }
+        setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
+        window.sharedElementsUseOverlay = false
     }
 
     fun setupSharedElementTransitionEnter() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setEnterSharedElementCallback(MaterialContainerTransformSharedElementCallback())
-            window.sharedElementEnterTransition = MaterialContainerTransform().apply {
-                addTarget(android.R.id.content)
-                duration = 300L
-                setAllContainerColors(
-                    MaterialColors.getColor(findViewById(android.R.id.content), com.google.android.material.R.attr.colorSurface))
-            }
-            window.sharedElementReturnTransition = MaterialContainerTransform().apply {
-                addTarget(android.R.id.content)
-                duration = 250L
-                setAllContainerColors(
-                    MaterialColors.getColor(findViewById(android.R.id.content), com.google.android.material.R.attr.colorSurface))
-            }
+        setEnterSharedElementCallback(MaterialContainerTransformSharedElementCallback())
+        window.sharedElementEnterTransition = MaterialContainerTransform().apply {
+            addTarget(android.R.id.content)
+            duration = 300L
+            setAllContainerColors(
+                MaterialColors.getColor(findViewById(android.R.id.content), com.google.android.material.R.attr.colorSurface))
+        }
+        window.sharedElementReturnTransition = MaterialContainerTransform().apply {
+            addTarget(android.R.id.content)
+            duration = 250L
+            setAllContainerColors(
+                MaterialColors.getColor(findViewById(android.R.id.content), com.google.android.material.R.attr.colorSurface))
         }
     }
 
     override fun computeUserThemeKey(): String? {
-        return ThemeUtil.getColorTheme()
-    }
-
-    override fun onApplyUserThemeResource(theme: Resources.Theme, isDecorView: Boolean) {
-        if (!ThemeUtil.isSystemAccent()) {
-            theme.applyStyle(ThemeUtil.getColorThemeStyleRes(), true)
-        }
+        return ""
     }
 
     @SuppressLint("GestureBackNavigation")
@@ -133,33 +150,6 @@ open class BaseActivity : ThemedAppCompatActivity() {
     override fun onBackPressed() {
         if (!LocalData.settings.preferences.backDisabled && Build.VERSION.SDK_INT < 33) {
             super.onBackPressed()
-        }
-    }
-
-    open var pageName: String? = null
-        set(value) {
-            field = value
-            value?.let { setTopbarTitle(it) }
-        }
-
-    private fun setTopbarTitle(
-        name: String
-    ) {
-        topBar?.setTitle(name)
-    }
-
-    open fun setupTopbar() {
-        val view = topBar ?: return
-        view.setIcon(true)
-        if (Build.VERSION.SDK_INT > 17 && view.hasOnClickListeners()) return
-        view.setOnClickListener {
-            onTopbarClicked()
-        }
-    }
-
-    open fun onTopbarClicked() {
-        if (!isDestroyed) {
-            onBackPressedDispatcher.onBackPressed()
         }
     }
 
@@ -173,21 +163,6 @@ open class BaseActivity : ThemedAppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (topBar == null) {
-            topBar = findViewById(R.id.top_bar)
-            setupTopbar()
-            pageName?.let { setTopbarTitle(it) }
-        }
-        if (eventBusEnabled()) {
-            var snackEvent: SnackEvent
-            EventBus.getDefault().getStickyEvent(SnackEvent::class.java)?.also { snackEvent = it }?.let {
-                onEvent(it)
-            }
-        }
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         if (eventBusInit) {
@@ -196,14 +171,8 @@ open class BaseActivity : ThemedAppCompatActivity() {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    fun onEvent(event: SnackEvent) {
-        if (isFinishing) return
-        MsgUtil.processSnackEvent(event, window.decorView.rootView)
-    }
-
     protected open fun eventBusEnabled(): Boolean {
-        return LocalData.settings.uiSettings.snackbarEnabled
+        return false
     }
 
     override fun isDestroyed(): Boolean {

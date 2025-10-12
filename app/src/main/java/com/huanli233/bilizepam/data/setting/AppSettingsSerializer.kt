@@ -12,7 +12,6 @@ import com.huanli233.bilizepam.data.proto.NightMode
 import com.huanli233.bilizepam.data.proto.Preferences
 import com.huanli233.bilizepam.data.proto.Theme
 import com.huanli233.bilizepam.data.proto.UiSettings
-import com.huanli233.bilizepam.utils.ThemeUtil
 import java.io.InputStream
 import java.io.OutputStream
 
@@ -43,7 +42,7 @@ object AppSettingsSerializer : Serializer<AppSettings> {
         theme = Theme.newBuilder().build {
             nightMode = NightMode.NIGHT_MODE_NIGHT
             followSystemAccent = true
-            colorTheme = ThemeUtil.THEME_DEFAULT
+            colorTheme = "DEFAULT"
             animationsEnabled = true
             fullScreenDialogDisabled = false
         }

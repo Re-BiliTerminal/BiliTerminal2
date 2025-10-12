@@ -19,7 +19,7 @@
         <item name="android:windowExitAnimation">@anim/m3_exit</item>
     </style>
     <style name="MaterialAlertDialog.Material3.FullScreen" parent="MaterialAlertDialog.Material3">
-        <item name="android:layout">@layout/layout_m3_dialog_fullscreen</item>
+<!--        <item name="android:layout">@layout/layout_m3_dialog_fullscreen</item>-->
         <item name="dialogPreferredPadding">3dp</item>
     </style>
     <style name="Widget.Material3.Button.TextButton.Dialog.FullScreen" parent="Widget.Material3.Button.TextButton">

@@ -36,9 +36,8 @@
         tools:ignore="RtlEnabled,UnusedAttribute">
 
         <activity
-            android:name=".ui.activity.main.MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.BiliZepam.Splash">
+            android:name=".ui.activity.MainActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -46,34 +45,7 @@
         </activity>
 
         <activity
-            android:name=".ui.activity.CrashActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activity.setup.SetupActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activity.setup.UiPreviewActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activity.login.LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activity.recommend.RecommendActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activity.setting.SettingsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activity.setting.AboutActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activity.setting.UiSettingsActivity" />
-        <activity
-            android:name=".ui.activity.setting.ThemeColorActivity" />
-        <activity
-            android:name=".ui.activity.video.VideoInfoActivity" />
-        <activity
-            android:name=".ui.activity.CopyActivity" />
+            android:name=".ui.activity.setup.UiPreviewActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

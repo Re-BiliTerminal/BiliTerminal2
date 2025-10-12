@@ -18,7 +18,7 @@
 
     <style name="Theme.BiliZepam.Material3.AlertDialog" parent="ThemeOverlay.Material3Expressive.MaterialAlertDialog">
         <item name="android:colorBackground">?attr/colorSurfaceContainerHigh</item>
-        <item name="listLayout">@layout/dialog_select_material</item>
+<!--        <item name="listLayout">@layout/dialog_select_material</item>-->
     </style>
 
     <style name="Theme.BiliZepam.Material3.AlertDialog.FullScreen" parent="Theme.BiliZepam.Material3.AlertDialog">

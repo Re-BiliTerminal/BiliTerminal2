@@ -7,6 +7,8 @@ import java.util.stream.StreamSupport
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.protobuf)
     alias(libs.plugins.parcelize)
@@ -79,7 +81,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.huanli233.bilizepam"
+        applicationId = "com.huanli233.bilizepam.compose"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = getGitCommitCount()
@@ -269,12 +271,12 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.interpolator)
     implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.preference.ktx)
 //    implementation(libs.androidx.wear)
 
     implementation(libs.hikage.core)
     implementation(libs.hikage.recyclerview)
-    implementation(libs.hikage.extension)
     implementation(libs.hikage.extension.betterandroid)
     ksp(libs.hikage.compiler)
     implementation(libs.hikage.widget.androidx)
@@ -315,4 +317,32 @@ dependencies {
     implementation(libs.brotli4j)
 
     implementation(libs.xlog)
+
+    // Compose
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    debugImplementation(libs.androidx.ui.tooling)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.androidx.material3)
+    implementation("androidx.graphics:graphics-shapes:1.0.1")
+    implementation("androidx.compose.animation:animation-graphics:1.9.0")
+    implementation("androidx.compose.material:material-ripple:1.9.0")
+    implementation("androidx.emoji2:emoji2:1.5.0")
+    implementation("androidx.emoji2:emoji2-bundled:1.5.0")
+    implementation("androidx.graphics:graphics-path:1.0.1")
+//    implementation(libs.androidx.wear.material3)
+//    implementation(libs.androidx.wear.navigation)
+    implementation(libs.androidx.material.icons.extended)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp) {
+        exclude(group = "com.squareup.okhttp3")
+    }
+    implementation(libs.material.kolor)
+    implementation(libs.dotsindicator)
+    implementation(libs.compose.shimmer)
 }
