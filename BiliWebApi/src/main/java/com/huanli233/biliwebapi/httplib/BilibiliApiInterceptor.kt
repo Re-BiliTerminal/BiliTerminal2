@@ -205,7 +205,6 @@ internal class BilibiliApiInterceptor(
         }
     }
 }
-
 private fun RequestBody.readString(): String = Buffer().also {
     writeTo(it)
 }.readUtf8()
@@ -214,5 +213,5 @@ private fun newCookie(name: String, value: String) =
     Cookie.Builder()
         .name(name)
         .value(value)
-        .domain("bilibili.com")
+        .domain(".bilibili.com")
         .build()

@@ -9,6 +9,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,12 +26,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.DateRange
@@ -38,6 +42,7 @@ import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.Badge
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -48,7 +53,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -56,6 +64,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -74,37 +83,64 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import com.huanli233.bilizepam.R
+import com.huanli233.bilizepam.ui.dialog.CoinDialog
+import com.huanli233.bilizepam.ui.dialog.DownloadDialog
+import com.huanli233.bilizepam.ui.dialog.FavoriteDialog
+import com.huanli233.bilizepam.ui.dialog.VideoPage
 import com.huanli233.bilizepam.ui.screens.recommend.LoadingState
 import com.huanli233.bilizepam.ui.screens.recommend.LoadingView
 import com.huanli233.bilizepam.utils.MsgUtil
 import com.huanli233.bilizepam.utils.extensions.formatNumber
 import com.huanli233.bilizepam.utils.extensions.formatToDate
 import com.huanli233.bilizepam.utils.extensions.toTime
+import com.huanli233.biliwebapi.bean.user.UserInfo
+import kotlinx.coroutines.launch
+import androidx.core.graphics.toColorInt
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun VideoDetailScreen(
+    navController: NavController,
     viewModel: VideoDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    
+    var showCoinDialog by remember { mutableStateOf(false) }
+    var showFavoriteDialog by remember { mutableStateOf(false) }
+    var showDownloadDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
                 is VideoDetailEvent.LikeSuccess -> {
                     val message = if (event.action == 1) 
-                        context.getString(R.string.like_success)
+                        context.getString(R.string.msg_like_success)
                     else 
-                        context.getString(R.string.cancel_success)
+                        context.getString(R.string.msg_cancel_success)
                     MsgUtil.showMsg(message)
                 }
                 is VideoDetailEvent.LikeFailed -> {
-                    MsgUtil.showMsg(event.message ?: "操作失败")
+                    MsgUtil.showMsg(event.message ?: context.getString(R.string.msg_operation_failed))
                 }
                 is VideoDetailEvent.NotLoggedIn -> {
-                    MsgUtil.showMsg(context.getString(R.string.not_logged_in))
+                    MsgUtil.showMsg(context.getString(R.string.msg_not_logged_in))
+                }
+                is VideoDetailEvent.CoinSuccess -> {
+                    MsgUtil.showMsg(context.getString(R.string.msg_coin_success))
+                }
+                is VideoDetailEvent.FavoriteSuccess -> {
+                    MsgUtil.showMsg(context.getString(R.string.msg_favorite_success))
+                }
+                is VideoDetailEvent.WatchLaterSuccess -> {
+                    MsgUtil.showMsg(context.getString(R.string.msg_watch_later_success))
+                }
+                is VideoDetailEvent.OperationFailed -> {
+                    MsgUtil.showMsg(event.message ?: context.getString(R.string.msg_operation_failed))
                 }
             }
         }
@@ -127,12 +163,142 @@ fun VideoDetailScreen(
                 )
             }
             uiState.videoInfo != null -> {
-                VideoDetailContent(
+                VideoDetailWithPager(
                     uiState = uiState,
-                    onLikeClick = { viewModel.like() }
+                    onLikeClick = { viewModel.like() },
+                    onCoinClick = { showCoinDialog = true },
+                    onFavoriteClick = { 
+                        viewModel.loadFavoriteFolders()
+                        showFavoriteDialog = true 
+                    },
+                    onWatchLaterClick = { viewModel.addToWatchLater() },
+                    onDownloadClick = { showDownloadDialog = true },
+                    onShareClick = { },
+                    onPlayClick = { 
+                        uiState.videoInfo?.let { video ->
+                            navController.navigate("player/${video.aid}/${video.cid}")
+                        }
+                    },
+                    onCoverClick = { 
+                        uiState.videoInfo?.let { video ->
+                            val encodedUrl = java.net.URLEncoder.encode(video.pic, "UTF-8")
+                            navController.navigate("image_viewer/$encodedUrl/0")
+                        }
+                    },
+                    onUploaderClick = { mid ->
+                        navController.navigate("user/$mid")
+                    },
+                    onCollectionClick = { seasonId ->
+                        navController.navigate("collection/$seasonId")
+                    },
+                    onTagClick = { }
                 )
             }
         }
+    }
+    
+    // 投币对话框
+    if (showCoinDialog) {
+        CoinDialog(
+            onDismiss = { showCoinDialog = false },
+            onConfirm = { count, alsoLike ->
+                viewModel.coin(count, alsoLike)
+                showCoinDialog = false
+            },
+            maxCoins = 2
+        )
+    }
+    
+    if (showFavoriteDialog) {
+        FavoriteDialog(
+            folders = uiState.favoriteFolders,
+            onDismiss = { showFavoriteDialog = false },
+            onConfirm = { selectedFids, deselectedFids ->
+                viewModel.updateFavorites(selectedFids, deselectedFids)
+                showFavoriteDialog = false
+            },
+            isLoading = uiState.isLoadingFolders
+        )
+    }
+    
+    if (showDownloadDialog && uiState.videoInfo != null) {
+        val pages = uiState.videoInfo!!.pages.map { page ->
+            VideoPage(
+                cid = page.cid,
+                page = page.page,
+                part = page.part,
+                duration = page.duration.toLong()
+            )
+        }
+        DownloadDialog(
+            pages = pages,
+            onDismiss = { showDownloadDialog = false },
+            onConfirm = { selectedPages ->
+                MsgUtil.showMsg(context.getString(R.string.msg_download_dev))
+                showDownloadDialog = false
+            }
+        )
+    }
+}
+
+@Composable
+private fun VideoDetailWithPager(
+    uiState: VideoDetailUiState,
+    onLikeClick: () -> Unit,
+    onCoinClick: () -> Unit,
+    onFavoriteClick: () -> Unit,
+    onWatchLaterClick: () -> Unit,
+    onDownloadClick: () -> Unit,
+    onShareClick: () -> Unit,
+    onPlayClick: () -> Unit,
+    onCoverClick: () -> Unit,
+    onUploaderClick: (Long) -> Unit,
+    onCollectionClick: (Long) -> Unit,
+    onTagClick: (String) -> Unit
+) {
+    VideoDetailContent(
+        uiState = uiState,
+        onLikeClick = onLikeClick,
+        onCoinClick = onCoinClick,
+        onFavoriteClick = onFavoriteClick,
+        onWatchLaterClick = onWatchLaterClick,
+        onDownloadClick = onDownloadClick,
+        onShareClick = onShareClick,
+        onPlayClick = onPlayClick,
+        onCoverClick = onCoverClick,
+        onUploaderClick = onUploaderClick,
+        onCollectionClick = onCollectionClick,
+        onTagClick = onTagClick
+    )
+}
+
+@Composable
+private fun CommentPlaceholder() {
+    val context = LocalContext.current
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = context.getString(R.string.placeholder_comments),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
+private fun RecommendPlaceholder() {
+    val context = LocalContext.current
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = context.getString(R.string.placeholder_recommend),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 
@@ -140,12 +306,20 @@ fun VideoDetailScreen(
 @Composable
 private fun VideoDetailContent(
     uiState: VideoDetailUiState,
-    onLikeClick: () -> Unit
+    onLikeClick: () -> Unit,
+    onCoinClick: () -> Unit,
+    onFavoriteClick: () -> Unit,
+    onWatchLaterClick: () -> Unit,
+    onDownloadClick: () -> Unit,
+    onShareClick: () -> Unit,
+    onPlayClick: () -> Unit,
+    onCoverClick: () -> Unit,
+    onUploaderClick: (Long) -> Unit,
+    onCollectionClick: (Long) -> Unit,
+    onTagClick: (String) -> Unit
 ) {
     val videoInfo = uiState.videoInfo ?: return
     val scrollState = rememberScrollState()
-    var isDescExpanded by remember { mutableStateOf(false) }
-    var isTagsExpanded by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -159,7 +333,8 @@ private fun VideoDetailContent(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .shadow(8.dp, RoundedCornerShape(16.dp)),
+                .shadow(8.dp, RoundedCornerShape(16.dp))
+                .clickable(onClick = onCoverClick),
             shape = RoundedCornerShape(16.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
@@ -195,14 +370,120 @@ private fun VideoDetailContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            text = videoInfo.title,
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface
-        )
+        // Title with badge
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Special video type badge
+            val badgeText = when {
+                videoInfo.isUpowerExclusive -> "充电专属"
+                videoInfo.rights.isSteinGate == 1 -> "互动视频"
+                videoInfo.rights.is360 == 1 -> "全景视频"
+                !videoInfo.staff.isNullOrEmpty() -> "联合投稿"
+                else -> null
+            }
+
+            if (badgeText != null) {
+                Surface(
+                    shape = RoundedCornerShape(4.dp),
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(end = 8.dp)
+                ) {
+                    Text(
+                        text = badgeText,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onError,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+            Text(
+                text = videoInfo.title,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f)
+            )
+        }
 
         Spacer(modifier = Modifier.height(12.dp))
+
+        // Argue Info (争议信息)
+        if (videoInfo.argueInfo.argueMsg.isNotEmpty()) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.6f)
+                )
+            ) {
+                Text(
+                    text = videoInfo.argueInfo.argueMsg,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                    modifier = Modifier.padding(12.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+        }
+
+        // Uploader List
+        val uploaders = remember(videoInfo) {
+            if (videoInfo.staff.isNullOrEmpty()) {
+                listOf(videoInfo.owner)
+            } else {
+                videoInfo.staff.orEmpty()
+            }
+        }
+        
+        if (uploaders.isNotEmpty()) {
+            UploaderList(
+                uploaders = uploaders,
+                onNavigateToProfile = onUploaderClick,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+        }
+
+        // Collection Info (合集信息)
+        if (videoInfo.ugcSeason != null) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { videoInfo.ugcSeason?.id?.let { onCollectionClick(it.toLong()) } },
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "合集 · ${videoInfo.ugcSeason?.title}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        modifier = Modifier.weight(1f),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Icon(
+                        painter = painterResource(R.drawable.icon_arrow_forward),
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp),
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+        }
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -234,15 +515,17 @@ private fun VideoDetailContent(
 
         InfoItem(
             icon = painterResource(R.drawable.icon_movie_16),
-            text = videoInfo.bvid
+            text = videoInfo.bvid,
+            modifier = Modifier.clickable {
+                /* TODO: Copy BV号 */
+            }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         ExpandableSection(
             title = "简介",
-            isExpanded = isDescExpanded,
-            onToggle = { isDescExpanded = !isDescExpanded }
+            initiallyExpanded = true
         ) {
             Text(
                 text = videoInfo.desc ?: "暂无简介",
@@ -257,8 +540,7 @@ private fun VideoDetailContent(
         if (uiState.tags.isNotEmpty()) {
             ExpandableSection(
                 title = "标签",
-                isExpanded = isTagsExpanded,
-                onToggle = { isTagsExpanded = !isTagsExpanded }
+                initiallyExpanded = false
             ) {
                 FlowRow(
                     modifier = Modifier
@@ -269,7 +551,7 @@ private fun VideoDetailContent(
                 ) {
                     uiState.tags.forEach { tag ->
                         AssistChip(
-                            onClick = { },
+                            onClick = { onTagClick(tag.tagName) },
                             label = { Text(tag.tagName) }
                         )
                     }
@@ -280,7 +562,7 @@ private fun VideoDetailContent(
         }
 
         Button(
-            onClick = { },
+            onClick = onPlayClick,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
@@ -293,7 +575,7 @@ private fun VideoDetailContent(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = stringResource(R.string.play),
+                text = stringResource(R.string.action_play),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -323,7 +605,7 @@ private fun VideoDetailContent(
                 text = videoInfo.stat.coin.formatNumber("万", "亿"),
                 isActive = hasCoined,
                 enabled = uiState.relation != null,
-                onClick = { },
+                onClick = onCoinClick,
                 modifier = Modifier.weight(1f)
             )
 
@@ -332,10 +614,46 @@ private fun VideoDetailContent(
                 text = videoInfo.stat.favorite.formatNumber("万", "亿"),
                 isActive = isFavorited,
                 enabled = uiState.relation != null,
-                onClick = { },
+                onClick = onFavoriteClick,
                 modifier = Modifier.weight(1f)
             )
         }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Additional Actions
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            OutlinedButton(
+                onClick = onWatchLaterClick,
+                modifier = Modifier.weight(1f),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text(stringResource(R.string.action_watch_later))
+            }
+
+            OutlinedButton(
+                onClick = onDownloadClick,
+                modifier = Modifier.weight(1f),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text(stringResource(R.string.action_download))
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedButton(
+            onClick = onShareClick,
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Text(stringResource(R.string.action_share))
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
@@ -372,9 +690,11 @@ private fun StatItem(
 @Composable
 private fun InfoItem(
     icon: Any,
-    text: String
+    text: String,
+    modifier: Modifier = Modifier
 ) {
     Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         when (icon) {
@@ -407,10 +727,10 @@ private fun InfoItem(
 @Composable
 private fun ExpandableSection(
     title: String,
-    isExpanded: Boolean,
-    onToggle: () -> Unit,
+    initiallyExpanded: Boolean = false,
     content: @Composable () -> Unit
 ) {
+    var isExpanded by remember { mutableStateOf(initiallyExpanded) }
     val rotationAngle by animateFloatAsState(
         targetValue = if (isExpanded) 180f else 0f,
         label = "rotation"
@@ -426,7 +746,7 @@ private fun ExpandableSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(onClick = onToggle)
+                .clickable(onClick = { isExpanded = !isExpanded })
                 .padding(12.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
@@ -435,13 +755,13 @@ private fun ExpandableSection(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Icon(
                 imageVector = Icons.Default.KeyboardArrowDown,
                 contentDescription = null,
                 modifier = Modifier.rotate(rotationAngle),
-                tint = MaterialTheme.colorScheme.primary
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
@@ -450,10 +770,32 @@ private fun ExpandableSection(
             enter = expandVertically() + fadeIn(),
             exit = shrinkVertically() + fadeOut()
         ) {
-            Box(modifier = Modifier.padding(horizontal = 12.dp, vertical = 0.dp)) {
+            Box(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
                 content()
             }
         }
+    }
+}
+
+// 新的InfoItem用于键值对显示
+@Composable
+private fun InfoItem(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 
@@ -481,7 +823,8 @@ private fun ActionButton(
     Surface(
         onClick = onClick,
         modifier = modifier
-            .height(72.dp),
+            .height(72.dp)
+            .clip(RoundedCornerShape(12.dp)),
         enabled = enabled,
         shape = RoundedCornerShape(12.dp),
         color = containerColor,
@@ -518,6 +861,97 @@ private fun ActionButton(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
+        }
+    }
+}
+
+@Composable
+private fun UploaderList(
+    uploaders: List<UserInfo>,
+    onNavigateToProfile: (Long) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        uploaders.forEach { uploader ->
+            UploaderItem(
+                uploader = uploader,
+                onNavigateToProfile = onNavigateToProfile
+            )
+        }
+    }
+}
+
+@Composable
+private fun UploaderItem(
+    uploader: UserInfo,
+    onNavigateToProfile: (Long) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        onClick = { onNavigateToProfile(uploader.mid) },
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp)),
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Avatar
+            AsyncImage(
+                model = uploader.face,
+                contentDescription = uploader.name,
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            // User info
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                // Name with VIP color
+                val nameColor = if (uploader.vip?.nicknameColor?.isNotEmpty() == true) {
+                    try {
+                        Color(uploader.vip?.nicknameColor!!.toColorInt())
+                    } catch (e: Exception) {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    }
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                }
+
+                Text(
+                    text = uploader.name,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = nameColor,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                // Signature
+                if (uploader.sign?.isNotEmpty() == true) {
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = uploader.sign.orEmpty(),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
         }
     }
 }

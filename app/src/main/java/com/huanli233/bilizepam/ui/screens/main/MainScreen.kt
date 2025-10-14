@@ -38,8 +38,14 @@ import com.huanli233.bilizepam.ui.components.menu.MenuPanel
 import com.huanli233.bilizepam.ui.navigation.Screen
 import com.huanli233.bilizepam.ui.navigation.allScreens
 import com.huanli233.bilizepam.ui.navigation.settingsGraph
+import com.huanli233.bilizepam.ui.screens.collection.CollectionDetailScreen
+import com.huanli233.bilizepam.ui.screens.download.DownloadListScreen
+import com.huanli233.bilizepam.ui.screens.image.ImageViewerScreen
+import com.huanli233.bilizepam.ui.screens.player.PlayerScreen
 import com.huanli233.bilizepam.ui.screens.recommend.RecommendScreen
+import com.huanli233.bilizepam.ui.screens.user.UserProfileScreen
 import com.huanli233.bilizepam.ui.screens.video.VideoDetailScreen
+import java.net.URLDecoder
 import kotlinx.coroutines.delay
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -139,7 +145,78 @@ fun MainScreen() {
                                 navArgument("bvid") { type = NavType.StringType }
                             )
                         ) {
-                            VideoDetailScreen()
+                            VideoDetailScreen(navController = contentNavController)
+                        }
+                        
+                        composable(
+                            route = "image_viewer/{imageUrl}/{initialPage}",
+                            arguments = listOf(
+                                navArgument("imageUrl") { type = NavType.StringType },
+                                navArgument("initialPage") { 
+                                    type = NavType.IntType
+                                    defaultValue = 0
+                                }
+                            )
+                        ) { backStackEntry ->
+                            val encodedUrl = backStackEntry.arguments?.getString("imageUrl") ?: ""
+                            val imageUrl = URLDecoder.decode(encodedUrl, "UTF-8")
+                            val initialPage = backStackEntry.arguments?.getInt("initialPage") ?: 0
+                            ImageViewerScreen(
+                                imageUrls = listOf(imageUrl),
+                                initialPage = initialPage,
+                                onNavigateBack = { contentNavController.popBackStack() }
+                            )
+                        }
+                        
+                        composable(
+                            route = "user/{mid}",
+                            arguments = listOf(
+                                navArgument("mid") { type = NavType.LongType }
+                            )
+                        ) { backStackEntry ->
+                            val mid = backStackEntry.arguments?.getLong("mid") ?: 0
+                            UserProfileScreen(
+                                mid = mid,
+                                onNavigateBack = { contentNavController.popBackStack() }
+                            )
+                        }
+                        
+                        composable(
+                            route = "collection/{seasonId}",
+                            arguments = listOf(
+                                navArgument("seasonId") { type = NavType.LongType }
+                            )
+                        ) { backStackEntry ->
+                            val seasonId = backStackEntry.arguments?.getLong("seasonId") ?: 0
+                            CollectionDetailScreen(
+                                seasonId = seasonId,
+                                onNavigateBack = { contentNavController.popBackStack() }
+                            )
+                        }
+                        
+                        composable(
+                            route = "player/{aid}/{cid}",
+                            arguments = listOf(
+                                navArgument("aid") { type = NavType.LongType },
+                                navArgument("cid") { 
+                                    type = NavType.LongType
+                                    defaultValue = 0L
+                                }
+                            )
+                        ) { backStackEntry ->
+                            val aid = backStackEntry.arguments?.getLong("aid") ?: 0
+                            val cid = backStackEntry.arguments?.getLong("cid") ?: 0
+                            PlayerScreen(
+                                aid = aid,
+                                cid = cid,
+                                onNavigateBack = { contentNavController.popBackStack() }
+                            )
+                        }
+                        
+                        composable("download_list") {
+                            DownloadListScreen(
+                                onNavigateBack = { contentNavController.popBackStack() }
+                            )
                         }
                         
                         settingsGraph(contentNavController)

@@ -231,6 +231,7 @@ fun FullScreenAlertDialog(
                     ) {
                         Box(
                             Modifier
+                                .fillMaxHeight()
                                 .padding(bottom = 16.dp)
                                 .align(if (icon == null) Alignment.Start else Alignment.CenterHorizontally)
                         ) { title() }

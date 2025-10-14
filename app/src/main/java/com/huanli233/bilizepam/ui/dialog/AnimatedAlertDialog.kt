@@ -36,7 +36,7 @@ private val ScrimColor = Color.Black.copy(alpha = 0.45f)
 class AnimatedDialogProperties(
     val dismissOnBackPress: Boolean = true,
     val dismissOnClickOutside: Boolean = true,
-    val backgroundDimEnabled: Boolean = true,
+    val backgroundDimEnabled: Boolean = false,
     val alignment: Alignment = Alignment.Center,
     val animation: FullScreenDialogAnimation = FullScreenDialogAnimation.Material3Dialog()
 )
@@ -96,7 +96,6 @@ fun BasicAnimatedAlertDialog(
             Box(
                 Modifier
                     .fillMaxSize()
-                    .background(scrimColor)
             ) {
                 Box(
                     Modifier

@@ -43,7 +43,7 @@ fun RecommendScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
         PullToRefreshBox(
-            isRefreshing = isRefreshing,
+            isRefreshing = isRefreshing || (videos.loadState.refresh is LoadState.Loading && videos.itemCount > 0),
             onRefresh = {
                 scope.launch {
                     isRefreshing = true

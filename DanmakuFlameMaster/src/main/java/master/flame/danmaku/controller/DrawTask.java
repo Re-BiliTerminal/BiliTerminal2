@@ -17,6 +17,7 @@
 package master.flame.danmaku.controller;
 
 import android.graphics.Canvas;
+import android.util.Log;
 
 import master.flame.danmaku.danmaku.model.AbsDisplayer;
 import master.flame.danmaku.danmaku.model.BaseDanmaku;

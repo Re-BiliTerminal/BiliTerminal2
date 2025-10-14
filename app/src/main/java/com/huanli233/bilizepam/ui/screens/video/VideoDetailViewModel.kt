@@ -7,6 +7,7 @@ import com.huanli233.bilizepam.api.apiResult
 import com.huanli233.bilizepam.api.apiResultNonNull
 import com.huanli233.bilizepam.api.bilibiliApi
 import com.huanli233.bilizepam.data.account.AccountManager
+import com.huanli233.biliwebapi.api.interfaces.FavoriteFolder
 import com.huanli233.biliwebapi.api.interfaces.IVideoApi
 import com.huanli233.biliwebapi.bean.video.Tag
 import com.huanli233.biliwebapi.bean.video.VideoInfo
@@ -29,13 +30,19 @@ data class VideoDetailUiState(
     val videoInfo: VideoInfo? = null,
     val tags: List<Tag> = emptyList(),
     val relation: VideoRelation? = null,
-    val isLiking: Boolean = false
+    val isLiking: Boolean = false,
+    val favoriteFolders: List<FavoriteFolder> = emptyList(),
+    val isLoadingFolders: Boolean = false
 )
 
 sealed interface VideoDetailEvent {
     data class LikeSuccess(val action: Int) : VideoDetailEvent
     data class LikeFailed(val message: String?) : VideoDetailEvent
     data object NotLoggedIn : VideoDetailEvent
+    data object CoinSuccess : VideoDetailEvent
+    data object FavoriteSuccess : VideoDetailEvent
+    data object WatchLaterSuccess : VideoDetailEvent
+    data class OperationFailed(val message: String?) : VideoDetailEvent
 }
 
 @HiltViewModel
@@ -145,6 +152,167 @@ class VideoDetailViewModel @Inject constructor(
                 if (coroutineContext.isActive) {
                     _uiState.value = _uiState.value.copy(isLiking = false)
                 }
+            }
+        }
+    }
+    
+    // 投币
+    fun coin(count: Int, alsoLike: Boolean) {
+        viewModelScope.launch {
+            val videoInfo = _uiState.value.videoInfo ?: run {
+                _events.send(VideoDetailEvent.OperationFailed("视频信息未加载"))
+                return@launch
+            }
+            
+            if (!AccountManager.loggedIn()) {
+                _events.send(VideoDetailEvent.NotLoggedIn)
+                return@launch
+            }
+            
+            try {
+                val result = bilibiliApi.api(IVideoApi::class) {
+                    coinVideo(
+                        aid = videoInfo.aid,
+                        multiply = count,
+                        selectLike = if (alsoLike) 1 else 0
+                    )
+                }.apiResult()
+                
+                if (result.isSuccess) {
+                    // 更新UI状态
+                    _uiState.value.relation?.let { relation ->
+                        _uiState.value = _uiState.value.copy(
+                            relation = relation.copy(coin = count),
+                            videoInfo = videoInfo.copy(
+                                stat = videoInfo.stat.copy(
+                                    coin = videoInfo.stat.coin + count,
+                                    like = if (alsoLike && !relation.like) videoInfo.stat.like + 1 else videoInfo.stat.like
+                                )
+                            )
+                        )
+                        if (alsoLike && !relation.like) {
+                            _uiState.value = _uiState.value.copy(
+                                relation = relation.copy(like = true, coin = count)
+                            )
+                        }
+                    }
+                    _events.send(VideoDetailEvent.CoinSuccess)
+                } else {
+                    _events.send(VideoDetailEvent.OperationFailed(result.exceptionOrNull()?.message))
+                }
+            } catch (e: Exception) {
+                _events.send(VideoDetailEvent.OperationFailed(e.message))
+            }
+        }
+    }
+    
+    // 加载收藏夹列表
+    fun loadFavoriteFolders() {
+        viewModelScope.launch {
+            val videoInfo = _uiState.value.videoInfo ?: return@launch
+            
+            if (!AccountManager.loggedIn()) {
+                _events.send(VideoDetailEvent.NotLoggedIn)
+                return@launch
+            }
+            
+            _uiState.value = _uiState.value.copy(isLoadingFolders = true)
+            
+            try {
+                val mid = AccountManager.currentAccount.accountId
+                val result = bilibiliApi.api(IVideoApi::class) {
+                    getFavoriteFolders(rid = videoInfo.aid, upMid = mid)
+                }.apiResult()
+                
+                if (result.isSuccess) {
+                    val folders = result.getOrNull()?.list ?: emptyList()
+                    _uiState.value = _uiState.value.copy(
+                        favoriteFolders = folders,
+                        isLoadingFolders = false
+                    )
+                } else {
+                    _uiState.value = _uiState.value.copy(isLoadingFolders = false)
+                    _events.send(VideoDetailEvent.OperationFailed(result.exceptionOrNull()?.message))
+                }
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(isLoadingFolders = false)
+                _events.send(VideoDetailEvent.OperationFailed(e.message))
+            }
+        }
+    }
+    
+    // 更新收藏
+    fun updateFavorites(selectedFids: List<Long>, deselectedFids: List<Long>) {
+        viewModelScope.launch {
+            val videoInfo = _uiState.value.videoInfo ?: return@launch
+            
+            if (!AccountManager.loggedIn()) {
+                _events.send(VideoDetailEvent.NotLoggedIn)
+                return@launch
+            }
+            
+            try {
+                val mid = AccountManager.currentAccount.accountId
+                val midSuffix = mid.toString().takeLast(2)
+                
+                // 构建添加和删除的ID字符串
+                val addMediaIds = selectedFids.joinToString(",") { "${it}$midSuffix" }
+                val delMediaIds = deselectedFids.joinToString(",") { "${it}$midSuffix" }
+                
+                val result = bilibiliApi.api(IVideoApi::class) {
+                    updateFavorite(
+                        rid = videoInfo.aid,
+                        addMediaIds = addMediaIds,
+                        delMediaIds = delMediaIds
+                    )
+                }.apiResult()
+                
+                if (result.isSuccess) {
+                    // 更新收藏状态
+                    val isFavorited = selectedFids.isNotEmpty() || 
+                        (_uiState.value.relation?.favorite == true && deselectedFids.isEmpty())
+                    
+                    _uiState.value.relation?.let { relation ->
+                        _uiState.value = _uiState.value.copy(
+                            relation = relation.copy(favorite = isFavorited)
+                        )
+                    }
+                    
+                    _events.send(VideoDetailEvent.FavoriteSuccess)
+                } else {
+                    _events.send(VideoDetailEvent.OperationFailed(result.exceptionOrNull()?.message))
+                }
+            } catch (e: Exception) {
+                _events.send(VideoDetailEvent.OperationFailed(e.message))
+            }
+        }
+    }
+    
+    // 添加到稍后再看
+    fun addToWatchLater() {
+        viewModelScope.launch {
+            val videoInfo = _uiState.value.videoInfo ?: run {
+                _events.send(VideoDetailEvent.OperationFailed("视频信息未加载"))
+                return@launch
+            }
+            
+            if (!AccountManager.loggedIn()) {
+                _events.send(VideoDetailEvent.NotLoggedIn)
+                return@launch
+            }
+            
+            try {
+                val result = bilibiliApi.api(IVideoApi::class) {
+                    addToWatchLater(aid = videoInfo.aid)
+                }.apiResult()
+                
+                if (result.isSuccess) {
+                    _events.send(VideoDetailEvent.WatchLaterSuccess)
+                } else {
+                    _events.send(VideoDetailEvent.OperationFailed(result.exceptionOrNull()?.message))
+                }
+            } catch (e: Exception) {
+                _events.send(VideoDetailEvent.OperationFailed(e.message))
             }
         }
     }

@@ -236,7 +236,7 @@
         translatable="false">Density</string>
     <string name="animation">动画</string>
     <string name="system_accent_color">系统主题色</string>
-    <string name="video_detail">视频详情</string>
+    <string name="video_detail_page">视频详情</string>
     <string name="tag">标签</string>
     <string name="request_relation_failed">获取操作信息失败：%1$s</string>
     <string name="like_failed_with_msg">点赞失败：%1$s</string>
@@ -331,5 +331,53 @@
         <item>dynamic_info</item>
         <item>article</item>
     </array>
+
+    <!-- Video Detail -->
+    <string name="video_detail">详情</string>
+    <string name="video_comments">评论</string>
+    <string name="video_recommend">推荐</string>
+    <string name="video_info">视频信息</string>
+    <string name="video_uploader">UP主</string>
+    <string name="video_collection">合集</string>
+    
+    <!-- Actions -->
+    <string name="action_play">播放</string>
+    <string name="action_like">点赞</string>
+    <string name="action_coin">投币</string>
+    <string name="action_favorite">收藏</string>
+    <string name="action_watch_later">稍后再看</string>
+    <string name="action_download">缓存</string>
+    <string name="action_share">转发</string>
+    <string name="action_save">保存</string>
+    <string name="action_back">返回</string>
+    <string name="action_confirm">确定</string>
+    <string name="action_cancel">取消</string>
+    
+    <!-- Dialog -->
+    <string name="dialog_coin_title">投币</string>
+    <string name="dialog_coin_select">选择投币数量</string>
+    <string name="dialog_coin_also_like">同时点赞</string>
+    <string name="dialog_favorite_title">收藏到</string>
+    
+    <!-- Messages -->
+    <string name="msg_like_success">点赞成功</string>
+    <string name="msg_cancel_success">取消成功</string>
+    <string name="msg_coin_success">投币成功</string>
+    <string name="msg_favorite_success">收藏成功</string>
+    <string name="msg_operation_failed">操作失败</string>
+    <string name="msg_not_logged_in">还没有登录喵~</string>
+    <string name="msg_loading">加载中...</string>
+    <string name="msg_image_saved">图片已保存</string>
+    <string name="msg_save_failed">保存失败</string>
+    
+    <!-- Placeholder -->
+    <string name="placeholder_comments">评论区功能开发中...</string>
+    <string name="placeholder_recommend">相关推荐功能开发中...</string>
+    <string name="placeholder_user_profile">用户详情页开发中...</string>
+    <string name="placeholder_collection">合集详情页开发中...</string>
+    <string name="placeholder_player">播放器开发中...</string>
+    
+    <string name="msg_watch_later_success">已添加到稍后再看</string>
+    <string name="msg_download_dev">下载功能开发中...</string>
 
 </resources>

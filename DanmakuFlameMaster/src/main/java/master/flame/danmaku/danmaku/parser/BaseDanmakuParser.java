@@ -17,6 +17,7 @@
 package master.flame.danmaku.danmaku.parser;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 import master.flame.danmaku.danmaku.model.DanmakuTimer;
 import master.flame.danmaku.danmaku.model.IDanmakus;
 import master.flame.danmaku.danmaku.model.IDisplayer;

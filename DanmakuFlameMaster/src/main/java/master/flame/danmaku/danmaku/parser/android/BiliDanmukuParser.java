@@ -18,6 +18,7 @@ package master.flame.danmaku.danmaku.parser.android;
 
 import android.graphics.Color;
 import android.text.TextUtils;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,9 +55,9 @@ public class BiliDanmukuParser extends BaseDanmakuParser {
 
         if (mDataSource != null) {
             AndroidFileSource source = (AndroidFileSource) mDataSource;
+            XmlContentHandler contentHandler = new XmlContentHandler();
             try {
                 XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-                XmlContentHandler contentHandler = new XmlContentHandler();
                 xmlReader.setContentHandler(contentHandler);
                 xmlReader.parse(new InputSource(source.data()));
                 return contentHandler.getResult();

@@ -345,4 +345,19 @@ dependencies {
     implementation(libs.material.kolor)
     implementation(libs.dotsindicator)
     implementation(libs.compose.shimmer)
+
+    // Media3 for video playback
+    implementation("androidx.media3:media3-exoplayer:1.5.0")
+    implementation("androidx.media3:media3-ui:1.5.0")
+    implementation("androidx.media3:media3-common:1.5.0")
+
+    // Image zoom and processing
+    implementation("me.saket.telephoto:zoomable-image-coil:0.13.0") {
+        exclude(group = "com.squareup.okhttp3")
+    }
+
+    implementation("me.saket.telephoto:zoomable:0.13.0")
+
+    // WorkManager for download tasks
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
 }

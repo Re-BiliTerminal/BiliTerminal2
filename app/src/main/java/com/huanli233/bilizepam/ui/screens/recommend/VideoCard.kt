@@ -26,25 +26,26 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.SubcomposeAsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.huanli233.biliwebapi.bean.video.VideoInfo
 import com.valentinilk.shimmer.shimmer
 
@@ -87,12 +88,14 @@ fun VideoCard(
             ) {
                 var isLoading by remember { mutableStateOf(true) }
                 
-                // Image with fade-in animation
                 AsyncImage(
-                    model = videoInfo.pic,
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(videoInfo.pic)
+                        .crossfade(300)
+                        .build(),
                     contentDescription = videoInfo.title,
                     modifier = Modifier.matchParentSize(),
-                    contentScale = ContentScale.Crop,
+                    contentScale = androidx.compose.ui.layout.ContentScale.Crop,
                     onSuccess = { isLoading = false },
                     onError = { isLoading = false }
                 )
