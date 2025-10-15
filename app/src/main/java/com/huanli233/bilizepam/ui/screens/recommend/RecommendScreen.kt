@@ -30,6 +30,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
+import androidx.wear.compose.material3.PaddingDefaults
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.TimeText
 import androidx.wear.compose.material3.verticalContentPadding
@@ -70,7 +71,7 @@ fun RecommendScreen(
             ScalingLazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 state = scrollState,
-                contentPadding = PaddingValues(vertical = verticalContentPadding())
+                contentPadding = PaddingValues(vertical = PaddingDefaults.verticalOptContentPadding())
             ) {
             item {
                 WearTopBar(

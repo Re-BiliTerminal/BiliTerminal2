@@ -8,7 +8,7 @@ import com.huanli233.bilizepam.data.setting.edit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,16 +23,20 @@ sealed interface MainUiState {
 @HiltViewModel
 class MainViewModel @Inject constructor() : ViewModel() {
 
-    val uiState: StateFlow<MainUiState> = LocalData.settingsStateFlow
-        .map { settings ->
-            when {
-                settings == null -> MainUiState.Loading
+    val uiState: StateFlow<MainUiState> = combine(
+        LocalData.settingsStateFlow,
+        AccountManager.repository.activeAccount
+    ) { settings, account ->
+        when {
+            settings == null -> MainUiState.Loading
 
-                settings.firstRun -> MainUiState.NeedsSetup
+            settings.firstRun -> MainUiState.NeedsSetup
 
-                else -> MainUiState.Ready
-            }
+            account == null || account.accountId == 0L -> MainUiState.NeedsLogin
+
+            else -> MainUiState.Ready
         }
+    }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),

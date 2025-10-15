@@ -25,7 +25,7 @@ import androidx.wear.compose.materialcore.screenHeightDp
 import androidx.wear.compose.materialcore.screenWidthDp
 import kotlin.math.ceil
 
-internal object PaddingDefaults {
+object PaddingDefaults {
 
     /**
      * Vertical padding between top and bottom edges of the screen and the content for full screen
@@ -42,6 +42,9 @@ internal object PaddingDefaults {
         val screenHeight = LocalConfiguration.current.screenHeightDp
         return ceilDp(screenHeight.dp * verticalContentPaddingPercentage / 100)
     }
+
+    @Composable
+    fun verticalOptContentPadding(): Dp = verticalContentPadding() * 0.4f
 
     /**
      * Horizontal padding between start and end edges of the screen and the content for full screen

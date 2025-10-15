@@ -16,6 +16,7 @@
 
 package androidx.wear.compose.material3
 
+import android.os.Build
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.Spring
@@ -805,11 +806,9 @@ public object ScreenScaffoldDefaults {
     public val contentPadding: PaddingValues
         @Composable
         get() {
-            val configuration = LocalConfiguration.current
-            val isRound = configuration.isScreenRound
             val safeContentPadding = WindowInsets.safeContent.asPaddingValues()
             
-            return if (isRound) {
+            return if (isRoundDevice()) {
                 PaddingValues(
                     start = maxOf(PaddingDefaults.horizontalContentPadding(), safeContentPadding.calculateLeftPadding(LayoutDirection.Ltr)),
                     top = maxOf(PaddingDefaults.verticalContentPadding(), safeContentPadding.calculateTopPadding()),

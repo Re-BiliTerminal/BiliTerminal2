@@ -151,7 +151,8 @@ private fun WelcomeStep(onNext: () -> Unit) {
     ScreenScaffold(scrollState = scrollState) {
         ScalingLazyColumn(
             modifier = Modifier.fillMaxSize(),
-            state = scrollState
+            state = scrollState,
+            contentPadding = it
         ) {
             item {
                 WearTopBar(
@@ -193,7 +194,8 @@ private fun UiSetupStep(
     ScreenScaffold(scrollState = scrollState) {
         ScalingLazyColumn(
             modifier = Modifier.fillMaxSize(),
-            state = scrollState
+            state = scrollState,
+            contentPadding = it
         ) {
             item {
                 WearTopBar(

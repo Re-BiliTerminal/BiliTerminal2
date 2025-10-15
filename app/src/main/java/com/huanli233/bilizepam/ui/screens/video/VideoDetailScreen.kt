@@ -107,12 +107,17 @@ import kotlinx.coroutines.launch
 import androidx.core.graphics.toColorInt
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.foundation.isRoundDevice
+import androidx.wear.compose.material3.PaddingDefaults
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.TimeText
+import androidx.wear.compose.material3.verticalContentPadding
 import androidx.wear.compose.materialcore.toVerticalPadding
 import com.huanli233.bilizepam.data.setting.LocalData
 import com.huanli233.bilizepam.ui.components.TopBar
 import com.huanli233.bilizepam.ui.components.WearTopBar
+import com.tbuonomo.viewpagerdotsindicator.compose.DotsIndicator
+import com.tbuonomo.viewpagerdotsindicator.compose.model.DotGraphic
+import com.tbuonomo.viewpagerdotsindicator.compose.type.WormIndicatorType
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -195,60 +200,67 @@ fun VideoDetailScreen(
                         )
                     }
                     uiState.videoInfo != null -> {
-                        HorizontalPager(
-                            state = pagerState,
-                            modifier = Modifier.weight(1f)
-                        ) { page ->
-                            when (page) {
-                                0 -> VideoDetailContent(
-                                    uiState = uiState,
-                                    padding = PaddingValues(),
-                                    onLikeClick = { viewModel.like() },
-                                    onCoinClick = { showCoinDialog = true },
-                                    onFavoriteClick = {
-                                        viewModel.loadFavoriteFolders()
-                                        showFavoriteDialog = true
-                                    },
-                                    onWatchLaterClick = { viewModel.addToWatchLater() },
-                                    onDownloadClick = { showDownloadDialog = true },
-                                    onShareClick = { },
-                                    onPlayClick = {
-                                        uiState.videoInfo?.let { video ->
-                                            navController.navigate("player/${video.aid}/${video.cid}")
-                                        }
-                                    },
-                                    onCoverClick = {
-                                        uiState.videoInfo?.let { video ->
-                                            val encodedUrl = java.net.URLEncoder.encode(video.pic, "UTF-8")
-                                            navController.navigate("image_viewer/$encodedUrl/0")
-                                        }
-                                    },
-                                    onUploaderClick = { mid ->
-                                        navController.navigate("user/$mid")
-                                    },
-                                    onCollectionClick = { seasonId ->
-                                        navController.navigate("collection/$seasonId")
-                                    },
-                                    onTagClick = { }
-                                )
-                                1 -> CommentPlaceholder()
-                                2 -> RecommendPlaceholder()
+                        Box(modifier = Modifier.weight(1f)) {
+                            HorizontalPager(
+                                state = pagerState,
+                                modifier = Modifier.fillMaxSize()
+                            ) { page ->
+                                when (page) {
+                                    0 -> VideoDetailContent(
+                                        uiState = uiState,
+                                        padding = PaddingValues(),
+                                        onLikeClick = { viewModel.like() },
+                                        onCoinClick = { showCoinDialog = true },
+                                        onFavoriteClick = {
+                                            viewModel.loadFavoriteFolders()
+                                            showFavoriteDialog = true
+                                        },
+                                        onWatchLaterClick = { viewModel.addToWatchLater() },
+                                        onDownloadClick = { showDownloadDialog = true },
+                                        onShareClick = { },
+                                        onPlayClick = {
+                                            uiState.videoInfo?.let { video ->
+                                                navController.navigate("player/${video.aid}/${video.cid}")
+                                            }
+                                        },
+                                        onCoverClick = {
+                                            uiState.videoInfo?.let { video ->
+                                                val encodedUrl = java.net.URLEncoder.encode(video.pic, "UTF-8")
+                                                navController.navigate("image_viewer/$encodedUrl/0")
+                                            }
+                                        },
+                                        onUploaderClick = { mid ->
+                                            navController.navigate("user/$mid")
+                                        },
+                                        onCollectionClick = { seasonId ->
+                                            navController.navigate("collection/$seasonId")
+                                        },
+                                        onTagClick = { }
+                                    )
+                                    1 -> CommentPlaceholder()
+                                    2 -> RecommendPlaceholder()
+                                }
                             }
-                        }
-                        
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            WormDotsIndicator(
-                                totalDots = 3,
-                                selectedIndex = pagerState.currentPage,
-                                dotSize = 8.dp,
+                            
+                            DotsIndicator(
+                                modifier = Modifier
+                                    .align(Alignment.BottomCenter)
+                                    .padding(bottom = PaddingDefaults.verticalOptContentPadding()),
+                                dotCount = pagerState.pageCount,
                                 dotSpacing = 8.dp,
-                                selectedColor = MaterialTheme.colorScheme.primary,
-                                unselectedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+                                type = WormIndicatorType(
+                                    dotsGraphic = DotGraphic(
+                                        16.dp,
+                                        borderWidth = 2.dp,
+                                        borderColor = MaterialTheme.colorScheme.primary,
+                                        color = Color.Transparent,
+                                    ),
+                                    wormDotGraphic = DotGraphic(
+                                        16.dp,
+                                        color = MaterialTheme.colorScheme.primary,
+                                    )
+                                ),
+                                pagerState = pagerState
                             )
                         }
                     }
@@ -1017,49 +1029,6 @@ private fun UploaderItem(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-            }
-        }
-    }
-}
-
-@Composable
-private fun WormDotsIndicator(
-    totalDots: Int,
-    selectedIndex: Int,
-    selectedColor: Color,
-    unselectedColor: Color,
-    dotSize: androidx.compose.ui.unit.Dp,
-    dotSpacing: androidx.compose.ui.unit.Dp,
-    modifier: Modifier = Modifier
-) {
-    val spacing = dotSpacing.value
-    val size = dotSize.value
-    
-    Canvas(
-        modifier = modifier
-            .width((totalDots * (size + spacing) - spacing).dp)
-            .height(size.dp)
-    ) {
-        val canvasWidth = this.size.width
-        val canvasHeight = this.size.height
-        val dotRadius = size / 2
-        
-        repeat(totalDots) { index ->
-            val x = (index * (size + spacing) + dotRadius) * density
-            val y = canvasHeight / 2
-            
-            if (index == selectedIndex) {
-                drawCircle(
-                    color = selectedColor,
-                    radius = dotRadius * density * 1.5f,
-                    center = androidx.compose.ui.geometry.Offset(x, y)
-                )
-            } else {
-                drawCircle(
-                    color = unselectedColor,
-                    radius = dotRadius * density,
-                    center = androidx.compose.ui.geometry.Offset(x, y)
-                )
             }
         }
     }

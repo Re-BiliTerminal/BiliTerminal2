@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,9 +29,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
+import androidx.wear.compose.material3.PaddingDefaults
 import androidx.wear.compose.material3.ScreenScaffold
+import androidx.wear.compose.material3.verticalContentPadding
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.ui.components.WearTopBar
+import com.tbuonomo.viewpagerdotsindicator.compose.DotsIndicator
+import com.tbuonomo.viewpagerdotsindicator.compose.model.DotGraphic
+import com.tbuonomo.viewpagerdotsindicator.compose.type.WormIndicatorType
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -41,21 +48,23 @@ fun LoginScreenHost(
     val pagerState = rememberPagerState(pageCount = { 2 })
 
     ScreenScaffold {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize().padding(vertical = PaddingDefaults.verticalOptContentPadding())) {
             Column(modifier = Modifier.fillMaxSize()) {
                 WearTopBar(
                     title = stringResource(R.string.login),
                     showBackIcon = true,
                     modifier = Modifier.clickable { onSkip() }
                 )
-                
+
+                val scope = rememberCoroutineScope()
+
                 HorizontalPager(
                     state = pagerState,
                     modifier = Modifier.weight(1f)
                 ) { page ->
                     when (page) {
                         0 -> QrCodeLoginScreen(
-                            onNavigateToImport = { },
+                            onNavigateToImport = { scope.launch { pagerState.animateScrollToPage(1) } },
                             onSkip = onSkip,
                             onLoginSuccess = onLoginSuccess
                         )
@@ -64,22 +73,25 @@ fun LoginScreenHost(
                         )
                     }
                 }
-                
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    WormDotsIndicator(
-                        totalDots = 2,
-                        selectedIndex = pagerState.currentPage,
-                        dotSize = 8.dp,
-                        dotSpacing = 8.dp,
-                        selectedColor = MaterialTheme.colorScheme.primary,
-                        unselectedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
-                    )
-                }
+
+                DotsIndicator(
+                    modifier = Modifier.padding(bottom = PaddingDefaults.verticalOptContentPadding()),
+                    dotCount = pagerState.pageCount,
+                    dotSpacing = 8.dp,
+                    type = WormIndicatorType(
+                        dotsGraphic = DotGraphic(
+                            16.dp,
+                            borderWidth = 2.dp,
+                            borderColor = MaterialTheme.colorScheme.primary,
+                            color = Color.Transparent,
+                        ),
+                        wormDotGraphic = DotGraphic(
+                            16.dp,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    ),
+                    pagerState = pagerState
+                )
             }
         }
     }

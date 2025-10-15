@@ -35,6 +35,7 @@ import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.ui.PlayerView
+import androidx.wear.compose.material3.PaddingDefaults
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.verticalContentPadding
 import com.huanli233.bilizepam.ui.dialog.AdaptDialog
@@ -174,7 +175,8 @@ fun PlayerScreen(
 
     ScreenScaffold {
         Surface(
-            modifier = Modifier.fillMaxSize().padding(vertical = verticalContentPadding()),
+            modifier = Modifier.fillMaxSize()
+                .padding(vertical = PaddingDefaults.verticalOptContentPadding()),
             color = MaterialTheme.colorScheme.surface
         ) {
             AndroidView(
@@ -397,7 +399,7 @@ fun PlayerControls(
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopCenter)
-                        .padding(top = verticalContentPadding())
+                        .padding(top = PaddingDefaults.verticalOptContentPadding())
                 ) {
                     IconButton(
                         onClick = onBackClick,
@@ -425,7 +427,7 @@ fun PlayerControls(
                             Color.Black.copy(alpha = 0.6f)
                         )
                         .padding(horizontal = 16.dp, vertical = 3.dp)
-                        .padding(top = verticalContentPadding())
+                        .padding(top = PaddingDefaults.verticalOptContentPadding())
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
