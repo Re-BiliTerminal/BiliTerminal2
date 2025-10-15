@@ -145,6 +145,7 @@ internal class BilibiliApiInterceptor(
 
     private fun Request.Builder.addHeaders(): Request.Builder = apply {
         header(HeaderNames.USER_AGENT, HeaderValues.USER_AGENT_VAL)
+        header(HeaderNames.REFERER, HeaderValues.REFERER)
         header(HeaderNames.SEC_CH_UA, HeaderValues.SEC_CH_UA)
         header(HeaderNames.SEC_CH_UA_PLATFORM, HeaderValues.SEC_CH_UA_PLATFORM)
         header(HeaderNames.SEC_CH_UA_MOBILE, HeaderValues.SEC_CH_UA_MOBILE)
@@ -213,5 +214,5 @@ private fun newCookie(name: String, value: String) =
     Cookie.Builder()
         .name(name)
         .value(value)
-        .domain(".bilibili.com")
+        .domain("bilibili.com")
         .build()

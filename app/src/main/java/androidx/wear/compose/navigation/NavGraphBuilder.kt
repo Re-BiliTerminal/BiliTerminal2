@@ -47,3 +47,20 @@ public fun NavGraphBuilder.wearComposable(
         }
     )
 }
+
+/**
+ * Utility function for building Wear Compose navigation graphs.
+ *
+ * Adds the content composable to the [NavGraphBuilder] as a [WearNavigator.Destination].
+ *
+ * @param route route for the destination
+ * @param arguments list of arguments to associate with destination
+ * @param deepLinks list of deep links to associate with the destinations
+ * @param content composable for the destination
+ */
+public fun NavGraphBuilder.composable(
+    route: String,
+    arguments: List<NamedNavArgument> = emptyList(),
+    deepLinks: List<NavDeepLink> = emptyList(),
+    content: @Composable (NavBackStackEntry) -> Unit,
+) = wearComposable(route, arguments, deepLinks, content)

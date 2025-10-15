@@ -24,8 +24,7 @@ fun DownloadDialog(
     onConfirm: (selectedPages: List<VideoPage>) -> Unit
 ) {
     val selectedPages = remember { mutableStateMapOf<Int, Boolean>() }
-    
-    // 默认选中第一个
+
     LaunchedEffect(pages) {
         if (pages.isNotEmpty() && selectedPages.isEmpty()) {
             selectedPages[0] = true
@@ -60,7 +59,7 @@ fun DownloadDialog(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(400.dp)
+                    .requiredHeightIn(max = 400.dp)
             ) {
                 Row(
                     modifier = Modifier

@@ -5,6 +5,7 @@ object HeaderNames {
     const val COOKIES: String = "Cookie"
     const val SET_COOKIE: String = "Set-Cookie"
     const val CONTENT_TYPE: String = "Content-Type"
+    const val REFERER: String = "Referer"
     const val SEC_CH_UA: String = "Sec-Ch-Ua"
     const val SEC_CH_UA_PLATFORM: String = "Sec-Ch-Ua-Platform"
     const val SEC_CH_UA_MOBILE: String = "Sec-Ch-Ua-Mobile"

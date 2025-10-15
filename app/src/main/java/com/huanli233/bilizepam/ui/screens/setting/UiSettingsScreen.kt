@@ -1,15 +1,10 @@
 package com.huanli233.bilizepam.ui.screens.setting
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.KeyboardOptions
@@ -35,9 +30,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
+import androidx.wear.compose.material3.ScreenScaffold
+import androidx.wear.compose.materialcore.toVerticalPadding
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.data.proto.NightMode
 import com.huanli233.bilizepam.ui.activity.setup.UiPreviewActivity
+import com.huanli233.bilizepam.ui.components.WearTopBar
 import com.huanli233.bilizepam.ui.dialog.AdaptDialog
 import com.huanli233.bilizepam.ui.navigation.Screen
 import splitties.activities.start
@@ -57,70 +57,53 @@ fun UiSettingsScreen(
     val currentSettings = settings ?: return
 
     val context = LocalContext.current
+    val scrollState = rememberScalingLazyListState(initialCenterItemIndex = 0)
 
-    LazyColumn {
-        item {
-            AnimatedVisibility(
-                visible = true,
-                enter = fadeIn(tween(300, delayMillis = 0)) + 
-                        slideInVertically(tween(300, delayMillis = 0)) { it / 4 }
-            ) {
+    ScreenScaffold(scrollState = scrollState) {
+        ScalingLazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            state = scrollState,
+            contentPadding = it.toVerticalPadding()
+        ) {
+            item {
+                WearTopBar(
+                    title = stringResource(id = R.string.settings_ui),
+                    showBackIcon = true
+                )
+            }
+
+            item {
                 SettingsItem(
                     title = stringResource(id = R.string.view_preview),
                     onClick = { context.start<UiPreviewActivity>() }
                 )
             }
-        }
 
-        item { 
-            AnimatedVisibility(
-                visible = true,
-                enter = fadeIn(tween(300, delayMillis = 50))
-            ) {
+            item {
                 SettingsCategory(title = stringResource(id = R.string.scale))
             }
-        }
-        item {
-            AnimatedVisibility(
-                visible = true,
-                enter = fadeIn(tween(300, delayMillis = 100)) + 
-                        slideInVertically(tween(300, delayMillis = 100)) { it / 4 }
-            ) {
+
+            item {
                 SettingsItem(
                     title = stringResource(id = R.string.interface_scale),
                     summary = stringResource(R.string.setting_ui_desc),
                     onClick = { showUiScaleDialog = true }
                 )
             }
-        }
-        item {
-            AnimatedVisibility(
-                visible = true,
-                enter = fadeIn(tween(300, delayMillis = 150)) + 
-                        slideInVertically(tween(300, delayMillis = 150)) { it / 4 }
-            ) {
+
+            item {
                 SettingsItem(
                     title = stringResource(id = R.string.density),
                     summary = stringResource(R.string.setting_ui_density_desc),
                     onClick = { showDensityDialog = true }
                 )
             }
-        }
 
-        item { 
-            AnimatedVisibility(
-                visible = true,
-                enter = fadeIn(tween(300, delayMillis = 200))
-            ) {
+            item {
                 SettingsCategory(title = stringResource(id = R.string.preference))
             }
-        }
-        item {
-            AnimatedVisibility(
-                visible = true,
-                enter = fadeIn(tween(300, delayMillis = 250)) + 
-                        slideInVertically(tween(300, delayMillis = 250)) { it / 4 }
-            ) {
+
+            item {
                 val nightModeEntries = stringArrayResource(R.array.dark_theme_modes)
                 val nightModeSummary = when(currentSettings.theme.nightMode) {
                     NightMode.NIGHT_MODE_AUTO -> nightModeEntries[0]
@@ -134,77 +117,47 @@ fun UiSettingsScreen(
                     onClick = { showNightModeDialog = true }
                 )
             }
-        }
-        item {
-            AnimatedVisibility(
-                visible = true,
-                enter = fadeIn(tween(300, delayMillis = 300)) + 
-                        slideInVertically(tween(300, delayMillis = 300)) { it / 4 }
-            ) {
+
+            item {
                 SwitchSettingsItem(
                     title = stringResource(id = R.string.system_accent_color),
                     checked = currentSettings.theme.followSystemAccent,
                     onCheckedChange = viewModel::updateFollowSystemAccent
                 )
             }
-        }
-        item {
-            AnimatedVisibility(
-                visible = true,
-                enter = fadeIn(tween(300, delayMillis = 350)) + 
-                        slideInVertically(tween(300, delayMillis = 350)) { it / 4 }
-            ) {
+
+            item {
                 SettingsItem(
                     title = stringResource(id = R.string.theme_color),
                     onClick = { navController.navigate(Screen.ThemeColor.route) }
                 )
             }
-        }
-        item {
-            AnimatedVisibility(
-                visible = true,
-                enter = fadeIn(tween(300, delayMillis = 400)) + 
-                        slideInVertically(tween(300, delayMillis = 400)) { it / 4 }
-            ) {
+
+            item {
                 SwitchSettingsItem(
                     title = stringResource(id = R.string.round_screen_adaptation),
                     checked = currentSettings.uiSettings.roundMode,
                     onCheckedChange = viewModel::updateRoundMode
                 )
             }
-        }
-        item {
-            AnimatedVisibility(
-                visible = true,
-                enter = fadeIn(tween(300, delayMillis = 450)) + 
-                        slideInVertically(tween(300, delayMillis = 450)) { it / 4 }
-            ) {
+
+            item {
                 SwitchSettingsItem(
                     title = stringResource(id = R.string.animation),
                     checked = currentSettings.theme.animationsEnabled,
                     onCheckedChange = viewModel::updateAnimations
                 )
             }
-        }
-        item {
-            AnimatedVisibility(
-                visible = true,
-                enter = fadeIn(tween(300, delayMillis = 500)) + 
-                        slideInVertically(tween(300, delayMillis = 500)) { it / 4 }
-            ) {
+
+            item {
                 SwitchSettingsItem(
                     title = stringResource(id = R.string.disable_fullscreen_dialog),
                     checked = currentSettings.theme.fullScreenDialogDisabled,
                     onCheckedChange = viewModel::updateDisableFullscreenDialog
                 )
             }
-        }
-        item {
-            AnimatedVisibility(
-                visible = true,
-                enter = fadeIn(tween(300, delayMillis = 550)) + 
-                        slideInVertically(tween(300, delayMillis = 550)) { it / 4 }
-            ) {
+
+            item {
                 SwitchSettingsItem(
                     title = stringResource(id = R.string.new_loading_animation),
                     checked = currentSettings.theme.newLoadingWidgetEnabled,

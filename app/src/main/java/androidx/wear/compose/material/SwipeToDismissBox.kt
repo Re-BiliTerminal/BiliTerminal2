@@ -22,7 +22,6 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Stable
@@ -78,8 +77,8 @@ import androidx.wear.compose.foundation.edgeSwipeToDismiss
 public fun SwipeToDismissBox(
     state: androidx.wear.compose.foundation.SwipeToDismissBoxState,
     modifier: Modifier = Modifier,
-    backgroundScrimColor: Color = MaterialTheme.colorScheme.background,
-    contentScrimColor: Color = MaterialTheme.colorScheme.background,
+    backgroundScrimColor: Color = MaterialTheme.colors.background,
+    contentScrimColor: Color = MaterialTheme.colors.background,
     backgroundKey: Any = SwipeToDismissKeys.Background,
     contentKey: Any = SwipeToDismissKeys.Content,
     hasBackground: Boolean = true,
@@ -151,8 +150,8 @@ public fun SwipeToDismissBox(
 public fun SwipeToDismissBox(
     state: SwipeToDismissBoxState,
     modifier: Modifier = Modifier,
-    backgroundScrimColor: Color = MaterialTheme.colorScheme.background,
-    contentScrimColor: Color = MaterialTheme.colorScheme.background,
+    backgroundScrimColor: Color = MaterialTheme.colors.background,
+    contentScrimColor: Color = MaterialTheme.colors.background,
     backgroundKey: Any = SwipeToDismissKeys.Background,
     contentKey: Any = SwipeToDismissKeys.Content,
     hasBackground: Boolean = true,
@@ -216,8 +215,8 @@ public fun SwipeToDismissBox(
     modifier: Modifier = Modifier,
     state: androidx.wear.compose.foundation.SwipeToDismissBoxState =
         androidx.wear.compose.foundation.rememberSwipeToDismissBoxState(),
-    backgroundScrimColor: Color = MaterialTheme.colorScheme.background,
-    contentScrimColor: Color = MaterialTheme.colorScheme.background,
+    backgroundScrimColor: Color = MaterialTheme.colors.background,
+    contentScrimColor: Color = MaterialTheme.colors.background,
     backgroundKey: Any = SwipeToDismissKeys.Background,
     contentKey: Any = SwipeToDismissKeys.Content,
     hasBackground: Boolean = true,
@@ -294,8 +293,8 @@ public fun SwipeToDismissBox(
     onDismissed: () -> Unit,
     modifier: Modifier = Modifier,
     state: SwipeToDismissBoxState = rememberSwipeToDismissBoxState(),
-    backgroundScrimColor: Color = MaterialTheme.colorScheme.background,
-    contentScrimColor: Color = MaterialTheme.colorScheme.background,
+    backgroundScrimColor: Color = MaterialTheme.colors.background,
+    contentScrimColor: Color = MaterialTheme.colors.background,
     backgroundKey: Any = SwipeToDismissKeys.Background,
     contentKey: Any = SwipeToDismissKeys.Content,
     hasBackground: Boolean = true,

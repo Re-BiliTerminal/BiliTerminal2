@@ -2,13 +2,16 @@ package com.huanli233.bilizepam.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.graphics.Color
 import com.huanli233.bilizepam.data.proto.NightMode
 import com.huanli233.bilizepam.data.setting.LocalData
 import com.materialkolor.rememberDynamicColorScheme
+import androidx.wear.compose.material3.ColorScheme as WearColorScheme
 
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
@@ -41,7 +44,6 @@ private val LightColors = lightColorScheme(
     outlineVariant = md_theme_light_outlineVariant,
     scrim = md_theme_light_scrim,
 )
-
 
 private val DarkColors = darkColorScheme(
     primary = md_theme_dark_primary,
@@ -89,18 +91,62 @@ fun BiliZepamTheme(
 
     val selectedColorThemeKey = LocalData.settings.theme.colorTheme
 
-    val seedColor = if (useSystemAccent) {
-        null
+    val colorScheme = if (useSystemAccent) {
+        // Use system dynamic colors
+        if (darkTheme) DarkColors else LightColors
     } else {
-        AppSeedColors.colorMap[selectedColorThemeKey] ?: AppSeedColors.MATERIAL_PURPLE
+        val seedColor = AppSeedColors.colorMap[selectedColorThemeKey] ?: AppSeedColors.MATERIAL_PURPLE
+        rememberDynamicColorScheme(seedColor = seedColor, isDark = darkTheme)
     }
 
-    val colorScheme = seedColor?.let {
-        rememberDynamicColorScheme(seedColor = seedColor, isDark = darkTheme)
-    } ?: if (darkTheme) DarkColors else LightColors
+    val wearColorScheme = colorScheme.toWearColorScheme()
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        content = content
+    androidx.compose.material3.MaterialTheme(
+        colorScheme = colorScheme
+    ) {
+        androidx.wear.compose.material3.MaterialTheme(
+            colorScheme = wearColorScheme,
+            content = {
+                CompositionLocalProvider(
+                    LocalContentColor provides colorScheme.onSurface
+                ) {
+                    content()
+                }
+            }
+        )
+    }
+}
+
+private fun androidx.compose.material3.ColorScheme.toWearColorScheme(): WearColorScheme {
+    return WearColorScheme(
+        primary = primary,
+        primaryDim = primaryContainer,
+        primaryContainer = primaryContainer,
+        onPrimary = onPrimary,
+        onPrimaryContainer = onPrimaryContainer,
+        secondary = secondary,
+        secondaryDim = secondaryContainer,
+        secondaryContainer = secondaryContainer,
+        onSecondary = onSecondary,
+        onSecondaryContainer = onSecondaryContainer,
+        tertiary = tertiary,
+        tertiaryDim = tertiaryContainer,
+        tertiaryContainer = tertiaryContainer,
+        onTertiary = onTertiary,
+        onTertiaryContainer = onTertiaryContainer,
+        surfaceContainerLow = surfaceVariant,
+        surfaceContainer = surfaceVariant,
+        surfaceContainerHigh = surface,
+        onSurface = onSurface,
+        onSurfaceVariant = onSurfaceVariant,
+        background = background,
+        onBackground = onBackground,
+        error = error,
+        errorDim = error,
+        errorContainer = errorContainer,
+        onError = onError,
+        onErrorContainer = onErrorContainer,
+        outline = outline,
+        outlineVariant = outlineVariant,
     )
 }

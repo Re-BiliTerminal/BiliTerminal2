@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -26,12 +27,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
@@ -70,11 +75,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -82,7 +87,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -100,6 +105,14 @@ import com.huanli233.bilizepam.utils.extensions.toTime
 import com.huanli233.biliwebapi.bean.user.UserInfo
 import kotlinx.coroutines.launch
 import androidx.core.graphics.toColorInt
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.wear.compose.foundation.isRoundDevice
+import androidx.wear.compose.material3.ScreenScaffold
+import androidx.wear.compose.material3.TimeText
+import androidx.wear.compose.materialcore.toVerticalPadding
+import com.huanli233.bilizepam.data.setting.LocalData
+import com.huanli233.bilizepam.ui.components.TopBar
+import com.huanli233.bilizepam.ui.components.WearTopBar
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -146,53 +159,100 @@ fun VideoDetailScreen(
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        when {
-            uiState.isLoading -> {
-                LoadingView(
-                    state = LoadingState.LOADING,
-                    modifier = Modifier.fillMaxSize()
+    val isRound = isRoundDevice() && LocalData.settings.uiSettings.roundMode
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    val pagerState = rememberPagerState(pageCount = { 3 })
+    
+    ScreenScaffold(
+        modifier = Modifier.fillMaxSize(),
+        timeText = if (isRound) { { TimeText() } } else null
+    ) { paddingValues ->
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                WearTopBar(
+                    title = stringResource(R.string.video_detail),
+                    modifier = Modifier.padding(PaddingValues(top = paddingValues.calculateTopPadding()))
                 )
-            }
-            uiState.error != null -> {
-                LoadingView(
-                    state = LoadingState.ERROR,
-                    errorMessage = uiState.error,
-                    onRetry = { viewModel.fetchData() },
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-            uiState.videoInfo != null -> {
-                VideoDetailWithPager(
-                    uiState = uiState,
-                    onLikeClick = { viewModel.like() },
-                    onCoinClick = { showCoinDialog = true },
-                    onFavoriteClick = { 
-                        viewModel.loadFavoriteFolders()
-                        showFavoriteDialog = true 
-                    },
-                    onWatchLaterClick = { viewModel.addToWatchLater() },
-                    onDownloadClick = { showDownloadDialog = true },
-                    onShareClick = { },
-                    onPlayClick = { 
-                        uiState.videoInfo?.let { video ->
-                            navController.navigate("player/${video.aid}/${video.cid}")
+                
+                when {
+                    uiState.isLoading -> {
+                        LoadingView(
+                            state = LoadingState.LOADING,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                        )
+                    }
+                    uiState.error != null -> {
+                        LoadingView(
+                            state = LoadingState.ERROR,
+                            errorMessage = uiState.error,
+                            onRetry = { viewModel.fetchData() },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                        )
+                    }
+                    uiState.videoInfo != null -> {
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier.weight(1f)
+                        ) { page ->
+                            when (page) {
+                                0 -> VideoDetailContent(
+                                    uiState = uiState,
+                                    padding = PaddingValues(),
+                                    onLikeClick = { viewModel.like() },
+                                    onCoinClick = { showCoinDialog = true },
+                                    onFavoriteClick = {
+                                        viewModel.loadFavoriteFolders()
+                                        showFavoriteDialog = true
+                                    },
+                                    onWatchLaterClick = { viewModel.addToWatchLater() },
+                                    onDownloadClick = { showDownloadDialog = true },
+                                    onShareClick = { },
+                                    onPlayClick = {
+                                        uiState.videoInfo?.let { video ->
+                                            navController.navigate("player/${video.aid}/${video.cid}")
+                                        }
+                                    },
+                                    onCoverClick = {
+                                        uiState.videoInfo?.let { video ->
+                                            val encodedUrl = java.net.URLEncoder.encode(video.pic, "UTF-8")
+                                            navController.navigate("image_viewer/$encodedUrl/0")
+                                        }
+                                    },
+                                    onUploaderClick = { mid ->
+                                        navController.navigate("user/$mid")
+                                    },
+                                    onCollectionClick = { seasonId ->
+                                        navController.navigate("collection/$seasonId")
+                                    },
+                                    onTagClick = { }
+                                )
+                                1 -> CommentPlaceholder()
+                                2 -> RecommendPlaceholder()
+                            }
                         }
-                    },
-                    onCoverClick = { 
-                        uiState.videoInfo?.let { video ->
-                            val encodedUrl = java.net.URLEncoder.encode(video.pic, "UTF-8")
-                            navController.navigate("image_viewer/$encodedUrl/0")
+                        
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            WormDotsIndicator(
+                                totalDots = 3,
+                                selectedIndex = pagerState.currentPage,
+                                dotSize = 8.dp,
+                                dotSpacing = 8.dp,
+                                selectedColor = MaterialTheme.colorScheme.primary,
+                                unselectedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+                            )
                         }
-                    },
-                    onUploaderClick = { mid ->
-                        navController.navigate("user/$mid")
-                    },
-                    onCollectionClick = { seasonId ->
-                        navController.navigate("collection/$seasonId")
-                    },
-                    onTagClick = { }
-                )
+                    }
+                }
             }
         }
     }
@@ -241,36 +301,6 @@ fun VideoDetailScreen(
     }
 }
 
-@Composable
-private fun VideoDetailWithPager(
-    uiState: VideoDetailUiState,
-    onLikeClick: () -> Unit,
-    onCoinClick: () -> Unit,
-    onFavoriteClick: () -> Unit,
-    onWatchLaterClick: () -> Unit,
-    onDownloadClick: () -> Unit,
-    onShareClick: () -> Unit,
-    onPlayClick: () -> Unit,
-    onCoverClick: () -> Unit,
-    onUploaderClick: (Long) -> Unit,
-    onCollectionClick: (Long) -> Unit,
-    onTagClick: (String) -> Unit
-) {
-    VideoDetailContent(
-        uiState = uiState,
-        onLikeClick = onLikeClick,
-        onCoinClick = onCoinClick,
-        onFavoriteClick = onFavoriteClick,
-        onWatchLaterClick = onWatchLaterClick,
-        onDownloadClick = onDownloadClick,
-        onShareClick = onShareClick,
-        onPlayClick = onPlayClick,
-        onCoverClick = onCoverClick,
-        onUploaderClick = onUploaderClick,
-        onCollectionClick = onCollectionClick,
-        onTagClick = onTagClick
-    )
-}
 
 @Composable
 private fun CommentPlaceholder() {
@@ -306,6 +336,7 @@ private fun RecommendPlaceholder() {
 @Composable
 private fun VideoDetailContent(
     uiState: VideoDetailUiState,
+    padding: PaddingValues,
     onLikeClick: () -> Unit,
     onCoinClick: () -> Unit,
     onFavoriteClick: () -> Unit,
@@ -325,18 +356,18 @@ private fun VideoDetailContent(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
-            .padding(horizontal = 16.dp)
-            .padding(bottom = 16.dp)
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 12.dp)
+            .padding(padding)
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .shadow(8.dp, RoundedCornerShape(16.dp))
                 .clickable(onClick = onCoverClick),
-            shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            shape = RoundedCornerShape(12.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Box {
                 AsyncImage(
@@ -344,23 +375,24 @@ private fun VideoDetailContent(
                     contentDescription = videoInfo.title,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(16f / 9f),
+                        .aspectRatio(16f / 10f),
                     contentScale = ContentScale.Crop
                 )
 
+                // 时长标签
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
-                        .padding(8.dp)
+                        .padding(6.dp)
                         .background(
-                            color = Color.Black.copy(alpha = 0.7f),
-                            shape = RoundedCornerShape(8.dp)
+                            color = Color.Black.copy(alpha = 0.75f),
+                            shape = RoundedCornerShape(6.dp)
                         )
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                        .padding(horizontal = 6.dp, vertical = 3.dp)
                 ) {
                     Text(
                         text = toTime(videoInfo.duration),
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.labelSmall,
                         color = Color.White,
                         fontWeight = FontWeight.Bold
                     )
@@ -368,32 +400,29 @@ private fun VideoDetailContent(
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-        // Title with badge
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Special video type badge
+        // Wear优化：紧凑的标题显示
+        Column(modifier = Modifier.fillMaxWidth()) {
+            // 特殊标签（如果有）
             val badgeText = when {
                 videoInfo.isUpowerExclusive -> "充电专属"
-                videoInfo.rights.isSteinGate == 1 -> "互动视频"
-                videoInfo.rights.is360 == 1 -> "全景视频"
-                !videoInfo.staff.isNullOrEmpty() -> "联合投稿"
+                videoInfo.rights.isSteinGate == 1 -> "互动"
+                videoInfo.rights.is360 == 1 -> "全景"
+                !videoInfo.staff.isNullOrEmpty() -> "联合"
                 else -> null
             }
 
             if (badgeText != null) {
                 Surface(
                     shape = RoundedCornerShape(4.dp),
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(end = 8.dp)
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    modifier = Modifier.padding(bottom = 4.dp)
                 ) {
                     Text(
                         text = badgeText,
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onError,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                         fontWeight = FontWeight.Bold
                     )
@@ -402,14 +431,15 @@ private fun VideoDetailContent(
 
             Text(
                 text = videoInfo.title,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.weight(1f)
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
             )
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         // Argue Info (争议信息)
         if (videoInfo.argueInfo.argueMsg.isNotEmpty()) {
@@ -430,7 +460,6 @@ private fun VideoDetailContent(
             Spacer(modifier = Modifier.height(12.dp))
         }
 
-        // Uploader List
         val uploaders = remember(videoInfo) {
             if (videoInfo.staff.isNullOrEmpty()) {
                 listOf(videoInfo.owner)
@@ -440,12 +469,20 @@ private fun VideoDetailContent(
         }
         
         if (uploaders.isNotEmpty()) {
-            UploaderList(
-                uploaders = uploaders,
-                onNavigateToProfile = onUploaderClick,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(12.dp))
+            ExpandableSection(
+                title = if (uploaders.size == 1) {
+                    stringResource(R.string.video_uploader)
+                } else {
+                    stringResource(R.string.video_uploaders, uploaders.size)
+                },
+                initiallyExpanded = uploaders.size == 1
+            ) {
+                UploaderList(
+                    uploaders = uploaders,
+                    onNavigateToProfile = onUploaderClick
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
         }
 
         // Collection Info (合集信息)
@@ -485,41 +522,75 @@ private fun VideoDetailContent(
             Spacer(modifier = Modifier.height(12.dp))
         }
 
-        Row(
+        // Wear优化：紧凑的统计信息
+        Column(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            StatItem(
-                icon = painterResource(R.drawable.icon_play_16),
-                text = videoInfo.stat.view.formatNumber("万", "亿")
-            )
-            StatItem(
-                icon = painterResource(R.drawable.icon_danmaku),
-                text = videoInfo.stat.danmaku.formatNumber("万", "亿")
-            )
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            InfoItem(
-                icon = Icons.Outlined.DateRange,
-                text = videoInfo.ctime.formatToDate()
-            )
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        InfoItem(
-            icon = painterResource(R.drawable.icon_movie_16),
-            text = videoInfo.bvid,
-            modifier = Modifier.clickable {
-                /* TODO: Copy BV号 */
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.icon_play_16),
+                        contentDescription = null,
+                        modifier = Modifier.size(14.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = videoInfo.stat.view.formatNumber("万", "亿"),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.icon_danmaku),
+                        contentDescription = null,
+                        modifier = Modifier.size(14.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = videoInfo.stat.danmaku.formatNumber("万", "亿"),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
-        )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.DateRange,
+                    contentDescription = null,
+                    modifier = Modifier.size(14.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = videoInfo.ctime.formatToDate(),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -561,36 +632,38 @@ private fun VideoDetailContent(
             Spacer(modifier = Modifier.height(16.dp))
         }
 
+        // Wear优化：紧凑的播放按钮
         Button(
             onClick = onPlayClick,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
-            shape = RoundedCornerShape(12.dp)
+                .height(44.dp),
+            shape = RoundedCornerShape(10.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.PlayArrow,
                 contentDescription = null,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(20.dp)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(6.dp))
             Text(
                 text = stringResource(R.string.action_play),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold
             )
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Wear优化：紧凑的操作按钮行
+        val isLiked = uiState.relation?.like == true
+        val hasCoined = uiState.relation?.coin?.let { it > 0 } == true
+        val isFavorited = uiState.relation?.favorite == true
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            val isLiked = uiState.relation?.like == true
-            val hasCoined = uiState.relation?.coin?.let { it > 0 } == true
-            val isFavorited = uiState.relation?.favorite == true
-
             ActionButton(
                 icon = Icons.Outlined.ThumbUp,
                 text = videoInfo.stat.like.formatNumber("万", "亿"),
@@ -619,33 +692,27 @@ private fun VideoDetailContent(
             )
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-        // Additional Actions
-        Row(
+        FilledTonalButton(
+            onClick = onWatchLaterClick,
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            shape = RoundedCornerShape(12.dp)
         ) {
-            OutlinedButton(
-                onClick = onWatchLaterClick,
-                modifier = Modifier.weight(1f),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text(stringResource(R.string.action_watch_later))
-            }
+            Text(stringResource(R.string.action_watch_later))
+        }
 
-            OutlinedButton(
-                onClick = onDownloadClick,
-                modifier = Modifier.weight(1f),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text(stringResource(R.string.action_download))
-            }
+        FilledTonalButton(
+            onClick = onDownloadClick,
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Text(stringResource(R.string.action_download))
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedButton(
+        FilledTonalButton(
             onClick = onShareClick,
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp)
@@ -777,7 +844,6 @@ private fun ExpandableSection(
     }
 }
 
-// 新的InfoItem用于键值对显示
 @Composable
 private fun InfoItem(
     label: String,
@@ -951,6 +1017,49 @@ private fun UploaderItem(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun WormDotsIndicator(
+    totalDots: Int,
+    selectedIndex: Int,
+    selectedColor: Color,
+    unselectedColor: Color,
+    dotSize: androidx.compose.ui.unit.Dp,
+    dotSpacing: androidx.compose.ui.unit.Dp,
+    modifier: Modifier = Modifier
+) {
+    val spacing = dotSpacing.value
+    val size = dotSize.value
+    
+    Canvas(
+        modifier = modifier
+            .width((totalDots * (size + spacing) - spacing).dp)
+            .height(size.dp)
+    ) {
+        val canvasWidth = this.size.width
+        val canvasHeight = this.size.height
+        val dotRadius = size / 2
+        
+        repeat(totalDots) { index ->
+            val x = (index * (size + spacing) + dotRadius) * density
+            val y = canvasHeight / 2
+            
+            if (index == selectedIndex) {
+                drawCircle(
+                    color = selectedColor,
+                    radius = dotRadius * density * 1.5f,
+                    center = androidx.compose.ui.geometry.Offset(x, y)
+                )
+            } else {
+                drawCircle(
+                    color = unselectedColor,
+                    radius = dotRadius * density,
+                    center = androidx.compose.ui.geometry.Offset(x, y)
+                )
             }
         }
     }

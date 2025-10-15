@@ -1,17 +1,16 @@
 package com.huanli233.bilizepam.ui.navigation
 
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
-import androidx.navigation.navigation
+import androidx.wear.compose.navigation.composable
 import com.huanli233.bilizepam.ui.screens.login.LoginScreenHost
 
-fun NavGraphBuilder.loginGraph(onLoginSuccess: () -> Unit, onSkip: () -> Unit) {
-    navigation(
-        route = NavGraph.LOGIN,
-        startDestination = "login"
-    ) {
-        composable("login") {
-            LoginScreenHost(onLoginSuccess = onLoginSuccess, onSkip = onSkip)
-        }
+fun NavGraphBuilder.loginGraph(
+    navController: NavController,
+    onLoginSuccess: () -> Unit,
+    onSkip: () -> Unit
+) {
+    composable(NavGraph.LOGIN) {
+        LoginScreenHost(onLoginSuccess = onLoginSuccess, onSkip = onSkip)
     }
 }

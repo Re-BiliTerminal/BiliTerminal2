@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -19,9 +17,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
+import androidx.wear.compose.material3.ScreenScaffold
+import com.huanli233.bilizepam.R
+import com.huanli233.bilizepam.ui.components.WearTopBar
 import com.huanli233.bilizepam.ui.theme.AppSeedColors
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -35,6 +39,7 @@ fun ThemeColorScreen(
     val currentThemeKey = settings?.theme?.colorTheme
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val scrollState = rememberScalingLazyListState(initialCenterItemIndex = 0)
 
     fun formatThemeName(key: String): String {
         return key.split('_').joinToString(" ") { word ->
@@ -43,39 +48,52 @@ fun ThemeColorScreen(
         }
     }
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        items(AppSeedColors.colorMap.keys.toList()) { themeKey ->
-            val isSelected = currentThemeKey == themeKey
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .selectable(
-                        selected = isSelected,
-                        onClick = {
-                            if (!isSelected) {
-                                scope.launch {
-                                    viewModel.updateColorTheme(themeKey)
-                                    (context as? Activity)?.recreate()
+    ScreenScaffold(scrollState = scrollState) {
+        ScalingLazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            state = scrollState
+        ) {
+            item {
+                WearTopBar(
+                    title = stringResource(id = R.string.theme_color),
+                    showBackIcon = true
+                )
+            }
+
+            items(
+                count = AppSeedColors.colorMap.keys.size,
+                key = { index -> AppSeedColors.colorMap.keys.toList()[index] }
+            ) { index ->
+                val themeKey = AppSeedColors.colorMap.keys.toList()[index]
+                val isSelected = currentThemeKey == themeKey
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .selectable(
+                            selected = isSelected,
+                            onClick = {
+                                if (!isSelected) {
+                                    scope.launch {
+                                        viewModel.updateColorTheme(themeKey)
+                                        (context as? Activity)?.recreate()
+                                    }
                                 }
-                            }
-                        },
-                        role = Role.RadioButton
+                            },
+                            role = Role.RadioButton
+                        )
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(
+                        selected = isSelected,
+                        onClick = null
                     )
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                RadioButton(
-                    selected = isSelected,
-                    onClick = null
-                )
-                Text(
-                    text = formatThemeName(themeKey),
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(start = 16.dp)
-                )
+                    Text(
+                        text = formatThemeName(themeKey),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(start = 12.dp)
+                    )
+                }
             }
         }
     }

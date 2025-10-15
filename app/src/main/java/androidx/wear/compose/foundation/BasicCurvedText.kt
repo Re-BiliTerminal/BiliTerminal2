@@ -504,11 +504,23 @@ internal class CurvedTextDelegate {
                 .toString()
         }
 
-        val layout =
+        val layout = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             StaticLayout.Builder.obtain(text, 0, text.length, paint, ellipsizedWidth)
                 .setEllipsize(null)
                 .setMaxLines(1)
                 .build()
+        } else {
+            @Suppress("DEPRECATION")
+            StaticLayout(
+                text,
+                paint,
+                ellipsizedWidth,
+                android.text.Layout.Alignment.ALIGN_NORMAL,
+                1.0f,
+                0.0f,
+                true
+            )
+        }
 
         // Cut text that it's too big when in TextOverFlow.Clip mode.
         return text.substring(0, layout.getLineEnd(0))

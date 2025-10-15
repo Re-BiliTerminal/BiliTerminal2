@@ -16,6 +16,7 @@
 
 package androidx.wear.compose.foundation
 
+import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
@@ -23,5 +24,11 @@ import androidx.compose.ui.platform.LocalConfiguration
 @Composable
 internal fun isRoundDevice(): Boolean {
     val configuration = LocalConfiguration.current
-    return remember(configuration) { configuration.isScreenRound }
+    return remember(configuration) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            configuration.isScreenRound
+        } else {
+            false
+        }
+    }
 }

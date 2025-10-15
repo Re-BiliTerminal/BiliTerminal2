@@ -5,7 +5,7 @@ import com.huanli233.bilizepam.R
 
 object NavGraph {
     const val SETUP = "setup_graph"
-    const val LOGIN = "login_graph"
+    const val LOGIN = "login"
     const val MAIN = "main_graph"
 }
 

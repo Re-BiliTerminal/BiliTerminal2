@@ -1,69 +1,56 @@
 package com.huanli233.bilizepam.ui.screens.setup
 
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
+import androidx.wear.compose.material3.ScreenScaffold
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.data.proto.NightMode
 import com.huanli233.bilizepam.data.setting.LocalData
 import com.huanli233.bilizepam.data.setting.edit
 import com.huanli233.bilizepam.ui.activity.setup.UiPreviewActivity
+import com.huanli233.bilizepam.ui.components.WearTopBar
+import com.huanli233.bilizepam.ui.dialog.AdaptDialog
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import splitties.activities.start
-
-object SetupNavRoutes {
-    const val WELCOME = "welcome"
-    const val UI_SETUP = "ui_setup"
-}
-
-@Composable
-fun WelcomeScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = stringResource(id = R.string.setup_introduction),
-            fontSize = 12.sp,
-            modifier = Modifier.padding(horizontal = 5.dp)
-        )
-    }
-}
 
 data class UiSetupState(
     val roundMode: Boolean = false,
@@ -99,6 +86,10 @@ class UiSetupViewModel : ViewModel() {
                         uiScale = it
                     }
                 }
+                theme = theme.edit {
+                    animationsEnabled = currentState.animationsEnabled
+                    nightMode = currentState.nightMode
+                }
             }
         }
     }
@@ -133,104 +124,215 @@ class UiSetupViewModel : ViewModel() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UiSetupScreen(viewModel: UiSetupViewModel = viewModel()) {
+fun SetupScreen(
+    onSetupComplete: () -> Unit,
+    viewModel: UiSetupViewModel = viewModel()
+) {
+    var currentStep by remember { mutableIntStateOf(0) }
     val state by viewModel.uiState.collectAsState()
-    val context = LocalContext.current
-    val darkThemeModes = remember { context.resources.getStringArray(R.array.dark_theme_modes) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 10.dp, vertical = 7.dp)
-            .padding(bottom = 30.dp)
-    ) {
-        SettingSwitchItem(
-            text = stringResource(R.string.round_screen_adaptation),
-            checked = state.roundMode,
-            onCheckedChange = viewModel::onRoundModeChanged
-        )
-
-        var isDropdownExpanded by remember { mutableStateOf(false) }
-        ExposedDropdownMenuBox(
-            expanded = isDropdownExpanded,
-            onExpandedChange = { isDropdownExpanded = !isDropdownExpanded },
-            modifier = Modifier.padding(top = 2.dp)
-        ) {
-            val selectionIndex = when (state.nightMode) {
-                NightMode.NIGHT_MODE_AUTO, NightMode.UNRECOGNIZED -> 0
-                NightMode.NIGHT_MODE_DAY -> 1
-                NightMode.NIGHT_MODE_NIGHT -> 2
-            }
-            OutlinedTextField(
-                value = darkThemeModes.getOrElse(selectionIndex) { "" },
-                onValueChange = {},
-                readOnly = true,
-                label = { Text(stringResource(R.string.dark_theme)) },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .menuAnchor()
+    Box(modifier = Modifier.fillMaxSize()) {
+        when (currentStep) {
+            0 -> WelcomeStep(onNext = { currentStep = 1 })
+            1 -> UiSetupStep(
+                state = state,
+                viewModel = viewModel,
+                onNext = onSetupComplete
             )
-            ExposedDropdownMenu(
-                expanded = isDropdownExpanded,
-                onDismissRequest = { isDropdownExpanded = false }
-            ) {
-                darkThemeModes.forEachIndexed { index, text ->
-                    DropdownMenuItem(
-                        text = { Text(text) },
-                        onClick = {
-                            viewModel.onNightModeChanged(index)
-                            isDropdownExpanded = false
-                        },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                    )
-                }
-            }
-        }
-
-        Text(
-            text = stringResource(R.string.interface_scale),
-            fontWeight = FontWeight.Bold,
-            fontSize = 17.sp,
-            modifier = Modifier.padding(top = 16.dp, bottom = 2.dp)
-        )
-        OutlinedTextField(
-            value = state.uiScale,
-            onValueChange = viewModel::onUiScaleChanged,
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text(stringResource(R.string.interface_size)) },
-            isError = state.isUiScaleInvalid,
-            supportingText = {
-                if (state.isUiScaleInvalid) {
-                    Text(stringResource(R.string.invalid_value))
-                }
-            },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            singleLine = true
-        )
-        Text(
-            text = stringResource(R.string.interface_size_tip),
-            fontSize = 12.sp,
-            modifier = Modifier.padding(top = 2.dp)
-        )
-
-        Button(
-            onClick = { context.start<UiPreviewActivity>() },
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 16.dp)
-        ) {
-            Text(stringResource(R.string.view_preview))
         }
     }
 }
 
 @Composable
-fun SettingSwitchItem(
+private fun WelcomeStep(onNext: () -> Unit) {
+    val scrollState = rememberScalingLazyListState(initialCenterItemIndex = 0)
+
+    ScreenScaffold(scrollState = scrollState) {
+        ScalingLazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            state = scrollState
+        ) {
+            item {
+                WearTopBar(
+                    title = stringResource(R.string.welcome),
+                    showBackIcon = false
+                )
+            }
+            item {
+                Text(
+                    text = stringResource(id = R.string.setup_introduction),
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+            }
+            item {
+                Button(
+                    onClick = onNext,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    Text(stringResource(R.string.next))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun UiSetupStep(
+    state: UiSetupState,
+    viewModel: UiSetupViewModel,
+    onNext: () -> Unit
+) {
+    val scrollState = rememberScalingLazyListState(initialCenterItemIndex = 0)
+    val context = LocalContext.current
+    val darkThemeModes = remember { context.resources.getStringArray(R.array.dark_theme_modes) }
+
+    ScreenScaffold(scrollState = scrollState) {
+        ScalingLazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            state = scrollState
+        ) {
+            item {
+                WearTopBar(
+                    title = stringResource(R.string.initialize_setting),
+                    showBackIcon = false
+                )
+            }
+
+            item {
+                SettingSwitchItem(
+                    text = stringResource(R.string.round_screen_adaptation),
+                    checked = state.roundMode,
+                    onCheckedChange = viewModel::onRoundModeChanged
+                )
+            }
+
+            item {
+                val selectionIndex = when (state.nightMode) {
+                    NightMode.NIGHT_MODE_AUTO, NightMode.UNRECOGNIZED -> 0
+                    NightMode.NIGHT_MODE_DAY -> 1
+                    NightMode.NIGHT_MODE_NIGHT -> 2
+                }
+                var showDialog by remember { mutableStateOf(false) }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { showDialog = true }
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.dark_theme),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
+                    )
+                    Text(
+                        text = darkThemeModes.getOrElse(selectionIndex) { "" },
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
+
+                if (showDialog) {
+                    AdaptDialog(
+                        onDismissRequest = { showDialog = false },
+                        title = { Text(stringResource(R.string.dark_theme)) },
+                        text = {
+                            Column {
+                                darkThemeModes.forEachIndexed { index, mode ->
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable {
+                                                viewModel.onNightModeChanged(index)
+                                                showDialog = false
+                                            }
+                                            .padding(vertical = 12.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        RadioButton(
+                                            selected = index == selectionIndex,
+                                            onClick = {
+                                                viewModel.onNightModeChanged(index)
+                                                showDialog = false
+                                            }
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(text = mode)
+                                    }
+                                }
+                            }
+                        },
+                        confirmButton = {
+                            TextButton(onClick = { showDialog = false }) {
+                                Text(stringResource(R.string.cancel))
+                            }
+                        }
+                    )
+                }
+            }
+
+            item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.interface_scale),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
+                    )
+                    OutlinedTextField(
+                        value = state.uiScale,
+                        onValueChange = viewModel::onUiScaleChanged,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp),
+                        isError = state.isUiScaleInvalid,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        singleLine = true
+                    )
+                    if (state.isUiScaleInvalid) {
+                        Text(
+                            text = stringResource(R.string.invalid_value),
+                            fontSize = 10.sp,
+                            modifier = Modifier.padding(top = 2.dp)
+                        )
+                    }
+                }
+            }
+
+            item {
+                Button(
+                    onClick = { context.start<UiPreviewActivity>() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    Text(stringResource(R.string.view_preview))
+                }
+            }
+
+            item {
+                Button(
+                    onClick = onNext,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    Text(stringResource(android.R.string.ok))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SettingSwitchItem(
     text: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit
@@ -239,11 +341,11 @@ fun SettingSwitchItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onCheckedChange(!checked) }
-            .padding(vertical = 4.dp, horizontal = 4.dp),
+            .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text, modifier = Modifier.weight(1f))
+        Text(text, modifier = Modifier.weight(1f), fontSize = 14.sp)
         Switch(checked = checked, onCheckedChange = {})
     }
 }

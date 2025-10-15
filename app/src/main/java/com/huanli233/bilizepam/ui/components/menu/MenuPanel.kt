@@ -1,30 +1,27 @@
 package com.huanli233.bilizepam.ui.components.menu
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.PlaylistPlay
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
+import androidx.wear.compose.material3.ListHeader
+import androidx.wear.compose.material3.MaterialTheme
+import androidx.wear.compose.material3.ScreenScaffold
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.data.account.AccountManager
 import com.huanli233.bilizepam.data.menu.MenuItem
@@ -46,45 +43,65 @@ fun MenuPanelPreview() {
             title = R.string.settings,
             icon = Icons.Default.Settings
         ),
-    ), onSelect = {})
+    ), onSelect = {}, onDismiss = {})
 }
 
 @Composable
-fun MenuPanel(modifier: Modifier = Modifier, menuItems: List<MenuItem>, onSelect: (String) -> Unit) {
+fun MenuPanel(
+    modifier: Modifier = Modifier,
+    menuItems: List<MenuItem>,
+    onSelect: (String) -> Unit,
+    onDismiss: () -> Unit = {}
+) {
     val loggedIn = remember { AccountManager.loggedIn() }
-    Column(modifier.fillMaxWidth().padding(16.dp)) {
-        menuItems.forEachIndexed { index, item ->
-            if ((!item.requireLoggedIn && !loggedIn) ||
-                (!item.requireNotLoggedIn && loggedIn)) {
-                AnimatedVisibility(
-                    visible = true,
-                    enter = fadeIn(
-                        animationSpec = tween(durationMillis = 300, delayMillis = index * 50)
-                    ) + slideInHorizontally(
-                        initialOffsetX = { -it / 2 },
-                        animationSpec = tween(durationMillis = 300, delayMillis = index * 50)
+    val scrollState = rememberScalingLazyListState()
+    
+    val filteredItems = remember(menuItems, loggedIn) {
+        menuItems.filter { item ->
+            (!item.requireLoggedIn || loggedIn) &&
+            (!item.requireNotLoggedIn || !loggedIn)
+        }
+    }
+
+    BackHandler(onBack = onDismiss)
+
+    ScreenScaffold(scrollState = scrollState) {
+        ScalingLazyColumn(
+            modifier = modifier.fillMaxSize(),
+            state = scrollState,
+            contentPadding = it
+        ) {
+            item {
+                ListHeader {
+                    Text(
+                        text = stringResource(R.string.menu),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
                     )
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 5.dp, horizontal = 12.dp)
-                            .clip(RoundedCornerShape(50))
-                            .clickable { onSelect(item.destination) }
-                            .padding(vertical = 12.dp, horizontal = 12.dp)
-                    ) {
-                        Icon(
-                            item.icon,
-                            contentDescription = null,
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
+                }
+            }
+
+            items(filteredItems.size) { index ->
+                val item = filteredItems[index]
+                androidx.wear.compose.material.Chip(
+                    label = {
                         Text(
                             text = stringResource(id = item.title),
-                            style = MaterialTheme.typography.bodyLarge
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
-                    }
-                }
+                    },
+                    onClick = { onSelect(item.destination) },
+                    icon = {
+                        Icon(
+                            imageVector = item.icon,
+                            contentDescription = null
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                )
             }
         }
     }

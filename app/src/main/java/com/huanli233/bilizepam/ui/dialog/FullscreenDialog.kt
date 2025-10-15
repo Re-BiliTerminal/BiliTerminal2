@@ -78,6 +78,11 @@ fun BasicFullScreenDialog(
 ) {
     var showDialog by remember { mutableStateOf(true) }
     var isVisible by remember { mutableStateOf(false) }
+    
+    // 捕获当前主题的colorScheme
+    val currentColorScheme = MaterialTheme.colorScheme
+    val currentTypography = MaterialTheme.typography
+    val currentShapes = MaterialTheme.shapes
 
     LaunchedEffect(Unit) {
         awaitFrame()
@@ -99,6 +104,12 @@ fun BasicFullScreenDialog(
                 securePolicy = properties.securePolicy
             )
         ) {
+            // 在Dialog内重新提供MaterialTheme
+            MaterialTheme(
+                colorScheme = currentColorScheme,
+                typography = currentTypography,
+                shapes = currentShapes
+            ) {
             val dialogWindow = (LocalView.current.parent as? DialogWindowProvider)?.window
             val parentView = LocalView.current.parent as View
             val activityWindow = LocalView.current.context.getActivityWindow()
@@ -185,6 +196,7 @@ fun BasicFullScreenDialog(
             BackHandler(enabled = properties.dismissOnBackPress) {
                 dismiss()
             }
+            }
         }
     }
 }
@@ -199,10 +211,10 @@ fun FullScreenAlertDialog(
     title: @Composable (() -> Unit)? = null,
     text: @Composable (() -> Unit)? = null,
     shape: Shape = AlertDialogDefaults.shape,
-    containerColor: Color = AlertDialogDefaults.containerColor,
-    iconContentColor: Color = AlertDialogDefaults.iconContentColor,
-    titleContentColor: Color = AlertDialogDefaults.titleContentColor,
-    textContentColor: Color = AlertDialogDefaults.textContentColor,
+    containerColor: Color = MaterialTheme.colorScheme.surface,
+    iconContentColor: Color = MaterialTheme.colorScheme.onSurface,
+    titleContentColor: Color = MaterialTheme.colorScheme.onSurface,
+    textContentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     tonalElevation: Dp = AlertDialogDefaults.TonalElevation,
     properties: FullScreenDialogProperties = FullScreenDialogProperties()
 ) {

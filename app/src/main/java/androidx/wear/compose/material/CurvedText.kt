@@ -16,8 +16,6 @@
 
 package androidx.wear.compose.material
 
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.TextStyle
@@ -109,7 +107,7 @@ public fun CurvedScope.curvedText(
         val textColor =
             color.takeOrElse {
                 baseStyle.color.takeOrElse {
-                    LocalContentColor.current
+                    LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
                 }
             }
         baseStyle.merge(
@@ -191,7 +189,7 @@ public fun CurvedScope.curvedText(
         val textColor =
             color.takeOrElse {
                 baseStyle.color.takeOrElse {
-                    LocalContentColor.current
+                    LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
                 }
             }
         baseStyle.merge(

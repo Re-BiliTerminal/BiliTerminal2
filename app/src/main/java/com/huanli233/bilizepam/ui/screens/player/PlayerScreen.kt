@@ -6,6 +6,7 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -19,9 +20,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.offset
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.wear.compose.foundation.isRoundDevice
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -30,6 +35,8 @@ import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.ui.PlayerView
+import androidx.wear.compose.material3.ScreenScaffold
+import androidx.wear.compose.material3.verticalContentPadding
 import com.huanli233.bilizepam.ui.dialog.AdaptDialog
 import kotlinx.coroutines.delay
 import master.flame.danmaku.controller.DrawHandler
@@ -81,6 +88,8 @@ fun PlayerScreen(
     var danmakuParser by remember { mutableStateOf<BaseDanmakuParser?>(null) }
     var danmakuView by remember { mutableStateOf<DanmakuView?>(null) }
     var danmakuError by remember { mutableStateOf<String?>(null) }
+    var playbackSpeed by remember { mutableFloatStateOf(1f) }
+    var isLongPressing by remember { mutableStateOf(false) }
 
     val danmakuContext = remember {
         DanmakuContext.create().apply {
@@ -163,157 +172,180 @@ fun PlayerScreen(
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        AndroidView(
-            factory = { ctx ->
-                PlayerView(ctx).apply {
-                    player = exoPlayer
-                    useController = false
-                }
-            },
-            modifier = Modifier
-                .fillMaxSize()
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onTap = {
-                            showControls = !showControls
-                        },
-                        onDoubleTap = {
-                            if (isPlaying) exoPlayer.pause()
-                            else exoPlayer.play()
-                        }
-                    )
-                }
-        )
-
-        AnimatedVisibility(
-            visible = buffering,
-            enter = fadeIn(),
-            exit = fadeOut()
+    ScreenScaffold {
+        Surface(
+            modifier = Modifier.fillMaxSize().padding(vertical = verticalContentPadding()),
+            color = MaterialTheme.colorScheme.surface
         ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(48.dp),
-                )
-            }
-        }
-
-        var isDanmakuPrepared by remember { mutableStateOf(false) }
-        
-        // 控制弹幕的播放/暂停
-        LaunchedEffect(isPlaying, isDanmakuPrepared) {
-            if (isDanmakuPrepared && danmakuView != null) {
-                if (isPlaying) {
-                    danmakuView?.resume()
-                } else {
-                    danmakuView?.pause()
-                }
-            }
-        }
-        
-        // 控制弹幕的显示/隐藏
-        LaunchedEffect(uiState.isDanmakuVisible, isDanmakuPrepared) {
-            if (isDanmakuPrepared && danmakuView != null) {
-                if (uiState.isDanmakuVisible) {
-                    danmakuView?.show()
-                } else {
-                    danmakuView?.hide()
-                }
-            }
-        }
-        
-        // Show loading indicator while loading danmaku
-        if (uiState.isLoadingDanmaku) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Loading danmaku...")
-            }
-        }
-        
-        // Show error message if danmaku loading failed
-        danmakuError?.let { error ->
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Failed to load danmaku: $error",
-                    color = Color.Red,
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
-        }
-        
-        // Only show danmaku view if we have a parser and no errors
-        if (danmakuParser != null && danmakuError == null) {
             AndroidView(
                 factory = { ctx ->
-                    DanmakuView(ctx).apply {
-                        enableDanmakuDrawingCache(true)
-                        setCallback(object : DrawHandler.Callback {
-                            override fun prepared() {
-                                isDanmakuPrepared = true
-                                start()
-                                // 同步到当前播放位置
-                                seekTo(currentPosition)
-                                // 根据播放状态决定是否暂停
-                                if (!isPlaying) {
-                                    pause()
-                                }
-                            }
-                            override fun updateTimer(timer: DanmakuTimer) {}
-                            override fun danmakuShown(danmaku: BaseDanmaku?) {}
-                            override fun drawingFinished() {}
-                        })
-                        danmakuView = this
+                    PlayerView(ctx).apply {
+                        player = exoPlayer
+                        useController = false
                     }
                 },
-                modifier = Modifier.fillMaxSize(),
-                update = { view ->
-                    if (!isDanmakuPrepared && danmakuParser != null) {
-                        try {
-                            view.prepare(danmakuParser, danmakuContext)
-                        } catch (e: Exception) {
-                            Log.e("Danmaku", "Error preparing danmaku view", e)
-                            danmakuError = "Error preparing danmaku: ${e.message}"
-                        }
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = {
+                                showControls = !showControls
+                            },
+                            onDoubleTap = {
+                                if (isPlaying) exoPlayer.pause()
+                                else exoPlayer.play()
+                            },
+                            onLongPress = {
+                                isLongPressing = true
+                                playbackSpeed = 2f
+                                exoPlayer.setPlaybackSpeed(2f)
+                            },
+                            onPress = {
+                                val pressed = tryAwaitRelease()
+                                if (isLongPressing) {
+                                    isLongPressing = false
+                                    playbackSpeed = 1f
+                                    exoPlayer.setPlaybackSpeed(1f)
+                                }
+                            }
+                        )
+                    }
+            )
+
+            AnimatedVisibility(
+                visible = buffering,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(48.dp),
+                    )
+                }
+            }
+
+            var isDanmakuPrepared by remember { mutableStateOf(false) }
+
+            LaunchedEffect(isPlaying, isDanmakuPrepared) {
+                if (isDanmakuPrepared && danmakuView != null) {
+                    if (isPlaying) {
+                        danmakuView?.resume()
+                    } else {
+                        danmakuView?.pause()
                     }
                 }
-            )
-        }
+            }
 
-        PlayerControls(
-            visible = showControls,
-            isPlaying = isPlaying,
-            currentPosition = currentPosition,
-            duration = duration,
-            title = uiState.title,
-            onPlayPauseClick = {
-                if (isPlaying) exoPlayer.pause()
-                else exoPlayer.play()
-            },
-            onSeek = { position ->
-                exoPlayer.seekTo(position)
-                danmakuParser?.let {
-                    danmakuView?.seekTo(position)
+            LaunchedEffect(uiState.isDanmakuVisible, isDanmakuPrepared) {
+                if (isDanmakuPrepared && danmakuView != null) {
+                    if (uiState.isDanmakuVisible) {
+                        danmakuView?.show()
+                    } else {
+                        danmakuView?.hide()
+                    }
                 }
-            },
-            onBackClick = onNavigateBack,
-            onDanmakuToggle = { viewModel.toggleDanmaku() },
-            isDanmakuVisible = uiState.isDanmakuVisible
-        )
+            }
+
+            LaunchedEffect(playbackSpeed, isDanmakuPrepared) {
+                if (isDanmakuPrepared && danmakuView != null) {
+                    danmakuView?.setSpeed(playbackSpeed)
+                }
+            }
+
+            if (uiState.isLoadingDanmaku) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Loading danmaku...")
+                }
+            }
+
+            danmakuError?.let { error ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Failed to load danmaku: $error",
+                        color = Color.Red,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
+
+            if (danmakuParser != null && danmakuError == null) {
+                AndroidView(
+                    factory = { ctx ->
+                        DanmakuView(ctx).apply {
+                            enableDanmakuDrawingCache(true)
+                            setCallback(object : DrawHandler.Callback {
+                                override fun prepared() {
+                                    isDanmakuPrepared = true
+                                    start()
+                                    seekTo(currentPosition)
+                                    if (!isPlaying) {
+                                        pause()
+                                    }
+                                }
+                                override fun updateTimer(timer: DanmakuTimer) {}
+                                override fun danmakuShown(danmaku: BaseDanmaku?) {}
+                                override fun drawingFinished() {}
+                            })
+                            danmakuView = this
+                        }
+                    },
+                    modifier = Modifier.fillMaxSize(),
+                    update = { view ->
+                        if (!isDanmakuPrepared && danmakuParser != null) {
+                            try {
+                                view.prepare(danmakuParser, danmakuContext)
+                            } catch (e: Exception) {
+                                Log.e("Danmaku", "Error preparing danmaku view", e)
+                                danmakuError = "Error preparing danmaku: ${e.message}"
+                            }
+                        }
+                    }
+                )
+            }
+        }
     }
+
+    PlayerControls(
+        visible = showControls,
+        isPlaying = isPlaying,
+        currentPosition = currentPosition,
+        duration = duration,
+        title = uiState.title,
+        playbackSpeed = playbackSpeed,
+        isLongPressing = isLongPressing,
+        onPlayPauseClick = {
+            if (isPlaying) exoPlayer.pause()
+            else exoPlayer.play()
+        },
+        onSeek = { position ->
+            exoPlayer.seekTo(position)
+            danmakuParser?.let {
+                danmakuView?.seekTo(position)
+            }
+        },
+        onBackClick = onNavigateBack,
+        onDanmakuToggle = { viewModel.toggleDanmaku() },
+        isDanmakuVisible = uiState.isDanmakuVisible,
+        onSpeedChange = { speed ->
+            playbackSpeed = speed
+            exoPlayer.setPlaybackSpeed(speed)
+        }
+    )
 
     if (showPageSelector && uiState.pages.isNotEmpty()) {
         PageSelectorDialog(
@@ -345,66 +377,101 @@ fun PlayerControls(
     currentPosition: Long,
     duration: Long,
     title: String,
+    playbackSpeed: Float,
+    isLongPressing: Boolean,
     onPlayPauseClick: () -> Unit,
     onSeek: (Long) -> Unit,
     onBackClick: () -> Unit,
     onDanmakuToggle: () -> Unit,
-    isDanmakuVisible: Boolean
+    isDanmakuVisible: Boolean,
+    onSpeedChange: (Float) -> Unit
 ) {
+    val isRound = isRoundDevice()
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn(animationSpec = tween(300)),
         exit = fadeOut(animationSpec = tween(300))
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.TopCenter)
-                    .background(
-                        Color.Black.copy(alpha = 0.6f)
-                    )
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
+            if (isRound) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = verticalContentPadding())
                 ) {
-                    IconButton(onClick = onBackClick) {
+                    IconButton(
+                        onClick = onBackClick,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(
+                                Color.Black.copy(alpha = 0.6f),
+                                shape = CircleShape
+                            )
+                    ) {
                         Icon(
                             Icons.Default.ArrowBack,
                             contentDescription = null,
-                            tint = Color.White
+                            tint = Color.White,
+                            modifier = Modifier.size(20.dp)
                         )
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = title,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = Color.White,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f)
-                    )
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.TopCenter)
+                        .background(
+                            Color.Black.copy(alpha = 0.6f)
+                        )
+                        .padding(horizontal = 16.dp, vertical = 3.dp)
+                        .padding(top = verticalContentPadding())
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        IconButton(
+                            onClick = onBackClick,
+                            modifier = Modifier.size(40.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.ArrowBack,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = title,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.White,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
                 }
             }
 
-            IconButton(
-                onClick = onPlayPauseClick,
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .size(64.dp)
-                    .background(
-                        Color.Black.copy(alpha = 0.5f),
-                        shape = CircleShape
+            if (isLongPressing) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .background(
+                            Color.Black.copy(alpha = 0.7f),
+                            shape = CircleShape
+                        )
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    Text(
+                        text = "${playbackSpeed}x",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
                     )
-            ) {
-                Icon(
-                    imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(40.dp)
-                )
+                }
             }
 
             Column(
@@ -414,54 +481,202 @@ fun PlayerControls(
                     .background(
                         Color.Black.copy(alpha = 0.6f)
                     )
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                    .padding(
+                        horizontal = if (isRound) 12.dp else 16.dp,
+                        vertical = if (isRound) 12.dp else 12.dp
+                    )
             ) {
-                var sliderPosition by remember(currentPosition) {
-                    mutableFloatStateOf(currentPosition.toFloat())
-                }
+                var sliderPosition by remember { mutableFloatStateOf(0f) }
                 var isSeeking by remember { mutableStateOf(false) }
 
-                Slider(
-                    value = if (isSeeking) sliderPosition else currentPosition.toFloat(),
-                    onValueChange = {
-                        isSeeking = true
-                        sliderPosition = it
-                    },
-                    onValueChangeFinished = {
-                        onSeek(sliderPosition.toLong())
-                        isSeeking = false
-                    },
-                    valueRange = 0f..duration.toFloat().coerceAtLeast(1f),
-                    modifier = Modifier.fillMaxWidth()
-                )
+                LaunchedEffect(currentPosition) {
+                    if (!isSeeking) {
+                        sliderPosition = currentPosition.toFloat()
+                    }
+                }
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = formatTime(currentPosition),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.White
-                    )
-
-                    Row {
-                        IconButton(onClick = onDanmakuToggle) {
+                if (isRound) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            onClick = onPlayPauseClick,
+                            modifier = Modifier.size(36.dp)
+                        ) {
                             Icon(
-                                imageVector = if (isDanmakuVisible) Icons.Default.Visibility
-                                else Icons.Default.VisibilityOff,
+                                imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                                 contentDescription = null,
-                                tint = Color.White
+                                tint = Color.White,
+                                modifier = Modifier.size(24.dp)
                             )
+                        }
+
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "${formatTime(currentPosition)} / ${formatTime(duration)}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = Color.White
+                            )
+                        }
+
+                        Row(horizontalArrangement = Arrangement.spacedBy(0.dp)) {
+                            var showSpeedMenu by remember { mutableStateOf(false) }
+                            
+                            Box {
+                                IconButton(
+                                    onClick = { showSpeedMenu = true },
+                                    modifier = Modifier.size(32.dp)
+                                ) {
+                                    Text(
+                                        text = if (playbackSpeed == 1f) "速" else "${playbackSpeed}x",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = Color.White,
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                                
+                                androidx.compose.material3.DropdownMenu(
+                                    expanded = showSpeedMenu,
+                                    onDismissRequest = { showSpeedMenu = false }
+                                ) {
+                                    listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f).forEach { speed ->
+                                        androidx.compose.material3.DropdownMenuItem(
+                                            text = { Text("${speed}x") },
+                                            onClick = {
+                                                onSpeedChange(speed)
+                                                showSpeedMenu = false
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                            
+                            IconButton(
+                                onClick = onDanmakuToggle,
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                Icon(
+                                    imageVector = if (isDanmakuVisible) Icons.Default.Visibility
+                                    else Icons.Default.VisibilityOff,
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
                         }
                     }
 
-                    Text(
-                        text = formatTime(duration),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.White
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Slider(
+                        value = sliderPosition,
+                        onValueChange = {
+                            isSeeking = true
+                            sliderPosition = it
+                        },
+                        onValueChangeFinished = {
+                            onSeek(sliderPosition.toLong())
+                            isSeeking = false
+                        },
+                        valueRange = 0f..duration.toFloat().coerceAtLeast(1f),
+                        modifier = Modifier.fillMaxWidth()
                     )
+                } else {
+                    Slider(
+                        value = sliderPosition,
+                        onValueChange = {
+                            isSeeking = true
+                            sliderPosition = it
+                        },
+                        onValueChangeFinished = {
+                            onSeek(sliderPosition.toLong())
+                            isSeeking = false
+                        },
+                        valueRange = 0f..duration.toFloat().coerceAtLeast(1f),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = formatTime(currentPosition),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.White
+                        )
+
+                        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                            IconButton(
+                                onClick = onPlayPauseClick,
+                                modifier = Modifier.size(40.dp)
+                            ) {
+                                Icon(
+                                    imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+
+                            var showSpeedMenu by remember { mutableStateOf(false) }
+                            
+                            Box {
+                                IconButton(
+                                    onClick = { showSpeedMenu = true },
+                                    modifier = Modifier.size(40.dp)
+                                ) {
+                                    Text(
+                                        text = if (playbackSpeed == 1f) "倍速" else "${playbackSpeed}x",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = Color.White,
+                                        fontSize = 12.sp
+                                    )
+                                }
+                                
+                                androidx.compose.material3.DropdownMenu(
+                                    expanded = showSpeedMenu,
+                                    onDismissRequest = { showSpeedMenu = false }
+                                ) {
+                                    listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f).forEach { speed ->
+                                        androidx.compose.material3.DropdownMenuItem(
+                                            text = { Text("${speed}x") },
+                                            onClick = {
+                                                onSpeedChange(speed)
+                                                showSpeedMenu = false
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                            
+                            IconButton(
+                                onClick = onDanmakuToggle,
+                                modifier = Modifier.size(40.dp)
+                            ) {
+                                Icon(
+                                    imageVector = if (isDanmakuVisible) Icons.Default.Visibility
+                                    else Icons.Default.VisibilityOff,
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+                        }
+
+                        Text(
+                            text = formatTime(duration),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.White
+                        )
+                    }
                 }
             }
         }

@@ -49,6 +49,11 @@ fun BasicAnimatedAlertDialog(
 ) {
     var showDialog by remember { mutableStateOf(true) }
     var isVisible by remember { mutableStateOf(false) }
+    
+    // 捕获当前主题
+    val currentColorScheme = MaterialTheme.colorScheme
+    val currentTypography = MaterialTheme.typography
+    val currentShapes = MaterialTheme.shapes
 
     LaunchedEffect(Unit) {
         awaitFrame()
@@ -67,6 +72,12 @@ fun BasicAnimatedAlertDialog(
                 dismissOnClickOutside = false
             )
         ) {
+            // 在Dialog内重新提供MaterialTheme
+            MaterialTheme(
+                colorScheme = currentColorScheme,
+                typography = currentTypography,
+                shapes = currentShapes
+            ) {
             val scrimColor by animateColorAsState(
                 targetValue = if (isVisible && properties.backgroundDimEnabled) ScrimColor else Color.Transparent,
                 animationSpec = tween(300),
@@ -131,6 +142,7 @@ fun BasicAnimatedAlertDialog(
             BackHandler(enabled = properties.dismissOnBackPress) {
                 dismiss()
             }
+            }
         }
     }
 }
@@ -145,10 +157,10 @@ fun AnimatedAlertDialog(
     title: @Composable (() -> Unit)? = null,
     text: @Composable (() -> Unit)? = null,
     shape: Shape = AlertDialogDefaults.shape,
-    containerColor: Color = AlertDialogDefaults.containerColor,
-    iconContentColor: Color = AlertDialogDefaults.iconContentColor,
-    titleContentColor: Color = AlertDialogDefaults.titleContentColor,
-    textContentColor: Color = AlertDialogDefaults.textContentColor,
+    containerColor: Color = MaterialTheme.colorScheme.surface,
+    iconContentColor: Color = MaterialTheme.colorScheme.onSurface,
+    titleContentColor: Color = MaterialTheme.colorScheme.onSurface,
+    textContentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     tonalElevation: Dp = AlertDialogDefaults.TonalElevation,
     properties: AnimatedDialogProperties = AnimatedDialogProperties()
 ) {

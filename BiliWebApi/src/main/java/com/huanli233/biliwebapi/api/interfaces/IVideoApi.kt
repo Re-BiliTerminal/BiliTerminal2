@@ -38,10 +38,8 @@ interface IVideoApi {
     @GET("/x/tag/archive/tags")
     suspend fun getVideoTags(@Query("aid") aid: Long, @Query("bvid") bvid: String = ""): ApiResponse<List<Tag>>
 
-    /**
-     * @param action 1:点赞 2:取消点赞
-     */
     @POST("/x/web-interface/archive/like")
+    @Csrf
     @FormUrlEncoded
     suspend fun likeVideo(
         @Field("aid") aid: Long,

@@ -63,6 +63,7 @@ import androidx.compose.ui.util.fastFirstOrNull
 import androidx.wear.compose.foundation.BasicSwipeToDismissBox
 import androidx.wear.compose.foundation.LocalReduceMotion
 import androidx.wear.compose.foundation.hierarchicalFocusGroup
+import androidx.wear.compose.foundation.isRoundDevice
 import androidx.wear.compose.foundation.requestFocusOnHierarchyActive
 import androidx.wear.compose.foundation.rotary.RotaryScrollableBehavior
 import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
@@ -256,7 +257,7 @@ public value class ScalingLazyListAnchorType internal constructor(internal val t
 @Immutable
 public class AutoCenteringParams(
     // @IntRange(from = 0)
-    internal val itemIndex: Int = 1,
+    internal val itemIndex: Int = 0,
     internal val itemOffset: Int = 0,
 ) {
     override fun equals(other: Any?): Boolean {
@@ -356,9 +357,9 @@ public fun ScalingLazyColumn(
     horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     flingBehavior: FlingBehavior = ScrollableDefaults.flingBehavior(),
     userScrollEnabled: Boolean = true,
-    scalingParams: ScalingParams = ScalingLazyColumnDefaults.scalingParams(),
+    scalingParams: ScalingParams = if (isRoundDevice()) ScalingLazyColumnDefaults.scalingParams() else ScalingLazyColumnDefaults.squareScreenScalingParams(),
     anchorType: ScalingLazyListAnchorType = ScalingLazyListAnchorType.ItemCenter,
-    autoCentering: AutoCenteringParams? = AutoCenteringParams(),
+    autoCentering: AutoCenteringParams? = if (isRoundDevice()) AutoCenteringParams() else null,
     content: ScalingLazyListScope.() -> Unit,
 ) {
     ScalingLazyColumn(
@@ -483,9 +484,9 @@ public fun ScalingLazyColumn(
     horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     flingBehavior: FlingBehavior = ScrollableDefaults.flingBehavior(),
     userScrollEnabled: Boolean = true,
-    scalingParams: ScalingParams = ScalingLazyColumnDefaults.scalingParams(),
+    scalingParams: ScalingParams = if (isRoundDevice()) ScalingLazyColumnDefaults.scalingParams() else ScalingLazyColumnDefaults.squareScreenScalingParams(),
     anchorType: ScalingLazyListAnchorType = ScalingLazyListAnchorType.ItemCenter,
-    autoCentering: AutoCenteringParams? = AutoCenteringParams(),
+    autoCentering: AutoCenteringParams? = if (isRoundDevice()) AutoCenteringParams() else null,
     rotaryScrollableBehavior: RotaryScrollableBehavior? = RotaryScrollableDefaults.behavior(state),
     content: ScalingLazyListScope.() -> Unit,
 ): Unit =
@@ -610,9 +611,9 @@ public fun ScalingLazyColumn(
     horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     flingBehavior: FlingBehavior = ScrollableDefaults.flingBehavior(),
     userScrollEnabled: Boolean = true,
-    scalingParams: ScalingParams = ScalingLazyColumnDefaults.scalingParams(),
+    scalingParams: ScalingParams = if (isRoundDevice()) ScalingLazyColumnDefaults.scalingParams() else ScalingLazyColumnDefaults.squareScreenScalingParams(),
     anchorType: ScalingLazyListAnchorType = ScalingLazyListAnchorType.ItemCenter,
-    autoCentering: AutoCenteringParams? = AutoCenteringParams(),
+    autoCentering: AutoCenteringParams? = if (isRoundDevice()) AutoCenteringParams() else null,
     rotaryScrollableBehavior: RotaryScrollableBehavior? = RotaryScrollableDefaults.behavior(state),
     overscrollEffect: OverscrollEffect? = rememberOverscrollEffect(),
     content: ScalingLazyListScope.() -> Unit,
@@ -884,6 +885,22 @@ public object ScalingLazyColumnDefaults {
             )
         }
     }
+
+    /**
+     * Create scaling parameters for square screens with minimal scaling effect.
+     * This is useful for rectangular screens where aggressive scaling is not desirable.
+     */
+    public fun squareScreenScalingParams(): ScalingParams =
+        DefaultScalingParams(
+            edgeScale = 0.95f,
+            edgeAlpha = 1.0f,
+            minElementHeight = 0.2f,
+            maxElementHeight = 0.8f,
+            minTransitionArea = 0.45f,
+            maxTransitionArea = 0.55f,
+            scaleInterpolator = CubicBezierEasing(0.3f, 0f, 0.7f, 1f),
+            viewportVerticalOffsetResolver = { (it.maxHeight / 20f).toInt() },
+        )
 }
 
 private class ScalingLazyListScopeImpl(
