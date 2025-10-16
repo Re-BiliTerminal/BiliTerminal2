@@ -8,9 +8,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -602,7 +604,7 @@ fun PlayerControls(
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -639,13 +641,13 @@ fun PlayerControls(
                                             fontSize = 10.sp
                                         )
                                     }
-                                    
-                                    androidx.compose.material3.DropdownMenu(
+
+                                    DropdownMenu(
                                         expanded = showSpeedMenu,
                                         onDismissRequest = { showSpeedMenu = false }
                                     ) {
                                         listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f).forEach { speed ->
-                                            androidx.compose.material3.DropdownMenuItem(
+                                            DropdownMenuItem(
                                                 text = { Text("${speed}x") },
                                                 onClick = {
                                                     onSpeedChange(speed)

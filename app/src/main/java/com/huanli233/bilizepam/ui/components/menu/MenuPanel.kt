@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.PlaylistPlay
 import androidx.compose.material.icons.filled.Settings
@@ -12,11 +13,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
+import kotlin.math.abs
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.ListHeader
@@ -62,12 +71,49 @@ fun MenuPanel(
             (!item.requireNotLoggedIn || !loggedIn)
         }
     }
+    
+    val horizontalScrollBlocker = remember {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                return if (abs(available.x) > abs(available.y)) {
+                    Offset(available.x, 0f)
+                } else {
+                    Offset.Zero
+                }
+            }
+            
+            override suspend fun onPreFling(available: Velocity): Velocity {
+                return if (abs(available.x) > abs(available.y)) {
+                    Velocity(available.x, 0f)
+                } else {
+                    Velocity.Zero
+                }
+            }
+        }
+    }
 
     BackHandler(onBack = onDismiss)
 
     ScreenScaffold(scrollState = scrollState) {
         ScalingLazyColumn(
-            modifier = modifier.fillMaxSize(),
+            modifier = modifier
+                .fillMaxSize()
+                .systemGestureExclusion()
+                .nestedScroll(horizontalScrollBlocker)
+                .pointerInput(Unit) {
+                    awaitPointerEventScope {
+                        while (true) {
+                            val event = awaitPointerEvent(PointerEventPass.Initial)
+                            val change = event.changes.firstOrNull() ?: continue
+                            val dragX = change.position.x - change.previousPosition.x
+                            val dragY = change.position.y - change.previousPosition.y
+                            
+                            if (abs(dragX) > abs(dragY) && abs(dragX) > 0) {
+                                event.changes.forEach { it.consume() }
+                            }
+                        }
+                    }
+                },
             state = scrollState,
             contentPadding = it
         ) {

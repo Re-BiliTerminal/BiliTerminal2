@@ -7,12 +7,21 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.Velocity
+import kotlin.math.abs
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
@@ -38,6 +47,26 @@ fun MainScreen(mainNavController: androidx.navigation.NavController) {
     val contentNavController = rememberSwipeDismissableNavController()
     val menuConfig by remember { mutableStateOf(MenuConfigManager.readMenuConfig()) }
     var isMenuExpanded by remember { mutableStateOf(false) }
+    
+    val menuGestureBlocker = remember {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                return if (abs(available.x) > abs(available.y)) {
+                    Offset(available.x, 0f)
+                } else {
+                    Offset.Zero
+                }
+            }
+            
+            override suspend fun onPreFling(available: Velocity): Velocity {
+                return if (abs(available.x) > abs(available.y)) {
+                    Velocity(available.x, 0f)
+                } else {
+                    Velocity.Zero
+                }
+            }
+        }
+    }
 
     AnimatedContent(
         targetState = isMenuExpanded,
@@ -53,7 +82,31 @@ fun MainScreen(mainNavController: androidx.navigation.NavController) {
             }
         },
         label = "MenuContentTransition",
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .then(
+                if (isMenuExpanded) {
+                    Modifier
+                        .systemGestureExclusion()
+                        .nestedScroll(menuGestureBlocker)
+                        .pointerInput(Unit) {
+                            awaitPointerEventScope {
+                                while (true) {
+                                    val event = awaitPointerEvent(PointerEventPass.Initial)
+                                    val change = event.changes.firstOrNull() ?: continue
+                                    val dragX = change.position.x - change.previousPosition.x
+                                    val dragY = change.position.y - change.previousPosition.y
+                                    
+                                    if (abs(dragX) > abs(dragY) && abs(dragX) > 0) {
+                                        event.changes.forEach { it.consume() }
+                                    }
+                                }
+                            }
+                        }
+                } else {
+                    Modifier
+                }
+            )
     ) { showMenu ->
         if (showMenu) {
             MenuPanel(
