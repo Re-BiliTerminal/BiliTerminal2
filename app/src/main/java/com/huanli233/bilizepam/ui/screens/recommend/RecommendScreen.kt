@@ -22,6 +22,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,7 +37,7 @@ import androidx.wear.compose.material3.TimeText
 import androidx.wear.compose.material3.verticalContentPadding
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.data.setting.LocalData
-import com.huanli233.bilizepam.ui.components.WearTopBar
+import com.huanli233.bilizepam.ui.components.ScrollAwareTopBar
 import com.huanli233.biliwebapi.bean.video.VideoInfo
 import kotlinx.coroutines.launch
 
@@ -53,90 +54,102 @@ fun RecommendScreen(
     var isRefreshing by remember { mutableStateOf(false) }
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
+    
+    // Dynamic TopBar height measurement
+    var topBarHeight by remember { mutableStateOf(0.dp) }
 
     ScreenScaffold(
         scrollState = scrollState,
-    ) {
-        PullToRefreshBox(
-            isRefreshing = isRefreshing,
-            onRefresh = {
-                scope.launch {
-                    isRefreshing = true
-                    videos.refresh()
-                    isRefreshing = false
-                }
-            },
-            modifier = Modifier.fillMaxSize()
-        ) {
-            ScalingLazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                state = scrollState,
-                contentPadding = PaddingValues(vertical = PaddingDefaults.verticalOptContentPadding())
+    ) { paddingValues ->
+        Box(modifier = Modifier.fillMaxSize()) {
+            PullToRefreshBox(
+                isRefreshing = isRefreshing,
+                onRefresh = {
+                    scope.launch {
+                        isRefreshing = true
+                        videos.refresh()
+                        isRefreshing = false
+                    }
+                },
+                modifier = Modifier.fillMaxSize()
             ) {
-            item {
-                WearTopBar(
-                    title = stringResource(R.string.recommend),
-                    showBackIcon = false,
-                    showMenuIcon = true,
-                    modifier = Modifier.clickable { onMenuClick() }
-                )
-            }
+                ScalingLazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = scrollState,
+                    contentPadding = PaddingValues(
+                        top = topBarHeight + PaddingDefaults.verticalOptContentPadding(),
+                        bottom = PaddingDefaults.verticalOptContentPadding()
+                    )
+                ) {
 
-            item {
-                Crossfade(
-                    targetState = videos.loadState.refresh,
-                    animationSpec = tween(durationMillis = 300),
-                    label = "ContentStateTransition",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) { state ->
-                    when (state) {
-                        is LoadState.Loading if videos.itemCount == 0 -> {
-                            LoadingView(
-                                state = LoadingState.LOADING,
-                                modifier = Modifier.fillMaxSize()
-                                    .height(screenHeight * 0.7f)
-                            )
+                item {
+                    Crossfade(
+                        targetState = videos.loadState.refresh,
+                        animationSpec = tween(durationMillis = 300),
+                        label = "ContentStateTransition",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) { state ->
+                        when (state) {
+                            is LoadState.Loading if videos.itemCount == 0 -> {
+                                LoadingView(
+                                    state = LoadingState.LOADING,
+                                    modifier = Modifier.fillMaxSize()
+                                        .height(screenHeight * 0.7f)
+                                )
+                            }
+                            is LoadState.Error -> {
+                                val error = state.error
+                                LoadingView(
+                                    state = LoadingState.ERROR,
+                                    errorMessage = error.message,
+                                    onRetry = { videos.retry() },
+                                    modifier = Modifier.fillMaxSize()
+                                        .height(screenHeight * 0.7f)
+                                )
+                            }
+                            is LoadState.NotLoading if videos.itemCount == 0 -> {
+                                LoadingView(
+                                    state = LoadingState.EMPTY,
+                                    modifier = Modifier.fillMaxSize()
+                                        .height(screenHeight * 0.7f)
+                                )
+                            }
+                            else -> {}
                         }
-                        is LoadState.Error -> {
-                            val error = state.error
-                            LoadingView(
-                                state = LoadingState.ERROR,
-                                errorMessage = error.message,
-                                onRetry = { videos.retry() },
-                                modifier = Modifier.fillMaxSize()
-                                    .height(screenHeight * 0.7f)
-                            )
-                        }
-                        is LoadState.NotLoading if videos.itemCount == 0 -> {
-                            LoadingView(
-                                state = LoadingState.EMPTY,
-                                modifier = Modifier.fillMaxSize()
-                                    .height(screenHeight * 0.7f)
-                            )
-                        }
-                        else -> {}
+                    }
+                }
+
+                items(
+                    count = videos.itemCount,
+                    key = { index -> videos.peek(index)?.aid?.takeIf { it != 0L } ?: index }
+                ) { index ->
+                    val video = videos[index]
+                    if (video != null && video.bvid.isNotEmpty()) {
+                        VideoCard(
+                            videoInfo = video,
+                            onClick = { onVideoClick(video) }
+                        )
+                    }
+                }
+
+                    item {
+                        LoadingFooter(videos)
                     }
                 }
             }
-
-            items(
-                count = videos.itemCount,
-                key = { index -> videos.peek(index)?.aid?.takeIf { it != 0L } ?: index }
-            ) { index ->
-                val video = videos[index]
-                if (video != null && video.bvid.isNotEmpty()) {
-                    VideoCard(
-                        videoInfo = video,
-                        onClick = { onVideoClick(video) }
-                    )
+            
+            ScrollAwareTopBar(
+                title = stringResource(R.string.recommend),
+                modifier = Modifier.padding(PaddingValues(top = paddingValues.calculateTopPadding())),
+                scrollState = scrollState,
+                showBackIcon = false,
+                showMenuIcon = true,
+                onMenuClick = onMenuClick,
+                onHeightMeasured = { height ->
+                    topBarHeight = height
                 }
-            }
-
-            item {
-                LoadingFooter(videos)
-            }
-            }
+            )
         }
     }
 }
@@ -171,3 +184,4 @@ private fun LoadingFooter(videos: LazyPagingItems<VideoInfo>) {
         else -> {}
     }
 }
+

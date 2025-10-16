@@ -19,10 +19,10 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
         UiSettingsScreen(navController = navController)
     }
     composable(Screen.About.route) {
-        AboutScreen()
+        AboutScreen(navController = navController)
     }
     composable(Screen.ThemeColor.route) {
-        ThemeColorScreen()
+        ThemeColorScreen(navController = navController)
     }
     composable(Screen.ViewPreview.route) {
         Box(modifier = Modifier.fillMaxSize())

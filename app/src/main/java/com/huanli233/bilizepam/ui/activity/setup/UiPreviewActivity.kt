@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.ScreenScaffold
+import androidx.wear.compose.materialcore.toVerticalPadding
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.ui.activity.base.BaseActivity
 import com.huanli233.bilizepam.ui.components.WearTopBar
@@ -66,7 +67,8 @@ fun UiPreviewContent(
             modifier = Modifier.fillMaxSize(),
             state = scrollState,
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = it.toVerticalPadding()
         ) {
             item {
                 WearTopBar(

@@ -1,5 +1,7 @@
 package com.huanli233.bilizepam.ui.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.foundation.CurvedModifier
 import androidx.wear.compose.foundation.isRoundDevice
 import androidx.wear.compose.foundation.padding
+import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.TimeText
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.data.setting.LocalData
@@ -38,9 +41,10 @@ fun WearTopBar(
     title: String,
     modifier: Modifier = Modifier,
     showBackIcon: Boolean = true,
-    showMenuIcon: Boolean = false
+    showMenuIcon: Boolean = false,
+    onBackClick: (() -> Unit)? = null,
+    onMenuClick: (() -> Unit)? = null
 ) {
-    val configuration = LocalConfiguration.current
     val isRound = isRoundDevice() && LocalData.settings.uiSettings.roundMode
 
     if (isRound) {
@@ -48,6 +52,8 @@ fun WearTopBar(
             title = title,
             showBackIcon = showBackIcon,
             showMenuIcon = showMenuIcon,
+            onBackClick = onBackClick,
+            onMenuClick = onMenuClick,
             modifier = modifier
         )
     } else {
@@ -55,6 +61,8 @@ fun WearTopBar(
             title = title,
             showBackIcon = showBackIcon,
             showMenuIcon = showMenuIcon,
+            onBackClick = onBackClick,
+            onMenuClick = onMenuClick,
             modifier = modifier
         )
     }
@@ -65,13 +73,18 @@ private fun RoundTopBar(
     title: String,
     showBackIcon: Boolean,
     showMenuIcon: Boolean,
+    onBackClick: (() -> Unit)?,
+    onMenuClick: (() -> Unit)?,
     modifier: Modifier = Modifier
 ) {
-    // 圆屏模式：只显示标题栏，TimeText由ScreenScaffold自动处理
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 8.dp),
+            .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
+            .clickable(enabled = onBackClick != null || onMenuClick != null) {
+                onBackClick?.invoke() ?: onMenuClick?.invoke()
+            }
+            .padding(horizontal = 12.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -107,11 +120,17 @@ private fun SquareTopBar(
     title: String,
     showBackIcon: Boolean,
     showMenuIcon: Boolean,
+    onBackClick: (() -> Unit)?,
+    onMenuClick: (() -> Unit)?,
     modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
+            .clickable(enabled = onBackClick != null || onMenuClick != null) {
+                onBackClick?.invoke() ?: onMenuClick?.invoke()
+            }
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween

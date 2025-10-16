@@ -55,6 +55,10 @@
 -dontwarn master.flame.danmaku.danmaku.parser.BaseDanmakuParser
 -dontwarn master.flame.danmaku.danmaku.parser.IDataSource
 -dontwarn master.flame.danmaku.danmaku.parser.android.BiliDanmukuParser
+-dontwarn master.flame.danmaku.danmaku.model.android.BaseCacheStuffer$Proxy
+-dontwarn master.flame.danmaku.danmaku.model.android.BaseCacheStuffer
+-dontwarn master.flame.danmaku.danmaku.model.android.SpannedCacheStuffer
+-dontwarn master.flame.danmaku.ui.widget.DanmakuView
 -dontwarn androidx.navigation.NavType$Companion
 
 -keepclassmembers class * extends android.view.View {

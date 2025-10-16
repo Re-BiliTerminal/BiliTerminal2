@@ -1,6 +1,8 @@
 package com.huanli233.bilizepam.ui.screens.setting
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -37,7 +40,7 @@ import androidx.wear.compose.materialcore.toVerticalPadding
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.data.proto.NightMode
 import com.huanli233.bilizepam.ui.activity.setup.UiPreviewActivity
-import com.huanli233.bilizepam.ui.components.WearTopBar
+import com.huanli233.bilizepam.ui.components.ScrollAwareTopBar
 import com.huanli233.bilizepam.ui.dialog.AdaptDialog
 import com.huanli233.bilizepam.ui.navigation.Screen
 import splitties.activities.start
@@ -59,18 +62,20 @@ fun UiSettingsScreen(
     val context = LocalContext.current
     val scrollState = rememberScalingLazyListState(initialCenterItemIndex = 0)
 
-    ScreenScaffold(scrollState = scrollState) {
-        ScalingLazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            state = scrollState,
-            contentPadding = it.toVerticalPadding()
-        ) {
-            item {
-                WearTopBar(
-                    title = stringResource(id = R.string.settings_ui),
-                    showBackIcon = true
-                )
-            }
+    var topBarHeight by remember { mutableStateOf(0.dp) }
+
+    ScreenScaffold(scrollState = scrollState) { paddingValues ->
+        Box(modifier = Modifier.fillMaxSize()) {
+            ScalingLazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                state = scrollState,
+                contentPadding = paddingValues.toVerticalPadding().let {
+                    PaddingValues(
+                        top = topBarHeight + it.calculateTopPadding(),
+                        bottom = it.calculateBottomPadding()
+                    )
+                }
+            ) {
 
             item {
                 SettingsItem(
@@ -157,13 +162,25 @@ fun UiSettingsScreen(
                 )
             }
 
-            item {
-                SwitchSettingsItem(
-                    title = stringResource(id = R.string.new_loading_animation),
-                    checked = currentSettings.theme.newLoadingWidgetEnabled,
-                    onCheckedChange = viewModel::updateNewLoadingWidget
-                )
+                item {
+                    SwitchSettingsItem(
+                        title = stringResource(id = R.string.new_loading_animation),
+                        checked = currentSettings.theme.newLoadingWidgetEnabled,
+                        onCheckedChange = viewModel::updateNewLoadingWidget
+                    )
+                }
             }
+            
+            ScrollAwareTopBar(
+                title = stringResource(id = R.string.settings_ui),
+                modifier = Modifier.padding(PaddingValues(top = paddingValues.calculateTopPadding())),
+                scrollState = scrollState,
+                showBackIcon = true,
+                onBackClick = { navController.popBackStack() },
+                onHeightMeasured = { height ->
+                    topBarHeight = height
+                }
+            )
         }
     }
 

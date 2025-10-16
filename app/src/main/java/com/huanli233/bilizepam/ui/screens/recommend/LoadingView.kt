@@ -102,8 +102,8 @@ private fun ErrorContent(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .padding(32.dp)
-                    .clickable(onClick = onRetry)
                     .clip(RoundedCornerShape(8.dp))
+                    .clickable(onClick = onRetry)
                     .padding(12.dp)
             ) {
                 Image(

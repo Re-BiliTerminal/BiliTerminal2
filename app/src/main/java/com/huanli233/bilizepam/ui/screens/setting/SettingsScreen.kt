@@ -1,37 +1,48 @@
 package com.huanli233.bilizepam.ui.screens.setting
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.materialcore.toVerticalPadding
 import com.huanli233.bilizepam.R
-import com.huanli233.bilizepam.ui.components.WearTopBar
+import com.huanli233.bilizepam.ui.components.ScrollAwareTopBar
 import com.huanli233.bilizepam.ui.navigation.Screen
 
 @Composable
 fun SettingsScreen(navController: NavController) {
     val scrollState = rememberScalingLazyListState(initialCenterItemIndex = 0)
 
-    ScreenScaffold(scrollState = scrollState) {
-        ScalingLazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            state = scrollState,
-            contentPadding = it.toVerticalPadding()
-        ) {
-            item {
-                WearTopBar(
-                    title = stringResource(id = R.string.settings),
-                    showBackIcon = true
-                )
-            }
+    var topBarHeight by remember { mutableStateOf(0.dp) }
+
+    ScreenScaffold(scrollState = scrollState) { paddingValues ->
+        Box(modifier = Modifier.fillMaxSize()) {
+            ScalingLazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                state = scrollState,
+                contentPadding = paddingValues.toVerticalPadding().let {
+                    PaddingValues(
+                        top = topBarHeight + it.calculateTopPadding(),
+                        bottom = it.calculateBottomPadding()
+                    )
+                }
+            ) {
             item {
                 SettingsCategory(title = stringResource(id = R.string.preference))
             }
@@ -42,13 +53,25 @@ fun SettingsScreen(navController: NavController) {
                     onClick = { navController.navigate(Screen.UiSettings.route) }
                 )
             }
-            item {
-                SettingsItem(
-                    icon = Icons.Outlined.Info,
-                    title = stringResource(id = R.string.about),
-                    onClick = { navController.navigate(Screen.About.route) }
-                )
+                item {
+                    SettingsItem(
+                        icon = Icons.Outlined.Info,
+                        title = stringResource(id = R.string.about),
+                        onClick = { navController.navigate(Screen.About.route) }
+                    )
+                }
             }
+            
+            ScrollAwareTopBar(
+                title = stringResource(id = R.string.settings),
+                modifier = Modifier.padding(PaddingValues(top = paddingValues.calculateTopPadding())),
+                scrollState = scrollState,
+                showBackIcon = true,
+                onBackClick = { navController.popBackStack() },
+                onHeightMeasured = { height ->
+                    topBarHeight = height
+                }
+            )
         }
     }
 }

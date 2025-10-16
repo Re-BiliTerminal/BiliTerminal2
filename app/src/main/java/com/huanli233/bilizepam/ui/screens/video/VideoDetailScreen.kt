@@ -1,10 +1,8 @@
 package com.huanli233.bilizepam.ui.screens.video
 
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -27,60 +25,45 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Canvas
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.DateRange
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.AssistChip
-import androidx.compose.material3.Badge
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -90,7 +73,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
-import coil3.request.ImageRequest
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.ui.dialog.CoinDialog
 import com.huanli233.bilizepam.ui.dialog.DownloadDialog
@@ -103,18 +85,14 @@ import com.huanli233.bilizepam.utils.extensions.formatNumber
 import com.huanli233.bilizepam.utils.extensions.formatToDate
 import com.huanli233.bilizepam.utils.extensions.toTime
 import com.huanli233.biliwebapi.bean.user.UserInfo
-import kotlinx.coroutines.launch
 import androidx.core.graphics.toColorInt
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.foundation.isRoundDevice
 import androidx.wear.compose.material3.PaddingDefaults
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.TimeText
-import androidx.wear.compose.material3.verticalContentPadding
-import androidx.wear.compose.materialcore.toVerticalPadding
 import com.huanli233.bilizepam.data.setting.LocalData
-import com.huanli233.bilizepam.ui.components.TopBar
-import com.huanli233.bilizepam.ui.components.WearTopBar
+import com.huanli233.bilizepam.ui.components.ScrollAwareTopBar
 import com.tbuonomo.viewpagerdotsindicator.compose.DotsIndicator
 import com.tbuonomo.viewpagerdotsindicator.compose.model.DotGraphic
 import com.tbuonomo.viewpagerdotsindicator.compose.type.WormIndicatorType
@@ -165,9 +143,16 @@ fun VideoDetailScreen(
     }
 
     val isRound = isRoundDevice() && LocalData.settings.uiSettings.roundMode
-    val configuration = LocalConfiguration.current
-    val screenHeight = configuration.screenHeightDp.dp
     val pagerState = rememberPagerState(pageCount = { 3 })
+
+    var topBarHeight by remember { mutableStateOf(0.dp) }
+    
+    // Create scroll states for each page
+    val videoDetailScrollState = rememberScrollState()
+    val currentScrollState = when (pagerState.currentPage) {
+        0 -> videoDetailScrollState
+        else -> null
+    }
     
     ScreenScaffold(
         modifier = Modifier.fillMaxSize(),
@@ -175,11 +160,6 @@ fun VideoDetailScreen(
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize()) {
-                WearTopBar(
-                    title = stringResource(R.string.video_detail),
-                    modifier = Modifier.padding(PaddingValues(top = paddingValues.calculateTopPadding()))
-                )
-                
                 when {
                     uiState.isLoading -> {
                         LoadingView(
@@ -203,12 +183,14 @@ fun VideoDetailScreen(
                         Box(modifier = Modifier.weight(1f)) {
                             HorizontalPager(
                                 state = pagerState,
-                                modifier = Modifier.fillMaxSize()
+                                modifier = Modifier.fillMaxSize(),
+                                userScrollEnabled = pagerState.currentPage > 0 || pagerState.currentPageOffsetFraction < 0
                             ) { page ->
                                 when (page) {
                                     0 -> VideoDetailContent(
                                         uiState = uiState,
-                                        padding = PaddingValues(),
+                                        scrollState = videoDetailScrollState,
+                                        padding = PaddingValues(top = topBarHeight),
                                         onLikeClick = { viewModel.like() },
                                         onCoinClick = { showCoinDialog = true },
                                         onFavoriteClick = {
@@ -266,6 +248,16 @@ fun VideoDetailScreen(
                     }
                 }
             }
+
+            ScrollAwareTopBar(
+                title = stringResource(R.string.video_detail),
+                modifier = Modifier.padding(PaddingValues(top = paddingValues.calculateTopPadding())),
+                scrollState = currentScrollState,
+                onBackClick = { navController.popBackStack() },
+                onHeightMeasured = { height ->
+                    topBarHeight = height
+                }
+            )
         }
     }
     
@@ -348,6 +340,7 @@ private fun RecommendPlaceholder() {
 @Composable
 private fun VideoDetailContent(
     uiState: VideoDetailUiState,
+    scrollState: ScrollState,
     padding: PaddingValues,
     onLikeClick: () -> Unit,
     onCoinClick: () -> Unit,
@@ -362,7 +355,6 @@ private fun VideoDetailContent(
     onTagClick: (String) -> Unit
 ) {
     val videoInfo = uiState.videoInfo ?: return
-    val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier
@@ -539,14 +531,14 @@ private fun VideoDetailContent(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            Row(
+            @OptIn(ExperimentalLayoutApi::class)
+            FlowRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.weight(1f)
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.icon_play_16),
@@ -558,14 +550,11 @@ private fun VideoDetailContent(
                     Text(
                         text = videoInfo.stat.view.formatNumber("万", "亿"),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.weight(1f)
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.icon_danmaku),
@@ -577,30 +566,25 @@ private fun VideoDetailContent(
                     Text(
                         text = videoInfo.stat.danmaku.formatNumber("万", "亿"),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.DateRange,
-                    contentDescription = null,
-                    modifier = Modifier.size(14.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = videoInfo.ctime.formatToDate(),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.DateRange,
+                        contentDescription = null,
+                        modifier = Modifier.size(14.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = videoInfo.ctime.formatToDate(),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
 
@@ -901,7 +885,7 @@ private fun ActionButton(
     Surface(
         onClick = onClick,
         modifier = modifier
-            .height(72.dp)
+            .height(68.dp)
             .clip(RoundedCornerShape(12.dp)),
         enabled = enabled,
         shape = RoundedCornerShape(12.dp),
@@ -911,7 +895,7 @@ private fun ActionButton(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(8.dp),
+                .padding(6.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -920,24 +904,26 @@ private fun ActionButton(
                     Icon(
                         imageVector = icon,
                         contentDescription = null,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(22.dp)
                     )
                 }
                 is androidx.compose.ui.graphics.painter.Painter -> {
                     Icon(
                         painter = icon,
                         contentDescription = null,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(22.dp)
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(3.dp))
             Text(
                 text = text,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.labelSmall,
                 fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center,
+                lineHeight = 12.sp
             )
         }
     }
@@ -979,26 +965,23 @@ private fun UploaderItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Avatar
             AsyncImage(
                 model = uploader.face,
                 contentDescription = uploader.name,
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(40.dp)
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
 
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(10.dp))
 
-            // User info
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                // Name with VIP color
                 val nameColor = if (uploader.vip?.nicknameColor?.isNotEmpty() == true) {
                     try {
                         Color(uploader.vip?.nicknameColor!!.toColorInt())
@@ -1014,18 +997,17 @@ private fun UploaderItem(
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = nameColor,
-                    maxLines = 1,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
 
-                // Signature
                 if (uploader.sign?.isNotEmpty() == true) {
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = uploader.sign.orEmpty(),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                        maxLines = 1,
+                        maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
                 }

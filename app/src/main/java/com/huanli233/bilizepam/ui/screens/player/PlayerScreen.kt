@@ -5,6 +5,7 @@ import androidx.annotation.OptIn
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
@@ -419,41 +420,33 @@ fun PlayerControls(
                     }
                 }
             } else {
-                Box(
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.TopCenter)
                         .background(
                             Color.Black.copy(alpha = 0.6f)
                         )
+                        .clickable { onBackClick() }
                         .padding(horizontal = 16.dp, vertical = 3.dp)
-                        .padding(top = PaddingDefaults.verticalOptContentPadding())
+                        .padding(top = PaddingDefaults.verticalOptContentPadding()),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        IconButton(
-                            onClick = onBackClick,
-                            modifier = Modifier.size(40.dp)
-                        ) {
-                            Icon(
-                                Icons.Default.ArrowBack,
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = title,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = Color.White,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
+                    Icon(
+                        Icons.Default.ArrowBack,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
                 }
             }
 
@@ -604,80 +597,79 @@ fun PlayerControls(
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    Row(
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        Text(
-                            text = formatTime(currentPosition),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color.White
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "${formatTime(currentPosition)} / ${formatTime(duration)}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.White
+                            )
 
-                        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                            IconButton(
-                                onClick = onPlayPauseClick,
-                                modifier = Modifier.size(40.dp)
-                            ) {
-                                Icon(
-                                    imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                                    contentDescription = null,
-                                    tint = Color.White,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
-
-                            var showSpeedMenu by remember { mutableStateOf(false) }
-                            
-                            Box {
+                            Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                                 IconButton(
-                                    onClick = { showSpeedMenu = true },
-                                    modifier = Modifier.size(40.dp)
+                                    onClick = onPlayPauseClick,
+                                    modifier = Modifier.size(36.dp)
                                 ) {
-                                    Text(
-                                        text = if (playbackSpeed == 1f) "倍速" else "${playbackSpeed}x",
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = Color.White,
-                                        fontSize = 12.sp
+                                    Icon(
+                                        imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                                        contentDescription = null,
+                                        tint = Color.White,
+                                        modifier = Modifier.size(22.dp)
                                     )
                                 }
+
+                                var showSpeedMenu by remember { mutableStateOf(false) }
                                 
-                                androidx.compose.material3.DropdownMenu(
-                                    expanded = showSpeedMenu,
-                                    onDismissRequest = { showSpeedMenu = false }
-                                ) {
-                                    listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f).forEach { speed ->
-                                        androidx.compose.material3.DropdownMenuItem(
-                                            text = { Text("${speed}x") },
-                                            onClick = {
-                                                onSpeedChange(speed)
-                                                showSpeedMenu = false
-                                            }
+                                Box {
+                                    IconButton(
+                                        onClick = { showSpeedMenu = true },
+                                        modifier = Modifier.size(36.dp)
+                                    ) {
+                                        Text(
+                                            text = if (playbackSpeed == 1f) "倍速" else "${playbackSpeed}x",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = Color.White,
+                                            fontSize = 10.sp
                                         )
                                     }
+                                    
+                                    androidx.compose.material3.DropdownMenu(
+                                        expanded = showSpeedMenu,
+                                        onDismissRequest = { showSpeedMenu = false }
+                                    ) {
+                                        listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f).forEach { speed ->
+                                            androidx.compose.material3.DropdownMenuItem(
+                                                text = { Text("${speed}x") },
+                                                onClick = {
+                                                    onSpeedChange(speed)
+                                                    showSpeedMenu = false
+                                                }
+                                            )
+                                        }
+                                    }
+                                }
+                                
+                                IconButton(
+                                    onClick = onDanmakuToggle,
+                                    modifier = Modifier.size(36.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = if (isDanmakuVisible) Icons.Default.Visibility
+                                        else Icons.Default.VisibilityOff,
+                                        contentDescription = null,
+                                        tint = Color.White,
+                                        modifier = Modifier.size(22.dp)
+                                    )
                                 }
                             }
-                            
-                            IconButton(
-                                onClick = onDanmakuToggle,
-                                modifier = Modifier.size(40.dp)
-                            ) {
-                                Icon(
-                                    imageVector = if (isDanmakuVisible) Icons.Default.Visibility
-                                    else Icons.Default.VisibilityOff,
-                                    contentDescription = null,
-                                    tint = Color.White,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
                         }
-
-                        Text(
-                            text = formatTime(duration),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color.White
-                        )
                     }
                 }
             }

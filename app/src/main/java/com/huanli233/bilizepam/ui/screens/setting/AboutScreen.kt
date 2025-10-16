@@ -3,6 +3,7 @@ package com.huanli233.bilizepam.ui.screens.setting
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,15 +27,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.wear.compose.materialcore.copy
+import androidx.wear.compose.materialcore.plus
 import androidx.wear.compose.materialcore.toVerticalPadding
+import com.highcapable.betterandroid.ui.extension.component.base.toDp
 import com.huanli233.bilizepam.BuildConfig
 import com.huanli233.bilizepam.R
+import com.huanli233.bilizepam.ui.components.ScrollAwareTopBar
 import com.huanli233.bilizepam.ui.components.WearTopBar
 import com.huanli233.bilizepam.ui.dialog.AdaptDialog
 import com.huanli233.bilizepam.ui.dialog.FullScreenAlertDialog
@@ -44,9 +51,10 @@ const val ID_QQ_GROUP = "719041250"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AboutScreen() {
+fun AboutScreen(navController: NavController) {
     val uriHandler = LocalUriHandler.current
     var showGroupIdDialog by remember { mutableStateOf(false) }
+    var topBarHeight by remember { mutableStateOf(0.dp) }
     val scrollState = androidx.wear.compose.foundation.lazy.rememberScalingLazyListState(initialCenterItemIndex = 0)
 
     if (showGroupIdDialog) {
@@ -67,14 +75,10 @@ fun AboutScreen() {
             modifier = Modifier.fillMaxSize(),
             state = scrollState,
             horizontalAlignment = Alignment.CenterHorizontally,
-            contentPadding = it.toVerticalPadding()
+            contentPadding = it.toVerticalPadding().plus(
+                PaddingValues(top = topBarHeight)
+            )
         ) {
-            item {
-                WearTopBar(
-                    title = stringResource(id = com.huanli233.bilizepam.R.string.about),
-                    showBackIcon = true
-                )
-            }
             item {
                 Image(
                     painter = painterResource(id = R.mipmap.icon),
@@ -188,5 +192,15 @@ fun AboutScreen() {
                 }
             }
         }
+        ScrollAwareTopBar(
+            title = stringResource(id = R.string.about),
+            modifier = Modifier.padding(PaddingValues(top = it.calculateTopPadding())),
+            scrollState = scrollState,
+            showBackIcon = true,
+            onBackClick = { navController.popBackStack() },
+            onHeightMeasured = { height ->
+                topBarHeight = height
+            }
+        )
     }
 }
