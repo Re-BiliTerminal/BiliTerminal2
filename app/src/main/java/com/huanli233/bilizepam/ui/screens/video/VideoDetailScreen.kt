@@ -51,7 +51,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -63,7 +62,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -88,11 +86,13 @@ import com.huanli233.biliwebapi.bean.user.UserInfo
 import androidx.core.graphics.toColorInt
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.foundation.isRoundDevice
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.PaddingDefaults
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.TimeText
 import com.huanli233.bilizepam.data.setting.LocalData
 import com.huanli233.bilizepam.ui.components.ScrollAwareTopBar
+import com.huanli233.bilizepam.ui.screens.comment.CommentScreen
 import com.tbuonomo.viewpagerdotsindicator.compose.DotsIndicator
 import com.tbuonomo.viewpagerdotsindicator.compose.model.DotGraphic
 import com.tbuonomo.viewpagerdotsindicator.compose.type.WormIndicatorType
@@ -149,10 +149,7 @@ fun VideoDetailScreen(
     
     // Create scroll states for each page
     val videoDetailScrollState = rememberScrollState()
-    val currentScrollState = when (pagerState.currentPage) {
-        0 -> videoDetailScrollState
-        else -> null
-    }
+    val commentScrollState = rememberScalingLazyListState()
     
     ScreenScaffold(
         modifier = Modifier.fillMaxSize(),
@@ -183,8 +180,7 @@ fun VideoDetailScreen(
                         Box(modifier = Modifier.weight(1f)) {
                             HorizontalPager(
                                 state = pagerState,
-                                modifier = Modifier.fillMaxSize(),
-                                userScrollEnabled = pagerState.currentPage > 0 || pagerState.currentPageOffsetFraction < 0
+                                modifier = Modifier.fillMaxSize()
                             ) { page ->
                                 when (page) {
                                     0 -> VideoDetailContent(
@@ -219,7 +215,20 @@ fun VideoDetailScreen(
                                         },
                                         onTagClick = { }
                                     )
-                                    1 -> CommentPlaceholder()
+                                    1 -> CommentScreen(
+                                        aid = uiState.videoInfo?.aid ?: 0L,
+                                        scrollState = commentScrollState,
+                                        onCommentDetailClick = { replyId ->
+                                            val oid = uiState.videoInfo?.aid ?: 0L
+                                            navController.navigate("comment_detail/$replyId?oid=$oid&type=1")
+                                        },
+                                        onWriteReplyClick = { oid, rpid, parent, parentSender ->
+                                            navController.navigate("write_reply/$oid/$rpid/$parent?parentSender=${parentSender ?: ""}")
+                                        },
+                                        onUserClick = { userId ->
+                                            navController.navigate("user/$userId")
+                                        }
+                                    )
                                     2 -> RecommendPlaceholder()
                                 }
                             }
@@ -249,15 +258,35 @@ fun VideoDetailScreen(
                 }
             }
 
-            ScrollAwareTopBar(
-                title = stringResource(R.string.video_detail),
-                modifier = Modifier.padding(PaddingValues(top = paddingValues.calculateTopPadding())),
-                scrollState = currentScrollState,
-                onBackClick = { navController.popBackStack() },
-                onHeightMeasured = { height ->
-                    topBarHeight = height
-                }
-            )
+            when (pagerState.currentPage) {
+                0 -> ScrollAwareTopBar(
+                    title = stringResource(R.string.video_detail),
+                    modifier = Modifier.padding(PaddingValues(top = paddingValues.calculateTopPadding())),
+                    scrollState = videoDetailScrollState,
+                    onBackClick = { navController.popBackStack() },
+                    onHeightMeasured = { height ->
+                        topBarHeight = height
+                    }
+                )
+                1 -> ScrollAwareTopBar(
+                    title = stringResource(R.string.video_detail),
+                    modifier = Modifier.padding(PaddingValues(top = paddingValues.calculateTopPadding())),
+                    scrollState = commentScrollState,
+                    onBackClick = { navController.popBackStack() },
+                    onHeightMeasured = {
+                        topBarHeight = it
+                    }
+                )
+                else -> ScrollAwareTopBar(
+                    title = stringResource(R.string.video_detail),
+                    modifier = Modifier.padding(PaddingValues(top = paddingValues.calculateTopPadding())),
+                    scrollState = null as ScrollState?,
+                    onBackClick = { navController.popBackStack() },
+                    onHeightMeasured = { height ->
+                        topBarHeight = height
+                    }
+                )
+            }
         }
     }
     
@@ -993,7 +1022,7 @@ private fun UploaderItem(
                 }
 
                 Text(
-                    text = uploader.name,
+                    text = uploader.name.orEmpty(),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = nameColor,

@@ -30,7 +30,7 @@ import kotlin.math.roundToInt
 
 /**
  * ScrollAwareTopBar with ScalingLazyListState
- * Hides when scrolling up, shows when scrolling down (scroll|enterAlways)
+ * Material3 behavior: Hides when scrolling up, shows when scrolling down (scroll|enterAlways)
  */
 @Composable
 fun ScrollAwareTopBar(
@@ -44,56 +44,32 @@ fun ScrollAwareTopBar(
     onHeightMeasured: ((Dp) -> Unit)? = null
 ) {
     var topBarHeightPx by remember { mutableStateOf(0f) }
-
     var topBarOffsetY by remember { mutableStateOf(0f) }
-    var lastScrollPosition by remember { mutableStateOf(-1) }
-    var lastScrollOffset by remember { mutableStateOf(0) }
-    var accumulatedDelta by remember { mutableStateOf(0f) }
 
     LaunchedEffect(scrollState) {
+        var lastScrollY = 0f
+        var scrollVelocity = 0f
+        
         snapshotFlow {
-            Triple(
-                scrollState.layoutInfo.visibleItemsInfo.firstOrNull()?.index ?: 0,
-                scrollState.layoutInfo.visibleItemsInfo.firstOrNull()?.offset ?: 0,
-                scrollState.isScrollInProgress
-            )
-        }.distinctUntilChanged().collect { (index, offset, isScrolling) ->
-            Log.d("ScrollAwareTopBar", "[ScalingLazy] topBarHeightPx=$topBarHeightPx, index=$index, offset=$offset, isScrolling=$isScrolling")
+            val firstItem = scrollState.layoutInfo.visibleItemsInfo.firstOrNull()
+            val currentScrollY = (firstItem?.index ?: 0) * 200f + (firstItem?.offset ?: 0)
+            Pair(currentScrollY, scrollState.isScrollInProgress)
+        }.collect { (currentScrollY, isScrolling) ->
             
-            if (topBarHeightPx > 0) {
-                if (lastScrollPosition == -1) {
-                    Log.d("ScrollAwareTopBar", "[ScalingLazy] Init: lastScrollPosition=$index, lastScrollOffset=$offset")
-                    lastScrollPosition = index
-                    lastScrollOffset = offset
-                    return@collect
+            if (topBarHeightPx > 0 && isScrolling) {
+                val deltaY = currentScrollY - lastScrollY
+
+                if (kotlin.math.abs(deltaY) > 15f) {
+                    scrollVelocity = deltaY * 0.3f
+                    
+                    val newOffset = (topBarOffsetY - scrollVelocity).coerceIn(-topBarHeightPx, 0f)
+
+                    if (kotlin.math.abs(newOffset - topBarOffsetY) > 3f) {
+                        topBarOffsetY = newOffset
+                    }
                 }
-
-                if (!isScrolling) {
-                    Log.d("ScrollAwareTopBar", "[ScalingLazy] Not scrolling, updating last position only")
-                    lastScrollPosition = index
-                    lastScrollOffset = offset
-                    return@collect
-                }
-
-                val deltaIndex = index - lastScrollPosition
-                val deltaOffset = offset - lastScrollOffset
-
-                val scrollDelta = when {
-                    deltaIndex != 0 -> deltaIndex * 1000f + deltaOffset
-                    else -> deltaOffset.toFloat()
-                }
-
-                Log.d("ScrollAwareTopBar", "[ScalingLazy] deltaIndex=$deltaIndex, deltaOffset=$deltaOffset, scrollDelta=$scrollDelta")
-
-                if (kotlin.math.abs(scrollDelta) > 5f) {
-                    val oldAccumulated = accumulatedDelta
-                    accumulatedDelta = (accumulatedDelta + scrollDelta).coerceIn(-topBarHeightPx, 0f)
-                    topBarOffsetY = accumulatedDelta
-                    Log.d("ScrollAwareTopBar", "[ScalingLazy] accumulatedDelta: $oldAccumulated -> $accumulatedDelta, topBarOffsetY=$topBarOffsetY")
-                }
-
-                lastScrollPosition = index
-                lastScrollOffset = offset
+                
+                lastScrollY = currentScrollY
             }
         }
     }
@@ -114,7 +90,7 @@ fun ScrollAwareTopBar(
 
 /**
  * ScrollAwareTopBar with LazyListState
- * Hides when scrolling up, shows when scrolling down (scroll|enterAlways)
+ * Material3 behavior: Hides when scrolling up, shows when scrolling down (scroll|enterAlways)
  */
 @Composable
 fun ScrollAwareTopBar(
@@ -129,56 +105,31 @@ fun ScrollAwareTopBar(
 ) {
     val density = LocalDensity.current
     var topBarHeightPx by remember { mutableStateOf(0f) }
-
     var topBarOffsetY by remember { mutableStateOf(0f) }
-    var lastScrollPosition by remember { mutableStateOf(-1) }
-    var lastScrollOffset by remember { mutableStateOf(0) }
-    var accumulatedDelta by remember { mutableStateOf(0f) }
 
     LaunchedEffect(scrollState) {
+        var lastScrollY = 0f
+        
         snapshotFlow {
-            Triple(
-                scrollState.firstVisibleItemIndex,
-                scrollState.firstVisibleItemScrollOffset,
-                scrollState.isScrollInProgress
-            )
-        }.distinctUntilChanged().collect { (index, offset, isScrolling) ->
-            Log.d("ScrollAwareTopBar", "[LazyList] topBarHeightPx=$topBarHeightPx, index=$index, offset=$offset, isScrolling=$isScrolling")
+            val currentScrollY = scrollState.firstVisibleItemIndex * 200f + scrollState.firstVisibleItemScrollOffset
+            Pair(currentScrollY, scrollState.isScrollInProgress)
+        }.collect { (currentScrollY, isScrolling) ->
             
-            if (topBarHeightPx > 0) {
-                if (lastScrollPosition == -1) {
-                    Log.d("ScrollAwareTopBar", "[LazyList] Init: lastScrollPosition=$index, lastScrollOffset=$offset")
-                    lastScrollPosition = index
-                    lastScrollOffset = offset
-                    return@collect
+            if (topBarHeightPx > 0 && isScrolling) {
+                val deltaY = currentScrollY - lastScrollY
+
+                if (kotlin.math.abs(deltaY) > 20f) {
+                    val scrollDirection = if (deltaY > 0) 1f else -1f
+                    val scrollAmount = kotlin.math.abs(deltaY) * 0.25f
+                    
+                    val newOffset = (topBarOffsetY - scrollDirection * scrollAmount).coerceIn(-topBarHeightPx, 0f)
+                    
+                    if (kotlin.math.abs(newOffset - topBarOffsetY) > 4f) {
+                        topBarOffsetY = newOffset
+                    }
                 }
-
-                if (!isScrolling) {
-                    Log.d("ScrollAwareTopBar", "[LazyList] Not scrolling, updating last position only")
-                    lastScrollPosition = index
-                    lastScrollOffset = offset
-                    return@collect
-                }
-
-                val deltaIndex = index - lastScrollPosition
-                val deltaOffset = offset - lastScrollOffset
-
-                val scrollDelta = when {
-                    deltaIndex != 0 -> deltaIndex * 1000f + deltaOffset
-                    else -> deltaOffset.toFloat()
-                }
-
-                Log.d("ScrollAwareTopBar", "[LazyList] deltaIndex=$deltaIndex, deltaOffset=$deltaOffset, scrollDelta=$scrollDelta")
-
-                if (kotlin.math.abs(scrollDelta) > 5f) {
-                    val oldAccumulated = accumulatedDelta
-                    accumulatedDelta = (accumulatedDelta + scrollDelta).coerceIn(-topBarHeightPx, 0f)
-                    topBarOffsetY = accumulatedDelta
-                    Log.d("ScrollAwareTopBar", "[LazyList] accumulatedDelta: $oldAccumulated -> $accumulatedDelta, topBarOffsetY=$topBarOffsetY")
-                }
-
-                lastScrollPosition = index
-                lastScrollOffset = offset
+                
+                lastScrollY = currentScrollY
             }
         }
     }
@@ -199,7 +150,7 @@ fun ScrollAwareTopBar(
 
 /**
  * ScrollAwareTopBar with ScrollState
- * Hides when scrolling up, shows when scrolling down (scroll|enterAlways)
+ * Material3 behavior: Hides when scrolling up, shows when scrolling down (scroll|enterAlways)
  */
 @Composable
 fun ScrollAwareTopBar(
@@ -214,46 +165,33 @@ fun ScrollAwareTopBar(
 ) {
     val density = LocalDensity.current
     var topBarHeightPx by remember { mutableStateOf(0f) }
-
     var topBarOffsetY by remember { mutableStateOf(0f) }
-    var lastScrollValue by remember { mutableStateOf(-1) }
-    var accumulatedDelta by remember { mutableStateOf(0f) }
 
     if (scrollState != null) {
         LaunchedEffect(scrollState) {
+            var lastScrollValue = scrollState.value
+            
             snapshotFlow {
                 Pair(scrollState.value, scrollState.isScrollInProgress)
-            }.distinctUntilChanged()
-                .collect { (scrollValue, isScrolling) ->
-                    Log.d("ScrollAwareTopBar", "[ScrollState] topBarHeightPx=$topBarHeightPx, scrollValue=$scrollValue, isScrolling=$isScrolling")
-                    
-                    if (topBarHeightPx > 0) {
-                        if (lastScrollValue == -1) {
-                            Log.d("ScrollAwareTopBar", "[ScrollState] Init: lastScrollValue=$scrollValue")
-                            lastScrollValue = scrollValue
-                            return@collect
+            }.collect { (scrollValue, isScrolling) ->
+                
+                if (topBarHeightPx > 0 && isScrolling) {
+                    val delta = scrollValue - lastScrollValue
+
+                    if (kotlin.math.abs(delta) > 25f) {
+                        val scrollDirection = if (delta > 0) 1f else -1f
+                        val scrollAmount = kotlin.math.abs(delta) * 0.3f
+                        
+                        val newOffset = (topBarOffsetY - scrollDirection * scrollAmount).coerceIn(-topBarHeightPx, 0f)
+                        
+                        if (kotlin.math.abs(newOffset - topBarOffsetY) > 5f) {
+                            topBarOffsetY = newOffset
                         }
-
-                        if (!isScrolling) {
-                            Log.d("ScrollAwareTopBar", "[ScrollState] Not scrolling, updating last value only")
-                            lastScrollValue = scrollValue
-                            return@collect
-                        }
-
-                        val delta = (scrollValue - lastScrollValue).toFloat()
-
-                        Log.d("ScrollAwareTopBar", "[ScrollState] delta=$delta")
-
-                        if (kotlin.math.abs(delta) > 5f) {
-                            val oldAccumulated = accumulatedDelta
-                            accumulatedDelta = (accumulatedDelta + delta).coerceIn(-topBarHeightPx, 0f)
-                            topBarOffsetY = accumulatedDelta
-                            Log.d("ScrollAwareTopBar", "[ScrollState] accumulatedDelta: $oldAccumulated -> $accumulatedDelta, topBarOffsetY=$topBarOffsetY")
-                        }
-
-                        lastScrollValue = scrollValue
                     }
+                    
+                    lastScrollValue = scrollValue
                 }
+            }
         }
     }
 

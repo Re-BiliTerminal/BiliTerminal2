@@ -114,7 +114,7 @@ fun VideoCard(
                     verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(2.dp)
                 ) {
                     Text(
-                        text = videoInfo.owner.name,
+                        text = videoInfo.owner.name.orEmpty(),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,

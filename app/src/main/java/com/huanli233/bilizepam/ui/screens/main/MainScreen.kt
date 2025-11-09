@@ -34,12 +34,14 @@ import com.huanli233.bilizepam.ui.navigation.Screen
 import com.huanli233.bilizepam.ui.navigation.loginGraph
 import com.huanli233.bilizepam.ui.navigation.settingsGraph
 import com.huanli233.bilizepam.ui.screens.collection.CollectionDetailScreen
+import com.huanli233.bilizepam.ui.screens.comment.CommentDetailScreen
 import com.huanli233.bilizepam.ui.screens.download.DownloadListScreen
 import com.huanli233.bilizepam.ui.screens.image.ImageViewerScreen
 import com.huanli233.bilizepam.ui.screens.player.PlayerScreen
 import com.huanli233.bilizepam.ui.screens.recommend.RecommendScreen
 import com.huanli233.bilizepam.ui.screens.user.UserProfileScreen
 import com.huanli233.bilizepam.ui.screens.video.VideoDetailScreen
+import com.huanli233.bilizepam.ui.screens.comment.WriteReplyScreen
 import java.net.URLDecoder
 
 @Composable
@@ -148,6 +150,68 @@ fun MainScreen(mainNavController: androidx.navigation.NavController) {
                 )
             ) {
                 VideoDetailScreen(navController = contentNavController)
+            }
+
+            composable(
+                route = "comment_detail/{replyId}?oid={oid}&type={type}",
+                arguments = listOf(
+                    navArgument("replyId") { type = NavType.LongType },
+                    navArgument("oid") { 
+                        type = NavType.LongType
+                        defaultValue = -1
+                    },
+                    navArgument("type") { 
+                        type = NavType.IntType
+                        defaultValue = 1
+                    }
+                )
+            ) { backStackEntry ->
+                val replyId = backStackEntry.arguments?.getLong("replyId") ?: 0L
+                val oidArg = backStackEntry.arguments?.getLong("oid") ?: -1L
+                val oid = if (oidArg == -1L) null else oidArg
+                val type = backStackEntry.arguments?.getInt("type") ?: 1
+                CommentDetailScreen(
+                    replyId = replyId,
+                    oid = oid ?: 0L,
+                    type = type,
+                    onBackClick = { contentNavController.popBackStack() },
+                    onWriteReplyClick = { oid, rpid, parent, parentSender ->
+                        contentNavController.navigate("write_reply/$oid/$rpid/$parent?parentSender=${parentSender ?: ""}")
+                    },
+                    onUserClick = { userId ->
+                        contentNavController.navigate("user/$userId")
+                    }
+                )
+            }
+
+            composable(
+                route = "write_reply/{oid}/{rpid}/{parent}?parentSender={parentSender}",
+                arguments = listOf(
+                    navArgument("oid") { type = NavType.LongType },
+                    navArgument("rpid") { type = NavType.LongType },
+                    navArgument("parent") { type = NavType.LongType },
+                    navArgument("parentSender") { 
+                        type = NavType.StringType
+                        nullable = true
+                        defaultValue = null
+                    }
+                )
+            ) { backStackEntry ->
+                val oid = backStackEntry.arguments?.getLong("oid") ?: 0L
+                val rpid = backStackEntry.arguments?.getLong("rpid") ?: 0L
+                val parent = backStackEntry.arguments?.getLong("parent") ?: 0L
+                val parentSender = backStackEntry.arguments?.getString("parentSender")
+                WriteReplyScreen(
+                    oid = oid,
+                    rpid = rpid,
+                    parent = parent,
+                    parentSender = parentSender,
+                    onBackClick = { contentNavController.popBackStack() },
+                    onReplySuccess = { 
+                        // 回复成功后返回上一页
+                        contentNavController.popBackStack()
+                    }
+                )
             }
 
             composable(

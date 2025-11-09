@@ -37,7 +37,7 @@ val PaddingValues.top: Dp
 val PaddingValues.bottom: Dp
     get() = calculateBottomPadding()
 @Composable
-fun PaddingValues.plus(other: PaddingValues): PaddingValues {
+operator fun PaddingValues.plus(other: PaddingValues): PaddingValues {
     return PaddingValues(
         start = this.start + other.start,
         top = this.top + other.top,
@@ -47,7 +47,7 @@ fun PaddingValues.plus(other: PaddingValues): PaddingValues {
 }
 
 @Composable
-fun PaddingValues.minus(other: PaddingValues): PaddingValues {
+operator fun PaddingValues.minus(other: PaddingValues): PaddingValues {
     return PaddingValues(
         start = this.start - other.start,
         top = this.top - other.top,

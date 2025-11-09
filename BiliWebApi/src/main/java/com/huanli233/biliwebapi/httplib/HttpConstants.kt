@@ -6,6 +6,7 @@ object HeaderNames {
     const val SET_COOKIE: String = "Set-Cookie"
     const val CONTENT_TYPE: String = "Content-Type"
     const val REFERER: String = "Referer"
+    const val ORIGIN: String = "Origin"
     const val SEC_CH_UA: String = "Sec-Ch-Ua"
     const val SEC_CH_UA_PLATFORM: String = "Sec-Ch-Ua-Platform"
     const val SEC_CH_UA_MOBILE: String = "Sec-Ch-Ua-Mobile"
@@ -18,6 +19,7 @@ object HeaderValues {
     const val SEC_CH_UA: String = "\"Chromium\";v=\"109\", \"Not_A Brand\";v=\"99\""
     const val SEC_CH_UA_PLATFORM: String = "\"Windows\""
     const val SEC_CH_UA_MOBILE: String = "?0"
+    const val ORIGIN: String = "https://www.bilibili.com"
 }
 
 object Protocols {

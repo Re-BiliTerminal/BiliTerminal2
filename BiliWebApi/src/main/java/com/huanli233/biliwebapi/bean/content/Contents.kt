@@ -41,7 +41,7 @@ data class PictureContent(
     @SerializedName("img_src") val src: String,
     @SerializedName("img_width") val width: Int,
     @SerializedName("img_height") val height: Int,
-    @SerializedName("img_size") val size: Long
+    @SerializedName("img_size") val size: Double
 ) : Parcelable
 
 @Parcelize

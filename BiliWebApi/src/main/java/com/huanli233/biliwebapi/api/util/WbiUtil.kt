@@ -1,5 +1,6 @@
 package com.huanli233.biliwebapi.api.util
 
+import com.huanli233.biliwebapi.ApiDebugLogger
 import com.huanli233.biliwebapi.BiliWebApi
 import com.huanli233.biliwebapi.api.interfaces.ILoginInfoApi
 import com.huanli233.biliwebapi.httplib.WbiSignKeyInfo
@@ -12,6 +13,8 @@ import java.net.URLEncoder
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.TreeMap
+import android.net.Uri
+import okhttp3.HttpUrl.Companion.toHttpUrl
 
 object WbiUtil {
     private val MIXIN_KEY_ENC_TAB = intArrayOf(
@@ -71,38 +74,24 @@ object WbiUtil {
     }
 
     fun signUrl(api: BiliWebApi, url: HttpUrl): HttpUrl {
-        val wts = (System.currentTimeMillis() / 1000).toString()
         val mixinKey = getWbiKey(api)
-        val builder: HttpUrl.Builder = url.newBuilder().addQueryParameter("wts", wts)
-        val sortedUrl = sortQueryParameters(builder.build())
-        val wRid = md5(encodeUrl(sortedUrl.query) + mixinKey)
-        return url.newBuilder()
-            .addQueryParameter("wts", wts)
-            .addQueryParameter("w_rid", wRid)
-            .build()
-    }
+        val wts = (System.currentTimeMillis() / 1000).toString()
+        val originalQuery = url.query ?: ""
 
-    private fun sortQueryParameters(url: HttpUrl): HttpUrl {
-        val sortedQueryParameters: MutableMap<String, MutableList<String?>> = TreeMap()
+        val encodedQuery = Uri.encode(originalQuery, "@#&=*+-_.!?()/~'%")
+        
+        val queryWithWts = "$encodedQuery&wts=$wts"
+        val sortedQuery = sortUrlParams(queryWithWts)
+        
+        val stringToSign = sortedQuery + mixinKey
+        
+        val wRid = md5(stringToSign)
 
-        for (i in 0 until url.querySize) {
-            val name = url.queryParameterName(i)
-            val value = url.queryParameterValue(i)
+        val baseUrl = url.toString().split("?")[0]
+        val finalUrlString = "$baseUrl?$originalQuery&wts=$wts&w_rid=$wRid"
+        val finalUrl = finalUrlString.toHttpUrl()
 
-            if (!sortedQueryParameters.containsKey(name)) {
-                sortedQueryParameters[name] = ArrayList()
-            }
-            sortedQueryParameters[name]!!.add(value)
-        }
-
-        val urlBuilder: HttpUrl.Builder = url.newBuilder().query(null)
-        for ((key, value1) in sortedQueryParameters) {
-            for (value in value1) {
-                urlBuilder.addQueryParameter(key, value)
-            }
-        }
-
-        return urlBuilder.build()
+        return finalUrl
     }
 
     private fun encodeUrl(input: String?): String? {
@@ -155,5 +144,34 @@ object WbiUtil {
             md5code.insert(0, "0")
         }
         return md5code.toString()
+    }
+
+    private fun sortUrlParams(encodedParams: String): String {
+        // 修复：保持编码状态进行排序，参考BiliClient实现
+        val paramPairs = encodedParams.split("&").filter { it.isNotEmpty() }
+
+        // 按参数名排序，但保持完整的"key=value"编码格式
+        val sortedParams = paramPairs.sortedBy { param ->
+            param.split("=", limit = 2)[0] // 按key排序
+        }
+
+        return sortedParams.joinToString("&")
+    }
+
+    private fun parseQueryParams(query: String): Map<String, String> {
+        val paramMap = mutableMapOf<String, String>()
+        val params = query.split("&")
+        
+        for (param in params) {
+            if (param.isNotEmpty()) {
+                val keyValue = param.split("=", limit = 2)
+                when (keyValue.size) {
+                    2 -> paramMap[keyValue[0]] = keyValue[1]
+                    1 -> paramMap[keyValue[0]] = ""
+                }
+            }
+        }
+        
+        return paramMap
     }
 }

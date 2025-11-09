@@ -1,5 +1,6 @@
 package com.huanli233.bilizepam.ui.screens.recommend
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -24,6 +25,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -88,6 +90,11 @@ private fun ErrorContent(
     onRetry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    LaunchedEffect(errorMessage) {
+        if (errorMessage != null) {
+            Log.e("LoadingView", "Error: $errorMessage")
+        }
+    }
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center

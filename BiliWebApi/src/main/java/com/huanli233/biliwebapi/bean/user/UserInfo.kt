@@ -10,8 +10,8 @@ import kotlinx.parcelize.Parcelize
 data class UserInfo(
     val mid: Long,
     val title: String?,
-    val name: String,
-    val face: String,
+    @SerializedName("name", alternate = ["uname"]) val name: String?,
+    @SerializedName("face", alternate = ["avatar"]) val face: String?,
     val vip: Vip?,
     val official: Official,
     @SerializedName("follower", alternate = ["following"]) val follower: Int,

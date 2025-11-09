@@ -123,7 +123,7 @@ data class Reply(
 
 @Parcelize
 data class ReplyContent(
-    val message: String,
+    val message: String?,
     val plat: Int,
     val device: String,
     @LowerCaseUnderScore val atNameToMid: Map<String, Long>,

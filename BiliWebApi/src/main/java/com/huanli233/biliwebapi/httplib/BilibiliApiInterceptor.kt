@@ -51,9 +51,9 @@ internal class BilibiliApiInterceptor(
         requestBuilder = requestBuilder.addHeaders()
         requestBuilder = requestBuilder.overrideUrl(invocation)
         requestBuilder = requestBuilder.processUrlParam(requestBuilder.build().url, invocation)
-        requestBuilder = requestBuilder.wbiSign(requestBuilder.build().url, invocation)
         requestBuilder = requestBuilder.dmImgPrams(requestBuilder.build().url, invocation)
         requestBuilder = requestBuilder.processFormParams(requestBuilder.build(), invocation)
+        requestBuilder = requestBuilder.wbiSign(requestBuilder.build().url, invocation)
 
 
         return chain.proceed(requestBuilder.build())
@@ -146,6 +146,7 @@ internal class BilibiliApiInterceptor(
     private fun Request.Builder.addHeaders(): Request.Builder = apply {
         header(HeaderNames.USER_AGENT, HeaderValues.USER_AGENT_VAL)
         header(HeaderNames.REFERER, HeaderValues.REFERER)
+        header(HeaderNames.ORIGIN, HeaderValues.ORIGIN)
         header(HeaderNames.SEC_CH_UA, HeaderValues.SEC_CH_UA)
         header(HeaderNames.SEC_CH_UA_PLATFORM, HeaderValues.SEC_CH_UA_PLATFORM)
         header(HeaderNames.SEC_CH_UA_MOBILE, HeaderValues.SEC_CH_UA_MOBILE)
@@ -169,7 +170,8 @@ internal class BilibiliApiInterceptor(
 
     private fun Request.Builder.wbiSign(url: HttpUrl, invocation: Invocation?): Request.Builder = invocation?.method()?.let {
         if (it.isAnnotationPresent(WbiSign::class.java)) {
-            url(WbiUtil.signUrl(biliWebApi, url))
+            val signedUrl = WbiUtil.signUrl(biliWebApi, url)
+            url(signedUrl)
         }
         this
     } ?: this

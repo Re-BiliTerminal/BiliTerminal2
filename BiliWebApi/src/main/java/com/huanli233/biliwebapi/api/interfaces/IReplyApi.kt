@@ -2,6 +2,7 @@ package com.huanli233.biliwebapi.api.interfaces
 
 import com.huanli233.biliwebapi.bean.ApiResponse
 import com.huanli233.biliwebapi.bean.CountResult
+import com.huanli233.biliwebapi.bean.reply.ChildRepliesInfo
 import com.huanli233.biliwebapi.bean.reply.PaginationStr
 import com.huanli233.biliwebapi.bean.reply.RepliesInfo
 import com.huanli233.biliwebapi.bean.reply.Reply
@@ -27,8 +28,8 @@ interface IReplyApi {
         @Query("type") type: Int,
         @Query("oid") oid: Long,
         @Query("mode") mode: Int = 1,
-        @Query("pagination_str") paginationStr: PaginationStr? = null,
-        @QueryMap extraParams: Map<String, Any>
+        @Query("pagination_str") paginationStr: String? = null,
+        @QueryMap extraParams: Map<String, String>
     ): ApiResponse<RepliesInfo>
 
     @Csrf @POST("/x/v2/reply/action")
@@ -61,6 +62,23 @@ interface IReplyApi {
         @Field("oid") oid: Long,
         @Field("type") type: Int,
         @Field("message") content: String,
-        @FieldMap extraParams: Map<String, Any>
+        @FieldMap extraParams: Map<String, String>
     ): ApiResponse<ReplySendResult>
+
+    @GET("/x/v2/reply/reply")
+    suspend fun getRootReply(
+        @Query("type") type: Int,
+        @Query("oid") oid: Long,
+        @Query("root") rootId: Long
+    ): ApiResponse<ChildRepliesInfo>
+
+    @GET("/x/v2/reply/reply")
+    suspend fun getChildReplies(
+        @Query("type") type: Int,
+        @Query("oid") oid: Long,
+        @Query("root") rootId: Long,
+        @Query("pn") page: Int = 1,
+        @Query("ps") pageSize: Int = 20,
+        @Query("sort") sort: Int = 0
+    ): ApiResponse<ChildRepliesInfo>
 }

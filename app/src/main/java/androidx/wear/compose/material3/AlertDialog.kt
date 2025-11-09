@@ -99,7 +99,7 @@ import com.huanli233.bilizepam.ui.dialog.FullScreenDialogProperties
 public fun AlertDialog(
     visible: Boolean,
     onDismissRequest: () -> Unit,
-    confirmButton: @Composable RowScope.() -> Unit,
+    confirmButton: @Composable RowScope.(close: () -> Unit) -> Unit,
     title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     dismissButton: @Composable RowScope.() -> Unit = {
@@ -117,9 +117,9 @@ public fun AlertDialog(
     properties: DialogProperties = DialogProperties(),
     content: (ScalingLazyListScope.() -> Unit)? = null,
 ) {
-    BasicFullScreenDialog(onDismissRequest = onDismissRequest, properties = FullScreenDialogProperties(properties.dismissOnBackPress, properties.dismissOnClickOutside)) {
+    BasicFullScreenDialog(onDismissRequest = onDismissRequest, properties = FullScreenDialogProperties(properties.dismissOnBackPress, properties.dismissOnClickOutside)) { close ->
         AlertDialogContent(
-            confirmButton = confirmButton,
+            confirmButton = { confirmButton(close) },
             title = title,
             dismissButton = dismissButton,
             modifier = modifier,

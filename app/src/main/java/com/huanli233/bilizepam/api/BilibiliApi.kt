@@ -2,6 +2,7 @@ package com.huanli233.bilizepam.api
 
 import android.annotation.SuppressLint
 import android.os.Build
+import com.huanli233.biliwebapi.ApiDebugLogger
 import com.huanli233.bilizepam.BiliTerminal
 import com.huanli233.bilizepam.applicationScope
 import com.huanli233.bilizepam.data.setting.LocalData
@@ -136,11 +137,14 @@ class AppCookieManager @Inject constructor(
 
     override fun loadForRequest(url: HttpUrl): List<Cookie> {
         synchronized(currentAccountCookiesCache) {
-            return currentAccountCookiesCache.map { it.toOkHttpCookie() }
+            val cookies = currentAccountCookiesCache.map { it.toOkHttpCookie() }
+            ApiDebugLogger.logCookiesForRequest(url, cookies)
+            return cookies
         }
     }
 
     override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+        ApiDebugLogger.logCookiesFromResponse(url, cookies)
         val uidInCookies = cookies.find { it.name == "DedeUserID" }?.value?.toLongOrNull()
         val uid = uidInCookies ?: accountRepository.activeAccount.value?.accountId ?: 0
         val cookieEntities = cookies.map { it.toCookieEntity(uid) }

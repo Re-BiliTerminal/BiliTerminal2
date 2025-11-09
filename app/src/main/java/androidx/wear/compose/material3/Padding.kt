@@ -62,6 +62,9 @@ object PaddingDefaults {
         return ceilDp(screenWidth.dp * percentage / 100)
     }
 
+    @Composable
+    fun horizontalOptContentPadding(): Dp = horizontalContentPadding() * 0.3f
+
     /** Default minimum padding between the edge of the screen and the content. */
     val edgePadding = 2.dp
 }
