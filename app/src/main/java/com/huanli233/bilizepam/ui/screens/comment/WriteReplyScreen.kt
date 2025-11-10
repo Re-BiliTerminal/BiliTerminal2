@@ -20,7 +20,8 @@ import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.PaddingDefaults
 import androidx.wear.compose.material3.ScreenScaffold
 import com.huanli233.bilizepam.data.setting.LocalData
-import com.huanli233.bilizepam.ui.components.ScrollAwareTopBar
+import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
+import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
 
 @Composable
 fun WriteReplyScreen(
@@ -60,11 +61,18 @@ fun WriteReplyScreen(
         }
     }
 
-    var topBarHeight by remember { mutableStateOf(0.dp) }
+    // Create ScrollBehavior for TopBar
+    val scrollBehavior = rememberEnterAlwaysScrollBehavior()
     
     ScreenScaffold(
         scrollState = scrollState,
-        modifier = modifier
+        modifier = modifier,
+        topBar = scrollAwareTopBar(
+            title = "写评论",
+            onBackClick = onBackClick,
+            scrollBehavior = scrollBehavior
+        ),
+        topBarScrollBehavior = scrollBehavior
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -74,10 +82,7 @@ fun WriteReplyScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(
-                        top = topBarHeight + 16.dp,
-                        bottom = 16.dp
-                    ),
+                    .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Card(
@@ -186,14 +191,5 @@ fun WriteReplyScreen(
                 }
             }
         }
-        ScrollAwareTopBar(
-            title = "写评论",
-            modifier = Modifier.padding(PaddingValues(top = paddingValues.calculateTopPadding())),
-            scrollState = scrollState,
-            onBackClick = onBackClick,
-            onHeightMeasured = { height ->
-                topBarHeight = height
-            }
-        )
     }
 }

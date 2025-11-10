@@ -22,26 +22,32 @@ import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.materialcore.toVerticalPadding
 import com.huanli233.bilizepam.R
-import com.huanli233.bilizepam.ui.components.ScrollAwareTopBar
+import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
+import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
 import com.huanli233.bilizepam.ui.navigation.Screen
 
 @Composable
 fun SettingsScreen(navController: NavController) {
     val scrollState = rememberScalingLazyListState(initialCenterItemIndex = 0)
+    
+    // Create ScrollBehavior for TopBar
+    val scrollBehavior = rememberEnterAlwaysScrollBehavior()
 
-    var topBarHeight by remember { mutableStateOf(0.dp) }
-
-    ScreenScaffold(scrollState = scrollState) { paddingValues ->
+    ScreenScaffold(
+        scrollState = scrollState,
+        topBar = scrollAwareTopBar(
+            title = stringResource(id = R.string.settings),
+            showBackIcon = true,
+            onBackClick = { navController.popBackStack() },
+            scrollBehavior = scrollBehavior
+        ),
+        topBarScrollBehavior = scrollBehavior
+    ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             ScalingLazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 state = scrollState,
-                contentPadding = paddingValues.toVerticalPadding().let {
-                    PaddingValues(
-                        top = topBarHeight + it.calculateTopPadding(),
-                        bottom = it.calculateBottomPadding()
-                    )
-                }
+                contentPadding = paddingValues
             ) {
             item {
                 SettingsCategory(title = stringResource(id = R.string.preference))
@@ -61,17 +67,6 @@ fun SettingsScreen(navController: NavController) {
                     )
                 }
             }
-            
-            ScrollAwareTopBar(
-                title = stringResource(id = R.string.settings),
-                modifier = Modifier.padding(PaddingValues(top = paddingValues.calculateTopPadding())),
-                scrollState = scrollState,
-                showBackIcon = true,
-                onBackClick = { navController.popBackStack() },
-                onHeightMeasured = { height ->
-                    topBarHeight = height
-                }
-            )
         }
     }
 }

@@ -8,16 +8,16 @@ import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import androidx.paging.cachedIn
-import com.huanli233.bilizepam.api.apiResultNonNull
-import com.huanli233.bilizepam.api.bilibiliApi
-import com.huanli233.biliwebapi.api.interfaces.IRecommendApi
+import com.huanli233.bilizepam.data.repository.RecommendRepository
 import com.huanli233.biliwebapi.bean.video.VideoInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 @HiltViewModel
-class RecommendViewModel @Inject constructor() : ViewModel() {
+class RecommendViewModel @Inject constructor(
+    private val recommendRepository: RecommendRepository
+) : ViewModel() {
 
     val videos: Flow<PagingData<VideoInfo>> = Pager(
         config = PagingConfig(
@@ -25,11 +25,13 @@ class RecommendViewModel @Inject constructor() : ViewModel() {
             enablePlaceholders = false,
             initialLoadSize = 15
         ),
-        pagingSourceFactory = { RecommendPagingSource() }
+        pagingSourceFactory = { RecommendPagingSource(recommendRepository) }
     ).flow.cachedIn(viewModelScope)
 }
 
-class RecommendPagingSource : PagingSource<Int, VideoInfo>() {
+class RecommendPagingSource(
+    private val recommendRepository: RecommendRepository
+) : PagingSource<Int, VideoInfo>() {
     
     private var lastUniqId: String = ""
     
@@ -37,16 +39,11 @@ class RecommendPagingSource : PagingSource<Int, VideoInfo>() {
         return try {
             val freshIndex = params.key ?: 1
             
-            val result = bilibiliApi.api(IRecommendApi::class) {
-                getRecommend(
-                    freshType = 3,
-                    uniqId = lastUniqId,
-                    pageSize = params.loadSize,
-                    freshIndex = freshIndex,
-                    freshIndex1h = freshIndex,
-                    brush = freshIndex
-                )
-            }.apiResultNonNull()
+            val result = recommendRepository.getHomeRecommend(
+                freshType = 3,
+                uniqId = lastUniqId,
+                pageSize = params.loadSize
+            )
             
             val response = result.getOrThrow()
             val videos = response.item

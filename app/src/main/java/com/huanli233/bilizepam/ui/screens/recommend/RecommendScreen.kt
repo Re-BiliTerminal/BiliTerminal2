@@ -37,9 +37,11 @@ import androidx.wear.compose.material3.TimeText
 import androidx.wear.compose.material3.verticalContentPadding
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.data.setting.LocalData
-import com.huanli233.bilizepam.ui.components.ScrollAwareTopBar
+import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
 import com.huanli233.biliwebapi.bean.video.VideoInfo
 import kotlinx.coroutines.launch
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,11 +57,19 @@ fun RecommendScreen(
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
     
-    // Dynamic TopBar height measurement
-    var topBarHeight by remember { mutableStateOf(0.dp) }
+    // Create ScrollBehavior for TopBar
+    val scrollBehavior = rememberEnterAlwaysScrollBehavior()
 
     ScreenScaffold(
         scrollState = scrollState,
+        topBar = scrollAwareTopBar(
+            title = stringResource(R.string.recommend),
+            showBackIcon = false,
+            showMenuIcon = true,
+            onMenuClick = onMenuClick,
+            scrollBehavior = scrollBehavior
+        ),
+        topBarScrollBehavior = scrollBehavior // Pass the same ScrollBehavior to ScreenScaffold
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             PullToRefreshBox(
@@ -76,10 +86,7 @@ fun RecommendScreen(
                 ScalingLazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     state = scrollState,
-                    contentPadding = PaddingValues(
-                        top = topBarHeight + PaddingDefaults.verticalOptContentPadding(),
-                        bottom = PaddingDefaults.verticalOptContentPadding()
-                    )
+                    contentPadding = paddingValues
                 ) {
 
                 item {
@@ -138,18 +145,6 @@ fun RecommendScreen(
                     }
                 }
             }
-            
-            ScrollAwareTopBar(
-                title = stringResource(R.string.recommend),
-                modifier = Modifier.padding(PaddingValues(top = paddingValues.calculateTopPadding())),
-                scrollState = scrollState,
-                showBackIcon = false,
-                showMenuIcon = true,
-                onMenuClick = onMenuClick,
-                onHeightMeasured = { height ->
-                    topBarHeight = height
-                }
-            )
         }
     }
 }

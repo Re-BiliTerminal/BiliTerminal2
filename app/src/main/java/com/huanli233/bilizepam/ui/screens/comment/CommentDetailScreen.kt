@@ -63,7 +63,8 @@ import androidx.wear.compose.materialcore.plus
 import coil.compose.AsyncImage
 import com.huanli233.biliwebapi.bean.reply.Reply
 import com.huanli233.bilizepam.data.setting.LocalData
-import com.huanli233.bilizepam.ui.components.ScrollAwareTopBar
+import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
+import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
 import com.huanli233.bilizepam.ui.components.EmoteText
 import com.huanli233.bilizepam.ui.screens.recommend.LoadingState
 import com.huanli233.bilizepam.ui.screens.recommend.LoadingView
@@ -115,11 +116,19 @@ fun CommentDetailScreen(
         viewModel.setReplyDetail(replyId, oid, type)
         viewModel.comments
     }.collectAsLazyPagingItems()
-    var topBarHeight by remember { mutableStateOf(0.dp) }
+    
+    // Create ScrollBehavior for TopBar
+    val scrollBehavior = rememberEnterAlwaysScrollBehavior()
 
     ScreenScaffold(
         scrollState = scrollState,
-        modifier = modifier
+        modifier = modifier,
+        topBar = scrollAwareTopBar(
+            title = "评论详情",
+            onBackClick = onBackClick,
+            scrollBehavior = scrollBehavior
+        ),
+        topBarScrollBehavior = scrollBehavior
     ) { paddingValues ->
         PullToRefreshBox(
             isRefreshing = comments.loadState.refresh is LoadState.Loading,
@@ -316,16 +325,6 @@ fun CommentDetailScreen(
                 }
             }
         }
-
-        ScrollAwareTopBar(
-            title = "评论详情",
-            scrollState = scrollState,
-            modifier = Modifier.padding(top = paddingValues.calculateTopPadding()),
-            onBackClick = onBackClick,
-            onHeightMeasured = { height ->
-                topBarHeight = height
-            }
-        )
     }
 }
 

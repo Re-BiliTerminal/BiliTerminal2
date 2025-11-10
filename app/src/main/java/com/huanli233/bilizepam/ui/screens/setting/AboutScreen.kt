@@ -41,7 +41,8 @@ import androidx.wear.compose.materialcore.toVerticalPadding
 import com.highcapable.betterandroid.ui.extension.component.base.toDp
 import com.huanli233.bilizepam.BuildConfig
 import com.huanli233.bilizepam.R
-import com.huanli233.bilizepam.ui.components.ScrollAwareTopBar
+import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
+import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
 import com.huanli233.bilizepam.ui.components.WearTopBar
 import com.huanli233.bilizepam.ui.dialog.AdaptDialog
 import com.huanli233.bilizepam.ui.dialog.FullScreenAlertDialog
@@ -54,8 +55,10 @@ const val ID_QQ_GROUP = "719041250"
 fun AboutScreen(navController: NavController) {
     val uriHandler = LocalUriHandler.current
     var showGroupIdDialog by remember { mutableStateOf(false) }
-    var topBarHeight by remember { mutableStateOf(0.dp) }
     val scrollState = androidx.wear.compose.foundation.lazy.rememberScalingLazyListState(initialCenterItemIndex = 0)
+    
+    // Create ScrollBehavior for TopBar
+    val scrollBehavior = rememberEnterAlwaysScrollBehavior()
 
     if (showGroupIdDialog) {
         AdaptDialog(
@@ -70,14 +73,21 @@ fun AboutScreen(navController: NavController) {
         )
     }
 
-    androidx.wear.compose.material3.ScreenScaffold(scrollState = scrollState) {
+    androidx.wear.compose.material3.ScreenScaffold(
+        scrollState = scrollState,
+        topBar = scrollAwareTopBar(
+            title = stringResource(id = R.string.about),
+            showBackIcon = true,
+            onBackClick = { navController.popBackStack() },
+            scrollBehavior = scrollBehavior
+        ),
+        topBarScrollBehavior = scrollBehavior
+    ) {
         androidx.wear.compose.foundation.lazy.ScalingLazyColumn(
             modifier = Modifier.fillMaxSize(),
             state = scrollState,
             horizontalAlignment = Alignment.CenterHorizontally,
-            contentPadding = it.toVerticalPadding().plus(
-                PaddingValues(top = topBarHeight)
-            )
+            contentPadding = it
         ) {
             item {
                 Image(
@@ -192,15 +202,5 @@ fun AboutScreen(navController: NavController) {
                 }
             }
         }
-        ScrollAwareTopBar(
-            title = stringResource(id = R.string.about),
-            modifier = Modifier.padding(PaddingValues(top = it.calculateTopPadding())),
-            scrollState = scrollState,
-            showBackIcon = true,
-            onBackClick = { navController.popBackStack() },
-            onHeightMeasured = { height ->
-                topBarHeight = height
-            }
-        )
     }
 }

@@ -91,7 +91,8 @@ import androidx.wear.compose.material3.PaddingDefaults
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.TimeText
 import com.huanli233.bilizepam.data.setting.LocalData
-import com.huanli233.bilizepam.ui.components.ScrollAwareTopBar
+import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
+import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
 import com.huanli233.bilizepam.ui.screens.comment.CommentScreen
 import com.tbuonomo.viewpagerdotsindicator.compose.DotsIndicator
 import com.tbuonomo.viewpagerdotsindicator.compose.model.DotGraphic
@@ -144,15 +145,23 @@ fun VideoDetailScreen(
 
     val isRound = isRoundDevice() && LocalData.settings.uiSettings.roundMode
     val pagerState = rememberPagerState(pageCount = { 3 })
-
-    var topBarHeight by remember { mutableStateOf(0.dp) }
     
     // Create scroll states for each page
     val videoDetailScrollState = rememberScrollState()
     val commentScrollState = rememberScalingLazyListState()
     
+    // Create ScrollBehavior for TopBar
+    val scrollBehavior = rememberEnterAlwaysScrollBehavior()
+    
     ScreenScaffold(
+        scrollState = commentScrollState,
         modifier = Modifier.fillMaxSize(),
+        topBar = scrollAwareTopBar(
+            title = stringResource(R.string.video_detail),
+            onBackClick = { navController.popBackStack() },
+            scrollBehavior = scrollBehavior
+        ),
+        topBarScrollBehavior = scrollBehavior,
         timeText = if (isRound) { { TimeText() } } else null
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
@@ -186,7 +195,7 @@ fun VideoDetailScreen(
                                     0 -> VideoDetailContent(
                                         uiState = uiState,
                                         scrollState = videoDetailScrollState,
-                                        padding = PaddingValues(top = topBarHeight),
+                                        padding = paddingValues,
                                         onLikeClick = { viewModel.like() },
                                         onCoinClick = { showCoinDialog = true },
                                         onFavoriteClick = {
@@ -217,7 +226,6 @@ fun VideoDetailScreen(
                                     )
                                     1 -> CommentScreen(
                                         aid = uiState.videoInfo?.aid ?: 0L,
-                                        scrollState = commentScrollState,
                                         onCommentDetailClick = { replyId ->
                                             val oid = uiState.videoInfo?.aid ?: 0L
                                             navController.navigate("comment_detail/$replyId?oid=$oid&type=1")
@@ -229,7 +237,14 @@ fun VideoDetailScreen(
                                             navController.navigate("user/$userId")
                                         }
                                     )
-                                    2 -> RecommendPlaceholder()
+                                    2 -> VideoRelatedScreen(
+                                        aid = uiState.videoInfo?.aid ?: 0L,
+                                        bvid = uiState.videoInfo?.bvid ?: "",
+                                        onVideoClick = { video ->
+                                            navController.navigate("video_detail/${video.aid}/${video.bvid}")
+                                        },
+                                        paddingValues = paddingValues
+                                    )
                                 }
                             }
                             
@@ -258,35 +273,7 @@ fun VideoDetailScreen(
                 }
             }
 
-            when (pagerState.currentPage) {
-                0 -> ScrollAwareTopBar(
-                    title = stringResource(R.string.video_detail),
-                    modifier = Modifier.padding(PaddingValues(top = paddingValues.calculateTopPadding())),
-                    scrollState = videoDetailScrollState,
-                    onBackClick = { navController.popBackStack() },
-                    onHeightMeasured = { height ->
-                        topBarHeight = height
-                    }
-                )
-                1 -> ScrollAwareTopBar(
-                    title = stringResource(R.string.video_detail),
-                    modifier = Modifier.padding(PaddingValues(top = paddingValues.calculateTopPadding())),
-                    scrollState = commentScrollState,
-                    onBackClick = { navController.popBackStack() },
-                    onHeightMeasured = {
-                        topBarHeight = it
-                    }
-                )
-                else -> ScrollAwareTopBar(
-                    title = stringResource(R.string.video_detail),
-                    modifier = Modifier.padding(PaddingValues(top = paddingValues.calculateTopPadding())),
-                    scrollState = null as ScrollState?,
-                    onBackClick = { navController.popBackStack() },
-                    onHeightMeasured = { height ->
-                        topBarHeight = height
-                    }
-                )
-            }
+            // TopBar is now handled by ScreenScaffold automatically
         }
     }
     
@@ -344,21 +331,6 @@ private fun CommentPlaceholder() {
     ) {
         Text(
             text = context.getString(R.string.placeholder_comments),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
-}
-
-@Composable
-private fun RecommendPlaceholder() {
-    val context = LocalContext.current
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = context.getString(R.string.placeholder_recommend),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

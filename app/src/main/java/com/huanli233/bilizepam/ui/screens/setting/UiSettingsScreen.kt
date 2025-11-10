@@ -40,7 +40,8 @@ import androidx.wear.compose.materialcore.toVerticalPadding
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.data.proto.NightMode
 import com.huanli233.bilizepam.ui.activity.setup.UiPreviewActivity
-import com.huanli233.bilizepam.ui.components.ScrollAwareTopBar
+import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
+import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
 import com.huanli233.bilizepam.ui.dialog.AdaptDialog
 import com.huanli233.bilizepam.ui.navigation.Screen
 import splitties.activities.start
@@ -61,20 +62,25 @@ fun UiSettingsScreen(
 
     val context = LocalContext.current
     val scrollState = rememberScalingLazyListState(initialCenterItemIndex = 0)
+    
+    // Create ScrollBehavior for TopBar
+    val scrollBehavior = rememberEnterAlwaysScrollBehavior()
 
-    var topBarHeight by remember { mutableStateOf(0.dp) }
-
-    ScreenScaffold(scrollState = scrollState) { paddingValues ->
+    ScreenScaffold(
+        scrollState = scrollState,
+        topBar = scrollAwareTopBar(
+            title = stringResource(id = R.string.settings_ui),
+            showBackIcon = true,
+            onBackClick = { navController.popBackStack() },
+            scrollBehavior = scrollBehavior
+        ),
+        topBarScrollBehavior = scrollBehavior
+    ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             ScalingLazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 state = scrollState,
-                contentPadding = paddingValues.toVerticalPadding().let {
-                    PaddingValues(
-                        top = topBarHeight + it.calculateTopPadding(),
-                        bottom = it.calculateBottomPadding()
-                    )
-                }
+                contentPadding = paddingValues
             ) {
 
             item {
@@ -170,17 +176,6 @@ fun UiSettingsScreen(
                     )
                 }
             }
-            
-            ScrollAwareTopBar(
-                title = stringResource(id = R.string.settings_ui),
-                modifier = Modifier.padding(PaddingValues(top = paddingValues.calculateTopPadding())),
-                scrollState = scrollState,
-                showBackIcon = true,
-                onBackClick = { navController.popBackStack() },
-                onHeightMeasured = { height ->
-                    topBarHeight = height
-                }
-            )
         }
     }
 

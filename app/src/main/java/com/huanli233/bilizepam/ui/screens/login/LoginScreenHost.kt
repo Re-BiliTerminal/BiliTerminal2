@@ -98,7 +98,6 @@ fun LoginScreenHost(
             ScrollAwareTopBar(
                 title = stringResource(R.string.login),
                 modifier = Modifier.padding(PaddingValues(top = paddingValues.calculateTopPadding())),
-                scrollState = null,
                 showBackIcon = true,
                 onBackClick = onSkip,
                 onHeightMeasured = { height ->

@@ -32,7 +32,8 @@ import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.ScreenScaffold
 import com.huanli233.bilizepam.R
-import com.huanli233.bilizepam.ui.components.ScrollAwareTopBar
+import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
+import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
 import com.huanli233.bilizepam.ui.theme.AppSeedColors
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -48,8 +49,9 @@ fun ThemeColorScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val scrollState = rememberScalingLazyListState(initialCenterItemIndex = 0)
-
-    var topBarHeight by remember { mutableStateOf(0.dp) }
+    
+    // Create ScrollBehavior for TopBar
+    val scrollBehavior = rememberEnterAlwaysScrollBehavior()
 
     fun formatThemeName(key: String): String {
         return key.split('_').joinToString(" ") { word ->
@@ -58,15 +60,21 @@ fun ThemeColorScreen(
         }
     }
 
-    ScreenScaffold(scrollState = scrollState) { paddingValues ->
+    ScreenScaffold(
+        scrollState = scrollState,
+        topBar = scrollAwareTopBar(
+            title = stringResource(id = R.string.theme_color),
+            showBackIcon = true,
+            onBackClick = { navController.popBackStack() },
+            scrollBehavior = scrollBehavior
+        ),
+        topBarScrollBehavior = scrollBehavior
+    ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             ScalingLazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 state = scrollState,
-                contentPadding = PaddingValues(
-                    top = topBarHeight + paddingValues.calculateTopPadding(),
-                    bottom = paddingValues.calculateBottomPadding()
-                )
+                contentPadding = paddingValues
             ) {
 
                 items(
@@ -105,17 +113,6 @@ fun ThemeColorScreen(
                     }
                 }
             }
-
-            ScrollAwareTopBar(
-                title = stringResource(id = R.string.theme_color),
-                modifier = Modifier.padding(PaddingValues(top = paddingValues.calculateTopPadding())),
-                scrollState = scrollState,
-                showBackIcon = true,
-                onBackClick = { navController.popBackStack() },
-                onHeightMeasured = { height ->
-                    topBarHeight = height
-                }
-            )
         }
     }
 }

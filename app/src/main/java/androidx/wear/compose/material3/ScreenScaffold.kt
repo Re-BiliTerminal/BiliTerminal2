@@ -67,7 +67,15 @@ import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import com.huanli233.bilizepam.ui.components.TopBarScrollBehavior
+import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
 import androidx.wear.compose.foundation.LocalScreenIsActive
 import androidx.wear.compose.foundation.ScrollInfoProvider
 import androidx.wear.compose.foundation.isRoundDevice
@@ -710,7 +718,7 @@ private enum class SlotsEnum {
 }
 
 /**
- * [ScreenScaffold] is one of the Wear Material3 scaffold components.
+ * [ScreenScaffold] is one of the Wear Material3 scaffold components with TopBar support.
  *
  * The scaffold components [AppScaffold] and [ScreenScaffold] lay out the structure of a screen and
  * coordinate transitions of the [ScrollIndicator] and [TimeText] components. [AppScaffold] should
@@ -720,14 +728,18 @@ private enum class SlotsEnum {
  * composition, whilst [ScreenScaffold] will be placed for each individual composable route.
  *
  * [ScreenScaffold] displays the [ScrollIndicator] at the center-end of the screen by default and
- * coordinates showing/hiding [TimeText] and [ScrollIndicator] according to [scrollInfoProvider].
+ * coordinates showing/hiding [TimeText] and [ScrollIndicator] according to [scrollState].
+ * 
+ * This version supports a topBar parameter that automatically handles NestedScroll connections.
  *
- * Example of using AppScaffold and ScreenScaffold:
+ * Example of using AppScaffold and ScreenScaffold with TopBar:
  *
  * @sample androidx.wear.compose.material3.samples.ScaffoldSample
+ * @param scrollState The scroll state for [ScalingLazyColumn], used to drive screen transitions
+ *   such as [TimeText] scroll away and showing/hiding [ScrollIndicator].
  * @param modifier The modifier for the screen scaffold.
- * @param scrollInfoProvider Provider for scroll information used to scroll away screen elements
- *   such as [TimeText] and coordinate showing/hiding the [ScrollIndicator].
+ * @param topBar Optional top bar that will be displayed above the content. The ScreenScaffold
+ *   will automatically create and manage the scroll behavior for the topBar.
  * @param contentPadding The padding to apply around the entire content. This contentPadding is then
  *   received by the [content] and should be consumed by using [Modifier.padding] or contentPadding
  *   parameter of the lazy lists.
@@ -743,16 +755,49 @@ private enum class SlotsEnum {
  *   disabled by passing overscrollEffect = null.
  * @param content The body content for this screen. The lambda receives a [PaddingValues] that
  *   should be applied to the content root via [Modifier.padding] or contentPadding parameter when
- *   used with lists.
+ *   used with lists. If topBar is provided, the content will automatically have the nestedScroll
+ *   modifier applied.
+ */
+@Composable
+public fun ScreenScaffold(
+    scrollState: ScalingLazyListState,
+    modifier: Modifier = Modifier,
+    topBar: (@Composable () -> Unit)? = null,
+    contentPadding: PaddingValues = ScreenScaffoldDefaults.contentPadding,
+    timeText: (@Composable () -> Unit)? = null,
+    scrollIndicator: (@Composable BoxScope.() -> Unit)? = { ScrollIndicator(scrollState) },
+    overscrollEffect: OverscrollEffect? = rememberOverscrollEffect(),
+    topBarScrollBehavior: TopBarScrollBehavior? = null, // Accept external ScrollBehavior
+    content: @Composable BoxScope.(PaddingValues) -> Unit,
+): Unit {
+    
+    ScreenScaffold(
+        scrollInfoProvider = ScrollInfoProvider(scrollState),
+        modifier = modifier,
+        topBar = topBar,
+        contentPadding = contentPadding,
+        timeText = timeText,
+        scrollIndicator = scrollIndicator,
+        overscrollEffect = overscrollEffect,
+        topBarScrollBehavior = topBarScrollBehavior,
+        content = content
+    )
+}
+
+/**
+ * [ScreenScaffold] is one of the Wear Material3 scaffold components with TopBar support.
+ * This is the base implementation that handles the actual rendering.
  */
 @Composable
 public fun ScreenScaffold(
     modifier: Modifier = Modifier,
     scrollInfoProvider: ScrollInfoProvider? = null,
+    topBar: (@Composable () -> Unit)? = null,
     contentPadding: PaddingValues = ScreenScaffoldDefaults.contentPadding,
     timeText: (@Composable () -> Unit)? = null,
     scrollIndicator: (@Composable BoxScope.() -> Unit)? = null,
     overscrollEffect: OverscrollEffect? = rememberOverscrollEffect(),
+    topBarScrollBehavior: TopBarScrollBehavior? = null,
     content: @Composable BoxScope.(PaddingValues) -> Unit,
 ): Unit {
     val scaffoldState = LocalScaffoldState.current
@@ -775,9 +820,61 @@ public fun ScreenScaffold(
         }
     }
 
+    var topBarHeight by remember { mutableStateOf(0.dp) }
+    
     WrapWithOverscrollFactoryIfRequired(overscrollEffect) {
         Box(modifier.fillMaxSize()) {
-            Box(modifier = Modifier.overscroll(overscrollEffect)) { content(contentPadding) }
+            // Calculate final content padding including topBar height
+            val finalContentPadding = PaddingValues(
+                start = contentPadding.calculateLeftPadding(LayoutDirection.Ltr),
+                top = contentPadding.calculateTopPadding() + topBarHeight,
+                end = contentPadding.calculateRightPadding(LayoutDirection.Ltr),
+                bottom = contentPadding.calculateBottomPadding()
+            )
+            
+            // Apply nestedScroll modifier to content if topBar is provided
+            val contentModifier = if (topBarScrollBehavior != null) {
+                // Try without overscroll first to see if it's interfering
+                Modifier.nestedScroll(topBarScrollBehavior.nestedScrollConnection)
+            } else {
+                Modifier
+            }
+            
+            Box(modifier = contentModifier) {
+                content(finalContentPadding)
+            }
+            
+            // Render topBar if provided
+            val density = LocalDensity.current
+            topBar?.let {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = contentPadding.calculateTopPadding())
+                        .onGloballyPositioned { coordinates ->
+                            val h = with(density) {
+                                coordinates.size.height.toDp()
+                            }
+                            val hPx = coordinates.size.height.toFloat()
+                            
+                            // Update topBarHeight for padding calculation
+                            if (topBarHeight != h) {
+                                topBarHeight = h
+                            }
+                            
+                            // Update ScrollBehavior with TopBar height
+                            topBarScrollBehavior?.state?.let { state ->
+                                val systemTopPadding = contentPadding.calculateTopPadding().value * density.density
+                                val hiddenOffset = -(hPx + systemTopPadding)
+                                if (state.heightOffsetLimit != hiddenOffset) {
+                                    state.heightOffsetLimit = hiddenOffset
+                                }
+                            }
+                        }
+                ) {
+                    it()
+                }
+            }
 
             scrollInfoProvider?.let {
                 AnimatedIndicator(

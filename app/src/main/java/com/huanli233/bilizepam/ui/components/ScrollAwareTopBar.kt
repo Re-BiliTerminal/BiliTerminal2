@@ -1,39 +1,288 @@
 package com.huanli233.bilizepam.ui.components
 
-import android.util.Log
+import android.annotation.SuppressLint
+import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.DecayAnimationSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.systemBars
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.Velocity
+import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.material3.PaddingDefaults
-import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 /**
- * ScrollAwareTopBar with ScalingLazyListState
- * Material3 behavior: Hides when scrolling up, shows when scrolling down (scroll|enterAlways)
+ * A TopAppBarScrollBehavior defines how a top app bar should behave when the content under it is scrolled.
+ * Based on Material3 design patterns.
+ */
+@Stable
+interface TopBarScrollBehavior {
+    /**
+     * A [TopBarState] that is attached to this behavior and is read and updated when scrolling happens.
+     */
+    val state: TopBarState
+
+    /**
+     * Indicates whether the top app bar is pinned.
+     */
+    val isPinned: Boolean
+
+    /**
+     * An optional [AnimationSpec] that defines how the top app bar snaps to either fully
+     * collapsed or fully extended state when a fling or a drag scrolled it into an intermediate position.
+     */
+    val snapAnimationSpec: AnimationSpec<Float>?
+
+    /**
+     * An optional [DecayAnimationSpec] that defined how to fling the top app bar when the user
+     * flings the app bar itself, or the content below it.
+     */
+    val flingAnimationSpec: DecayAnimationSpec<Float>?
+
+    /**
+     * A [NestedScrollConnection] that should be attached to a [Modifier.nestedScroll] in order to
+     * keep track of the scroll events.
+     */
+    val nestedScrollConnection: NestedScrollConnection
+}
+
+/**
+ * A state object that can be hoisted to control and observe the top app bar state.
+ */
+@Stable
+interface TopBarState {
+    /**
+     * The top app bar's height offset limit in pixels, which represents the limit that a top app bar
+     * is allowed to collapse to.
+     */
+    var heightOffsetLimit: Float
+
+    /**
+     * The top app bar's current height offset in pixels. This height offset is applied to the fixed
+     * height of the app bar to control the displayed height when content is being scrolled.
+     */
+    var heightOffset: Float
+
+    /**
+     * The total offset of the content scrolled under the top app bar.
+     */
+    var contentOffset: Float
+
+    /**
+     * A value that represents the collapsed height percentage of the app bar.
+     * A `0.0` represents a fully expanded bar, and `1.0` represents a fully collapsed bar.
+     */
+    val collapsedFraction: Float
+
+    companion object {
+        /** The default [Saver] implementation for [TopBarState]. */
+        val Saver: Saver<TopBarState, *> = listSaver(
+            save = { listOf(it.heightOffsetLimit, it.heightOffset, it.contentOffset) },
+            restore = {
+                TopBarStateImpl(
+                    initialHeightOffsetLimit = it[0],
+                    initialHeightOffset = it[1],
+                    initialContentOffset = it[2]
+                )
+            }
+        )
+    }
+}
+
+/**
+ * Creates a [TopBarState] that is remembered across compositions.
+ */
+@Composable
+fun rememberTopBarState(
+    initialHeightOffsetLimit: Float = -Float.MAX_VALUE,
+    initialHeightOffset: Float = 0f,
+    initialContentOffset: Float = 0f
+): TopBarState {
+    return rememberSaveable(saver = TopBarState.Saver) {
+        TopBarStateImpl(initialHeightOffsetLimit, initialHeightOffset, initialContentOffset)
+    }
+}
+
+@Stable
+private class TopBarStateImpl(
+    initialHeightOffsetLimit: Float,
+    initialHeightOffset: Float,
+    initialContentOffset: Float
+) : TopBarState {
+    override var heightOffsetLimit by mutableFloatStateOf(initialHeightOffsetLimit)
+    
+    override var heightOffset: Float
+        get() = _heightOffset.floatValue
+        set(newOffset) {
+            _heightOffset.floatValue = newOffset.coerceIn(
+                minimumValue = heightOffsetLimit,
+                maximumValue = 0f
+            )
+        }
+    
+    override var contentOffset by mutableFloatStateOf(initialContentOffset)
+    
+    override val collapsedFraction: Float
+        get() = if (heightOffsetLimit != 0f) {
+            heightOffset / heightOffsetLimit
+        } else {
+            0f
+        }
+    
+    private var _heightOffset = mutableFloatStateOf(initialHeightOffset)
+}
+
+/**
+ * Returns a [TopBarScrollBehavior] that adjusts its properties to affect the colors and height of a top app bar.
+ * A top app bar that is set up with this [TopBarScrollBehavior] will immediately collapse when
+ * the nested content is pulled up, and will immediately appear when the content is pulled down.
+ */
+@Composable
+fun rememberEnterAlwaysScrollBehavior(
+    state: TopBarState = rememberTopBarState(),
+    canScroll: () -> Boolean = { true },
+    snapAnimationSpec: AnimationSpec<Float>? = tween(durationMillis = 150),
+    flingAnimationSpec: DecayAnimationSpec<Float>? = rememberSplineBasedDecay()
+): TopBarScrollBehavior = remember(state, canScroll, snapAnimationSpec, flingAnimationSpec) {
+    EnterAlwaysScrollBehavior(
+        state = state,
+        snapAnimationSpec = snapAnimationSpec,
+        flingAnimationSpec = flingAnimationSpec,
+        canScroll = canScroll
+    )
+}
+
+private class EnterAlwaysScrollBehavior(
+    override val state: TopBarState,
+    override val snapAnimationSpec: AnimationSpec<Float>?,
+    override val flingAnimationSpec: DecayAnimationSpec<Float>?,
+    val canScroll: () -> Boolean = { true }
+) : TopBarScrollBehavior {
+    override val isPinned: Boolean = false
+    
+    override val nestedScrollConnection = object : NestedScrollConnection {
+        override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+            if (!canScroll()) return Offset.Zero
+            
+            // Only consume scroll if we can actually collapse/expand the TopBar
+            if (state.heightOffsetLimit == -Float.MAX_VALUE) {
+                return Offset.Zero
+            }
+            
+            // EnterAlways behavior: TopBar and content should scroll together
+            // Only consume scroll in very specific cases to maintain coordination
+            
+            // Don't consume scroll in onPreScroll for EnterAlways behavior
+            // Let content scroll first, TopBar will follow in onPostScroll
+            // This ensures content and TopBar move together
+            return Offset.Zero
+        }
+        
+        override fun onPostScroll(
+            consumed: Offset,
+            available: Offset,
+            source: NestedScrollSource
+        ): Offset {
+            if (!canScroll()) return Offset.Zero
+            
+            // Only update if heightOffsetLimit is set
+            if (state.heightOffsetLimit != -Float.MAX_VALUE) {
+                state.contentOffset += consumed.y
+                // Update TopBar offset based on content scroll
+                // This makes TopBar hide/show while content is scrolling
+                state.heightOffset += consumed.y
+            }
+            return Offset.Zero
+        }
+        
+        override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
+            if (available.y > 0f && 
+                (state.heightOffset == 0f || state.heightOffset == state.heightOffsetLimit)) {
+                // Reset the total content offset to zero when scrolling all the way down.
+                state.contentOffset = 0f
+            }
+            return Velocity.Zero
+        }
+    }
+}
+
+/**
+ * ScrollAwareTopBar with Material3 ScrollBehavior
  */
 @Composable
 fun ScrollAwareTopBar(
+    title: String,
+    modifier: Modifier = Modifier,
+    scrollBehavior: TopBarScrollBehavior? = null,
+    showBackIcon: Boolean = true,
+    showMenuIcon: Boolean = false,
+    onBackClick: (() -> Unit)? = null,
+    onMenuClick: (() -> Unit)? = null,
+    onHeightMeasured: ((Dp) -> Unit)? = null
+) {
+    val density = LocalDensity.current
+    
+    ScrollAwareTopBarImpl(
+        title = title,
+        scrollBehavior = scrollBehavior,
+        showBackIcon = showBackIcon,
+        showMenuIcon = showMenuIcon,
+        onBackClick = onBackClick,
+        onMenuClick = onMenuClick,
+        modifier = modifier,
+        onHeightMeasured = onHeightMeasured
+    )
+}
+
+/**
+ * Creates a ScrollAwareTopBar with ScalingLazyListState.
+ * Returns the TopBarScrollBehavior that should be applied to scrollable content.
+ * 
+ * Usage example:
+ * ```
+ * val scrollBehavior = scrollAwareTopBar(
+ *     title = "My Title",
+ *     scrollState = scalingLazyListState
+ * )
+ * 
+ * ScalingLazyColumn(
+ *     state = scalingLazyListState,
+ *     modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+ * ) {
+ *     // Your content
+ * }
+ * ```
+ */
+@Composable
+fun scrollAwareTopBar(
     title: String,
     modifier: Modifier = Modifier,
     scrollState: ScalingLazyListState,
@@ -42,58 +291,44 @@ fun ScrollAwareTopBar(
     onBackClick: (() -> Unit)? = null,
     onMenuClick: (() -> Unit)? = null,
     onHeightMeasured: ((Dp) -> Unit)? = null
-) {
-    var topBarHeightPx by remember { mutableStateOf(0f) }
-    var topBarOffsetY by remember { mutableStateOf(0f) }
-
-    LaunchedEffect(scrollState) {
-        var lastScrollY = 0f
-        var scrollVelocity = 0f
-        
-        snapshotFlow {
-            val firstItem = scrollState.layoutInfo.visibleItemsInfo.firstOrNull()
-            val currentScrollY = (firstItem?.index ?: 0) * 200f + (firstItem?.offset ?: 0)
-            Pair(currentScrollY, scrollState.isScrollInProgress)
-        }.collect { (currentScrollY, isScrolling) ->
-            
-            if (topBarHeightPx > 0 && isScrolling) {
-                val deltaY = currentScrollY - lastScrollY
-
-                if (kotlin.math.abs(deltaY) > 15f) {
-                    scrollVelocity = deltaY * 0.3f
-                    
-                    val newOffset = (topBarOffsetY - scrollVelocity).coerceIn(-topBarHeightPx, 0f)
-
-                    if (kotlin.math.abs(newOffset - topBarOffsetY) > 3f) {
-                        topBarOffsetY = newOffset
-                    }
-                }
-                
-                lastScrollY = currentScrollY
-            }
-        }
-    }
-
-    ScrollAwareTopBarImpl(
+): TopBarScrollBehavior {
+    val scrollBehavior = rememberEnterAlwaysScrollBehavior()
+    
+    ScrollAwareTopBar(
         title = title,
-        topBarOffsetY = topBarOffsetY,
-        topBarHeightPx = topBarHeightPx,
+        modifier = modifier,
+        scrollBehavior = scrollBehavior,
         showBackIcon = showBackIcon,
         showMenuIcon = showMenuIcon,
         onBackClick = onBackClick,
         onMenuClick = onMenuClick,
-        modifier = modifier,
-        onHeightMeasured = onHeightMeasured,
-        onHiddenOffsetMeasured = { topBarHeightPx = it }
+        onHeightMeasured = onHeightMeasured
     )
+    
+    return scrollBehavior
 }
 
 /**
- * ScrollAwareTopBar with LazyListState
- * Material3 behavior: Hides when scrolling up, shows when scrolling down (scroll|enterAlways)
+ * Creates a ScrollAwareTopBar with LazyListState.
+ * Returns the TopBarScrollBehavior that should be applied to scrollable content.
+ * 
+ * Usage example:
+ * ```
+ * val scrollBehavior = scrollAwareTopBar(
+ *     title = "My Title",
+ *     scrollState = lazyListState
+ * )
+ * 
+ * LazyColumn(
+ *     state = lazyListState,
+ *     modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+ * ) {
+ *     // Your content
+ * }
+ * ```
  */
 @Composable
-fun ScrollAwareTopBar(
+fun scrollAwareTopBar(
     title: String,
     modifier: Modifier = Modifier,
     scrollState: LazyListState,
@@ -102,58 +337,45 @@ fun ScrollAwareTopBar(
     onBackClick: (() -> Unit)? = null,
     onMenuClick: (() -> Unit)? = null,
     onHeightMeasured: ((Dp) -> Unit)? = null
-) {
-    val density = LocalDensity.current
-    var topBarHeightPx by remember { mutableStateOf(0f) }
-    var topBarOffsetY by remember { mutableStateOf(0f) }
-
-    LaunchedEffect(scrollState) {
-        var lastScrollY = 0f
-        
-        snapshotFlow {
-            val currentScrollY = scrollState.firstVisibleItemIndex * 200f + scrollState.firstVisibleItemScrollOffset
-            Pair(currentScrollY, scrollState.isScrollInProgress)
-        }.collect { (currentScrollY, isScrolling) ->
-            
-            if (topBarHeightPx > 0 && isScrolling) {
-                val deltaY = currentScrollY - lastScrollY
-
-                if (kotlin.math.abs(deltaY) > 20f) {
-                    val scrollDirection = if (deltaY > 0) 1f else -1f
-                    val scrollAmount = kotlin.math.abs(deltaY) * 0.25f
-                    
-                    val newOffset = (topBarOffsetY - scrollDirection * scrollAmount).coerceIn(-topBarHeightPx, 0f)
-                    
-                    if (kotlin.math.abs(newOffset - topBarOffsetY) > 4f) {
-                        topBarOffsetY = newOffset
-                    }
-                }
-                
-                lastScrollY = currentScrollY
-            }
-        }
-    }
-
-    ScrollAwareTopBarImpl(
+): TopBarScrollBehavior {
+    val scrollBehavior = rememberEnterAlwaysScrollBehavior()
+    
+    ScrollAwareTopBar(
         title = title,
-        topBarOffsetY = topBarOffsetY,
-        topBarHeightPx = topBarHeightPx,
+        modifier = modifier,
+        scrollBehavior = scrollBehavior,
         showBackIcon = showBackIcon,
         showMenuIcon = showMenuIcon,
         onBackClick = onBackClick,
         onMenuClick = onMenuClick,
-        modifier = modifier,
-        onHeightMeasured = onHeightMeasured,
-        onHiddenOffsetMeasured = { topBarHeightPx = it }
+        onHeightMeasured = onHeightMeasured
     )
+    
+    return scrollBehavior
 }
 
 /**
- * ScrollAwareTopBar with ScrollState
- * Material3 behavior: Hides when scrolling up, shows when scrolling down (scroll|enterAlways)
+ * Creates a ScrollAwareTopBar with ScrollState.
+ * Returns the TopBarScrollBehavior that should be applied to scrollable content.
+ * 
+ * Usage example:
+ * ```
+ * val scrollBehavior = scrollAwareTopBar(
+ *     title = "My Title",
+ *     scrollState = scrollState
+ * )
+ * 
+ * Column(
+ *     modifier = Modifier
+ *         .verticalScroll(scrollState)
+ *         .nestedScroll(scrollBehavior?.nestedScrollConnection ?: NestedScrollConnection())
+ * ) {
+ *     // Your content
+ * }
+ * ```
  */
 @Composable
-fun ScrollAwareTopBar(
+fun scrollAwareTopBar(
     title: String,
     modifier: Modifier = Modifier,
     scrollState: ScrollState?,
@@ -162,79 +384,93 @@ fun ScrollAwareTopBar(
     onBackClick: (() -> Unit)? = null,
     onMenuClick: (() -> Unit)? = null,
     onHeightMeasured: ((Dp) -> Unit)? = null
-) {
-    val density = LocalDensity.current
-    var topBarHeightPx by remember { mutableStateOf(0f) }
-    var topBarOffsetY by remember { mutableStateOf(0f) }
-
-    if (scrollState != null) {
-        LaunchedEffect(scrollState) {
-            var lastScrollValue = scrollState.value
-            
-            snapshotFlow {
-                Pair(scrollState.value, scrollState.isScrollInProgress)
-            }.collect { (scrollValue, isScrolling) ->
-                
-                if (topBarHeightPx > 0 && isScrolling) {
-                    val delta = scrollValue - lastScrollValue
-
-                    if (kotlin.math.abs(delta) > 25f) {
-                        val scrollDirection = if (delta > 0) 1f else -1f
-                        val scrollAmount = kotlin.math.abs(delta) * 0.3f
-                        
-                        val newOffset = (topBarOffsetY - scrollDirection * scrollAmount).coerceIn(-topBarHeightPx, 0f)
-                        
-                        if (kotlin.math.abs(newOffset - topBarOffsetY) > 5f) {
-                            topBarOffsetY = newOffset
-                        }
-                    }
-                    
-                    lastScrollValue = scrollValue
-                }
-            }
-        }
+): TopBarScrollBehavior? {
+    val scrollBehavior = if (scrollState != null) {
+        rememberEnterAlwaysScrollBehavior()
+    } else {
+        null
     }
-
-    ScrollAwareTopBarImpl(
+    
+    ScrollAwareTopBar(
         title = title,
-        topBarOffsetY = topBarOffsetY,
-        topBarHeightPx = topBarHeightPx,
+        modifier = modifier,
+        scrollBehavior = scrollBehavior,
         showBackIcon = showBackIcon,
         showMenuIcon = showMenuIcon,
         onBackClick = onBackClick,
         onMenuClick = onMenuClick,
-        modifier = modifier,
-        onHeightMeasured = onHeightMeasured,
-        onHiddenOffsetMeasured = { topBarHeightPx = it }
+        onHeightMeasured = onHeightMeasured
     )
+    
+    return scrollBehavior
 }
 
 /**
- * Base implementation that renders the actual TopBar with animation
+ * Creates a ScrollAwareTopBar composable that can be used directly in ScreenScaffold.
+ * This is the preferred way to create a topBar for ScreenScaffold.
+ */
+@Composable
+fun scrollAwareTopBar(
+    title: String,
+    modifier: Modifier = Modifier,
+    showBackIcon: Boolean = true,
+    showMenuIcon: Boolean = false,
+    onBackClick: (() -> Unit)? = null,
+    onMenuClick: (() -> Unit)? = null,
+    onHeightMeasured: ((Dp) -> Unit)? = null,
+    scrollBehavior: TopBarScrollBehavior? = null, // Allow external ScrollBehavior
+    onScrollBehaviorCreated: ((TopBarScrollBehavior) -> Unit)? = null // Callback to pass ScrollBehavior back
+): @Composable () -> Unit {
+    return {
+        val actualScrollBehavior = scrollBehavior ?: rememberEnterAlwaysScrollBehavior()
+        
+        // Notify the parent about the ScrollBehavior
+        LaunchedEffect(actualScrollBehavior) {
+            onScrollBehaviorCreated?.invoke(actualScrollBehavior)
+        }
+        
+        ScrollAwareTopBar(
+            title = title,
+            modifier = modifier,
+            scrollBehavior = actualScrollBehavior,
+            showBackIcon = showBackIcon,
+            showMenuIcon = showMenuIcon,
+            onBackClick = onBackClick,
+            onMenuClick = onMenuClick,
+            onHeightMeasured = onHeightMeasured
+        )
+    }
+}
+
+/**
+ * Base implementation that renders the actual TopBar with Material3 ScrollBehavior
  */
 @Composable
 private fun ScrollAwareTopBarImpl(
     title: String,
-    topBarOffsetY: Float,
-    topBarHeightPx: Float,
+    scrollBehavior: TopBarScrollBehavior?,
     showBackIcon: Boolean,
     showMenuIcon: Boolean,
     onBackClick: (() -> Unit)?,
     onMenuClick: (() -> Unit)?,
     modifier: Modifier,
-    onHeightMeasured: ((Dp) -> Unit)? = null,
-    onHiddenOffsetMeasured: ((Float) -> Unit)? = null
+    onHeightMeasured: ((Dp) -> Unit)? = null
 ) {
     val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
-    val topPadding = with(LocalDensity.current) { (systemBarsPadding.calculateTopPadding() + PaddingDefaults.verticalOptContentPadding()).toPx() }
+    val topPadding = with(LocalDensity.current) { 
+        (systemBarsPadding.calculateTopPadding() + PaddingDefaults.verticalOptContentPadding()).toPx() 
+    }
+    val density = LocalDensity.current
 
+    // Calculate offset from scroll behavior
+    val heightOffset = scrollBehavior?.state?.heightOffset ?: 0f
+    
     val animatedOffset by animateFloatAsState(
-        targetValue = topBarOffsetY,
+        targetValue = heightOffset,
         animationSpec = tween(durationMillis = 150),
         label = "topBarOffset"
     )
 
-    val density = LocalDensity.current
     Box(
         modifier = modifier
             .offset { IntOffset(0, animatedOffset.roundToInt()) }
@@ -243,9 +479,16 @@ private fun ScrollAwareTopBarImpl(
                     coordinates.size.height.toDp()
                 }
                 val hPx = coordinates.size.height.toFloat()
-                val hiddenOffset = hPx + topPadding
+                
+                // Update scroll behavior state with height information
+                scrollBehavior?.state?.let { state ->
+                    val hiddenOffset = -(hPx + topPadding)
+                    if (state.heightOffsetLimit != hiddenOffset) {
+                        state.heightOffsetLimit = hiddenOffset
+                    }
+                }
+                
                 onHeightMeasured?.invoke(h)
-                onHiddenOffsetMeasured?.invoke(hiddenOffset)
             }
     ) {
         WearTopBar(
