@@ -1,6 +1,7 @@
 package com.huanli233.bilizepam.ui.components.menu
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -94,7 +95,12 @@ fun MenuPanel(
 
     BackHandler(onBack = onDismiss)
 
-    ScreenScaffold(scrollState = scrollState) {
+    ScreenScaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+        scrollState = scrollState
+    ) {
         ScalingLazyColumn(
             modifier = modifier
                 .fillMaxSize()

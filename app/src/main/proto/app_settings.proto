@@ -58,4 +58,5 @@ message AppSettings {
   Preferences preferences = 7;
 
   string language = 8;
+  string search_history = 9;
 }

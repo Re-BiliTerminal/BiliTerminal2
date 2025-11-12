@@ -1,11 +1,11 @@
 package com.huanli233.bilizepam.ui.screens.main
 
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.runtime.Composable
@@ -36,12 +36,15 @@ import com.huanli233.bilizepam.ui.navigation.settingsGraph
 import com.huanli233.bilizepam.ui.screens.collection.CollectionDetailScreen
 import com.huanli233.bilizepam.ui.screens.comment.CommentDetailScreen
 import com.huanli233.bilizepam.ui.screens.download.DownloadListScreen
+import com.huanli233.bilizepam.ui.screens.dynamic.DynamicHomeScreen
 import com.huanli233.bilizepam.ui.screens.image.ImageViewerScreen
 import com.huanli233.bilizepam.ui.screens.player.PlayerScreen
 import com.huanli233.bilizepam.ui.screens.recommend.RecommendScreen
 import com.huanli233.bilizepam.ui.screens.user.UserProfileScreen
 import com.huanli233.bilizepam.ui.screens.video.VideoDetailScreen
 import com.huanli233.bilizepam.ui.screens.comment.WriteReplyScreen
+import com.huanli233.bilizepam.ui.screens.search.SearchScreen
+import com.huanli233.bilizepam.ui.screens.search.SearchResultScreen
 import java.net.URLDecoder
 
 @Composable
@@ -70,73 +73,36 @@ fun MainScreen(mainNavController: androidx.navigation.NavController) {
         }
     }
 
-    AnimatedContent(
-        targetState = isMenuExpanded,
-        transitionSpec = {
-            if (targetState) {
-                (slideInHorizontally { it } + fadeIn()).togetherWith(
-                    slideOutHorizontally { -it } + fadeOut()
-                )
-            } else {
-                (slideInHorizontally { -it } + fadeIn()).togetherWith(
-                    slideOutHorizontally { it } + fadeOut()
-                )
-            }
-        },
-        label = "MenuContentTransition",
-        modifier = Modifier
-            .fillMaxSize()
-            .then(
-                if (isMenuExpanded) {
-                    Modifier
-                        .systemGestureExclusion()
-                        .nestedScroll(menuGestureBlocker)
-                        .pointerInput(Unit) {
-                            awaitPointerEventScope {
-                                while (true) {
-                                    val event = awaitPointerEvent(PointerEventPass.Initial)
-                                    val change = event.changes.firstOrNull() ?: continue
-                                    val dragX = change.position.x - change.previousPosition.x
-                                    val dragY = change.position.y - change.previousPosition.y
-                                    
-                                    if (abs(dragX) > abs(dragY) && abs(dragX) > 0) {
-                                        event.changes.forEach { it.consume() }
-                                    }
-                                }
-                            }
-                        }
-                } else {
-                    Modifier
-                }
-            )
-    ) { showMenu ->
-        if (showMenu) {
-            MenuPanel(
-                modifier = Modifier.fillMaxSize(),
-                menuItems = menuConfig.menuItems,
-                onSelect = { route ->
-                    contentNavController.navigate(route) {
-                        popUpTo(Screen.Recommend.route) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                    isMenuExpanded = false
-                },
-                onDismiss = { isMenuExpanded = false }
-            )
-        } else {
-            SwipeDismissableNavHost(
-                navController = contentNavController,
-                startDestination = Screen.Recommend.route
-            ) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        SwipeDismissableNavHost(
+            navController = contentNavController,
+            startDestination = Screen.Recommend.route
+        ) {
             composable(Screen.Recommend.route) {
                 RecommendScreen(
                     onVideoClick = { videoInfo ->
                         contentNavController.navigate(
                             Screen.VideoDetail.createRoute(videoInfo.aid, videoInfo.bvid)
                         )
+                    },
+                    onMenuClick = { isMenuExpanded = !isMenuExpanded }
+                )
+            }
+
+            composable(Screen.Dynamic.route) {
+                DynamicHomeScreen(
+                    onDynamicClick = { dynamic ->
+                        // TODO: Navigate to dynamic detail
+                    },
+                    onUserClick = { mid ->
+                        contentNavController.navigate("user/$mid")
+                    },
+                    onVideoClick = { bvid ->
+                        contentNavController.navigate("video_detail/0/$bvid")
+                    },
+                    onImageClick = { imageUrls, initialPage ->
+                        val encodedUrls = imageUrls.joinToString(",") { java.net.URLEncoder.encode(it, "UTF-8") }
+                        contentNavController.navigate("imageViewer/$encodedUrls/$initialPage")
                     },
                     onMenuClick = { isMenuExpanded = !isMenuExpanded }
                 )
@@ -215,7 +181,7 @@ fun MainScreen(mainNavController: androidx.navigation.NavController) {
             }
 
             composable(
-                route = "image_viewer/{imageUrl}/{initialPage}",
+                route = "image/{imageUrl}/{initialPage}",
                 arguments = listOf(
                     navArgument("imageUrl") { type = NavType.StringType },
                     navArgument("initialPage") {
@@ -229,6 +195,26 @@ fun MainScreen(mainNavController: androidx.navigation.NavController) {
                 val initialPage = backStackEntry.arguments?.getInt("initialPage") ?: 0
                 ImageViewerScreen(
                     imageUrls = listOf(imageUrl),
+                    initialPage = initialPage,
+                    onNavigateBack = { contentNavController.popBackStack() }
+                )
+            }
+
+            composable(
+                route = "imageViewer/{imageUrls}/{initialPage}",
+                arguments = listOf(
+                    navArgument("imageUrls") { type = NavType.StringType },
+                    navArgument("initialPage") {
+                        type = NavType.IntType
+                        defaultValue = 0
+                    }
+                )
+            ) { backStackEntry ->
+                val encodedUrls = backStackEntry.arguments?.getString("imageUrls") ?: ""
+                val imageUrls = encodedUrls.split(",").map { URLDecoder.decode(it, "UTF-8") }
+                val initialPage = backStackEntry.arguments?.getInt("initialPage") ?: 0
+                ImageViewerScreen(
+                    imageUrls = imageUrls,
                     initialPage = initialPage,
                     onNavigateBack = { contentNavController.popBackStack() }
                 )
@@ -285,6 +271,35 @@ fun MainScreen(mainNavController: androidx.navigation.NavController) {
                 )
             }
 
+            composable(Screen.Search.route) {
+                SearchScreen(
+                    onMenuClick = { isMenuExpanded = !isMenuExpanded },
+                    onSearch = { query ->
+                        contentNavController.navigate(Screen.SearchResult.createRoute(query))
+                    }
+                )
+            }
+
+            composable(
+                route = Screen.SearchResult.route,
+                arguments = listOf(
+                    navArgument("keyword") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val encodedKeyword = backStackEntry.arguments?.getString("keyword") ?: ""
+                val query = URLDecoder.decode(encodedKeyword, "UTF-8")
+                SearchResultScreen(
+                    query = query,
+                    onNavigateBack = { contentNavController.popBackStack() },
+                    onVideoClick = { aid, bvid ->
+                        contentNavController.navigate(Screen.VideoDetail.createRoute(aid, bvid))
+                    },
+                    onUserClick = { mid ->
+                        contentNavController.navigate("user/$mid")
+                    }
+                )
+            }
+
             settingsGraph(contentNavController)
 
             loginGraph(
@@ -300,7 +315,53 @@ fun MainScreen(mainNavController: androidx.navigation.NavController) {
                     }
                 }
             )
-            }
+        }
+        
+        AnimatedVisibility(
+            visible = isMenuExpanded,
+            enter = slideInHorizontally { it } + fadeIn(),
+            exit = slideOutHorizontally { it } + fadeOut(),
+            modifier = Modifier
+                .fillMaxSize()
+                .then(
+                    if (isMenuExpanded) {
+                        Modifier
+                            .systemGestureExclusion()
+                            .nestedScroll(menuGestureBlocker)
+                            .pointerInput(Unit) {
+                                awaitPointerEventScope {
+                                    while (true) {
+                                        val event = awaitPointerEvent(PointerEventPass.Initial)
+                                        val change = event.changes.firstOrNull() ?: continue
+                                        val dragX = change.position.x - change.previousPosition.x
+                                        val dragY = change.position.y - change.previousPosition.y
+                                        
+                                        if (abs(dragX) > abs(dragY) && abs(dragX) > 0) {
+                                            event.changes.forEach { it.consume() }
+                                        }
+                                    }
+                                }
+                            }
+                    } else {
+                        Modifier
+                    }
+                )
+        ) {
+            MenuPanel(
+                modifier = Modifier.fillMaxSize(),
+                menuItems = menuConfig.menuItems,
+                onSelect = { route ->
+                    contentNavController.navigate(route) {
+                        popUpTo(Screen.Recommend.route) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                    isMenuExpanded = false
+                },
+                onDismiss = { isMenuExpanded = false }
+            )
         }
     }
 }

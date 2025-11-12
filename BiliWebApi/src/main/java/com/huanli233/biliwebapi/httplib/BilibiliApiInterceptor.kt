@@ -1,5 +1,6 @@
 package com.huanli233.biliwebapi.httplib
 
+import android.util.Log
 import com.huanli233.biliwebapi.BiliWebApi
 import com.huanli233.biliwebapi.api.interfaces.IRequestParamApi
 import com.huanli233.biliwebapi.api.util.BiliTicketUtil
@@ -55,8 +56,31 @@ internal class BilibiliApiInterceptor(
         requestBuilder = requestBuilder.processFormParams(requestBuilder.build(), invocation)
         requestBuilder = requestBuilder.wbiSign(requestBuilder.build().url, invocation)
 
-
-        return chain.proceed(requestBuilder.build())
+        val finalRequest = requestBuilder.build()
+        
+        // Log request
+        Log.d("BilibiliApiInterceptor", "=== Request ===")
+        Log.d("BilibiliApiInterceptor", "URL: ${finalRequest.url}")
+        Log.d("BilibiliApiInterceptor", "Method: ${finalRequest.method}")
+        
+        val response = chain.proceed(finalRequest)
+        
+        // Log response
+        val responseBody = response.body
+        val responseBodyString = responseBody?.string() ?: ""
+        Log.d("BilibiliApiInterceptor", "=== Response ===")
+        Log.d("BilibiliApiInterceptor", "Status: ${response.code}")
+        Log.d("BilibiliApiInterceptor", "Response Body: $responseBodyString")
+        
+        // Recreate response with the body we just read
+        val newResponseBody = okhttp3.ResponseBody.create(
+            responseBody?.contentType(),
+            responseBodyString
+        )
+        
+        return response.newBuilder()
+            .body(newResponseBody)
+            .build()
     }
 
     private fun checkCookieParams(request: Request) {

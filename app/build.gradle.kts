@@ -353,11 +353,7 @@ dependencies {
     implementation("androidx.media3:media3-common:1.5.0")
 
     // Image zoom and processing
-    implementation("me.saket.telephoto:zoomable-image-coil:0.13.0") {
-        exclude(group = "com.squareup.okhttp3")
-    }
-
-    implementation("me.saket.telephoto:zoomable:0.13.0")
+    implementation("net.engawapg.lib:zoomable:1.6.2")
 
     // WorkManager for download tasks
     implementation("androidx.work:work-runtime-ktx:2.9.0")

@@ -1,20 +1,40 @@
 package com.huanli233.biliwebapi.bean.user
 
 import android.os.Parcelable
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
+import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
 import com.huanli233.biliwebapi.bean.live.LiveRoom
 import com.huanli233.biliwebapi.util.LowerCaseUnderScore
 import kotlinx.parcelize.Parcelize
+import java.lang.reflect.Type
+
+class AvatarDeserializer : JsonDeserializer<String?> {
+    override fun deserialize(
+        json: JsonElement,
+        typeOfT: Type,
+        context: JsonDeserializationContext
+    ): String? {
+        return when {
+            json.isJsonPrimitive && json.asJsonPrimitive.isString -> json.asString
+            json.isJsonObject -> null
+            else -> null
+        }
+    }
+}
 
 @Parcelize
 data class UserInfo(
     val mid: Long,
     val title: String?,
     @SerializedName("name", alternate = ["uname"]) val name: String?,
+    @JsonAdapter(AvatarDeserializer::class)
     @SerializedName("face", alternate = ["avatar"]) val face: String?,
     val vip: Vip?,
     val official: Official,
-    @SerializedName("follower", alternate = ["following"]) val follower: Int,
+    @SerializedName("follower") val follower: Int,
     val sex: String,
     val sign: String?,
     val rank: Int,
@@ -39,6 +59,7 @@ data class UserInfo(
     @SerializedName("contract_desc") val contractDesc: String? = null,
     @LowerCaseUnderScore val pubTime: String? = null,
     @LowerCaseUnderScore val pubTs: Long? = null,
+    @LowerCaseUnderScore val pubAction: String? = null,
 ) : Parcelable
 
 @Parcelize

@@ -3,6 +3,7 @@ package com.huanli233.bilizepam.ui.screens.image
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Environment
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -34,8 +35,8 @@ import com.huanli233.bilizepam.utils.MsgUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.saket.telephoto.zoomable.coil.ZoomableAsyncImage
-import me.saket.telephoto.zoomable.rememberZoomableImageState
+import net.engawapg.lib.zoomable.rememberZoomState
+import net.engawapg.lib.zoomable.zoomable
 import java.io.File
 import java.io.FileOutputStream
 import java.net.URL
@@ -63,7 +64,7 @@ fun ImageViewerScreen(
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxSize(),
-                userScrollEnabled = pagerState.currentPage > 0 || pagerState.currentPageOffsetFraction < 0
+                userScrollEnabled = pagerState.currentPage >= 0 || pagerState.currentPageOffsetFraction < 0
             ) { page ->
                 ZoomableImageItem(imageUrl = imageUrls[page])
             }
@@ -142,21 +143,24 @@ fun ImageViewerScreen(
 
 @Composable
 private fun ZoomableImageItem(imageUrl: String) {
-    val zoomableState = rememberZoomableImageState()
+    val zoomState = rememberZoomState()
     val context = LocalContext.current
+    
+    val processedUrl = if (imageUrl.startsWith("http")) imageUrl else "http:$imageUrl"
 
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        ZoomableAsyncImage(
+        AsyncImage(
             model = ImageRequest.Builder(context)
-                .data(imageUrl)
+                .data(processedUrl)
                 .crossfade(true)
                 .build(),
             contentDescription = null,
-            state = zoomableState,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .zoomable(zoomState),
             contentScale = ContentScale.Fit
         )
     }

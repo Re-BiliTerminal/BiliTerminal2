@@ -3,6 +3,7 @@ package com.huanli233.biliwebapi.api.interfaces
 import com.huanli233.biliwebapi.bean.ApiResponse
 import com.huanli233.biliwebapi.bean.ItemResult
 import com.huanli233.biliwebapi.bean.dynamic.Dynamic
+import com.huanli233.biliwebapi.bean.dynamic.DynamicFeedResponse
 import com.huanli233.biliwebapi.httplib.Domains
 import com.huanli233.biliwebapi.httplib.annotation.API
 import com.huanli233.biliwebapi.httplib.annotation.Csrf
@@ -13,6 +14,17 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface IDynamicApi {
+
+    @GET("/x/polymer/web-dynamic/v1/feed/all")
+    suspend fun getDynamicFeed(
+        @Query("timezone_offset") timezoneOffset: String = "-480",
+        @Query("type") type: String = "all",
+        @Query("platform") platform: String = "web",
+        @Query("offset") offset: String? = null,
+        @Query("page") page: Int = 1,
+        @Query("features") features: String = "itemOpusStyle,listOnlyfans,opusBigCover,onlyfansVote,decorationCard,onlyfansAssetsV2,forwardListHidden,ugcDelete,onlyfansQaCard,commentsNewVersion,avatarAutoTheme",
+        @Query("web_location") webLocation: String = "333.1365"
+    ): ApiResponse<DynamicFeedResponse>
 
     @GET("/x/polymer/web-dynamic/v1/detail")
     suspend fun getDynamic(@Query("id") id: String) : ApiResponse<ItemResult<Dynamic>>

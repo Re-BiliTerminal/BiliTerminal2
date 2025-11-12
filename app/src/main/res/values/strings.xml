@@ -91,6 +91,7 @@
     <string name="desc_huanli233">此分支的创建者</string>
     <string name="disclaimer">免责声明</string>
     <string name="recommend">推荐</string>
+    <string name="dynamic">动态</string>
     <string name="precious">入站必刷</string>
     <string name="popular">热门</string>
     <string name="loading">加载中</string>
@@ -415,5 +416,20 @@
     <string description="Content description of the icon of OpenOnPhone component. [CHAR_LIMIT=NONE]" name="wear_m3c_open_on_phone_icon_content_description">Check your phone icon</string>
     <string name="next">下一步</string>
     <string name="video_uploaders">UP主</string>
+    
+    <string name="search">搜索</string>
+    <string name="search_result">搜索结果</string>
+    <string name="search_hint">输入关键词</string>
+    <string name="search_history">搜索历史</string>
+    <string name="search_suggestions">搜索建议</string>
+    <string name="search_video">视频</string>
+    <string name="search_user">用户</string>
+    <string name="search_article">专栏</string>
+    <string name="search_live">直播</string>
+    <string name="search_empty">还没输入内容喵~</string>
+    <string name="search_no_result">没有找到相关内容</string>
+    <string name="clear_history">清除历史</string>
+    <string name="no_results">没有找到相关内容</string>
+    <string name="error_occurred">出错了</string>
 
 </resources>

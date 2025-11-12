@@ -52,7 +52,7 @@ open class BiliWebApi(
                         }
                     )
                     .addInterceptor(BilibiliApiInterceptor(this))
-                    .addInterceptor(ApiDebugInterceptor())
+//                    .addInterceptor(ApiDebugInterceptor())
     }
 
     protected fun <T> createApi(clazz: Class<T>): T =

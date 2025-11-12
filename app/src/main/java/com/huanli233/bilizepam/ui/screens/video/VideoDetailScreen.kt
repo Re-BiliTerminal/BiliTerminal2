@@ -213,7 +213,7 @@ fun VideoDetailScreen(
                                         onCoverClick = {
                                             uiState.videoInfo?.let { video ->
                                                 val encodedUrl = java.net.URLEncoder.encode(video.pic, "UTF-8")
-                                                navController.navigate("image_viewer/$encodedUrl/0")
+                                                navController.navigate("image/$encodedUrl/0")
                                             }
                                         },
                                         onUploaderClick = { mid ->

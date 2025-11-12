@@ -175,14 +175,15 @@ data class OpusContentModule(
 @Parcelize
 data class DynamicOpus(
     @LowerCaseUnderScore val jumpUrl: String,
-    val pics: List<OpusPicture>,
-    val summary: Summary,
-    val title: String
+    val pics: List<OpusPicture> = emptyList(),
+    val summary: Summary? = null,
+    val title: String? = null,
+    @SerializedName("fold_action") val foldAction: List<String>? = null
 ) : Parcelable {
     @Parcelize
     data class Summary(
-        @LowerCaseUnderScore val richTextNodes: List<RichTextNode>,
-        val text: String
+        @SerializedName("rich_text_nodes") val richTextNodes: List<RichTextNode> = emptyList(),
+        val text: String = ""
     ) : Parcelable
 }
 

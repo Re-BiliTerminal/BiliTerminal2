@@ -60,7 +60,7 @@ import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.materialcore.plus
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.huanli233.biliwebapi.bean.reply.Reply
 import com.huanli233.bilizepam.data.setting.LocalData
 import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
