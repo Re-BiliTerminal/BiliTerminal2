@@ -95,6 +95,13 @@ data class SearchItem(
     val tag: String? = null
 )
 
+data class SearchSuggestionsResponse(
+    val code: Int,
+    val message: String? = null,
+    @SerializedName("result")
+    val result: SearchSuggestions? = null
+)
+
 data class SearchSuggestions(
     @SerializedName("tag")
     val tag: List<SearchSuggestionItem>? = null

@@ -25,4 +25,14 @@ class DynamicRepository @Inject constructor() {
             getDynamic(id)
         }.apiResultNonNull().mapCatching { it.item }
     }
+    
+    suspend fun getDynamicDetail(id: String): Result<Dynamic> {
+        return getDynamic(id)
+    }
+    
+    suspend fun likeDynamic(dynamicId: String, action: Int): Result<Unit> {
+        return bilibiliApi.api(IDynamicApi::class) {
+            like(dynamicId, action)
+        }.apiResultNonNull()
+    }
 }

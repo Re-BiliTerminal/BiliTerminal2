@@ -24,6 +24,14 @@ sealed class Screen(val route: String, @StringRes val titleResId: Int) {
         fun createRoute(avid: Long, bvid: String) = "video_detail/$avid/$bvid"
     }
     
+    data object DynamicDetail : Screen("dynamic_detail/{dynamicId}", R.string.dynamic_detail) {
+        fun createRoute(dynamicId: String) = "dynamic_detail/$dynamicId"
+    }
+    
+    data object OpusDetail : Screen("opus_detail/{opusId}", R.string.opus_detail) {
+        fun createRoute(opusId: String) = "opus_detail/$opusId"
+    }
+    
     data object Search : Screen("search", R.string.search)
     data object SearchResult : Screen("search_result/{keyword}", R.string.search_result) {
         fun createRoute(keyword: String): String {

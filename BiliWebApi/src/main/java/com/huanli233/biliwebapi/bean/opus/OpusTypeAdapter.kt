@@ -1,22 +1,19 @@
 package com.huanli233.biliwebapi.bean.opus
 
-import com.google.gson.Gson
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
-import com.google.gson.reflect.TypeToken
+import com.huanli233.biliwebapi.bean.user.UserInfo
 import java.lang.reflect.Type
 
-class OpusModulesDeserializer : ModulesDeserializer<OpusModules>()
-
-open class ModulesDeserializer<T> : JsonDeserializer<T> {
+class OpusModulesDeserializer : JsonDeserializer<OpusModules> {
     override fun deserialize(
         json: JsonElement,
         typeOfT: Type,
         context: JsonDeserializationContext
-    ): T {
+    ): OpusModules {
         val jsonObject = when {
             json.isJsonObject -> json.asJsonObject
             json.isJsonArray -> {
@@ -33,7 +30,30 @@ open class ModulesDeserializer<T> : JsonDeserializer<T> {
             else -> throw JsonParseException("Unexpected JSON format")
         }
         
-        val gson = Gson()
-        return gson.fromJson(jsonObject, typeOfT)
+        val moduleAuthor = context.deserialize<UserInfo>(
+            jsonObject.get("module_author"),
+            UserInfo::class.java
+        )
+        
+        val moduleTitle = jsonObject.getAsJsonObject("module_title")?.let {
+            OpusTitleModule(text = it.get("text")?.asString ?: "")
+        } ?: OpusTitleModule("")
+        
+        val moduleContent = context.deserialize<OpusContentModule>(
+            jsonObject.get("module_content"),
+            OpusContentModule::class.java
+        )
+        
+        val moduleStat = context.deserialize<OpusStatModule>(
+            jsonObject.get("module_stat"),
+            OpusStatModule::class.java
+        )
+        
+        return OpusModules(
+            moduleAuthor = moduleAuthor,
+            moduleTitle = moduleTitle,
+            moduleContent = moduleContent,
+            moduleStat = moduleStat
+        )
     }
 }

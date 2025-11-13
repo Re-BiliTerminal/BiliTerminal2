@@ -7,7 +7,6 @@ import com.huanli233.biliwebapi.bean.content.EmoteContent
 import com.huanli233.biliwebapi.bean.content.RichTextNode
 import com.huanli233.biliwebapi.bean.opus.DynamicOpus
 import com.huanli233.biliwebapi.bean.opus.OpusBasicInfo
-import com.huanli233.biliwebapi.bean.opus.OpusModulesDeserializer
 import com.huanli233.biliwebapi.bean.opus.OpusStatModule
 import com.huanli233.biliwebapi.bean.topic.TopicId
 import com.huanli233.biliwebapi.bean.user.UserInfo
@@ -22,7 +21,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Dynamic(
     val basic: OpusBasicInfo,
-    @LowerCaseUnderScore val dynamicId: String,
+    @SerializedName("id_str") val id: String,
     val type: String,
     val isVisible: Boolean,
     val modules: DynamicModules,

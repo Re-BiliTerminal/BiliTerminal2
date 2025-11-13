@@ -88,10 +88,13 @@ class SearchRepository @Inject constructor() {
     }
     
     suspend fun getSearchSuggestions(term: String): Result<List<String>> {
-        return bilibiliApi.api(ISearchApi::class) {
-            getSearchSuggestions(term)
-        }.apiResultNonNull().mapCatching { suggestions ->
-            suggestions.tag?.map { it.value } ?: emptyList()
+        return runCatching {
+            val response = bilibiliApi.getApi(ISearchApi::class.java).getSearchSuggestions(term)
+            if (response.code == 0) {
+                response.result?.tag?.map { it.value } ?: emptyList()
+            } else {
+                throw Exception("API error: code=${response.code}, message=${response.message}")
+            }
         }
     }
 }

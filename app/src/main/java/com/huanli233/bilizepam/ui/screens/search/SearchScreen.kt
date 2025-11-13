@@ -72,7 +72,7 @@ fun SearchScreen(
                 }
             }
 
-            if (searchHistory.isNotEmpty() && suggestions.isEmpty()) {
+            if (searchHistory.isNotEmpty() && suggestions.isEmpty() && searchQuery.isEmpty()) {
                 item {
                     Row(
                         modifier = Modifier

@@ -533,7 +533,12 @@ public class ScalingLazyListState(
         // First time initialization
         if (!initialized.value) {
             initialized.value = true
-            scrollToItem(initialCenterItemIndex, initialCenterItemScrollOffset)
+            // Only scroll to initial item if autoCentering is enabled
+            // For square screens (autoCentering = null), we want to respect contentPadding
+            // and start at the natural top position
+            if (config.value?.autoCentering != null) {
+                scrollToItem(initialCenterItemIndex, initialCenterItemScrollOffset)
+            }
         }
         // Check whether we are becoming visible after an incomplete scrollTo/animatedScrollTo
         if (incompleteScrollItem.value != null) {

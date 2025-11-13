@@ -51,8 +51,8 @@ data class OpusBasicInfo(
 @Parcelize
 data class OpusStatModule(
     val comment: OpusStat,
-    val coin: OpusStat,
-    val favourite: OpusStat,
+    val coin: OpusStat?,
+    val favorite: OpusStat?,
     val forward: OpusStat,
     val like: OpusStat,
 ) : Parcelable {
@@ -71,13 +71,40 @@ data class OpusContentModule(
 ) : Parcelable {
     @Parcelize
     data class Paragraph(
-        val align: Int,
+        val align: Int = 0,
         @SerializedName("para_type") val type: Int,
+        val format: ParagraphFormat? = null,
         val text: Text? = null,
+        val heading: Heading? = null,
+        val blockquote: Blockquote? = null,
         val list: ListContent? = null,
         val pic: Picture? = null,
         val line: Line? = null,
         @LowerCaseUnderScore val linkCard: LinkCard? = null
+    ) : Parcelable
+    
+    @Parcelize
+    data class ParagraphFormat(
+        val align: Int = 0,
+        val indent: Int? = null
+    ) : Parcelable
+    
+    @Parcelize
+    data class Heading(
+        val level: Int,
+        val nodes: List<TextNode>
+    ) : Parcelable
+    
+    @Parcelize
+    data class Blockquote(
+        val children: List<BlockquoteChild>
+    ) : Parcelable
+    
+    @Parcelize
+    data class BlockquoteChild(
+        val format: ParagraphFormat? = null,
+        @SerializedName("para_type") val type: Int,
+        val text: Text? = null
     ) : Parcelable
 
     @Parcelize
@@ -92,40 +119,78 @@ data class OpusContentModule(
 
     @Parcelize
     data class Text(
-        val nodes: List<Node>
-    ) : Parcelable {
-        @Parcelize
-        data class Node(
-            val type: String,
-            val word: Word, // Styles maybe
-            val words: String
-        ) : Parcelable
-
-        @Parcelize
-        data class Word(
-            val color: String? = null,
-            @LowerCaseUnderScore val fontSize: Int,
-            val style: Style
-        ) : Parcelable
-
-        @Parcelize
-        data class Style(
-            val bold: Boolean = false,
-            val strikethrough: Boolean = false,
-            val italic: Boolean = false,
-        ) : Parcelable
-    }
+        val nodes: List<TextNode>
+    ) : Parcelable
+    
+    @Parcelize
+    data class TextNode(
+        val type: String,
+        val word: WordNode? = null,
+        val rich: RichNode? = null
+    ) : Parcelable
+    
+    @Parcelize
+    data class WordNode(
+        val words: String,
+        val color: String? = null,
+        @LowerCaseUnderScore val fontSize: Int = 17,
+        @LowerCaseUnderScore val fontLevel: String? = null,
+        val style: WordStyle? = null,
+        @LowerCaseUnderScore val bgStyle: BgStyle? = null
+    ) : Parcelable
+    
+    @Parcelize
+    data class WordStyle(
+        val bold: Boolean = false,
+        val strikethrough: Boolean = false,
+        val italic: Boolean = false,
+        val underline: Boolean = false
+    ) : Parcelable
+    
+    @Parcelize
+    data class BgStyle(
+        val color: ColorStyle? = null
+    ) : Parcelable
+    
+    @Parcelize
+    data class ColorStyle(
+        val day: String? = null,
+        val night: String? = null
+    ) : Parcelable
+    
+    @Parcelize
+    data class RichNode(
+        val text: String,
+        @LowerCaseUnderScore val origText: String,
+        @LowerCaseUnderScore val jumpUrl: String,
+        val type: String,
+        val style: WordStyle? = null
+    ) : Parcelable
 
     @Parcelize
     data class ListContent(
-        @SerializedName("style") val type: Int,
-        val items: List<Item>
+        @SerializedName("style") val style: Int,
+        val children: List<ListItem> = emptyList(),
+        val items: List<ListItem> = emptyList()
     ) : Parcelable {
         @Parcelize
-        data class Item(
+        data class ListItem(
             val level: Int,
             val order: Int,
-            val nodes: List<Text.Node>
+            @LowerCaseUnderScore val orderStyle: OrderStyle? = null,
+            val children: List<ListItemChild>
+        ) : Parcelable
+        
+        @Parcelize
+        data class ListItemChild(
+            @SerializedName("para_type") val type: Int,
+            val text: Text? = null
+        ) : Parcelable
+        
+        @Parcelize
+        data class OrderStyle(
+            val prefix: String? = null,
+            val suffix: String? = null
         ) : Parcelable
     }
 
@@ -139,6 +204,7 @@ data class OpusContentModule(
         val type: String,
         val ugc: VideoCard? = null,
         val live: LiveCard? = null,
+        val opus: OpusCard? = null,
         val goods: GoodCard? = null
     ) : Parcelable {
         @Parcelize
@@ -163,11 +229,41 @@ data class OpusContentModule(
         ) : Parcelable
 
         @Parcelize
+        data class OpusCard(
+            val title: String,
+            val author: OpusAuthor,
+            val stat: OpusStat,
+            @LowerCaseUnderScore val jumpUrl: String
+        ) : Parcelable
+        
+        @Parcelize
+        data class OpusAuthor(
+            val mid: Long,
+            val name: String
+        ) : Parcelable
+        
+        @Parcelize
+        data class OpusStat(
+            val view: Int
+        ) : Parcelable
+
+        @Parcelize
         data class GoodCard(
-            @LowerCaseUnderScore val headIcon: String,
-            @LowerCaseUnderScore val headText: String,
+            @LowerCaseUnderScore val headIcon: String? = null,
+            @LowerCaseUnderScore val headText: String? = null,
             @LowerCaseUnderScore val jumpUrl: String,
-            /* val item: GoodItem, */
+            val items: List<GoodItem>? = null
+        ) : Parcelable
+        
+        @Parcelize
+        data class GoodItem(
+            val id: Long,
+            val name: String,
+            val brief: String,
+            val cover: String,
+            val price: String,
+            @LowerCaseUnderScore val jumpUrl: String,
+            @LowerCaseUnderScore val jumpDesc: String
         ) : Parcelable
     }
 }

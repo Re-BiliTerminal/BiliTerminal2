@@ -109,7 +109,11 @@ fun DynamicHomeScreen(
                                         onClick = { onDynamicClick(dynamic) },
                                         onUserClick = onUserClick,
                                         onVideoClick = onVideoClick,
-                                        onImageClick = onImageClick
+                                        onImageClick = onImageClick,
+                                        onLikeClick = { dynamicId, isLiked ->
+                                            viewModel.likeDynamic(dynamicId, isLiked)
+                                        },
+                                        onDynamicClick = onDynamicClick
                                     )
                                 }
                             }

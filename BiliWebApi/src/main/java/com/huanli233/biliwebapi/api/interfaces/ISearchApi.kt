@@ -2,7 +2,7 @@ package com.huanli233.biliwebapi.api.interfaces
 
 import com.huanli233.biliwebapi.bean.ApiResponse
 import com.huanli233.biliwebapi.bean.search.SearchResult
-import com.huanli233.biliwebapi.bean.search.SearchSuggestions
+import com.huanli233.biliwebapi.bean.search.SearchSuggestionsResponse
 import com.huanli233.biliwebapi.httplib.annotation.WbiSign
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -24,8 +24,8 @@ interface ISearchApi {
         @Query("page") page: Int = 1
     ): ApiResponse<SearchResult>
     
-    @GET("/x/web-interface/search/suggest")
+    @GET("https://s.search.bilibili.com/main/suggest")
     suspend fun getSearchSuggestions(
         @Query("term") term: String
-    ): ApiResponse<SearchSuggestions>
+    ): SearchSuggestionsResponse
 }

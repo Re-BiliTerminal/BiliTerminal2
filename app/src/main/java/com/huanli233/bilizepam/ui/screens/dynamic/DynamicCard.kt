@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -38,6 +39,9 @@ fun DynamicCard(
     onUserClick: (Long) -> Unit = {},
     onVideoClick: (String) -> Unit = {},
     onImageClick: (List<String>, Int) -> Unit = { _, _ -> },
+    onLikeClick: ((String, Boolean) -> Unit)? = null,
+    onDynamicClick: (Dynamic) -> Unit = {},
+    showFullContent: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -119,7 +123,7 @@ fun DynamicCard(
                         emotes = desc.richTextNodes.mapNotNull { it.emoji }.associateBy { it.text },
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface,
-                        maxLines = 4,
+                        maxLines = if (showFullContent) Int.MAX_VALUE else 4,
                         overflow = TextOverflow.Ellipsis
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -216,7 +220,10 @@ fun DynamicCard(
             
             dynamic.origin?.let { originDynamic ->
                 Spacer(modifier = Modifier.height(8.dp))
-                OriginDynamicCard(origin = originDynamic)
+                OriginDynamicCard(
+                    origin = originDynamic,
+                    onClick = { onDynamicClick(originDynamic) }
+                )
             }
             
             Spacer(modifier = Modifier.height(8.dp))
@@ -225,26 +232,37 @@ fun DynamicCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                val isLiked = dynamic.modules.statsModule.like.status
+                val likeCount = dynamic.modules.statsModule.like.count
+                
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier = if (onLikeClick != null) {
+                        Modifier
+                            .clickable { 
+                                onLikeClick(dynamic.id, isLiked)
+                            }
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                    } else Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Favorite,
+                        imageVector = if (isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = null,
                         modifier = Modifier.size(14.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        tint = if (isLiked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = formatCount((dynamic.modules.statsModule.like?.count ?: 0).toLong()),
+                        text = formatCount(likeCount.toLong()),
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = if (isLiked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
                 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Share,
@@ -475,12 +493,16 @@ private fun OpusImageGrid(
 }
 
 @Composable
-private fun OriginDynamicCard(origin: com.huanli233.biliwebapi.bean.dynamic.Dynamic) {
+private fun OriginDynamicCard(
+    origin: com.huanli233.biliwebapi.bean.dynamic.Dynamic,
+    onClick: () -> Unit = {}
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-        )
+        ),
+        onClick = onClick
     ) {
         Column(
             modifier = Modifier

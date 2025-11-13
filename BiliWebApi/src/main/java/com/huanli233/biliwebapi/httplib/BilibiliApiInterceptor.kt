@@ -23,6 +23,7 @@ import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
+import okhttp3.ResponseBody.Companion.toResponseBody
 import okhttp3.internal.http.HttpMethod
 import retrofit2.Invocation
 import okio.Buffer
@@ -62,21 +63,20 @@ internal class BilibiliApiInterceptor(
         Log.d("BilibiliApiInterceptor", "=== Request ===")
         Log.d("BilibiliApiInterceptor", "URL: ${finalRequest.url}")
         Log.d("BilibiliApiInterceptor", "Method: ${finalRequest.method}")
+        Log.d("BilibiliApiInterceptor", "Body: ${finalRequest.body?.readString()}")
         
         val response = chain.proceed(finalRequest)
         
         // Log response
         val responseBody = response.body
-        val responseBodyString = responseBody?.string() ?: ""
+        val responseBodyString = responseBody.string()
         Log.d("BilibiliApiInterceptor", "=== Response ===")
         Log.d("BilibiliApiInterceptor", "Status: ${response.code}")
         Log.d("BilibiliApiInterceptor", "Response Body: $responseBodyString")
         
         // Recreate response with the body we just read
-        val newResponseBody = okhttp3.ResponseBody.create(
-            responseBody?.contentType(),
-            responseBodyString
-        )
+        val newResponseBody = responseBodyString
+            .toResponseBody(responseBody.contentType())
         
         return response.newBuilder()
             .body(newResponseBody)
@@ -210,22 +210,31 @@ internal class BilibiliApiInterceptor(
     private fun Request.Builder.processFormParams(request: Request, invocation: Invocation?): Request.Builder = apply {
         invocation?.method()?.let { method ->
             val csrf = biliWebApi.cookieManager.loadForRequest(request.url).find { it.name == "bili_jct" }?.value.orEmpty()
+            val csrfAnnotation = method.getAnnotation(Csrf::class.java)
+            
             if (HttpMethod.requiresRequestBody(request.method)) {
-                val formBody = request.body?.readString().orEmpty().parseFormBody()
-                method.getAnnotation(Fields::class.java)?.let {
-                    require(it.keys.size == it.values.size) { "@Fields keys and values size not match" }
-                    it.keys.forEachIndexed { index, key ->
-                        formBody.add(key, it.values[index])
+                val contentType = request.body?.contentType()
+                val isJsonBody = contentType?.toString()?.contains("application/json") == true
+                
+                if (isJsonBody && csrfAnnotation?.forceQuery == true) {
+                    url(this.build().url.newBuilder().addQueryParameter("csrf", csrf).build())
+                } else if (!isJsonBody) {
+                    val formBody = request.body?.readString().orEmpty().parseFormBody()
+                    method.getAnnotation(Fields::class.java)?.let {
+                        require(it.keys.size == it.values.size) { "@Fields keys and values size not match" }
+                        it.keys.forEachIndexed { index, key ->
+                            formBody.add(key, it.values[index])
+                        }
                     }
-                }
-                method.getAnnotation(Csrf::class.java)?.let {
-                    if (it.forceQuery) {
-                        url(this.build().url.newBuilder().addQueryParameter("csrf", csrf).build())
-                    } else {
-                        formBody.add("csrf", csrf)
+                    csrfAnnotation?.let {
+                        if (it.forceQuery) {
+                            url(this.build().url.newBuilder().addQueryParameter("csrf", csrf).build())
+                        } else {
+                            formBody.add("csrf", csrf)
+                        }
                     }
+                    this@processFormParams.method(request.method, formBody.build())
                 }
-                this@processFormParams.method(request.method, formBody.build())
             } else {
                 url(this.build().url.newBuilder().addQueryParameter("csrf", csrf).build())
             }

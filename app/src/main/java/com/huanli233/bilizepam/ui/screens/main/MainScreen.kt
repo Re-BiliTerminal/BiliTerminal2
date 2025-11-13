@@ -36,8 +36,10 @@ import com.huanli233.bilizepam.ui.navigation.settingsGraph
 import com.huanli233.bilizepam.ui.screens.collection.CollectionDetailScreen
 import com.huanli233.bilizepam.ui.screens.comment.CommentDetailScreen
 import com.huanli233.bilizepam.ui.screens.download.DownloadListScreen
+import com.huanli233.bilizepam.ui.screens.dynamic.DynamicDetailScreen
 import com.huanli233.bilizepam.ui.screens.dynamic.DynamicHomeScreen
 import com.huanli233.bilizepam.ui.screens.image.ImageViewerScreen
+import com.huanli233.bilizepam.ui.screens.opus.OpusDetailScreen
 import com.huanli233.bilizepam.ui.screens.player.PlayerScreen
 import com.huanli233.bilizepam.ui.screens.recommend.RecommendScreen
 import com.huanli233.bilizepam.ui.screens.user.UserProfileScreen
@@ -92,7 +94,20 @@ fun MainScreen(mainNavController: androidx.navigation.NavController) {
             composable(Screen.Dynamic.route) {
                 DynamicHomeScreen(
                     onDynamicClick = { dynamic ->
-                        // TODO: Navigate to dynamic detail
+                        val major = dynamic.modules.contentModule.major
+                        when {
+                            major?.type == "MAJOR_TYPE_OPUS" && major.opus != null -> {
+                                val opusId = dynamic.id
+                                contentNavController.navigate(
+                                    Screen.OpusDetail.createRoute(opusId)
+                                )
+                            }
+                            else -> {
+                                contentNavController.navigate(
+                                    Screen.DynamicDetail.createRoute(dynamic.id)
+                                )
+                            }
+                        }
                     },
                     onUserClick = { mid ->
                         contentNavController.navigate("user/$mid")
@@ -116,6 +131,74 @@ fun MainScreen(mainNavController: androidx.navigation.NavController) {
                 )
             ) {
                 VideoDetailScreen(navController = contentNavController)
+            }
+
+            composable(
+                route = Screen.DynamicDetail.route,
+                arguments = listOf(
+                    navArgument("dynamicId") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val dynamicId = backStackEntry.arguments?.getString("dynamicId") ?: ""
+                DynamicDetailScreen(
+                    dynamicId = dynamicId,
+                    onNavigateBack = { contentNavController.popBackStack() },
+                    onUserClick = { mid ->
+                        contentNavController.navigate("user/$mid")
+                    },
+                    onVideoClick = { bvid ->
+                        contentNavController.navigate("video_detail/0/$bvid")
+                    },
+                    onImageClick = { imageUrls, initialPage ->
+                        val encodedUrls = imageUrls.joinToString(",") { java.net.URLEncoder.encode(it, "UTF-8") }
+                        contentNavController.navigate("imageViewer/$encodedUrls/$initialPage")
+                    },
+                    onDynamicClick = { dynamic ->
+                        val major = dynamic.modules.contentModule.major
+                        when {
+                            major?.type == "MAJOR_TYPE_OPUS" && major.opus != null -> {
+                                val opusId = dynamic.id
+                                contentNavController.navigate(
+                                    Screen.OpusDetail.createRoute(opusId)
+                                )
+                            }
+                            else -> {
+                                contentNavController.navigate(
+                                    Screen.DynamicDetail.createRoute(dynamic.id)
+                                )
+                            }
+                        }
+                    }
+                )
+            }
+
+            composable(
+                route = Screen.OpusDetail.route,
+                arguments = listOf(
+                    navArgument("opusId") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val opusId = backStackEntry.arguments?.getString("opusId") ?: ""
+                OpusDetailScreen(
+                    opusId = opusId,
+                    onNavigateBack = { contentNavController.popBackStack() },
+                    onUserClick = { mid ->
+                        contentNavController.navigate("user/$mid")
+                    },
+                    onVideoClick = { bvid ->
+                        contentNavController.navigate("video_detail/0/$bvid")
+                    },
+                    onImageClick = { imageUrls, initialPage ->
+                        val encodedUrls = imageUrls.joinToString(",") { java.net.URLEncoder.encode(it, "UTF-8") }
+                        contentNavController.navigate("imageViewer/$encodedUrls/$initialPage")
+                    },
+                    onCommentDetailClick = { replyId, oid ->
+                        contentNavController.navigate("comment_detail/$replyId?oid=$oid&type=11")
+                    },
+                    onWriteReplyClick = { oid, rpid, parent, parentSender ->
+                        contentNavController.navigate("write_reply/$oid/$rpid/$parent?parentSender=${parentSender ?: ""}")
+                    }
+                )
             }
 
             composable(

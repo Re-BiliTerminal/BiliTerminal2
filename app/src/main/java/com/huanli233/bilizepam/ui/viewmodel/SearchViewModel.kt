@@ -8,6 +8,7 @@ import com.huanli233.biliwebapi.bean.search.SearchItem
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,12 +32,15 @@ class SearchViewModel @Inject constructor(
     private val _searchHistory = MutableStateFlow<List<String>>(emptyList())
     val searchHistory: StateFlow<List<String>> = _searchHistory.asStateFlow()
 
+    private var suggestionJob: Job? = null
+
     init {
         loadSearchHistory()
     }
 
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
+        suggestionJob?.cancel()
         if (query.isNotBlank()) {
             loadSuggestions(query)
         } else {
@@ -45,13 +49,17 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun loadSuggestions(query: String) {
-        viewModelScope.launch {
+        suggestionJob = viewModelScope.launch {
             searchRepository.getSearchSuggestions(query).fold(
                 onSuccess = { suggestions ->
-                    _suggestions.value = suggestions.take(5)
+                    if (_searchQuery.value == query) {
+                        _suggestions.value = suggestions.take(5)
+                    }
                 },
                 onFailure = {
-                    _suggestions.value = emptyList()
+                    if (_searchQuery.value == query) {
+                        _suggestions.value = emptyList()
+                    }
                 }
             )
         }

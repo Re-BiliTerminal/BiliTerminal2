@@ -7,6 +7,7 @@ import com.huanli233.biliwebapi.bean.dynamic.DynamicFeedResponse
 import com.huanli233.biliwebapi.httplib.Domains
 import com.huanli233.biliwebapi.httplib.annotation.API
 import com.huanli233.biliwebapi.httplib.annotation.Csrf
+import com.huanli233.biliwebapi.httplib.annotation.Queries
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -27,6 +28,10 @@ interface IDynamicApi {
     ): ApiResponse<DynamicFeedResponse>
 
     @GET("/x/polymer/web-dynamic/v1/detail")
+    @Queries(
+        keys = ["features"],
+        values = ["itemOpusStyle,opusBigCover,onlyfansVote,endFooterHidden,decorationCard,onlyfansAssetsV2,ugcDelete,onlyfansQaCard,editable,opusPrivateVisible,avatarAutoTheme"]
+    )
     suspend fun getDynamic(@Query("id") id: String) : ApiResponse<ItemResult<Dynamic>>
 
     @API(Domains.VC_API_URL)
