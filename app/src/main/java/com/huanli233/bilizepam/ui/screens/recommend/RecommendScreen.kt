@@ -13,8 +13,9 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import com.huanli233.bilizepam.ui.widget.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,6 +60,12 @@ fun RecommendScreen(
     
     // Create ScrollBehavior for TopBar
     val scrollBehavior = rememberEnterAlwaysScrollBehavior()
+    
+    LaunchedEffect(videos.loadState.refresh) {
+        if (videos.loadState.refresh is LoadState.NotLoading && isRefreshing) {
+            isRefreshing = false
+        }
+    }
 
     ScreenScaffold(
         scrollState = scrollState,
@@ -75,11 +82,8 @@ fun RecommendScreen(
             PullToRefreshBox(
                 isRefreshing = isRefreshing,
                 onRefresh = {
-                    scope.launch {
-                        isRefreshing = true
-                        videos.refresh()
-                        isRefreshing = false
-                    }
+                    isRefreshing = true
+                    videos.refresh()
                 },
                 modifier = Modifier.fillMaxSize()
             ) {
@@ -91,19 +95,21 @@ fun RecommendScreen(
 
                 item {
                     Crossfade(
-                        targetState = videos.loadState.refresh,
+                        targetState = if (isRefreshing) LoadState.Loading else videos.loadState.refresh,
                         animationSpec = tween(durationMillis = 300),
                         label = "ContentStateTransition",
                         modifier = Modifier
                             .fillMaxWidth()
                     ) { state ->
                         when (state) {
-                            is LoadState.Loading if videos.itemCount == 0 -> {
-                                LoadingView(
-                                    state = LoadingState.LOADING,
-                                    modifier = Modifier.fillMaxSize()
-                                        .height(screenHeight * 0.7f)
-                                )
+                            is LoadState.Loading -> {
+                                if (videos.itemCount == 0 || isRefreshing) {
+                                    LoadingView(
+                                        state = LoadingState.LOADING,
+                                        modifier = Modifier.fillMaxSize()
+                                            .height(screenHeight * 0.7f)
+                                    )
+                                }
                             }
                             is LoadState.Error -> {
                                 val error = state.error

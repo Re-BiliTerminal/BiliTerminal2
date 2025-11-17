@@ -3,13 +3,16 @@ package com.huanli233.bilizepam.ui.screens.dynamic
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import com.huanli233.bilizepam.ui.widget.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
+import kotlinx.coroutines.flow.collectLatest
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
@@ -50,6 +53,12 @@ fun DynamicHomeScreen(
     val screenHeight = configuration.screenHeightDp.dp
     
     val scrollBehavior = rememberEnterAlwaysScrollBehavior()
+    
+    LaunchedEffect(dynamics.loadState.refresh) {
+        if (dynamics.loadState.refresh is LoadState.NotLoading && isRefreshing) {
+            isRefreshing = false
+        }
+    }
 
     ScreenScaffold(
         scrollState = scrollState,
@@ -66,16 +75,13 @@ fun DynamicHomeScreen(
             PullToRefreshBox(
                 isRefreshing = isRefreshing,
                 onRefresh = {
-                    scope.launch {
-                        isRefreshing = true
-                        dynamics.refresh()
-                        isRefreshing = false
-                    }
+                    isRefreshing = true
+                    dynamics.refresh()
                 },
                 modifier = Modifier.fillMaxSize()
             ) {
                 when {
-                    dynamics.loadState.refresh is LoadState.Loading && dynamics.itemCount == 0 -> {
+                    isRefreshing || (dynamics.loadState.refresh is LoadState.Loading && dynamics.itemCount == 0) -> {
                         LoadingView(
                             state = LoadingState.LOADING,
                             modifier = Modifier.fillMaxSize()
