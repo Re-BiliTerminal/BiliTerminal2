@@ -9,11 +9,9 @@ import com.huanli233.biliwebapi.httplib.Domains
 import com.huanli233.biliwebapi.httplib.Protocols
 import com.huanli233.biliwebapi.httplib.WbiDataManager
 import com.huanli233.biliwebapi.httplib.internal.GsonConverterFactory
-import com.huanli233.biliwebapi.util.gson
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -38,7 +36,7 @@ open class BiliWebApi(
     }
     private val apiObjectsMap = mutableMapOf<Class<*>, Any>()
 
-    protected open fun createHttpClient(): OkHttpClient.Builder {
+    open fun createHttpClient(): OkHttpClient.Builder {
         return OkHttpClient.Builder()
                     .cookieJar(
                         object : CookieJar {
@@ -83,28 +81,6 @@ open class BiliWebApi(
 //        api<T>().action()
 //    }
 
-}
-
-class ApiDebugInterceptor : Interceptor {
-
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request()
-
-        // Log request details
-        if (ApiDebugSettings.isRequestLoggingEnabled()) {
-            ApiDebugLogger.logFullRequest(request)
-        }
-
-        // Proceed with the request
-        val response = chain.proceed(request)
-
-        // Log response details
-        if (ApiDebugSettings.isResponseLoggingEnabled()) {
-            ApiDebugLogger.logFullResponse(response)
-        }
-
-        return response
-    }
 }
 
 object ApiDebugSettings {

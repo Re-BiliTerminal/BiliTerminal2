@@ -126,7 +126,8 @@ data class OpusContentModule(
     data class TextNode(
         val type: String,
         val word: WordNode? = null,
-        val rich: RichNode? = null
+        val rich: RichNode? = null,
+        val emoji: EmojiNode? = null
     ) : Parcelable
     
     @Parcelize
@@ -162,9 +163,18 @@ data class OpusContentModule(
     data class RichNode(
         val text: String,
         @LowerCaseUnderScore val origText: String,
-        @LowerCaseUnderScore val jumpUrl: String,
+        @LowerCaseUnderScore val jumpUrl: String? = null,
         val type: String,
-        val style: WordStyle? = null
+        val style: WordStyle? = null,
+        val rid: String? = null
+    ) : Parcelable
+    
+    @Parcelize
+    data class EmojiNode(
+        val text: String,
+        @LowerCaseUnderScore val iconUrl: String,
+        val size: Int,
+        val type: Int
     ) : Parcelable
 
     @Parcelize

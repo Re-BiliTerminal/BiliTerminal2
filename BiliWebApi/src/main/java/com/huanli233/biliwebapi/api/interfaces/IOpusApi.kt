@@ -21,7 +21,7 @@ interface IOpusApi {
     @GET("/x/polymer/web-dynamic/v1/opus/detail")
     suspend fun getOpus(
         @Query("id") opusId: String,
-        @Query("features") features: String = "itemOpusStyle,opusBigCover,onlyfansVote,endFooterHidden,decorationCard,onlyfansAssetsV2,ugcDelete,onlyfansQaCard,editable,opusPrivateVisible,avatarAutoTheme"
+        @Query("features") features: String = "itemOpusStyle,opusBigCover,onlyfansVote,endFooterHidden,decorationCard,onlyfansAssetsV2,ugcDelete,onlyfansQaCard,editable,opusPrivateVisible,avatarAutoTheme,htmlNewStyle"
     ): ApiResponse<ItemResult<Opus>>
 
     @POST("/x/dynamic/feed/dyn/thumb")

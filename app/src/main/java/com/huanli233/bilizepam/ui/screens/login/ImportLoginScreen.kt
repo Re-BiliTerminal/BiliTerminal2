@@ -3,6 +3,7 @@ package com.huanli233.bilizepam.ui.screens.login
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -31,6 +32,8 @@ import javax.inject.Inject
 
 @Composable
 fun ImportLoginScreen(
+    scrollState: ScrollState,
+    paddingValues: PaddingValues,
     onLoginSuccess: () -> Unit,
     showMode: Boolean = false
 ) {
@@ -49,7 +52,9 @@ fun ImportLoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .verticalScroll(scrollState)
+            .padding(16.dp)
+            .padding(paddingValues),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

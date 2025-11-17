@@ -144,11 +144,12 @@ fun VideoDetailScreen(
     }
 
     val isRound = isRoundDevice() && LocalData.settings.uiSettings.roundMode
-    val pagerState = rememberPagerState(pageCount = { 3 })
+    val pagerState = androidx.wear.compose.foundation.pager.rememberPagerState(pageCount = { 3 })
     
     // Create scroll states for each page
     val videoDetailScrollState = rememberScrollState()
     val commentScrollState = rememberScalingLazyListState()
+    val relatedScrollState = rememberScalingLazyListState()
     
     // Create ScrollBehavior for TopBar
     val scrollBehavior = rememberEnterAlwaysScrollBehavior()
@@ -187,7 +188,7 @@ fun VideoDetailScreen(
                     }
                     uiState.videoInfo != null -> {
                         Box(modifier = Modifier.weight(1f)) {
-                            HorizontalPager(
+                            androidx.wear.compose.foundation.pager.HorizontalPager(
                                 state = pagerState,
                                 modifier = Modifier.fillMaxSize()
                             ) { page ->
@@ -226,6 +227,7 @@ fun VideoDetailScreen(
                                     )
                                     1 -> CommentScreen(
                                         aid = uiState.videoInfo?.aid ?: 0L,
+                                        scrollState = commentScrollState,
                                         onCommentDetailClick = { replyId ->
                                             val oid = uiState.videoInfo?.aid ?: 0L
                                             navController.navigate("comment_detail/$replyId?oid=$oid&type=1")
@@ -235,11 +237,15 @@ fun VideoDetailScreen(
                                         },
                                         onUserClick = { userId ->
                                             navController.navigate("user/$userId")
+                                        },
+                                        onOpusClick = { opusId ->
+                                            navController.navigate("opus_detail/$opusId")
                                         }
                                     )
                                     2 -> VideoRelatedScreen(
                                         aid = uiState.videoInfo?.aid ?: 0L,
                                         bvid = uiState.videoInfo?.bvid ?: "",
+                                        scrollState = relatedScrollState,
                                         onVideoClick = { video ->
                                             navController.navigate("video_detail/${video.aid}/${video.bvid}")
                                         },
@@ -248,7 +254,7 @@ fun VideoDetailScreen(
                                 }
                             }
                             
-                            DotsIndicator(
+                            com.huanli233.bilizepam.ui.widget.DotsIndicator(
                                 modifier = Modifier
                                     .align(Alignment.BottomCenter)
                                     .padding(bottom = PaddingDefaults.verticalOptContentPadding()),

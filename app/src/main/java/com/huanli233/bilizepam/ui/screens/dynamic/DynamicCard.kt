@@ -27,7 +27,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.huanli233.biliwebapi.bean.dynamic.Dynamic
-import com.huanli233.bilizepam.ui.components.EmoteText
+import com.huanli233.bilizepam.ui.components.RichText
 import com.huanli233.bilizepam.ui.components.VideoCard
 import com.valentinilk.shimmer.shimmer
 
@@ -118,13 +118,26 @@ fun DynamicCard(
             
             dynamic.modules.contentModule.desc?.let { desc ->
                 if (desc.text.isNotBlank()) {
-                    EmoteText(
+                    val atList = desc.richTextNodes
+                        .filter { it.type == "RICH_TEXT_NODE_TYPE_AT" }
+                        .mapNotNull { node ->
+                            node.text.removePrefix("@").let { name ->
+                                node.rid?.let { mid ->
+                                    name to mid
+                                }
+                            }
+                        }
+                    
+                    RichText(
                         text = desc.text,
                         emotes = desc.richTextNodes.mapNotNull { it.emoji }.associateBy { it.text },
+                        atList = atList,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        maxLines = if (showFullContent) Int.MAX_VALUE else 4,
-                        overflow = TextOverflow.Ellipsis
+                        onUserClick = onUserClick,
+                        onBvidClick = onVideoClick,
+                        onAvidClick = { aid -> onVideoClick("av$aid") },
+                        onCvidClick = { cvid -> /* TODO: 跳转到文章 */ },
+                        onUrlClick = { url -> /* TODO: 处理URL */ }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                 }
@@ -211,7 +224,9 @@ fun DynamicCard(
                                 opus = opus,
                                 onImageClick = { index ->
                                     onImageClick(opus.pics.map { it.url }, index)
-                                }
+                                },
+                                onUserClick = onUserClick,
+                                onVideoClick = onVideoClick
                             )
                         }
                     }
@@ -317,7 +332,9 @@ private fun ImageMajorContent(imageUrl: String) {
 @Composable
 private fun OpusMajorContent(
     opus: com.huanli233.biliwebapi.bean.opus.DynamicOpus,
-    onImageClick: (Int) -> Unit = {}
+    onImageClick: (Int) -> Unit = {},
+    onUserClick: (Long) -> Unit = {},
+    onVideoClick: (String) -> Unit = {}
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -325,13 +342,26 @@ private fun OpusMajorContent(
     ) {
         opus.summary?.let { summary ->
             if (summary.text.isNotBlank()) {
-                EmoteText(
+                val atList = summary.richTextNodes
+                    .filter { it.type == "RICH_TEXT_NODE_TYPE_AT" }
+                    .mapNotNull { node ->
+                        node.text.removePrefix("@").let { name ->
+                            node.rid?.let { mid ->
+                                name to mid
+                            }
+                        }
+                    }
+                
+                RichText(
                     text = summary.text,
                     emotes = summary.richTextNodes.mapNotNull { it.emoji }.associateBy { it.text },
+                    atList = atList,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 4,
-                    overflow = TextOverflow.Ellipsis
+                    onUserClick = onUserClick,
+                    onBvidClick = onVideoClick,
+                    onAvidClick = { aid -> onVideoClick("av$aid") },
+                    onCvidClick = { cvid -> /* TODO: 跳转到文章 */ },
+                    onUrlClick = { url -> /* TODO: 处理URL */ }
                 )
             }
         }

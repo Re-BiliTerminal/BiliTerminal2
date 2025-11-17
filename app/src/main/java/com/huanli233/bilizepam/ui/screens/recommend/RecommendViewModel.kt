@@ -61,6 +61,7 @@ class RecommendPagingSource(
                 nextKey = if (videos.isEmpty()) null else freshIndex + 1
             )
         } catch (e: Exception) {
+            e.printStackTrace()
             LoadResult.Error(e)
         }
     }

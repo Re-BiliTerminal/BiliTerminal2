@@ -2,8 +2,10 @@ package com.huanli233.bilizepam.ui.components
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.AnimationState
 import androidx.compose.animation.core.DecayAnimationSpec
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.animateTo
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.ScrollState
@@ -25,6 +27,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -217,19 +220,54 @@ private class EnterAlwaysScrollBehavior(
             if (state.heightOffsetLimit != -Float.MAX_VALUE) {
                 state.contentOffset += consumed.y
                 // Update TopBar offset based on content scroll
-                // This makes TopBar hide/show while content is scrolling
                 state.heightOffset += consumed.y
             }
             return Offset.Zero
         }
         
         override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
+            val superConsumed = super.onPostFling(consumed, available)
+            
+            // Snap behavior: 当滚动停止时，根据当前位置和滚动方向决定是完全展开还是完全隐藏
+            if (state.heightOffsetLimit != -Float.MAX_VALUE) {
+                val currentOffset = state.heightOffset
+                
+                // 使用不对称的阈值：
+                // - 向上滚动（隐藏）：只需要隐藏 20% 就会完全隐藏
+                // - 向下滚动（显示）：需要显示 80% 才会完全展开
+                val hideThreshold = state.heightOffsetLimit * 0.8f  // 隐藏 20% 就触发
+                val showThreshold = state.heightOffsetLimit * 0.2f  // 显示 80% 才触发
+                
+                val targetOffset = when {
+                    // 如果已经隐藏超过 20%，就完全隐藏
+                    currentOffset < hideThreshold -> state.heightOffsetLimit
+                    // 如果显示超过 80%，就完全展开
+                    currentOffset > showThreshold -> 0f
+                    // 中间状态：根据速度方向决定
+                    consumed.y < 0 -> state.heightOffsetLimit  // 向上滚动，隐藏
+                    else -> 0f  // 向下滚动，展开
+                }
+                
+                // 使用动画平滑过渡到目标位置
+                if (currentOffset != targetOffset) {
+                    AnimationState(initialValue = currentOffset).animateTo(
+                        targetValue = targetOffset,
+                        animationSpec = tween(
+                            durationMillis = 200,
+                            easing = FastOutLinearInEasing
+                        )
+                    ) {
+                        state.heightOffset = value
+                    }
+                }
+            }
+            
             if (available.y > 0f && 
                 (state.heightOffset == 0f || state.heightOffset == state.heightOffsetLimit)) {
-                // Reset the total content offset to zero when scrolling all the way down.
                 state.contentOffset = 0f
             }
-            return Velocity.Zero
+            
+            return superConsumed
         }
     }
 }
@@ -458,22 +496,16 @@ private fun ScrollAwareTopBarImpl(
 ) {
     val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
     val topPadding = with(LocalDensity.current) { 
-        (systemBarsPadding.calculateTopPadding() + PaddingDefaults.verticalOptContentPadding()).toPx() 
+        (systemBarsPadding.calculateTopPadding() + PaddingDefaults.verticalContentPadding()).toPx()
     }
     val density = LocalDensity.current
 
     // Calculate offset from scroll behavior
     val heightOffset = scrollBehavior?.state?.heightOffset ?: 0f
-    
-    val animatedOffset by animateFloatAsState(
-        targetValue = heightOffset,
-        animationSpec = tween(durationMillis = 150),
-        label = "topBarOffset"
-    )
 
     Box(
         modifier = modifier
-            .offset { IntOffset(0, animatedOffset.roundToInt()) }
+            .offset { IntOffset(0, heightOffset.roundToInt()) }
             .onGloballyPositioned { coordinates ->
                 val h = with(density) {
                     coordinates.size.height.toDp()

@@ -7,10 +7,12 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,6 +52,8 @@ import com.valentinilk.shimmer.shimmer
 
 @Composable
 fun QrCodeLoginScreen(
+    scrollState: ScrollState,
+    paddingValues: PaddingValues,
     viewModel: QrCodeLoginViewModel = hiltViewModel(),
     onNavigateToImport: () -> Unit,
     onLoginSuccess: () -> Unit,
@@ -92,8 +96,9 @@ fun QrCodeLoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
+            .verticalScroll(scrollState)
+            .padding(16.dp)
+            .padding(paddingValues),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

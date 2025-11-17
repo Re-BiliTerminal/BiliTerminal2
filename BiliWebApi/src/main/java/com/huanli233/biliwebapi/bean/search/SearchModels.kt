@@ -92,7 +92,28 @@ data class SearchItem(
     val liveStatus: Int? = null,
     
     @SerializedName("tag")
-    val tag: String? = null
+    val tag: String? = null,
+    
+    @SerializedName("id")
+    val id: Long? = null,
+    
+    @SerializedName("image_urls")
+    val imageUrls: List<String>? = null,
+    
+    @SerializedName("view")
+    val view: Long? = null,
+    
+    @SerializedName("like")
+    val like: Long? = null,
+    
+    @SerializedName("reply")
+    val reply: Long? = null,
+    
+    @SerializedName("desc")
+    val desc: String? = null,
+    
+    @SerializedName("category_name")
+    val categoryName: String? = null
 )
 
 data class SearchSuggestionsResponse(

@@ -36,7 +36,7 @@ private val otherCookiesMap = mapOf(
     "fingerprint" to "12ce21cfd0c7d56f6f1d37ba3f15203b"
 )
 
-internal class BilibiliApiInterceptor(
+class BilibiliApiInterceptor(
     private val biliWebApi: BiliWebApi
 ) : Interceptor {
 
@@ -58,26 +58,29 @@ internal class BilibiliApiInterceptor(
         requestBuilder = requestBuilder.wbiSign(requestBuilder.build().url, invocation)
 
         val finalRequest = requestBuilder.build()
-        
+
         // Log request
         Log.d("BilibiliApiInterceptor", "=== Request ===")
         Log.d("BilibiliApiInterceptor", "URL: ${finalRequest.url}")
         Log.d("BilibiliApiInterceptor", "Method: ${finalRequest.method}")
+        Log.d("BilibiliApiInterceptor", "Header: ${finalRequest.headers}")
         Log.d("BilibiliApiInterceptor", "Body: ${finalRequest.body?.readString()}")
-        
+
         val response = chain.proceed(finalRequest)
-        
+
         // Log response
-        val responseBody = response.body
-        val responseBodyString = responseBody.string()
         Log.d("BilibiliApiInterceptor", "=== Response ===")
         Log.d("BilibiliApiInterceptor", "Status: ${response.code}")
+        Log.d("BilibiliApiInterceptor", "Header: ${response.headers}")
+
+        val responseBody = response.body
+        val responseBodyString = responseBody.string()
         Log.d("BilibiliApiInterceptor", "Response Body: $responseBodyString")
-        
+
         // Recreate response with the body we just read
         val newResponseBody = responseBodyString
             .toResponseBody(responseBody.contentType())
-        
+
         return response.newBuilder()
             .body(newResponseBody)
             .build()

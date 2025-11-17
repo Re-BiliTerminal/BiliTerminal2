@@ -3,27 +3,37 @@ package com.huanli233.bilizepam.ui.screens.opus
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.InlineTextContent
+import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -58,7 +68,8 @@ fun OpusContent(
             ParagraphItem(
                 paragraph = paragraph,
                 onVideoClick = onVideoClick,
-                onImageClick = onImageClick
+                onImageClick = onImageClick,
+                onUserClick = onUserClick
             )
         }
     }
@@ -68,14 +79,16 @@ fun OpusContent(
 private fun ParagraphItem(
     paragraph: Paragraph,
     onVideoClick: (String) -> Unit,
-    onImageClick: (List<String>, Int) -> Unit
+    onImageClick: (List<String>, Int) -> Unit,
+    onUserClick: (Long) -> Unit = {}
 ) {
     when (paragraph.type) {
         PARAGRAPH_TYPE_TEXT -> {
             paragraph.text?.let { text ->
                 RichText(
                     text = text,
-                    align = paragraph.align
+                    align = paragraph.align,
+                    onUserClick = onUserClick
                 )
             }
         }
@@ -130,47 +143,112 @@ private fun ParagraphItem(
 @Composable
 private fun RichText(
     text: Text,
-    align: Int = 0
+    align: Int = 0,
+    onUserClick: (Long) -> Unit = {}
 ) {
-    val annotatedString = buildAnnotatedString {
-        text.nodes.forEach { node ->
-            when (node.type) {
-                "TEXT_NODE_TYPE_WORD" -> {
-                    node.word?.let { word ->
-                        val style = SpanStyle(
-                            color = parseColor(word.color),
-                            fontSize = word.fontSize.sp,
-                            fontWeight = if (word.style?.bold == true) FontWeight.Bold else FontWeight.Normal,
-                            fontStyle = if (word.style?.italic == true) FontStyle.Italic else FontStyle.Normal,
-                            textDecoration = when {
-                                word.style?.strikethrough == true -> TextDecoration.LineThrough
-                                word.style?.underline == true -> TextDecoration.Underline
-                                else -> null
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val bodyMediumFontSize = MaterialTheme.typography.bodyMedium.fontSize
+    val (annotatedString, inlineContent) = remember(text) {
+        val emojis = mutableMapOf<String, EmojiNode>()
+        
+        val annotated = buildAnnotatedString {
+            text.nodes.forEachIndexed { index, node ->
+                when (node.type) {
+                    "TEXT_NODE_TYPE_WORD" -> {
+                        node.word?.let { word ->
+                            val style = SpanStyle(
+                                color = parseColor(word.color),
+                                fontSize = bodyMediumFontSize * (word.fontSize / 17f),
+                                fontWeight = if (word.style?.bold == true) FontWeight.Bold else FontWeight.Normal,
+                                fontStyle = if (word.style?.italic == true) FontStyle.Italic else FontStyle.Normal,
+                                textDecoration = when {
+                                    word.style?.strikethrough == true -> TextDecoration.LineThrough
+                                    word.style?.underline == true -> TextDecoration.Underline
+                                    else -> null
+                                }
+                            )
+                            withStyle(style) {
+                                append(word.words)
                             }
-                        )
-                        withStyle(style) {
-                            append(word.words)
                         }
                     }
-                }
 
-                "TEXT_NODE_TYPE_RICH" -> {
-                    node.rich?.let { rich ->
-                        val style = SpanStyle(
-                            color = MaterialTheme.colorScheme.primary,
-                            textDecoration = TextDecoration.Underline
-                        )
-                        withStyle(style) {
-                            append(rich.text)
+                    "TEXT_NODE_TYPE_RICH" -> {
+                        node.rich?.let { rich ->
+                            val linkStyle = SpanStyle(
+                                color = primaryColor,
+                                textDecoration = TextDecoration.Underline
+                            )
+                            
+                            when (rich.type) {
+                                "RICH_TEXT_NODE_TYPE_AT" -> {
+                                    rich.rid?.toLongOrNull()?.let { mid ->
+                                        val link = LinkAnnotation.Clickable(
+                                            tag = "user_$mid",
+                                            styles = TextLinkStyles(style = linkStyle),
+                                            linkInteractionListener = {
+                                                onUserClick(mid)
+                                            }
+                                        )
+                                        withLink(link) {
+                                            append(rich.text)
+                                        }
+                                    } ?: run {
+                                        withStyle(linkStyle) {
+                                            append(rich.text)
+                                        }
+                                    }
+                                }
+                                else -> {
+                                    withStyle(linkStyle) {
+                                        append(rich.text)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    "TEXT_NODE_TYPE_EMOJI" -> {
+                        node.emoji?.let { emoji ->
+                            val emojiId = "emoji_${emoji.iconUrl.hashCode()}"
+                            emojis[emojiId] = emoji
+                            appendInlineContent(emojiId, emoji.text)
                         }
                     }
                 }
             }
         }
+        
+        val inline = emojis.mapValues { (id, emoji) ->
+            InlineTextContent(
+                placeholder = Placeholder(
+                    width = when (emoji.size) {
+                        1 -> 1.2.em
+                        2 -> 1.5.em
+                        else -> 1.5.em
+                    },
+                    height = when (emoji.size) {
+                        1 -> 1.2.em
+                        2 -> 1.5.em
+                        else -> 1.5.em
+                    },
+                    placeholderVerticalAlign = PlaceholderVerticalAlign.Center
+                )
+            ) {
+                AsyncImage(
+                    model = emoji.iconUrl,
+                    contentDescription = emoji.text,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+        }
+        
+        Pair(annotated, inline)
     }
-
-    Text(
+    
+    androidx.compose.material3.Text(
         text = annotatedString,
+        inlineContent = inlineContent,
         style = MaterialTheme.typography.bodyMedium,
         textAlign = when (align) {
             1 -> TextAlign.Center
@@ -247,7 +325,7 @@ private fun QuoteBlock(blockquote: Blockquote) {
 @Composable
 private fun ListBlock(list: ListContent) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        val items = if (list.children.isNotEmpty()) list.children else list.items
+        val items = list.children.ifEmpty { list.items }
         items.forEach { item ->
             Row(
                 modifier = Modifier.fillMaxWidth(),

@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.material3.*
 import com.huanli233.bilizepam.R
+import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
 import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
 import com.huanli233.bilizepam.ui.viewmodel.SearchViewModel
 
@@ -25,16 +27,22 @@ fun SearchScreen(
     val searchQuery by viewModel.searchQuery.collectAsState()
     val suggestions by viewModel.suggestions.collectAsState()
     val searchHistory by viewModel.searchHistory.collectAsState()
+    val listState = rememberLazyListState()
+    val scrollBehavior = rememberEnterAlwaysScrollBehavior()
 
     ScreenScaffold(
+        scrollState = listState,
         topBar = scrollAwareTopBar(
             title = stringResource(R.string.search),
             showBackIcon = false,
             showMenuIcon = true,
-            onMenuClick = onMenuClick
-        )
+            onMenuClick = onMenuClick,
+            scrollBehavior = scrollBehavior
+        ),
+        topBarScrollBehavior = scrollBehavior
     ) { paddingValues ->
         LazyColumn(
+            state = listState,
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues,
             horizontalAlignment = Alignment.CenterHorizontally

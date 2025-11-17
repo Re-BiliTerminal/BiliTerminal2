@@ -66,15 +66,18 @@ sealed class VideoRelatedUiState {
 fun VideoRelatedScreen(
     aid: Long,
     bvid: String = "",
+    scrollState: androidx.wear.compose.foundation.lazy.ScalingLazyListState? = null,
     onVideoClick: (VideoInfo) -> Unit,
     paddingValues: PaddingValues = PaddingValues(),
-    viewModel: VideoRelatedViewModel = hiltViewModel()
+    viewModel: VideoRelatedViewModel = hiltViewModel(key = "video_related_$aid")
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val scrollState = rememberScalingLazyListState()
+    val actualScrollState = scrollState ?: rememberScalingLazyListState()
     
     LaunchedEffect(aid) {
-        viewModel.loadRelatedVideos(aid, bvid)
+        if (uiState is VideoRelatedUiState.Loading) {
+            viewModel.loadRelatedVideos(aid, bvid)
+        }
     }
     
     when (val state = uiState) {
@@ -110,7 +113,7 @@ fun VideoRelatedScreen(
         is VideoRelatedUiState.Success -> {
             ScalingLazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                state = scrollState,
+                state = actualScrollState,
                 contentPadding = paddingValues
             ) {
                 items(state.videos.size) { index ->

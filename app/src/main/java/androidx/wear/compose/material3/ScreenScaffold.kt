@@ -760,26 +760,47 @@ private enum class SlotsEnum {
  */
 @Composable
 public fun ScreenScaffold(
-    scrollState: ScalingLazyListState,
+    scrollState: Any,
     modifier: Modifier = Modifier,
     topBar: (@Composable () -> Unit)? = null,
     contentPadding: PaddingValues = ScreenScaffoldDefaults.contentPadding,
     timeText: (@Composable () -> Unit)? = null,
-    scrollIndicator: (@Composable BoxScope.() -> Unit)? = { ScrollIndicator(scrollState) },
+    scrollIndicator: (@Composable BoxScope.() -> Unit)? = {
+        when (scrollState) {
+            is ScalingLazyListState -> ScrollIndicator(scrollState)
+            is LazyListState -> ScrollIndicator(scrollState)
+            is ScrollState -> ScrollIndicator(scrollState)
+            else -> throw IllegalArgumentException("Unsupported scrollState type: ${scrollState::class.java}")
+        }
+    },
     overscrollEffect: OverscrollEffect? = rememberOverscrollEffect(),
     topBarScrollBehavior: TopBarScrollBehavior? = null, // Accept external ScrollBehavior
     content: @Composable BoxScope.(PaddingValues) -> Unit,
-): Unit {
+) {
+    
+    val scrollInfoProvider = when (scrollState) {
+        is ScalingLazyListState -> ScrollInfoProvider(scrollState)
+        is LazyListState -> ScrollInfoProvider(scrollState)
+        is ScrollState -> ScrollInfoProvider(scrollState)
+        else -> throw IllegalArgumentException("Unsupported scrollState type: ${scrollState::class.java}")
+    }
+    
+    // Create ScrollBehavior if topBar is provided but topBarScrollBehavior is not
+    val actualTopBarScrollBehavior = topBarScrollBehavior ?: if (topBar != null) {
+        rememberEnterAlwaysScrollBehavior()
+    } else {
+        null
+    }
     
     ScreenScaffold(
-        scrollInfoProvider = ScrollInfoProvider(scrollState),
         modifier = modifier,
+        scrollInfoProvider = scrollInfoProvider,
         topBar = topBar,
         contentPadding = contentPadding,
         timeText = timeText,
         scrollIndicator = scrollIndicator,
         overscrollEffect = overscrollEffect,
-        topBarScrollBehavior = topBarScrollBehavior,
+        topBarScrollBehavior = actualTopBarScrollBehavior,
         content = content
     )
 }
@@ -821,13 +842,24 @@ public fun ScreenScaffold(
     }
 
     var topBarHeight by remember { mutableStateOf(0.dp) }
+    val density = LocalDensity.current
+    
+    // Calculate dynamic top padding based on TopBar scroll offset
+    val dynamicTopPadding = remember {
+        derivedStateOf {
+            val baseTopPadding = contentPadding.calculateTopPadding()
+            val heightOffset = topBarScrollBehavior?.state?.heightOffset ?: 0f
+            val offsetDp = with(density) { heightOffset.toDp() }
+            baseTopPadding + topBarHeight + offsetDp
+        }
+    }
     
     WrapWithOverscrollFactoryIfRequired(overscrollEffect) {
         Box(modifier.fillMaxSize()) {
-            // Calculate final content padding including topBar height
+            // Calculate final content padding including topBar height and scroll offset
             val finalContentPadding = PaddingValues(
                 start = contentPadding.calculateLeftPadding(LayoutDirection.Ltr),
-                top = contentPadding.calculateTopPadding() + topBarHeight,
+                top = dynamicTopPadding.value.coerceAtLeast(0.dp),
                 end = contentPadding.calculateRightPadding(LayoutDirection.Ltr),
                 bottom = contentPadding.calculateBottomPadding()
             )
@@ -844,13 +876,19 @@ public fun ScreenScaffold(
                 content(finalContentPadding)
             }
             
-            // Render topBar if provided
-            val density = LocalDensity.current
+            // Render topBar if provided with dynamic offset
             topBar?.let {
+                val topBarOffset = remember {
+                    derivedStateOf {
+                        val heightOffset = topBarScrollBehavior?.state?.heightOffset ?: 0f
+                        with(density) { heightOffset.toDp() }
+                    }
+                }
+                
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopCenter)
-                        .padding(top = contentPadding.calculateTopPadding())
+                        .padding(top = contentPadding.calculateTopPadding().coerceAtLeast(0.dp) + topBarOffset.value.coerceAtLeast(0.dp))
                         .onGloballyPositioned { coordinates ->
                             val h = with(density) {
                                 coordinates.size.height.toDp()
@@ -864,8 +902,9 @@ public fun ScreenScaffold(
                             
                             // Update ScrollBehavior with TopBar height
                             topBarScrollBehavior?.state?.let { state ->
-                                val systemTopPadding = contentPadding.calculateTopPadding().value * density.density
-                                val hiddenOffset = -(hPx + systemTopPadding)
+                                // Only hide TopBar, keep the base contentPadding visible
+                                // This ensures round devices keep their visual padding
+                                val hiddenOffset = -hPx
                                 if (state.heightOffsetLimit != hiddenOffset) {
                                     state.heightOffsetLimit = hiddenOffset
                                 }

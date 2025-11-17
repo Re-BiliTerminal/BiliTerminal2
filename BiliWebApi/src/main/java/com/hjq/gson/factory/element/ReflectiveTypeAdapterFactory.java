@@ -1,0 +1,137 @@
+package com.hjq.gson.factory.element;
+
+import com.google.gson.FieldNamingStrategy;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+import com.google.gson.TypeAdapterFactory;
+import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.internal.GsonTypes;
+import com.google.gson.internal.Excluder;
+import com.google.gson.reflect.TypeToken;
+import com.hjq.gson.factory.constructor.MainConstructor;
+import com.hjq.gson.factory.other.ReflectiveFieldBound;
+import com.hjq.gson.factory.other.ReflectiveTypeUtils;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ *    author : Android 轮子哥
+ *    github : https://github.com/getActivity/GsonFactory
+ *    time   : 2020/12/08
+ *    desc   : Object 解析适配器，参考：{@link com.google.gson.internal.bind.ReflectiveTypeAdapterFactory}
+ */
+public class ReflectiveTypeAdapterFactory implements TypeAdapterFactory {
+
+    private final MainConstructor mMainConstructor;
+    private final FieldNamingStrategy mFieldNamingPolicy;
+    private final Excluder mExcluder;
+
+    public ReflectiveTypeAdapterFactory(MainConstructor mainConstructor,
+                                        FieldNamingStrategy strategy, Excluder excluder) {
+        mMainConstructor = mainConstructor;
+        mFieldNamingPolicy = strategy;
+        mExcluder = excluder;
+    }
+
+    @Override
+    public <T> TypeAdapter<T> create(Gson gson, final TypeToken<T> type) {
+        Class<? super T> raw = type.getRawType();
+
+        // 判断是否包含这种类型
+        if (ReflectiveTypeUtils.containsClass(raw)) {
+            return null;
+        }
+        // 判断是否是数组
+        if (type.getType() instanceof GenericArrayType ||
+                type.getType() instanceof Class &&
+                 ((Class<?>) type.getType()).isArray()) {
+            return null;
+        }
+        // 如果是基本数据类型
+        if (!Object.class.isAssignableFrom(raw)) {
+            return null;
+        }
+        // 如果是 List 类型
+        if (Collection.class.isAssignableFrom(raw)) {
+            return null;
+        }
+        // 如果是 Map 数组
+        if (Map.class.isAssignableFrom(raw)) {
+            return null;
+        }
+        // 判断是否有自定义解析注解
+        JsonAdapter annotation = raw.getAnnotation(JsonAdapter.class);
+        if (annotation != null) {
+            return null;
+        }
+        // 如果是枚举类型
+        if (Enum.class.isAssignableFrom(raw) && raw != Enum.class) {
+            return null;
+        }
+        ReflectiveTypeAdapter<T> reflectiveTypeAdapter =
+                new ReflectiveTypeAdapter<>(mMainConstructor.get(gson, type), getBoundFields(gson, type, raw));
+        reflectiveTypeAdapter.setReflectiveType(type, null);
+        return reflectiveTypeAdapter;
+    }
+
+    private Map<String, ReflectiveFieldBound> getBoundFields(Gson gson, TypeToken<?> type, Class<?> raw) {
+        Map<String, ReflectiveFieldBound> result = new LinkedHashMap<>();
+        if (raw.isInterface()) {
+            return result;
+        }
+
+        Type declaredType = type.getType();
+        while (raw != Object.class) {
+            Field[] fields = raw.getDeclaredFields();
+            for (Field field : fields) {
+                boolean serialize = excludeField(field, true);
+                boolean deserialize = excludeField(field, false);
+                if (!serialize && !deserialize) {
+                    continue;
+                }
+                field.setAccessible(true);
+                Type fieldType = GsonTypes.resolve(type.getType(), raw, field.getGenericType());
+                List<String> fieldNames = getFieldNames(field);
+                ReflectiveFieldBound previous = null;
+                for (int i = 0; i < fieldNames.size(); ++i) {
+                    String name = fieldNames.get(i);
+                    if (i != 0) {
+                        // only serialize the default name
+                        serialize = false;
+                    }
+                    ReflectiveFieldBound fieldBound = ReflectiveTypeUtils.createBoundField(gson, mMainConstructor, field, name,
+                            TypeToken.get(fieldType), serialize, deserialize);
+                    ReflectiveFieldBound replaced = result.put(name, fieldBound);
+                    if (previous == null) {
+                        previous = replaced;
+                    }
+                }
+                if (previous != null) {
+                    throw new IllegalArgumentException(declaredType
+                            + " declares multiple JSON fields named " + previous.getFieldName());
+                }
+            }
+            type = TypeToken.get(GsonTypes.resolve(type.getType(), raw, raw.getGenericSuperclass()));
+            raw = type.getRawType();
+        }
+        return result;
+    }
+
+    private boolean excludeField(Field field, boolean serialize) {
+        return excludeField(field, serialize, mExcluder);
+    }
+
+    private static boolean excludeField(Field field, boolean serialize, Excluder excluder) {
+        return !excluder.excludeClass(field.getType(), serialize) && !excluder.excludeField(field, serialize);
+    }
+
+    private List<String> getFieldNames(Field field) {
+        return ReflectiveTypeUtils.getFieldNames(mFieldNamingPolicy, field);
+    }
+}

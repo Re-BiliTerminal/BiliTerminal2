@@ -5,7 +5,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Login
+import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
@@ -23,9 +25,12 @@ import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.materialcore.plus
+import android.widget.Toast
 import com.huanli233.bilizepam.data.setting.LocalData
+import com.huanli233.bilizepam.ui.dialog.SortModeDialog
 import com.huanli233.bilizepam.ui.screens.recommend.LoadingState
 import com.huanli233.bilizepam.ui.screens.recommend.LoadingView
+import com.huanli233.bilizepam.utils.ArticleRedirectUtil
 import com.huanli233.bilizepam.utils.MsgUtil
 import com.huanli233.biliwebapi.bean.reply.Reply
 import kotlinx.coroutines.launch
@@ -41,7 +46,8 @@ fun CommentScreen(
     onLoginClick: () -> Unit = {},
     onCommentDetailClick: (Long) -> Unit = {},
     onWriteReplyClick: (Long, Long, Long, String?) -> Unit = { _, _, _, _ -> },
-    onUserClick: (Long) -> Unit = {}
+    onUserClick: (Long) -> Unit = {},
+    onOpusClick: (Long) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val activeAccount by viewModel.accountRepository.activeAccount.collectAsState()
@@ -50,6 +56,7 @@ fun CommentScreen(
     val actualScrollState = scrollState ?: internalScrollState
     val scope = rememberCoroutineScope()
     val isRound = isRoundDevice() && LocalData.settings.uiSettings.roundMode
+    var showSortDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(aid, type) {
         viewModel.setOid(aid, type)
@@ -73,7 +80,7 @@ fun CommentScreen(
     }
 
     // 确保ViewModel已初始化后再获取comments
-    val comments = remember(aid, type) {
+    val comments = remember(aid, type, uiState.sortMode) {
         viewModel.setOid(aid, type)
         viewModel.comments
     }.collectAsLazyPagingItems()
@@ -99,6 +106,85 @@ fun CommentScreen(
                     vertical = 16.dp
                 ))
             ) {
+                // 发表评论按钮（仅登录且未禁用时显示）
+                if (isLoggedIn && uiState.control?.inputDisable != true) {
+                    item {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                            onClick = {
+                                onWriteReplyClick(aid, 0, 0, null)
+                            },
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer
+                            ),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(12.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Create,
+                                    contentDescription = "发表评论",
+                                    modifier = Modifier.size(18.dp),
+                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = uiState.control?.rootInputText ?: "发表评论",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                        }
+                    }
+                }
+                
+                // 排序选择器
+                item {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        onClick = { showSortDialog = true },
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                        ),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Sort,
+                                    contentDescription = "排序",
+                                    modifier = Modifier.size(18.dp),
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                                Text(
+                                    text = uiState.sortMode.label,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    }
+                }
+                
                 // 评论总数显示
                 item {
                     if (comments.itemCount > 0) {
@@ -137,7 +223,12 @@ fun CommentScreen(
                                 )
                             }
                             else -> {
-                                // 空状态或成功状态不显示任何内容
+                                // 空状态显示
+                                if (comments.itemCount == 0 && state is LoadState.NotLoading) {
+                                    EmptyStateCard(
+                                        text = uiState.control?.bgText ?: "暂无评论"
+                                    )
+                                }
                             }
                         }
                     }
@@ -170,6 +261,7 @@ fun CommentScreen(
                                 )
                             },
                             onUserClick = onUserClick,
+                            onOpusClick = onOpusClick,
                             uiState = uiState
                         )
                     }
@@ -210,6 +302,44 @@ fun CommentScreen(
                     }
                 }
             }
+        }
+    }
+    
+    if (showSortDialog) {
+        SortModeDialog(
+            currentMode = uiState.sortMode,
+            onModeSelected = { mode ->
+                viewModel.setSortMode(mode)
+            },
+            onDismiss = { showSortDialog = false }
+        )
+    }
+}
+
+@Composable
+private fun EmptyStateCard(
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
@@ -272,9 +402,9 @@ private fun LoginReminderCard(
         ) {
             Icon(
                 imageVector = Icons.Filled.Login,
-                contentDescription = "登录",
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                modifier = Modifier.size(24.dp)
+                contentDescription = null,
+                modifier = Modifier.size(32.dp),
+                tint = MaterialTheme.colorScheme.onPrimaryContainer
             )
             Text(
                 text = "登录后查看更多评论",
@@ -307,6 +437,7 @@ fun CommentItemWithLikeState(
     onCommentClick: (Reply) -> Unit,
     onReplyClick: (Reply) -> Unit,
     onUserClick: (Long) -> Unit = {},
+    onOpusClick: (Long) -> Unit = {},
     uiState: CommentUiState
 ) {
     // 创建一个修改后的Reply对象，更新点赞状态和数量
@@ -322,6 +453,10 @@ fun CommentItemWithLikeState(
         like = reply.like + likeCountDelta
     )
     
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var isLoadingArticle by remember { mutableStateOf(false) }
+    
     CommentItem(
         reply = modifiedReply,
         onLikeClick = onLikeClick,
@@ -330,7 +465,31 @@ fun CommentItemWithLikeState(
         onCommentClick = onCommentClick,
         onReplyClick = onReplyClick,
         onUserClick = onUserClick,
+        onCvidClick = { cvid ->
+            isLoadingArticle = true
+            scope.launch {
+                ArticleRedirectUtil.convertCvidToOpusId(cvid).fold(
+                    onSuccess = { opusId ->
+                        isLoadingArticle = false
+                        onOpusClick(opusId)
+                    },
+                    onFailure = { error ->
+                        isLoadingArticle = false
+                        Toast.makeText(context, "无法打开文章: ${error.message}", Toast.LENGTH_SHORT).show()
+                    }
+                )
+            }
+        },
         uiState = uiState
     )
+    
+    if (isLoadingArticle) {
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(modifier = Modifier.size(24.dp))
+        }
+    }
 }
 

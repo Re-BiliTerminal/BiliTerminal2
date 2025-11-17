@@ -1,5 +1,9 @@
 package com.huanli233.bilizepam.ui.screens.comment
 
+
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -35,6 +39,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -48,26 +53,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.wear.compose.foundation.isRoundDevice
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.materialcore.plus
+import androidx.wear.compose.material3.Text
 import coil3.compose.AsyncImage
 import com.huanli233.biliwebapi.bean.reply.Reply
 import com.huanli233.bilizepam.data.setting.LocalData
 import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
 import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
 import com.huanli233.bilizepam.ui.components.EmoteText
+import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
+import com.huanli233.bilizepam.ui.components.RichText
+import com.huanli233.bilizepam.ui.dialog.AdaptDialog
 import com.huanli233.bilizepam.ui.screens.recommend.LoadingState
 import com.huanli233.bilizepam.ui.screens.recommend.LoadingView
+import com.huanli233.bilizepam.utils.ArticleRedirectUtil
 import com.huanli233.bilizepam.utils.MsgUtil
 import kotlinx.coroutines.launch
 
@@ -80,6 +93,8 @@ fun CommentDetailScreen(
     onBackClick: () -> Unit = {},
     onWriteReplyClick: (Long, Long, Long, String?) -> Unit = { _, _, _, _ -> },
     onUserClick: (Long) -> Unit = {},
+    onOpusClick: (Long) -> Unit = {},
+    onVideoClick: (Long, String) -> Unit = { _, _ -> },
     modifier: Modifier = Modifier,
     viewModel: CommentDetailViewModel = hiltViewModel()
 ) {
@@ -204,6 +219,7 @@ fun CommentDetailScreen(
                                     )
                                 },
                                 onUserClick = onUserClick,
+                                onOpusClick = onOpusClick,
                                 uiState = uiState
                             )
                         } else {
@@ -214,15 +230,16 @@ fun CommentDetailScreen(
                                 onLikeClick = { replyItem, isLiked ->
                                     viewModel.likeReply(replyItem.replyId, isLiked)
                                 },
-                                onReplyClick = {
+                                onReplyClick = {  replyItem ->
                                     onWriteReplyClick(
-                                        oid,
-                                        replyId,
+                                        reply.oid,
                                         reply.replyId,
-                                        reply.member.name
+                                        replyItem.replyId,
+                                        replyItem.member.name
                                     )
                                 },
                                 onUserClick = onUserClick,
+                                onOpusClick = onOpusClick,
                                 uiState = uiState
                             )
                         }
@@ -419,6 +436,7 @@ private fun RootCommentCard(
     onLikeClick: (Reply, Boolean) -> Unit,
     onReplyClick: (Reply) -> Unit,
     onUserClick: (Long) -> Unit = {},
+    onOpusClick: (Long) -> Unit = {},
     uiState: CommentDetailUiState,
     modifier: Modifier = Modifier
 ) {
@@ -450,7 +468,8 @@ private fun RootCommentCard(
             CommentContent(
                 reply = modifiedReply,
                 onLikeClick = onLikeClick,
-                onUserClick = onUserClick
+                onUserClick = onUserClick,
+                onOpusClick = onOpusClick
             )
 
             // 分隔线
@@ -489,6 +508,8 @@ private fun CommentContent(
     reply: Reply,
     onLikeClick: (Reply, Boolean) -> Unit,
     onUserClick: (Long) -> Unit = {},
+    onOpusClick: (Long) -> Unit = {},
+    onVideoClick: (Long, String) -> Unit = { _, _ -> },
     modifier: Modifier = Modifier
 ) {
     val isLiked = reply.actionState == 1
@@ -565,13 +586,74 @@ private fun CommentContent(
                 }
             }
 
+            val context = LocalContext.current
+            val scope = rememberCoroutineScope()
+            var showUrlDialog by remember { mutableStateOf<String?>(null) }
+            var isLoadingArticle by remember { mutableStateOf(false) }
+            
             // 评论内容
-            EmoteText(
+            RichText(
                 text = reply.content.message ?: "",
                 emotes = reply.content.emote,
+                atList = reply.content.atNameToMid.toList(),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                onUserClick = onUserClick,
+                onBvidClick = { bvid -> onVideoClick(0L, bvid) },
+                onAvidClick = { aid -> onVideoClick(aid, "") },
+                onCvidClick = { cvid ->
+                    isLoadingArticle = true
+                    scope.launch {
+                        ArticleRedirectUtil.convertCvidToOpusId(cvid).fold(
+                            onSuccess = { opusId ->
+                                isLoadingArticle = false
+                                onOpusClick(opusId)
+                            },
+                            onFailure = { error ->
+                                isLoadingArticle = false
+                                Toast.makeText(context, "无法打开文章: ${error.message}", Toast.LENGTH_SHORT).show()
+                            }
+                        )
+                    }
+                },
+                onUrlClick = { url -> showUrlDialog = url }
             )
+            
+            if (isLoadingArticle) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                }
+            }
+            
+            showUrlDialog?.let { url ->
+                AdaptDialog(
+                    onDismissRequest = { showUrlDialog = null },
+                    title = { Text("打开链接") },
+                    text = { Text(url) },
+                    confirmButton = { close ->
+                        TextButton(onClick = {
+                            try {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                context.startActivity(intent)
+                            } catch (e: Exception) {
+                                Toast.makeText(context, "无法打开链接", Toast.LENGTH_SHORT).show()
+                            }
+                            close()
+                        }) {
+                            Text("打开")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showUrlDialog = null }) {
+                            Text("取消")
+                        }
+                    }
+                )
+            }
         }
     }
 }
@@ -581,8 +663,10 @@ private fun ChildCommentCard(
     reply: Reply,
     isLiked: Boolean,
     onLikeClick: (Reply, Boolean) -> Unit,
-    onReplyClick: () -> Unit,
+    onReplyClick: (Reply) -> Unit,
     onUserClick: (Long) -> Unit = {},
+    onOpusClick: (Long) -> Unit = {},
+    onVideoClick: (Long, String) -> Unit = { _, _ -> },
     uiState: CommentDetailUiState,
     modifier: Modifier = Modifier
 ) {
@@ -683,13 +767,74 @@ private fun ChildCommentCard(
                         }
                     }
 
+                    val context = LocalContext.current
+                    val scope = rememberCoroutineScope()
+                    var showUrlDialog by remember { mutableStateOf<String?>(null) }
+                    var isLoadingArticle by remember { mutableStateOf(false) }
+                    
                     // 评论内容
-                    EmoteText(
+                    RichText(
                         text = reply.content.message ?: "",
                         emotes = reply.content.emote,
+                        atList = reply.content.atNameToMid.toList(),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface
+                        onUserClick = onUserClick,
+                        onBvidClick = { bvid -> onVideoClick(0L, bvid) },
+                        onAvidClick = { aid -> onVideoClick(aid, "") },
+                        onCvidClick = { cvid ->
+                            isLoadingArticle = true
+                            scope.launch {
+                                ArticleRedirectUtil.convertCvidToOpusId(cvid).fold(
+                                    onSuccess = { opusId ->
+                                        isLoadingArticle = false
+                                        onOpusClick(opusId)
+                                    },
+                                    onFailure = { error ->
+                                        isLoadingArticle = false
+                                        Toast.makeText(context, "无法打开文章: ${error.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                                )
+                            }
+                        },
+                        onUrlClick = { url -> showUrlDialog = url }
                     )
+                    
+                    if (isLoadingArticle) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                        }
+                    }
+                    
+                    showUrlDialog?.let { url ->
+                        AdaptDialog(
+                            onDismissRequest = { showUrlDialog = null },
+                            title = { Text("打开链接") },
+                            text = { Text(url) },
+                            confirmButton = { close ->
+                                TextButton(onClick = {
+                                    try {
+                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                        context.startActivity(intent)
+                                    } catch (e: Exception) {
+                                        Toast.makeText(context, "无法打开链接", Toast.LENGTH_SHORT).show()
+                                    }
+                                    close()
+                                }) {
+                                    Text("打开")
+                                }
+                            },
+                            dismissButton = {
+                                TextButton(onClick = { showUrlDialog = null }) {
+                                    Text("取消")
+                                }
+                            }
+                        )
+                    }
                 }
             }
 
@@ -699,7 +844,7 @@ private fun ChildCommentCard(
                 horizontalArrangement = Arrangement.End
             ) {
                 TextButton(
-                    onClick = { onReplyClick() },
+                    onClick = { onReplyClick(reply) },
                     colors = ButtonDefaults.textButtonColors(
                         contentColor = MaterialTheme.colorScheme.primary
                     )

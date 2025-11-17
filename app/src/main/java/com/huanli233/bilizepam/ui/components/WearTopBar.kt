@@ -80,7 +80,7 @@ private fun RoundTopBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
+            .background(color = androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.3f))
             .clickable(enabled = onBackClick != null || onMenuClick != null) {
                 onBackClick?.invoke() ?: onMenuClick?.invoke()
             }
@@ -127,7 +127,7 @@ private fun SquareTopBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
+            .background(color = androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.3f))
             .clickable(enabled = onBackClick != null || onMenuClick != null) {
                 onBackClick?.invoke() ?: onMenuClick?.invoke()
             }

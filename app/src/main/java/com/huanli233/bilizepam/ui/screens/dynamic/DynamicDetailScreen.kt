@@ -1,6 +1,8 @@
 package com.huanli233.bilizepam.ui.screens.dynamic
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -12,20 +14,28 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.ScreenScaffold
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
+import com.huanli233.bilizepam.ui.screens.comment.CommentScreen
 import com.huanli233.bilizepam.ui.viewmodel.DynamicDetailUiState
 import com.huanli233.bilizepam.ui.viewmodel.DynamicDetailViewModel
+import com.tbuonomo.viewpagerdotsindicator.compose.DotsIndicator
+import com.tbuonomo.viewpagerdotsindicator.compose.model.DotGraphic
+import com.tbuonomo.viewpagerdotsindicator.compose.type.WormIndicatorType
 
 @Composable
 fun DynamicDetailScreen(
     dynamicId: String,
+    navController: NavController,
     onNavigateBack: () -> Unit = {},
     onUserClick: (Long) -> Unit = {},
     onVideoClick: (String) -> Unit = {},
@@ -35,6 +45,8 @@ fun DynamicDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
+    val pagerState = rememberPagerState(pageCount = { 2 })
+    val commentScrollState = rememberScalingLazyListState()
 
     LaunchedEffect(dynamicId) {
         viewModel.loadDynamic(dynamicId)
@@ -57,28 +69,74 @@ fun DynamicDetailScreen(
                     LoadingContent()
                 }
                 is DynamicDetailUiState.Success -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(scrollState)
-                            .padding(horizontal = 8.dp)
-                    ) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        
-                        DynamicCard(
-                            dynamic = state.dynamic,
-                            onClick = {},
-                            onUserClick = onUserClick,
-                            onVideoClick = onVideoClick,
-                            onImageClick = onImageClick,
-                            onLikeClick = { dynamicId, isLiked ->
-                                viewModel.likeDynamic(dynamicId, isLiked)
-                            },
-                            onDynamicClick = onDynamicClick,
-                            showFullContent = true
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier.fillMaxSize()
+                        ) { page ->
+                            when (page) {
+                                0 -> Column(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .verticalScroll(scrollState)
+                                        .padding(horizontal = 8.dp)
+                                ) {
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    
+                                    DynamicCard(
+                                        dynamic = state.dynamic,
+                                        onClick = {},
+                                        onUserClick = onUserClick,
+                                        onVideoClick = onVideoClick,
+                                        onImageClick = onImageClick,
+                                        onLikeClick = { dynamicId, isLiked ->
+                                            viewModel.likeDynamic(dynamicId, isLiked)
+                                        },
+                                        onDynamicClick = onDynamicClick,
+                                        showFullContent = true
+                                    )
+                                    
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                }
+                                1 -> CommentScreen(
+                                    aid = state.dynamic.id.toLongOrNull() ?: 0L,
+                                    type = 17,
+                                    scrollState = commentScrollState,
+                                    onCommentDetailClick = { replyId ->
+                                        val oid = state.dynamic.id.toLongOrNull() ?: 0L
+                                        navController.navigate("comment_detail/$replyId?oid=$oid&type=17")
+                                    },
+                                    onWriteReplyClick = { oid, rpid, parent, parentSender ->
+                                        navController.navigate("write_reply/$oid/$rpid/$parent?parentSender=${parentSender ?: ""}")
+                                    },
+                                    onUserClick = onUserClick,
+                                    onOpusClick = { opusId ->
+                                        navController.navigate("opus_detail/$opusId")
+                                    }
+                                )
+                            }
+                        }
+
+                        DotsIndicator(
+                            dotCount = pagerState.pageCount,
+                            dotSpacing = 8.dp,
+                            type = WormIndicatorType(
+                                dotsGraphic = DotGraphic(
+                                    16.dp,
+                                    borderWidth = 2.dp,
+                                    borderColor = MaterialTheme.colorScheme.primary,
+                                    color = Color.Transparent,
+                                ),
+                                wormDotGraphic = DotGraphic(
+                                    16.dp,
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+                            ),
+                            pagerState = pagerState,
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(bottom = 8.dp),
                         )
-                        
-                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
                 is DynamicDetailUiState.Error -> {

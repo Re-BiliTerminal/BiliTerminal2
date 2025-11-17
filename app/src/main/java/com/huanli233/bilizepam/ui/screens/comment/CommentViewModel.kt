@@ -9,16 +9,25 @@ import androidx.paging.cachedIn
 import com.huanli233.bilizepam.data.account.AccountRepository
 import com.huanli233.bilizepam.data.repository.ReplyRepository
 import com.huanli233.biliwebapi.bean.reply.Reply
+import com.huanli233.biliwebapi.bean.reply.RepliesControl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+enum class CommentSortMode(val value: Int, val label: String) {
+    BY_HOT(3, "按热度"),
+    BY_TIME(2, "按时间"),
+    BY_HOT_AND_TIME(1, "热度+时间")
+}
+
 data class CommentUiState(
     val isLikingReply: Boolean = false,
     val likedReplies: Set<Long> = emptySet(),
     val replyLikeCounts: Map<Long, Int> = emptyMap(),
-    val topReplyIds: Set<Long> = emptySet()
+    val topReplyIds: Set<Long> = emptySet(),
+    val control: RepliesControl? = null,
+    val sortMode: CommentSortMode = CommentSortMode.BY_TIME
 )
 
 sealed class CommentEvent {
@@ -50,25 +59,39 @@ class CommentViewModel @Inject constructor(
         if (currentOid != oid || currentType != type) {
             currentOid = oid
             currentType = type
-            
-            _commentsPager = Pager(
-                config = PagingConfig(
-                    pageSize = 20,
-                    enablePlaceholders = false,
-                    initialLoadSize = 20
-                ),
-                pagingSourceFactory = { 
-                    CommentPagingSource(
-                        replyRepository = replyRepository,
-                        oid = oid,
-                        type = type,
-                        onTopRepliesLoaded = { topReplyIds ->
-                            updateTopReplyIds(topReplyIds)
-                        }
-                    )
-                }
-            ).flow.cachedIn(viewModelScope)
+            refreshComments()
         }
+    }
+    
+    fun setSortMode(mode: CommentSortMode) {
+        if (_uiState.value.sortMode != mode) {
+            _uiState.value = _uiState.value.copy(sortMode = mode)
+            refreshComments()
+        }
+    }
+    
+    private fun refreshComments() {
+        _commentsPager = Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false,
+                initialLoadSize = 20
+            ),
+            pagingSourceFactory = { 
+                CommentPagingSource(
+                    replyRepository = replyRepository,
+                    oid = currentOid,
+                    type = currentType,
+                    mode = _uiState.value.sortMode.value,
+                    onTopRepliesLoaded = { topReplyIds ->
+                        updateTopReplyIds(topReplyIds)
+                    },
+                    onControlLoaded = { control ->
+                        _uiState.value = _uiState.value.copy(control = control)
+                    }
+                )
+            }
+        ).flow.cachedIn(viewModelScope)
     }
 
     // 保持向后兼容

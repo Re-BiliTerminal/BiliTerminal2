@@ -34,4 +34,6 @@ dependencies {
         exclude(group = "com.google.code.gson")
     }
     implementation(libs.kotlinx.coroutines.core)
+
+    implementation(kotlin("reflect"))
 }

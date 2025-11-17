@@ -1,5 +1,6 @@
 package com.huanli233.bilizepam.ui.screens.opus
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -153,16 +154,19 @@ fun OpusDetailScreen(
                                         onShareClick = {
                                         }
                                     )
-                                    1 -> CommentScreen(
-                                        aid = state.opus.basic.commentIdStr.toLongOrNull() ?: 0L,
-                                        type = 11,
-                                        onCommentDetailClick = { replyId ->
-                                            val oid = state.opus.basic.commentIdStr.toLongOrNull() ?: 0L
-                                            onCommentDetailClick(replyId, oid)
-                                        },
-                                        onWriteReplyClick = onWriteReplyClick,
-                                        onUserClick = onUserClick
-                                    )
+                                    1 -> {
+                                        CommentScreen(
+                                            aid = state.opus.basic.commentIdStr.toLongOrNull() ?: 0L,
+                                            type = 11,
+                                            scrollState = commentScrollState,
+                                            onCommentDetailClick = { replyId ->
+                                                val oid = state.opus.basic.commentIdStr.toLongOrNull() ?: 0L
+                                                onCommentDetailClick(replyId, oid)
+                                            },
+                                            onWriteReplyClick = onWriteReplyClick,
+                                            onUserClick = onUserClick
+                                        )
+                                    }
                                 }
                             }
                         }

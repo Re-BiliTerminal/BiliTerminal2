@@ -243,7 +243,9 @@ dependencies {
     implementation(project(":ijkplayer-java"))
     implementation(project(":DanmakuFlameMaster"))
     implementation(project(":brotlij"))
-    implementation(project(":BiliWebApi"))
+    implementation(project(":BiliWebApi")) {
+        exclude("com.google.code.gson", "gson")
+    }
 
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.multidex)

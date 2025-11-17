@@ -5,13 +5,15 @@ import androidx.paging.PagingState
 import com.huanli233.bilizepam.data.repository.ReplyRepository
 import com.huanli233.biliwebapi.bean.reply.Reply
 import com.huanli233.biliwebapi.bean.reply.PaginationStr
+import com.huanli233.biliwebapi.bean.reply.RepliesControl
 
 class CommentPagingSource(
     private val replyRepository: ReplyRepository,
     private val oid: Long,
     private val type: Int = 1,
     private val mode: Int = 3,
-    private val onTopRepliesLoaded: (Set<Long>) -> Unit = {}
+    private val onTopRepliesLoaded: (Set<Long>) -> Unit = {},
+    private val onControlLoaded: (RepliesControl) -> Unit = {}
 ) : PagingSource<String, Reply>() {
 
     override val keyReuseSupported: Boolean = true
@@ -39,6 +41,7 @@ class CommentPagingSource(
                         val topReplyIds = mutableSetOf<Long>()
                         repliesInfo.topReplies.forEach { topReplyIds.add(it.replyId) }
                         onTopRepliesLoaded(topReplyIds)
+                        onControlLoaded(repliesInfo.control)
                     }
                     
                     val allReplies = buildList {

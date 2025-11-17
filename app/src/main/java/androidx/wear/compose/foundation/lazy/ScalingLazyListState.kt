@@ -49,7 +49,7 @@ import kotlin.math.roundToInt
  */
 @Composable
 public fun rememberScalingLazyListState(
-    initialCenterItemIndex: Int = 1,
+    initialCenterItemIndex: Int = 0,
     initialCenterItemScrollOffset: Int = 0,
 ): ScalingLazyListState {
     return rememberSaveable(saver = ScalingLazyListState.Saver) {

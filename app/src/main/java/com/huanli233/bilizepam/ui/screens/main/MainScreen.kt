@@ -142,6 +142,7 @@ fun MainScreen(mainNavController: androidx.navigation.NavController) {
                 val dynamicId = backStackEntry.arguments?.getString("dynamicId") ?: ""
                 DynamicDetailScreen(
                     dynamicId = dynamicId,
+                    navController = contentNavController,
                     onNavigateBack = { contentNavController.popBackStack() },
                     onUserClick = { mid ->
                         contentNavController.navigate("user/$mid")
@@ -229,6 +230,12 @@ fun MainScreen(mainNavController: androidx.navigation.NavController) {
                     },
                     onUserClick = { userId ->
                         contentNavController.navigate("user/$userId")
+                    },
+                    onOpusClick = { opusId ->
+                        contentNavController.navigate("opus_detail/$opusId")
+                    },
+                    onVideoClick = { aid, bvid ->
+                        contentNavController.navigate("video_detail/$aid/$bvid")
                     }
                 )
             }
@@ -376,6 +383,9 @@ fun MainScreen(mainNavController: androidx.navigation.NavController) {
                     onNavigateBack = { contentNavController.popBackStack() },
                     onVideoClick = { aid, bvid ->
                         contentNavController.navigate(Screen.VideoDetail.createRoute(aid, bvid))
+                    },
+                    onOpusClick = { opusId ->
+                        contentNavController.navigate("opus_detail/$opusId")
                     },
                     onUserClick = { mid ->
                         contentNavController.navigate("user/$mid")

@@ -358,8 +358,8 @@ public fun ScalingLazyColumn(
     flingBehavior: FlingBehavior = ScrollableDefaults.flingBehavior(),
     userScrollEnabled: Boolean = true,
     scalingParams: ScalingParams = if (isRoundDevice()) ScalingLazyColumnDefaults.scalingParams() else ScalingLazyColumnDefaults.squareScreenScalingParams(),
-    anchorType: ScalingLazyListAnchorType = ScalingLazyListAnchorType.ItemCenter,
-    autoCentering: AutoCenteringParams? = if (isRoundDevice()) AutoCenteringParams() else null,
+    anchorType: ScalingLazyListAnchorType = ScalingLazyListAnchorType.ItemStart,
+    autoCentering: AutoCenteringParams? = null,
     content: ScalingLazyListScope.() -> Unit,
 ) {
     ScalingLazyColumn(
@@ -485,8 +485,8 @@ public fun ScalingLazyColumn(
     flingBehavior: FlingBehavior = ScrollableDefaults.flingBehavior(),
     userScrollEnabled: Boolean = true,
     scalingParams: ScalingParams = if (isRoundDevice()) ScalingLazyColumnDefaults.scalingParams() else ScalingLazyColumnDefaults.squareScreenScalingParams(),
-    anchorType: ScalingLazyListAnchorType = ScalingLazyListAnchorType.ItemCenter,
-    autoCentering: AutoCenteringParams? = if (isRoundDevice()) AutoCenteringParams() else null,
+    anchorType: ScalingLazyListAnchorType = ScalingLazyListAnchorType.ItemStart,
+    autoCentering: AutoCenteringParams? = null,
     rotaryScrollableBehavior: RotaryScrollableBehavior? = RotaryScrollableDefaults.behavior(state),
     content: ScalingLazyListScope.() -> Unit,
 ): Unit =
@@ -612,13 +612,13 @@ public fun ScalingLazyColumn(
     flingBehavior: FlingBehavior = ScrollableDefaults.flingBehavior(),
     userScrollEnabled: Boolean = true,
     scalingParams: ScalingParams = if (isRoundDevice()) ScalingLazyColumnDefaults.scalingParams() else ScalingLazyColumnDefaults.squareScreenScalingParams(),
-    anchorType: ScalingLazyListAnchorType = ScalingLazyListAnchorType.ItemCenter,
-    autoCentering: AutoCenteringParams? = if (isRoundDevice()) AutoCenteringParams() else null,
+    anchorType: ScalingLazyListAnchorType = ScalingLazyListAnchorType.ItemStart,
+    autoCentering: AutoCenteringParams? = null,
     rotaryScrollableBehavior: RotaryScrollableBehavior? = RotaryScrollableDefaults.behavior(state),
     overscrollEffect: OverscrollEffect? = rememberOverscrollEffect(),
     content: ScalingLazyListScope.() -> Unit,
 ) {
-    var initialized by remember { mutableStateOf(false) }
+    var initialized by remember(autoCentering) { mutableStateOf(autoCentering == null) }
     val focusRequester = remember { FocusRequester() }
     BoxWithConstraints(
         modifier =

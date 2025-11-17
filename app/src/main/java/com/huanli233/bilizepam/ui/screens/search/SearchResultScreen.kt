@@ -2,19 +2,22 @@ package com.huanli233.bilizepam.ui.screens.search
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.wear.compose.material3.*
 import com.huanli233.bilizepam.R
+import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
 import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
 import com.huanli233.bilizepam.ui.screens.recommend.LoadingState
 import com.huanli233.bilizepam.ui.screens.recommend.LoadingView
-import com.huanli233.bilizepam.ui.viewmodel.SearchResultState
 import com.huanli233.bilizepam.ui.viewmodel.SearchResultViewModel
 import com.huanli233.biliwebapi.bean.search.SearchItem
 import androidx.compose.foundation.horizontalScroll
@@ -36,6 +39,17 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.material3.FilterChip
 import coil3.request.crossfade
+import com.huanli233.bilizepam.ui.viewmodel.ArticleRedirectState
+import com.huanli233.bilizepam.utils.MsgUtil
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.animateContentSize
+import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material3.CircularProgressIndicator
 
 @Composable
 fun SearchResultScreen(
@@ -43,65 +57,133 @@ fun SearchResultScreen(
     onNavigateBack: () -> Unit,
     onVideoClick: (Long, String) -> Unit = { _, _ -> },
     onUserClick: (Long) -> Unit = {},
-    viewModel: SearchResultViewModel = hiltViewModel()
+    onOpusClick: (Long) -> Unit = {},
+    viewModel: SearchResultViewModel = hiltViewModel(key = "search_$query")
 ) {
-    val searchState by viewModel.searchState.collectAsState()
+    val searchResults by viewModel.searchResults.collectAsState()
     val currentType by viewModel.currentType.collectAsState()
     var selectedType by remember { mutableStateOf("video") }
+    val lazyListState = rememberLazyListState()
+    val scrollBehavior = rememberEnterAlwaysScrollBehavior()
 
     LaunchedEffect(query, selectedType) {
-        viewModel.search(query, selectedType)
+        // 只在还没有搜索结果或类型改变时才搜索
+        if (searchResults == null || currentType != selectedType) {
+            viewModel.search(query, selectedType)
+        }
     }
+    
+    val pagingItems = searchResults?.collectAsLazyPagingItems()
 
     ScreenScaffold(
+        scrollState = lazyListState,
         topBar = scrollAwareTopBar(
             title = query,
             showBackIcon = true,
-            onBackClick = onNavigateBack
-        )
+            onBackClick = onNavigateBack,
+            scrollBehavior = scrollBehavior
+        ),
+        topBarScrollBehavior = scrollBehavior
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+        LazyColumn(
+            state = lazyListState,
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = paddingValues,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            SearchTypeChips(
-                selectedType = selectedType,
-                onTypeSelected = { selectedType = it },
-                modifier = Modifier.fillMaxWidth()
-            )
+            item {
+                SearchTypeChips(
+                    selectedType = selectedType,
+                    onTypeSelected = { selectedType = it },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
             
-            Box(modifier = Modifier.fillMaxSize()) {
-            when (val state = searchState) {
-                is SearchResultState.Loading -> {
+            if (pagingItems == null) {
+                item {
                     LoadingView(
                         state = LoadingState.LOADING,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
                     )
                 }
-                is SearchResultState.Success -> {
-                    SearchResultList(
-                        items = state.items,
-                        type = selectedType,
-                        onVideoClick = onVideoClick,
-                        onUserClick = onUserClick
-                    )
+            } else {
+                when (val refreshState = pagingItems.loadState.refresh) {
+                    is LoadState.Loading -> {
+                        item {
+                            LoadingView(
+                                state = LoadingState.LOADING,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp)
+                            )
+                        }
+                    }
+                    is LoadState.Error -> {
+                        item {
+                            LoadingView(
+                                state = LoadingState.ERROR,
+                                errorMessage = refreshState.error.message ?: "Unknown error",
+                                onRetry = { pagingItems.retry() },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp)
+                            )
+                        }
+                    }
+                    is LoadState.NotLoading -> {
+                        if (pagingItems.itemCount == 0) {
+                            item {
+                                LoadingView(
+                                    state = LoadingState.EMPTY,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(200.dp)
+                                )
+                            }
+                        } else {
+                            items(pagingItems.itemCount) { index ->
+                                pagingItems[index]?.let { item ->
+                                    when (selectedType) {
+                                        "video" -> SearchVideoCard(item, onVideoClick)
+                                        "user" -> UserResultItem(item, onUserClick)
+                                        "article" -> SearchArticleCard(item, onOpusClick, viewModel)
+                                        else -> SearchVideoCard(item, onVideoClick)
+                                    }
+                                }
+                            }
+                            
+                            when (val appendState = pagingItems.loadState.append) {
+                                is LoadState.Loading -> {
+                                    item {
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(16.dp),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                                        }
+                                    }
+                                }
+                                is LoadState.Error -> {
+                                    item {
+                                        LoadingView(
+                                            state = LoadingState.ERROR,
+                                            errorMessage = appendState.error.message ?: "Unknown error",
+                                            onRetry = { pagingItems.retry() },
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(100.dp)
+                                        )
+                                    }
+                                }
+                                is LoadState.NotLoading -> {}
+                            }
+                        }
+                    }
                 }
-                is SearchResultState.Error -> {
-                    LoadingView(
-                        state = LoadingState.ERROR,
-                        errorMessage = state.message,
-                        onRetry = { viewModel.retry() },
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-                is SearchResultState.Empty -> {
-                    LoadingView(
-                        state = LoadingState.EMPTY,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-            }
             }
         }
     }
@@ -125,6 +207,11 @@ private fun SearchTypeChips(
             label = stringResource(R.string.search_video),
             selected = selectedType == "video",
             onClick = { onTypeSelected("video") }
+        )
+        SearchTypeChip(
+            label = stringResource(R.string.search_article),
+            selected = selectedType == "article",
+            onClick = { onTypeSelected("article") }
         )
     }
 }
@@ -157,27 +244,6 @@ private fun SearchTypeChip(
     )
 }
 
-@Composable
-private fun SearchResultList(
-    items: List<SearchItem>,
-    type: String,
-    onVideoClick: (Long, String) -> Unit,
-    onUserClick: (Long) -> Unit
-) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 4.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        items(items) { item ->
-            when (type) {
-                "video" -> SearchVideoCard(item, onVideoClick)
-                "user" -> UserResultItem(item, onUserClick)
-                else -> SearchVideoCard(item, onVideoClick)
-            }
-        }
-    }
-}
 
 @Composable
 private fun SearchVideoCard(
@@ -193,6 +259,39 @@ private fun SearchVideoCard(
             val aid = item.aid ?: 0L
             val bvid = item.bvid ?: ""
             onClick(aid, bvid)
+        }
+    )
+}
+
+@Composable
+private fun SearchArticleCard(
+    item: SearchItem,
+    onOpusClick: (Long) -> Unit,
+    viewModel: SearchResultViewModel
+) {
+    val loadingArticles by viewModel.loadingArticles.collectAsState()
+    val cvid = item.id ?: 0L
+    val isLoading = loadingArticles.contains(cvid)
+    
+    SearchArticleCardContent(
+        title = item.title ?: "",
+        cover = item.imageUrls?.firstOrNull() ?: "",
+        author = item.author ?: "",
+        view = item.view ?: 0,
+        like = item.like ?: 0,
+        isLoading = isLoading,
+        onClick = {
+            if (cvid > 0 && !isLoading) {
+                viewModel.convertCvidToOpusId(
+                    cvid = cvid,
+                    onSuccess = { opusId ->
+                        onOpusClick(opusId)
+                    },
+                    onError = { error ->
+                        MsgUtil.showMsg(error)
+                    }
+                )
+            }
         }
     )
 }
@@ -220,6 +319,163 @@ private fun UserResultItem(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SearchArticleCardContent(
+    title: String,
+    cover: String,
+    author: String,
+    view: Long,
+    like: Long,
+    isLoading: Boolean,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
+        ),
+        onClick = onClick,
+        enabled = !isLoading
+    ) {
+        FlowRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            if (cover.isNotEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .width(70.dp)
+                        .height(44.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                ) {
+                    var isImageLoading by remember { mutableStateOf(true) }
+                    
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(if (cover.startsWith("http")) cover else "http:$cover")
+                            .crossfade(200)
+                            .build(),
+                        contentDescription = null,
+                        modifier = Modifier.matchParentSize(),
+                        contentScale = ContentScale.Crop,
+                        onSuccess = { isImageLoading = false },
+                        onError = { isImageLoading = false }
+                    )
+                    
+                    if (isImageLoading) {
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .shimmer()
+                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))
+                        )
+                    }
+                }
+            }
+
+            Column(
+                modifier = Modifier
+                    .weight(1f, fill = false)
+                    .padding(vertical = 2.dp)
+                    .animateContentSize(
+                        animationSpec = tween(durationMillis = 300)
+                    )
+            ) {
+                Text(
+                    text = title.replace("<em class=\"keyword\">", "").replace("</em>", ""),
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    Text(
+                        text = author,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.PlayArrow,
+                            contentDescription = null,
+                            modifier = Modifier.size(11.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(modifier = Modifier.width(2.dp))
+                        Text(
+                            text = formatPlayCount(view),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ThumbUp,
+                            contentDescription = null,
+                            modifier = Modifier.size(11.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(modifier = Modifier.width(2.dp))
+                        Text(
+                            text = formatPlayCount(like),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+                
+                AnimatedVisibility(
+                    visible = isLoading,
+                    enter = fadeIn(animationSpec = tween(300)) + expandVertically(animationSpec = tween(300)),
+                    exit = fadeOut(animationSpec = tween(300)) + shrinkVertically(animationSpec = tween(300))
+                ) {
+                    Column {
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(12.dp),
+                                strokeWidth = 1.5.dp,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Text(
+                                text = "Loading...",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+                }
             }
         }
     }

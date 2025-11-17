@@ -1,10 +1,14 @@
 package com.huanli233.bilizepam.ui.screens.comment
 
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,25 +26,32 @@ import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.huanli233.biliwebapi.bean.reply.Reply
-import com.huanli233.bilizepam.ui.components.EmoteText
+import com.huanli233.bilizepam.ui.components.RichText
+import com.huanli233.bilizepam.ui.dialog.AdaptDialog
+import com.huanli233.bilizepam.utils.ArticleRedirectUtil
 import com.huanli233.bilizepam.utils.extensions.formatNumber
 import com.huanli233.bilizepam.utils.extensions.formatToRelativeTime
 
@@ -53,6 +64,10 @@ fun CommentItem(
     onCommentClick: (Reply) -> Unit = {},
     onReplyClick: (Reply) -> Unit = {},
     onUserClick: (Long) -> Unit = {},
+    onBvidClick: (String) -> Unit = {},
+    onAvidClick: (Long) -> Unit = {},
+    onCvidClick: (Long) -> Unit = {},
+    onUrlClick: (String) -> Unit = {},
     uiState: CommentUiState? = null,
     modifier: Modifier = Modifier
 ) {
@@ -162,16 +177,16 @@ fun CommentItem(
                     var isTextOverflowing by remember { mutableStateOf(false) }
 
                     Column {
-                        EmoteText(
+                        RichText(
                             text = messageText,
                             emotes = reply.content.emote,
+                            atList = reply.content.atNameToMid.toList(),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = maxLines,
-                            overflow = TextOverflow.Ellipsis,
-                            onTextLayout = { textLayoutResult ->
-                                isTextOverflowing = textLayoutResult.hasVisualOverflow
-                            }
+                            onUserClick = onUserClick,
+                            onBvidClick = onBvidClick,
+                            onAvidClick = onAvidClick,
+                            onCvidClick = onCvidClick,
+                            onUrlClick = onUrlClick
                         )
 
                         if (isTextOverflowing || expanded) {
@@ -306,6 +321,7 @@ fun ChildCommentItemWithLikeState(
         reply = modifiedReply,
         onLikeClick = onLikeClick,
         onCommentClick = onCommentClick,
+        uiState = uiState,
         modifier = modifier
     )
 }
@@ -315,6 +331,12 @@ fun ChildCommentItem(
     reply: Reply,
     onLikeClick: (Reply, Boolean) -> Unit,
     onCommentClick: (Reply) -> Unit = {},
+    onUserClick: (Long) -> Unit = {},
+    onBvidClick: (String) -> Unit = {},
+    onAvidClick: (Long) -> Unit = {},
+    onCvidClick: (Long) -> Unit = {},
+    onUrlClick: (String) -> Unit = {},
+    uiState: CommentUiState? = null,
     modifier: Modifier = Modifier
 ) {
     val isLiked = reply.actionState == 1
@@ -395,13 +417,86 @@ fun ChildCommentItem(
                 }
             }
 
-            EmoteText(
+            val context = LocalContext.current
+            val scope = rememberCoroutineScope()
+            var showUrlDialog by remember { mutableStateOf<String?>(null) }
+            var isLoadingArticle by remember { mutableStateOf(false) }
+            
+            RichText(
                 text = reply.content.message ?: "",
                 emotes = reply.content.emote,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                atList = reply.content.atNameToMid.toList(),
+                style = MaterialTheme.typography.bodyMedium,
+                onUserClick = onUserClick,
+                onBvidClick = onBvidClick,
+                onAvidClick = onAvidClick,
+                onCvidClick = { cvid ->
+                    isLoadingArticle = true
+                    scope.launch {
+                        ArticleRedirectUtil.convertCvidToOpusId(cvid).fold(
+                            onSuccess = { opusId ->
+                                isLoadingArticle = false
+                                onCvidClick(opusId)
+                            },
+                            onFailure = { error ->
+                                isLoadingArticle = false
+                                Toast.makeText(context, "无法打开文章: ${error.message}", Toast.LENGTH_SHORT).show()
+                            }
+                        )
+                    }
+                },
+                onUrlClick = { url -> showUrlDialog = url }
+            )
+            
+            if (isLoadingArticle) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                }
+            }
+            
+            showUrlDialog?.let { url ->
+                AdaptDialog(
+                    onDismissRequest = { showUrlDialog = null },
+                    title = { Text("打开链接") },
+                    text = { Text(url) },
+                    confirmButton = { close ->
+                        TextButton(onClick = {
+                            try {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                context.startActivity(intent)
+                            } catch (e: Exception) {
+                                Toast.makeText(context, "无法打开链接", Toast.LENGTH_SHORT).show()
+                            }
+                            close()
+                        }) {
+                            Text("打开")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showUrlDialog = null }) {
+                            Text("取消")
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+    val childReplies = reply.replies
+    if (!childReplies.isNullOrEmpty() && childReplies.size <= 3) {
+        Spacer(modifier = Modifier.height(8.dp))
+        childReplies.take(3).forEach { childReply ->
+            ChildCommentItemWithLikeState(
+                reply = childReply,
+                onLikeClick = onLikeClick,
+                onCommentClick = { onCommentClick(reply) }, // 点击子评论时传递主评论
+                uiState = uiState,
+                modifier = Modifier.padding(start = 40.dp)
             )
         }
     }
