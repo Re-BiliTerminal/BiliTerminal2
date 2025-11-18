@@ -20,6 +20,15 @@ class DynamicRepository @Inject constructor() {
         }.apiResultNonNull()
     }
     
+    suspend fun getUserSpaceDynamicFeed(
+        hostMid: Long,
+        offset: String? = null
+    ): Result<DynamicFeedResponse> {
+        return bilibiliApi.api(IDynamicApi::class) {
+            getUserSpaceDynamicFeed(hostMid = hostMid, offset = offset)
+        }.apiResultNonNull()
+    }
+    
     suspend fun getDynamic(id: String): Result<Dynamic> {
         return bilibiliApi.api(IDynamicApi::class) {
             getDynamic(id)

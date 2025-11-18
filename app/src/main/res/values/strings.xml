@@ -129,6 +129,11 @@
     <string name="favorite">收藏</string>
     <string name="coin">投币</string>
     <string name="like">点赞</string>
+    <string name="my_space">我的</string>
+    <string name="history">历史记录</string>
+    <string name="watch_later">稍后再看</string>
+    <string name="following">关注</string>
+    <string name="opus_favorite">图文收藏夹</string>
     <string name="article_detail">专栏详情</string>
     <string name="opus_favorite_collection">图文收藏夹</string>
     <string name="operation_failed">操作失败：%1$s</string>
@@ -154,7 +159,6 @@
     <string name="login_qrcode_network_error">获取二维码失败，网络错误</string>
     <string name="login_qrcode_api_error">登录接口可能失效，请找开发者</string>
     <string name="open_source_info">开源信息</string>
-    <string name="watch_later">稍后再看</string>
     <string name="relay">转发</string>
     <string name="download">缓存</string>
 

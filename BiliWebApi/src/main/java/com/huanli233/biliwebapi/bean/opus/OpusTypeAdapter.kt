@@ -35,9 +35,13 @@ class OpusModulesDeserializer : JsonDeserializer<OpusModules> {
             UserInfo::class.java
         )
         
-        val moduleTitle = jsonObject.getAsJsonObject("module_title")?.let {
-            OpusTitleModule(text = it.get("text")?.asString ?: "")
-        } ?: OpusTitleModule("")
+        val moduleTop = jsonObject.get("module_top")?.let {
+            context.deserialize<OpusTopModule>(it, OpusTopModule::class.java)
+        }
+        
+        val moduleTitle = jsonObject.get("module_title")?.let {
+            context.deserialize<OpusTitleModule>(it, OpusTitleModule::class.java)
+        }
         
         val moduleContent = context.deserialize<OpusContentModule>(
             jsonObject.get("module_content"),
@@ -51,6 +55,7 @@ class OpusModulesDeserializer : JsonDeserializer<OpusModules> {
         
         return OpusModules(
             moduleAuthor = moduleAuthor,
+            moduleTop = moduleTop,
             moduleTitle = moduleTitle,
             moduleContent = moduleContent,
             moduleStat = moduleStat

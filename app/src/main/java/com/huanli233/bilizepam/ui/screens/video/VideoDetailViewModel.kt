@@ -73,11 +73,11 @@ class VideoDetailViewModel @Inject constructor(
                 getVideoInfo(aid = avid, bvid = bvid)
             }.apiResultNonNull()
             val tagsResult = bilibiliApi.api(IVideoApi::class) {
-                getVideoTags(aid = 0, bvid = bvid)
+                getVideoTags(aid = avid, bvid = bvid)
             }.apiResultNonNull()
             val relationResult = if (AccountManager.loggedIn()) {
                 bilibiliApi.api(IVideoApi::class) {
-                    getVideoRelation(aid = 0, bvid = bvid)
+                    getVideoRelation(aid = avid, bvid = bvid)
                 }.apiResult()
             } else {
                 Result.success(null)

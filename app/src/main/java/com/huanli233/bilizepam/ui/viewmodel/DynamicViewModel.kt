@@ -8,12 +8,14 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.huanli233.bilizepam.data.paging.DynamicPagingSource
+import com.huanli233.bilizepam.data.paging.UserSpaceDynamicPagingSource
 import com.huanli233.bilizepam.data.repository.DynamicRepository
 import com.huanli233.biliwebapi.bean.dynamic.Dynamic
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,15 +25,28 @@ class DynamicViewModel @Inject constructor(
 ) : ViewModel() {
     
     private val likeStates = MutableStateFlow<Map<String, Boolean>>(emptyMap())
+    private val hostUidState = MutableStateFlow<Long?>(null)
+    private val refreshTrigger = MutableStateFlow(0)
     
-    private val baseDynamicFlow: Flow<PagingData<Dynamic>> = Pager(
-        config = PagingConfig(
-            pageSize = 20,
-            enablePlaceholders = false,
-            initialLoadSize = 20
-        ),
-        pagingSourceFactory = { DynamicPagingSource(repository) }
-    ).flow.cachedIn(viewModelScope)
+    private val baseDynamicFlow: Flow<PagingData<Dynamic>> = combine(
+        hostUidState,
+        refreshTrigger
+    ) { hostUid, _ ->
+        Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false,
+                initialLoadSize = 20
+            ),
+            pagingSourceFactory = {
+                if (hostUid != null) {
+                    UserSpaceDynamicPagingSource(hostUid, repository)
+                } else {
+                    DynamicPagingSource(repository)
+                }
+            }
+        ).flow
+    }.flatMapLatest { it }.cachedIn(viewModelScope)
     
     val dynamicFlow: Flow<PagingData<Dynamic>> = baseDynamicFlow.combine(likeStates) { pagingData, likes ->
         pagingData.map { dynamic ->
@@ -57,5 +72,9 @@ class DynamicViewModel @Inject constructor(
         viewModelScope.launch {
             repository.likeDynamic(dynamicId, if (isLiked) 0 else 1)
         }
+    }
+    
+    fun setHostUid(hostUid: Long?) {
+        hostUidState.value = hostUid
     }
 }

@@ -31,6 +31,7 @@ data class VideoInfo(
     val rights: Rights,
     val owner: UserInfo,
     val stat: Stat,
+    val play: Int? = null,
     val dynamic: String,
     val pages: List<Page>,
     val subtitle: SubtitleInfo,
@@ -45,6 +46,9 @@ data class VideoInfo(
     @SerializedName("section_id") val sectionId: Int? = null,
     @LowerCaseUnderScore val durationText: String? = null
 ) : Parcelable {
+    val viewCount: Int
+        get() = play ?: stat.view
+    
     val coinLimit: Int
         get() = if (copyright == 1) 2 else 1
     companion object {

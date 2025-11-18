@@ -40,6 +40,101 @@ import com.valentinilk.shimmer.shimmer
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
+fun VideoCardContent(
+    videoInfo: VideoInfo,
+    modifier: Modifier = Modifier
+) {
+    FlowRow(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
+        verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(4.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .width(70.dp)
+                .height(44.dp)
+                .clip(RoundedCornerShape(8.dp))
+        ) {
+            var isLoading by remember { mutableStateOf(true) }
+
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(videoInfo.pic)
+                    .crossfade(200)
+                    .build(),
+                contentDescription = null,
+                modifier = Modifier.matchParentSize(),
+                contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                onSuccess = { isLoading = false },
+                onError = { isLoading = false }
+            )
+
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .shimmer()
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))
+                )
+            }
+        }
+
+        Column(
+            modifier = Modifier
+                .weight(1f, fill = false)
+                .padding(vertical = 2.dp)
+        ) {
+            Text(
+                text = videoInfo.title,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontWeight = FontWeight.SemiBold
+                ),
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            FlowRow(
+                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(6.dp),
+                verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(2.dp)
+            ) {
+                Text(
+                    text = videoInfo.owner.name.orEmpty(),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                if (videoInfo.viewCount > 0) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.PlayArrow,
+                            contentDescription = null,
+                            modifier = Modifier.size(11.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(modifier = Modifier.width(2.dp))
+                        Text(
+                            text = formatViews(videoInfo.viewCount),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
 fun VideoCard(
     videoInfo: VideoInfo,
     onClick: (VideoInfo) -> Unit,
@@ -55,91 +150,7 @@ fun VideoCard(
         ),
         onClick = { onClick(videoInfo) }
     ) {
-        FlowRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
-            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(4.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .width(70.dp)
-                    .height(44.dp)
-                    .clip(RoundedCornerShape(8.dp))
-            ) {
-                var isLoading by remember { mutableStateOf(true) }
-                
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(videoInfo.pic)
-                        .crossfade(200)
-                        .build(),
-                    contentDescription = null,
-                    modifier = Modifier.matchParentSize(),
-                    contentScale = androidx.compose.ui.layout.ContentScale.Crop,
-                    onSuccess = { isLoading = false },
-                    onError = { isLoading = false }
-                )
-                
-                if (isLoading) {
-                    Box(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .shimmer()
-                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))
-                    )
-                }
-            }
-
-            Column(
-                modifier = Modifier
-                    .weight(1f, fill = false)
-                    .padding(vertical = 2.dp)
-            ) {
-                Text(
-                    text = videoInfo.title,
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.SemiBold
-                    ),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                FlowRow(
-                    horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(6.dp),
-                    verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(2.dp)
-                ) {
-                    Text(
-                        text = videoInfo.owner.name.orEmpty(),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.PlayArrow,
-                            contentDescription = null,
-                            modifier = Modifier.size(11.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Spacer(modifier = Modifier.width(2.dp))
-                        Text(
-                            text = formatViews(videoInfo.stat.view),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            }
-        }
+        VideoCardContent(videoInfo = videoInfo)
     }
 }
 

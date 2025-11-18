@@ -28,10 +28,27 @@ data class Opus(
 @JsonAdapter(OpusModulesDeserializer::class)
 data class OpusModules(
     @LowerCaseUnderScore val moduleAuthor: UserInfo,
-    @LowerCaseUnderScore val moduleTitle: OpusTitleModule,
+    @LowerCaseUnderScore val moduleTop: OpusTopModule? = null,
+    @LowerCaseUnderScore val moduleTitle: OpusTitleModule? = null,
     @LowerCaseUnderScore val moduleContent: OpusContentModule,
     @LowerCaseUnderScore val moduleStat: OpusStatModule,
 ) : Parcelable
+
+@Parcelize
+data class OpusTopModule(
+    val display: OpusTopDisplay
+) : Parcelable {
+    @Parcelize
+    data class OpusTopDisplay(
+        val album: OpusTopAlbum,
+        val type: Int
+    ) : Parcelable
+    
+    @Parcelize
+    data class OpusTopAlbum(
+        val pics: List<OpusPicture>
+    ) : Parcelable
+}
 
 @Parcelize
 data class OpusTitleModule(

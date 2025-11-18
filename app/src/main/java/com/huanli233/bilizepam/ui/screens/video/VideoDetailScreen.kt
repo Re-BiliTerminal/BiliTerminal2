@@ -25,8 +25,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -94,7 +92,6 @@ import com.huanli233.bilizepam.data.setting.LocalData
 import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
 import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
 import com.huanli233.bilizepam.ui.screens.comment.CommentScreen
-import com.tbuonomo.viewpagerdotsindicator.compose.DotsIndicator
 import com.tbuonomo.viewpagerdotsindicator.compose.model.DotGraphic
 import com.tbuonomo.viewpagerdotsindicator.compose.type.WormIndicatorType
 
@@ -111,6 +108,19 @@ fun VideoDetailScreen(
     var showFavoriteDialog by remember { mutableStateOf(false) }
     var showDownloadDialog by remember { mutableStateOf(false) }
 
+    LaunchedEffect(uiState.videoInfo) {
+        val videoInfo = uiState.videoInfo
+        val redirectUrl = videoInfo?.redirectUrl
+        if (videoInfo != null && redirectUrl != null && redirectUrl.contains("bangumi")) {
+            val epid = redirectUrl.replace("https://www.bilibili.com/bangumi/play/ep", "").toLongOrNull()
+            if (epid != null) {
+                navController.navigate("bangumi_from_ep/$epid") {
+                    popUpTo("video_detail/${videoInfo.aid}/${videoInfo.bvid}") { inclusive = true }
+                }
+            }
+        }
+    }
+    
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
@@ -221,13 +231,19 @@ fun VideoDetailScreen(
                                             navController.navigate("user/$mid")
                                         },
                                         onCollectionClick = { seasonId ->
-                                            navController.navigate("collection/$seasonId")
+                                            val videoInfo = uiState.videoInfo
+                                            if (videoInfo != null && videoInfo.ugcSeason != null) {
+                                                val season = videoInfo.ugcSeason
+                                                val encodedName = java.net.URLEncoder.encode(season?.title.toString(), "UTF-8")
+                                                navController.navigate("series/season/${videoInfo.owner.mid}/$seasonId/$encodedName")
+                                            }
                                         },
                                         onTagClick = { }
                                     )
                                     1 -> CommentScreen(
                                         aid = uiState.videoInfo?.aid ?: 0L,
                                         scrollState = commentScrollState,
+                                        paddingValues = paddingValues,
                                         onCommentDetailClick = { replyId ->
                                             val oid = uiState.videoInfo?.aid ?: 0L
                                             navController.navigate("comment_detail/$replyId?oid=$oid&type=1")

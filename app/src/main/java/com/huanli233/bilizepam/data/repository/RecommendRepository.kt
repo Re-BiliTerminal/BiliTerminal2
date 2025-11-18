@@ -26,15 +26,11 @@ class RecommendRepository @Inject constructor() {
         }.apiResultNonNull()
     }
     
-    suspend fun getPopularVideos(page: Int, pageSize: Int = 10): Result<List<VideoInfo>> {
-        return bilibiliApi.api(IRecommendApi::class) {
-            getPopular(page, pageSize)
-        }.apiResultNonNull().map { it.items }
-    }
+    suspend fun getPopular(page: Int, pageSize: Int = 10) = bilibiliApi.api(IRecommendApi::class) {
+        getPopular(page, pageSize)
+    }.apiResultNonNull()
     
-    suspend fun getPreciousVideos(page: Int, pageSize: Int = 10): Result<List<VideoInfo>> {
-        return bilibiliApi.api(IRecommendApi::class) {
-            getPrecious(page, pageSize)
-        }.apiResultNonNull().map { it.items }
-    }
+    suspend fun getPrecious(page: Int, pageSize: Int = 10) = bilibiliApi.api(IRecommendApi::class) {
+        getPrecious(page, pageSize)
+    }.apiResultNonNull()
 }

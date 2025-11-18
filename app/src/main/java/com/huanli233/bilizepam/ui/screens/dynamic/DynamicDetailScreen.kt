@@ -62,7 +62,6 @@ fun DynamicDetailScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
         ) {
             when (val state = uiState) {
                 is DynamicDetailUiState.Loading -> {
@@ -80,6 +79,7 @@ fun DynamicDetailScreen(
                                         .fillMaxSize()
                                         .verticalScroll(scrollState)
                                         .padding(horizontal = 8.dp)
+                                        .padding(paddingValues)
                                 ) {
                                     Spacer(modifier = Modifier.height(8.dp))
                                     
@@ -102,6 +102,7 @@ fun DynamicDetailScreen(
                                     aid = state.dynamic.id.toLongOrNull() ?: 0L,
                                     type = 17,
                                     scrollState = commentScrollState,
+                                    paddingValues = paddingValues,
                                     onCommentDetailClick = { replyId ->
                                         val oid = state.dynamic.id.toLongOrNull() ?: 0L
                                         navController.navigate("comment_detail/$replyId?oid=$oid&type=17")
@@ -112,7 +113,7 @@ fun DynamicDetailScreen(
                                     onUserClick = onUserClick,
                                     onOpusClick = { opusId ->
                                         navController.navigate("opus_detail/$opusId")
-                                    }
+                                    },
                                 )
                             }
                         }

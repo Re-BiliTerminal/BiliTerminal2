@@ -62,6 +62,19 @@ fun OpusDetailContent(
         
         Spacer(modifier = Modifier.height(12.dp))
         
+        opus.modules.moduleTop?.let { moduleTop ->
+            TopModule(
+                moduleTop = moduleTop,
+                onImageClick = onImageClick
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+        }
+        
+        opus.modules.moduleTitle?.let { moduleTitle ->
+            TitleModule(title = moduleTitle.text)
+            Spacer(modifier = Modifier.height(12.dp))
+        }
+        
         OpusContent(
             opus = opus,
             onUserClick = onUserClick,
@@ -215,5 +228,79 @@ fun ActionButton(
             color = tintColor,
             fontSize = 10.sp
         )
+    }
+}
+
+@Composable
+fun TopModule(
+    moduleTop: com.huanli233.biliwebapi.bean.opus.OpusTopModule,
+    onImageClick: (List<String>, Int) -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(8.dp)
+        ) {
+            moduleTop.display.album.pics.forEachIndexed { index, pic ->
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(pic.url)
+                        .crossfade(200)
+                        .build(),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable {
+                            onImageClick(
+                                moduleTop.display.album.pics.map { it.url },
+                                index
+                            )
+                        },
+                    contentScale = ContentScale.Fit
+                )
+                if (index < moduleTop.display.album.pics.size - 1) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun TitleModule(title: String) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.Star,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontWeight = FontWeight.SemiBold
+                ),
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        }
     }
 }

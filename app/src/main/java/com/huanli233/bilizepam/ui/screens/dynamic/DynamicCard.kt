@@ -29,6 +29,7 @@ import coil3.request.crossfade
 import com.huanli233.biliwebapi.bean.dynamic.Dynamic
 import com.huanli233.bilizepam.ui.components.RichText
 import com.huanli233.bilizepam.ui.components.VideoCard
+import com.huanli233.bilizepam.ui.components.VideoCardContent
 import com.valentinilk.shimmer.shimmer
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -199,11 +200,20 @@ fun DynamicCard(
                                     school = com.huanli233.biliwebapi.bean.user.School(name = "")
                                 )
                             }
-                            VideoCard(
-                                videoInfo = archive.toVideoInfo(author),
-                                onClick = { onVideoClick(it.bvid) },
+                            Card(
                                 modifier = Modifier
-                            )
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                                ),
+                                onClick = { onVideoClick(archive.bvid) }
+                            ) {
+                                VideoCardContent(
+                                    videoInfo = archive.toVideoInfo(author)
+                                )
+                            }
                         }
                     }
                     "MAJOR_TYPE_DRAW" -> {

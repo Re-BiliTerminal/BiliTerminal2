@@ -34,4 +34,5 @@ object Domains {
     const val VC_API_URL: String = "api.vc.bilibili.com"
     const val LIVE_API_URL: String = "api.live.bilibili.com"
     const val ACCOUNT_URL: String = "account.bilibili.com"
+    const val SPACE_URL: String = "space.bilibili.com"
 }

@@ -27,6 +27,16 @@ interface IDynamicApi {
         @Query("web_location") webLocation: String = "333.1365"
     ): ApiResponse<DynamicFeedResponse>
 
+    @GET("/x/polymer/web-dynamic/v1/feed/space")
+    suspend fun getUserSpaceDynamicFeed(
+        @Query("host_mid") hostMid: Long,
+        @Query("timezone_offset") timezoneOffset: String = "-480",
+        @Query("platform") platform: String = "web",
+        @Query("offset") offset: String? = null,
+        @Query("features") features: String = "itemOpusStyle,listOnlyfans,opusBigCover,onlyfansVote,forwardListHidden,decorationCard,commentsNewVersion,onlyfansAssetsV2,ugcDelete,onlyfansQaCard",
+        @Query("web_location") webLocation: String = "333.999"
+    ): ApiResponse<DynamicFeedResponse>
+
     @GET("/x/polymer/web-dynamic/v1/detail")
     @Queries(
         keys = ["features"],

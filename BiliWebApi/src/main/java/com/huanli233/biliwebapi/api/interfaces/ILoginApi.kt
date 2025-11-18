@@ -67,8 +67,11 @@ interface ILoginApi {
         @Field("go_url") goUrl: String?
     ): ApiResponse<Password.LoginResult>
 
-    @GET("/login/exit/v2")
-    suspend fun exitLogin(): ApiResponse<Void>
+    @POST("/login/exit/v2")
+    @FormUrlEncoded
+    suspend fun exitLogin(
+        @Field("biliCSRF") csrf: String
+    ): ApiResponse<Void>
 
     @API(Domains.BASE_API_URL)
     @POST("/x/internal/gaia-gateway/ExClimbWuzhi")

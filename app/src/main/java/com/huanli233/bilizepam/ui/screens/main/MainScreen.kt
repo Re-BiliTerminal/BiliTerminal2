@@ -8,11 +8,15 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.systemGestureExclusion
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -27,6 +31,9 @@ import androidx.navigation.navArgument
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
+import androidx.navigation.navArgument
+import com.huanli233.bilizepam.R
+import com.huanli233.bilizepam.data.account.AccountManager
 import com.huanli233.bilizepam.data.menu.MenuConfigManager
 import com.huanli233.bilizepam.ui.components.menu.MenuPanel
 import com.huanli233.bilizepam.ui.navigation.NavGraph
@@ -38,10 +45,21 @@ import com.huanli233.bilizepam.ui.screens.comment.CommentDetailScreen
 import com.huanli233.bilizepam.ui.screens.download.DownloadListScreen
 import com.huanli233.bilizepam.ui.screens.dynamic.DynamicDetailScreen
 import com.huanli233.bilizepam.ui.screens.dynamic.DynamicHomeScreen
+import com.huanli233.bilizepam.ui.screens.favorite.FavoriteScreen
+import com.huanli233.bilizepam.ui.screens.favorite.FavoriteVideosScreen
+import com.huanli233.bilizepam.ui.screens.favorite.OpusFavoriteScreen
+import com.huanli233.bilizepam.ui.screens.follow.FollowingScreen
+import com.huanli233.bilizepam.ui.screens.history.HistoryScreen
 import com.huanli233.bilizepam.ui.screens.image.ImageViewerScreen
+import com.huanli233.bilizepam.ui.screens.watchlater.WatchLaterScreen
 import com.huanli233.bilizepam.ui.screens.opus.OpusDetailScreen
 import com.huanli233.bilizepam.ui.screens.player.PlayerScreen
 import com.huanli233.bilizepam.ui.screens.recommend.RecommendScreen
+import com.huanli233.bilizepam.ui.screens.popular.PopularScreen
+import com.huanli233.bilizepam.ui.screens.precious.PreciousScreen
+import com.huanli233.bilizepam.ui.screens.bangumi.BangumiDetailScreen
+import com.huanli233.bilizepam.ui.screens.series.SeriesDetailScreen
+import com.huanli233.bilizepam.ui.screens.user.MySpaceScreen
 import com.huanli233.bilizepam.ui.screens.user.UserProfileScreen
 import com.huanli233.bilizepam.ui.screens.video.VideoDetailScreen
 import com.huanli233.bilizepam.ui.screens.comment.WriteReplyScreen
@@ -87,7 +105,122 @@ fun MainScreen(mainNavController: androidx.navigation.NavController) {
                             Screen.VideoDetail.createRoute(videoInfo.aid, videoInfo.bvid)
                         )
                     },
-                    onMenuClick = { isMenuExpanded = !isMenuExpanded }
+                    onMenuClick = { isMenuExpanded = !isMenuExpanded },
+                    onPopularClick = { contentNavController.navigate("popular") },
+                    onPreciousClick = { contentNavController.navigate("precious") }
+                )
+            }
+
+            composable("popular") {
+                PopularScreen(
+                    onVideoClick = { videoInfo ->
+                        contentNavController.navigate(
+                            Screen.VideoDetail.createRoute(videoInfo.aid, videoInfo.bvid)
+                        )
+                    },
+                    onNavigateBack = { contentNavController.popBackStack() }
+                )
+            }
+
+            composable("precious") {
+                PreciousScreen(
+                    onVideoClick = { videoInfo ->
+                        contentNavController.navigate(
+                            Screen.VideoDetail.createRoute(videoInfo.aid, videoInfo.bvid)
+                        )
+                    },
+                    onNavigateBack = { contentNavController.popBackStack() }
+                )
+            }
+
+            composable(
+                route = "bangumi/{mediaId}",
+                arguments = listOf(
+                    navArgument("mediaId") { type = NavType.LongType }
+                )
+            ) { backStackEntry ->
+                val mediaId = backStackEntry.arguments?.getLong("mediaId") ?: 0L
+                BangumiDetailScreen(
+                    mediaId = mediaId,
+                    onNavigateBack = { contentNavController.popBackStack() },
+                    onPlayEpisode = { aid, cid ->
+                        contentNavController.navigate("video_detail/$aid/")
+                    }
+                )
+            }
+
+            composable(
+                route = "bangumi_from_ep/{epId}",
+                arguments = listOf(
+                    navArgument("epId") { type = NavType.LongType }
+                )
+            ) { backStackEntry ->
+                val epId = backStackEntry.arguments?.getLong("epId") ?: 0L
+                val bangumiRepository = remember { com.huanli233.bilizepam.data.repository.BangumiRepository() }
+                var mediaId by remember { mutableStateOf<Long?>(null) }
+                var error by remember { mutableStateOf<String?>(null) }
+                
+                LaunchedEffect(epId) {
+                    bangumiRepository.getMediaIdFromEpId(epId).fold(
+                        onSuccess = { id -> mediaId = id },
+                        onFailure = { e -> error = e.message }
+                    )
+                }
+                
+                when {
+                    mediaId != null -> {
+                        BangumiDetailScreen(
+                            mediaId = mediaId!!,
+                            onNavigateBack = { contentNavController.popBackStack() },
+                            onPlayEpisode = { aid, cid ->
+                                contentNavController.navigate("video_detail/$aid/")
+                            }
+                        )
+                    }
+                    error != null -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("加载失败: $error")
+                        }
+                    }
+                    else -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                }
+            }
+
+            composable(
+                route = "series/{type}/{mid}/{id}/{name}",
+                arguments = listOf(
+                    navArgument("type") { type = NavType.StringType },
+                    navArgument("mid") { type = NavType.LongType },
+                    navArgument("id") { type = NavType.LongType },
+                    navArgument("name") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val seriesType = backStackEntry.arguments?.getString("type") ?: "series"
+                val mid = backStackEntry.arguments?.getLong("mid") ?: 0L
+                val id = backStackEntry.arguments?.getLong("id") ?: 0L
+                val name = backStackEntry.arguments?.getString("name") ?: ""
+                
+                SeriesDetailScreen(
+                    type = seriesType,
+                    mid = mid,
+                    id = id,
+                    name = URLDecoder.decode(name, "UTF-8"),
+                    onNavigateBack = { contentNavController.popBackStack() },
+                    onVideoClick = { videoInfo ->
+                        contentNavController.navigate(
+                            Screen.VideoDetail.createRoute(videoInfo.aid, videoInfo.bvid)
+                        )
+                    }
                 )
             }
 
@@ -319,7 +452,26 @@ fun MainScreen(mainNavController: androidx.navigation.NavController) {
                 val mid = backStackEntry.arguments?.getLong("mid") ?: 0
                 UserProfileScreen(
                     mid = mid,
-                    onNavigateBack = { contentNavController.popBackStack() }
+                    onNavigateBack = { contentNavController.popBackStack() },
+                    onDynamicClick = { dynamicId ->
+                        contentNavController.navigate("dynamic_detail/$dynamicId")
+                    },
+                    onVideoClick = { videoInfo ->
+                        contentNavController.navigate(
+                            Screen.VideoDetail.createRoute(videoInfo.aid, videoInfo.bvid)
+                        )
+                    },
+                    onOpusClick = { opusId ->
+                        contentNavController.navigate("opus_detail/$opusId")
+                    },
+                    onImageClick = { imageUrls, initialPage ->
+                        val encodedUrls = imageUrls.joinToString(",") { java.net.URLEncoder.encode(it, "UTF-8") }
+                        contentNavController.navigate("imageViewer/$encodedUrls/$initialPage")
+                    },
+                    onSeriesClick = { type, mid, id, name ->
+                        val encodedName = java.net.URLEncoder.encode(name, "UTF-8")
+                        contentNavController.navigate("series/$type/$mid/$id/$encodedName")
+                    }
                 )
             }
 
@@ -357,6 +509,105 @@ fun MainScreen(mainNavController: androidx.navigation.NavController) {
 
             composable("download_list") {
                 DownloadListScreen(
+                    onNavigateBack = { contentNavController.popBackStack() }
+                )
+            }
+
+            composable(Screen.MySpace.route) {
+                MySpaceScreen(
+                    onNavigateToUserProfile = { userId ->
+                        contentNavController.navigate("user/$userId")
+                    },
+                    onNavigateToHistory = {
+                        contentNavController.navigate("history")
+                    },
+                    onNavigateToWatchLater = {
+                        contentNavController.navigate("watch_later")
+                    },
+                    onNavigateToFavorite = {
+                        contentNavController.navigate("favorite")
+                    },
+                    onNavigateToFollowing = {
+                        contentNavController.navigate("following")
+                    },
+                    onMenuClick = { isMenuExpanded = !isMenuExpanded }
+                )
+            }
+
+            composable("history") {
+                HistoryScreen(
+                    onVideoClick = { videoInfo ->
+                        contentNavController.navigate(
+                            Screen.VideoDetail.createRoute(videoInfo.aid, videoInfo.bvid)
+                        )
+                    },
+                    onNavigateBack = { contentNavController.popBackStack() }
+                )
+            }
+
+            composable("watch_later") {
+                WatchLaterScreen(
+                    onVideoClick = { videoInfo ->
+                        contentNavController.navigate(
+                            Screen.VideoDetail.createRoute(videoInfo.aid, videoInfo.bvid)
+                        )
+                    },
+                    onNavigateBack = { contentNavController.popBackStack() }
+                )
+            }
+
+            composable("favorite") {
+                FavoriteScreen(
+                    onFolderClick = { fid, name ->
+                        contentNavController.navigate("favorite_videos/$fid/$name")
+                    },
+                    onOpusFavoriteClick = {
+                        contentNavController.navigate("opus_favorite")
+                    },
+                    onNavigateBack = { contentNavController.popBackStack() }
+                )
+            }
+
+            composable(
+                route = "favorite_videos/{fid}/{name}",
+                arguments = listOf(
+                    navArgument("fid") { type = NavType.LongType },
+                    navArgument("name") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val fid = backStackEntry.arguments?.getLong("fid") ?: 0L
+                val name = backStackEntry.arguments?.getString("name") ?: ""
+                val mid = AccountManager.currentAccount.accountId
+                
+                FavoriteVideosScreen(
+                    mid = mid,
+                    fid = fid,
+                    folderName = name,
+                    onVideoClick = { videoInfo ->
+                        contentNavController.navigate(
+                            Screen.VideoDetail.createRoute(videoInfo.aid, videoInfo.bvid)
+                        )
+                    },
+                    onNavigateBack = { contentNavController.popBackStack() }
+                )
+            }
+
+            composable("opus_favorite") {
+                OpusFavoriteScreen(
+                    onOpusClick = { opusId ->
+                        contentNavController.navigate("opus_detail/$opusId")
+                    },
+                    onNavigateBack = { contentNavController.popBackStack() }
+                )
+            }
+
+            composable("following") {
+                val mid = AccountManager.currentAccount.accountId
+                FollowingScreen(
+                    mid = mid,
+                    onUserClick = { userId ->
+                        contentNavController.navigate("user/$userId")
+                    },
                     onNavigateBack = { contentNavController.popBackStack() }
                 )
             }

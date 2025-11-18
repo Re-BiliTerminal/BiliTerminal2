@@ -39,6 +39,8 @@ sealed class Screen(val route: String, @StringRes val titleResId: Int) {
             return "search_result/$encodedKeyword"
         }
     }
+    
+    data object MySpace : Screen("my_space", R.string.my_space)
 }
 
 val allScreens = listOf(
@@ -49,5 +51,6 @@ val allScreens = listOf(
     Screen.About,
     Screen.ThemeColor,
     Screen.ViewPreview,
-    Screen.Search
+    Screen.Search,
+    Screen.MySpace
 )

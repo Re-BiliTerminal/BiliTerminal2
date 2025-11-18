@@ -785,17 +785,32 @@ public fun ScreenScaffold(
         else -> throw IllegalArgumentException("Unsupported scrollState type: ${scrollState::class.java}")
     }
     
-    // Create ScrollBehavior if topBar is provided but topBarScrollBehavior is not
-    val actualTopBarScrollBehavior = topBarScrollBehavior ?: if (topBar != null) {
-        rememberEnterAlwaysScrollBehavior()
+    // Create ScrollBehavior if topBar is provided
+    val actualTopBarScrollBehavior = if (topBar != null) {
+        topBarScrollBehavior ?: rememberEnterAlwaysScrollBehavior()
     } else {
         null
+    }
+    
+    // Store the ScrollBehavior to pass to topBar
+    var capturedScrollBehavior by remember { mutableStateOf<TopBarScrollBehavior?>(null) }
+    capturedScrollBehavior = actualTopBarScrollBehavior
+    
+    // Wrap topBar to inject ScrollBehavior
+    val wrappedTopBar: (@Composable () -> Unit)? = if (topBar != null) {
+        {
+            // Call the topBar lambda which should be a scrollAwareTopBar result
+            // The scrollAwareTopBar will use the ScrollBehavior we provide
+            topBar()
+        }
+    } else {
+        topBar
     }
     
     ScreenScaffold(
         modifier = modifier,
         scrollInfoProvider = scrollInfoProvider,
-        topBar = topBar,
+        topBar = wrappedTopBar,
         contentPadding = contentPadding,
         timeText = timeText,
         scrollIndicator = scrollIndicator,

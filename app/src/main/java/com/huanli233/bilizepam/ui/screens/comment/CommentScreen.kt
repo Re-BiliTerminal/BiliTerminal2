@@ -24,7 +24,6 @@ import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.ScreenScaffold
-import androidx.wear.compose.materialcore.plus
 import android.widget.Toast
 import com.huanli233.bilizepam.data.setting.LocalData
 import com.huanli233.bilizepam.ui.dialog.SortModeDialog
@@ -47,7 +46,8 @@ fun CommentScreen(
     onCommentDetailClick: (Long) -> Unit = {},
     onWriteReplyClick: (Long, Long, Long, String?) -> Unit = { _, _, _, _ -> },
     onUserClick: (Long) -> Unit = {},
-    onOpusClick: (Long) -> Unit = {}
+    onOpusClick: (Long) -> Unit = {},
+    paddingValues: PaddingValues
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val activeAccount by viewModel.accountRepository.activeAccount.collectAsState()
@@ -86,75 +86,32 @@ fun CommentScreen(
     }.collectAsLazyPagingItems()
     val isLoggedIn = activeAccount != null
 
-    ScreenScaffold(
-        scrollState = actualScrollState,
-        modifier = modifier
-    ) { paddingValues ->
-        PullToRefreshBox(
-            isRefreshing = comments.loadState.refresh is LoadState.Loading,
-            onRefresh = {
-                scope.launch {
-                    comments.refresh()
-                }
-            },
-            modifier = Modifier.fillMaxSize()
+    PullToRefreshBox(
+        isRefreshing = comments.loadState.refresh is LoadState.Loading,
+        onRefresh = {
+            scope.launch {
+                comments.refresh()
+            }
+        },
+        modifier = Modifier.fillMaxSize()
+    ) {
+        ScalingLazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            state = actualScrollState,
+            contentPadding = paddingValues
         ) {
-            ScalingLazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                state = actualScrollState,
-                contentPadding = paddingValues.plus(PaddingValues(
-                    vertical = 16.dp
-                ))
-            ) {
-                // 发表评论按钮（仅登录且未禁用时显示）
-                if (isLoggedIn && uiState.control?.inputDisable != true) {
-                    item {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 8.dp),
-                            onClick = {
-                                onWriteReplyClick(aid, 0, 0, null)
-                            },
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.primaryContainer
-                            ),
-                            shape = RoundedCornerShape(12.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(12.dp),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.Create,
-                                    contentDescription = "发表评论",
-                                    modifier = Modifier.size(18.dp),
-                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = uiState.control?.rootInputText ?: "发表评论",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            }
-                        }
-                    }
-                }
-                
-                // 排序选择器
+            // 发表评论按钮（仅登录且未禁用时显示）
+            if (isLoggedIn && uiState.control?.inputDisable != true) {
                 item {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp, vertical = 8.dp),
-                        onClick = { showSortDialog = true },
+                        onClick = {
+                            onWriteReplyClick(aid, 0, 0, null)
+                        },
                         colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                            containerColor = MaterialTheme.colorScheme.primaryContainer
                         ),
                         shape = RoundedCornerShape(12.dp)
                     ) {
@@ -162,144 +119,180 @@ fun CommentScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(12.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
+                            horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.Sort,
-                                    contentDescription = "排序",
-                                    modifier = Modifier.size(18.dp),
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Text(
-                                    text = uiState.sortMode.label,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
+                            Icon(
+                                imageVector = Icons.Filled.Create,
+                                contentDescription = "发表评论",
+                                modifier = Modifier.size(18.dp),
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = uiState.control?.rootInputText ?: "发表评论",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                fontWeight = FontWeight.Medium
+                            )
                         }
                     }
                 }
-                
-                // 评论总数显示
-                item {
-                    if (comments.itemCount > 0) {
-                        Text(
-                            text = "评论 ${comments.itemCount}",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp)
-                        )
-                    }
-                }
+            }
 
-                // 加载状态处理
-                item {
-                    Crossfade(
-                        targetState = comments.loadState.refresh,
-                        animationSpec = tween(durationMillis = 300),
-                        label = "LoadingStateTransition"
-                    ) { state ->
-                        when (state) {
-                            is LoadState.Loading if comments.itemCount == 0 -> {
-                                LoadingView(
-                                    state = LoadingState.LOADING,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(200.dp)
-                                )
-                            }
-                            is LoadState.Error -> {
-                                ErrorCard(
-                                    message = state.error.message ?: "加载失败",
-                                    onRetry = { comments.retry() }
-                                )
-                            }
-                            else -> {
-                                // 空状态显示
-                                if (comments.itemCount == 0 && state is LoadState.NotLoading) {
-                                    EmptyStateCard(
-                                        text = uiState.control?.bgText ?: "暂无评论"
-                                    )
-                                }
-                            }
+            // 排序选择器
+            item {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    onClick = { showSortDialog = true },
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Sort,
+                                contentDescription = "排序",
+                                modifier = Modifier.size(18.dp),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                text = uiState.sortMode.label,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                     }
                 }
+            }
 
-                // 评论列表
-                items(comments.itemCount) { index ->
-                    val reply = comments[index]
-                    if (reply != null) {
-                        // 判断是否为置顶评论（通过检查是否在置顶评论列表中）
-                        val isTopReply = viewModel.isTopReply(reply.replyId)
-                        
-                        CommentItemWithLikeState(
-                            reply = reply,
-                            isLiked = uiState.likedReplies.contains(reply.replyId) || (reply.actionState == 1),
-                            onLikeClick = { replyItem, isLiked ->
-                                viewModel.likeReply(replyItem.replyId, isLiked)
-                            },
-                            isRound = isRound,
-                            isTopReply = isTopReply,
-                            onCommentClick = { clickedReply ->
-                                onCommentDetailClick(clickedReply.replyId)
-                            },
-                            onReplyClick = { replyToReply ->
-                                onWriteReplyClick(
-                                    replyToReply.oid,
-                                    replyToReply.replyId,
-                                    replyToReply.replyId,
-                                    replyToReply.member.name
-                                )
-                            },
-                            onUserClick = onUserClick,
-                            onOpusClick = onOpusClick,
-                            uiState = uiState
-                        )
-                    }
+            // 评论总数显示
+            item {
+                if (comments.itemCount > 0) {
+                    Text(
+                        text = "评论 ${comments.itemCount}",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                    )
                 }
+            }
 
-                // 底部加载更多状态
-                item {
-                    when (comments.loadState.append) {
-                        is LoadState.Loading -> {
-                            Box(
+            // 加载状态处理
+            item {
+                Crossfade(
+                    targetState = comments.loadState.refresh,
+                    animationSpec = tween(durationMillis = 300),
+                    label = "LoadingStateTransition"
+                ) { state ->
+                    when (state) {
+                        is LoadState.Loading if comments.itemCount == 0 -> {
+                            LoadingView(
+                                state = LoadingState.LOADING,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(16.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator(modifier = Modifier.size(24.dp))
-                            }
+                                    .height(200.dp)
+                            )
                         }
                         is LoadState.Error -> {
                             ErrorCard(
-                                message = "加载更多失败",
+                                message = state.error.message ?: "加载失败",
                                 onRetry = { comments.retry() }
                             )
                         }
                         else -> {
-                            // 成功状态不显示任何内容
+                            // 空状态显示
+                            if (comments.itemCount == 0 && state is LoadState.NotLoading) {
+                                EmptyStateCard(
+                                    text = uiState.control?.bgText ?: "暂无评论"
+                                )
+                            }
                         }
                     }
                 }
+            }
 
-                // 未登录提醒
-                if (!isLoggedIn && comments.itemCount >= 3) {
-                    item {
-                        LoginReminderCard(
-                            onLoginClick = onLoginClick,
-                            modifier = Modifier.padding(top = 8.dp)
+            // 评论列表
+            items(comments.itemCount) { index ->
+                val reply = comments[index]
+                if (reply != null) {
+                    // 判断是否为置顶评论（通过检查是否在置顶评论列表中）
+                    val isTopReply = viewModel.isTopReply(reply.replyId)
+
+                    CommentItemWithLikeState(
+                        reply = reply,
+                        isLiked = uiState.likedReplies.contains(reply.replyId) || (reply.actionState == 1),
+                        onLikeClick = { replyItem, isLiked ->
+                            viewModel.likeReply(replyItem.replyId, isLiked)
+                        },
+                        isRound = isRound,
+                        isTopReply = isTopReply,
+                        onCommentClick = { clickedReply ->
+                            onCommentDetailClick(clickedReply.replyId)
+                        },
+                        onReplyClick = { replyToReply ->
+                            onWriteReplyClick(
+                                replyToReply.oid,
+                                replyToReply.replyId,
+                                replyToReply.replyId,
+                                replyToReply.member.name
+                            )
+                        },
+                        onUserClick = onUserClick,
+                        onOpusClick = onOpusClick,
+                        uiState = uiState
+                    )
+                }
+            }
+
+            // 底部加载更多状态
+            item {
+                when (comments.loadState.append) {
+                    is LoadState.Loading -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                        }
+                    }
+                    is LoadState.Error -> {
+                        ErrorCard(
+                            message = "加载更多失败",
+                            onRetry = { comments.retry() }
                         )
                     }
+                    else -> {
+                        // 成功状态不显示任何内容
+                    }
+                }
+            }
+
+            // 未登录提醒
+            if (!isLoggedIn && comments.itemCount >= 3) {
+                item {
+                    LoginReminderCard(
+                        onLoginClick = onLoginClick,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
                 }
             }
         }

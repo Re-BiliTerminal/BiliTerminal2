@@ -147,7 +147,7 @@ fun SearchResultScreen(
                                 pagingItems[index]?.let { item ->
                                     when (selectedType) {
                                         "video" -> SearchVideoCard(item, onVideoClick)
-                                        "user" -> UserResultItem(item, onUserClick)
+                                        "bili_user" -> UserResultItem(item, onUserClick)
                                         "article" -> SearchArticleCard(item, onOpusClick, viewModel)
                                         else -> SearchVideoCard(item, onVideoClick)
                                     }
@@ -207,6 +207,11 @@ private fun SearchTypeChips(
             label = stringResource(R.string.search_video),
             selected = selectedType == "video",
             onClick = { onTypeSelected("video") }
+        )
+        SearchTypeChip(
+            label = stringResource(R.string.search_user),
+            selected = selectedType == "bili_user",
+            onClick = { onTypeSelected("bili_user") }
         )
         SearchTypeChip(
             label = stringResource(R.string.search_article),
@@ -305,20 +310,102 @@ private fun UserResultItem(
         onClick = { item.mid?.let { onClick(it) } },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
+        )
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text(
-                text = item.uname ?: "",
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            item.fans?.let {
-                Text(
-                    text = "${it}粉丝",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(androidx.compose.foundation.shape.CircleShape)
+            ) {
+                var isAvatarLoading by remember { mutableStateOf(true) }
+                
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(if (item.upic?.startsWith("http") == true) item.upic else "http:${item.upic}")
+                        .crossfade(200)
+                        .build(),
+                    contentDescription = null,
+                    modifier = Modifier.matchParentSize(),
+                    contentScale = ContentScale.Crop,
+                    onSuccess = { isAvatarLoading = false },
+                    onError = { isAvatarLoading = false }
                 )
+                
+                if (isAvatarLoading) {
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .shimmer()
+                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))
+                    )
+                }
+            }
+            
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = item.uname?.replace("<em class=\"keyword\">", "")
+                        ?.replace("</em>", "") ?: "",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    item.level?.let { level ->
+                        Text(
+                            text = "Lv$level",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .background(
+                                    MaterialTheme.colorScheme.primaryContainer,
+                                    RoundedCornerShape(4.dp)
+                                )
+                                .padding(horizontal = 4.dp, vertical = 2.dp)
+                        )
+                    }
+                    
+                    item.fans?.let { fans ->
+                        Text(
+                            text = "${formatPlayCount(fans)} 粉丝",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+                
+                item.description?.let { desc ->
+                    if (desc.isNotBlank()) {
+                        Text(
+                            text = desc.replace("<em class=\"keyword\">", "")
+                                .replace("</em>", ""),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
             }
         }
     }

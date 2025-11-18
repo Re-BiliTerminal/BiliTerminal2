@@ -19,7 +19,7 @@ import retrofit2.Retrofit
 import kotlin.reflect.KClass
 
 open class BiliWebApi(
-    internal val cookieManager: CookieManager,
+    val cookieManager: CookieManager,
     internal val wbiDataManager: WbiDataManager
 ) {
 

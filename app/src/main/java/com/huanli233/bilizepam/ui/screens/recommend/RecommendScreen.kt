@@ -3,7 +3,16 @@ package com.huanli233.bilizepam.ui.screens.recommend
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -49,7 +58,9 @@ import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
 fun RecommendScreen(
     viewModel: RecommendViewModel = hiltViewModel(),
     onVideoClick: (VideoInfo) -> Unit = {},
-    onMenuClick: () -> Unit = {}
+    onMenuClick: () -> Unit = {},
+    onPopularClick: () -> Unit = {},
+    onPreciousClick: () -> Unit = {}
 ) {
     val videos = viewModel.videos.collectAsLazyPagingItems()
     val scope = rememberCoroutineScope()
@@ -92,6 +103,12 @@ fun RecommendScreen(
                     state = scrollState,
                     contentPadding = paddingValues
                 ) {
+                    item {
+                        QuickAccessButtons(
+                            onPopularClick = onPopularClick,
+                            onPreciousClick = onPreciousClick
+                        )
+                    }
 
                 item {
                     Crossfade(
@@ -150,6 +167,63 @@ fun RecommendScreen(
                         LoadingFooter(videos)
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun QuickAccessButtons(
+    onPopularClick: () -> Unit,
+    onPreciousClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Card(
+            onClick = onPopularClick,
+            modifier = Modifier.weight(1f),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            )
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "🔥 热门",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+        }
+        
+        Card(
+            onClick = onPreciousClick,
+            modifier = Modifier.weight(1f),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer
+            )
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "⭐ 入站必刷",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
             }
         }
     }

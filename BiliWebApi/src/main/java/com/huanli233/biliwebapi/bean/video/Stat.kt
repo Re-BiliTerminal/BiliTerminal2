@@ -11,6 +11,7 @@ data class Stat(
     val aid: Long,
     
     @JsonAdapter(ChineseNumberAdapter::class)
+    @SerializedName("view", alternate = ["play"])
     val view: Int,
     
     @JsonAdapter(ChineseNumberAdapter::class)
