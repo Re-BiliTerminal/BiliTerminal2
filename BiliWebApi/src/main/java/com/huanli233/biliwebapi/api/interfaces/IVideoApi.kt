@@ -103,6 +103,16 @@ interface IVideoApi {
         @Field("add_media_ids") addMediaIds: String = "",
         @Field("del_media_ids") delMediaIds: String = ""
     ): ApiResponse<Unit>
+    
+    @POST("/x/v2/history/report")
+    @FormUrlEncoded
+    @Csrf
+    suspend fun reportHistory(
+        @Field("aid") aid: Long,
+        @Field("cid") cid: Long,
+        @Field("progress") progress: Long,
+        @Field("platform") platform: String = "pc"
+    ): ApiResponse<Unit>
 }
 
 data class FavoriteFoldersResponse(

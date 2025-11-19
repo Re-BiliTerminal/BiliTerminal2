@@ -116,11 +116,35 @@ fun PlayerScreen(
         }
     }
 
+    var hasAppliedHistoryProgress by remember { mutableStateOf(false) }
+    
     LaunchedEffect(uiState.videoUrl) {
         if (uiState.videoUrl.isNotEmpty()) {
             exoPlayer.setMediaItem(MediaItem.fromUri(uiState.videoUrl))
             exoPlayer.prepare()
             exoPlayer.playWhenReady = true
+            hasAppliedHistoryProgress = false
+        }
+    }
+    
+    LaunchedEffect(exoPlayer, uiState.historyProgress) {
+        if (!hasAppliedHistoryProgress && uiState.historyProgress > 5000) {
+            while (exoPlayer.playbackState == Player.STATE_IDLE || exoPlayer.playbackState == Player.STATE_BUFFERING) {
+                delay(100)
+            }
+            if (exoPlayer.playbackState == Player.STATE_READY) {
+                exoPlayer.seekTo(uiState.historyProgress)
+                hasAppliedHistoryProgress = true
+                Log.d("PlayerScreen", "Seeked to history progress: ${uiState.historyProgress}ms")
+            }
+        }
+    }
+    
+    LaunchedEffect(isPlaying) {
+        if (isPlaying) {
+            viewModel.startProgressReporting { exoPlayer.currentPosition }
+        } else {
+            viewModel.stopProgressReporting()
         }
     }
 
@@ -172,6 +196,7 @@ fun PlayerScreen(
 
     DisposableEffect(Unit) {
         onDispose {
+            viewModel.reportFinalProgress(exoPlayer.currentPosition)
             exoPlayer.release()
         }
     }
