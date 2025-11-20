@@ -301,6 +301,7 @@ private fun SearchArticleCard(
     )
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun UserResultItem(
     item: SearchItem,
@@ -316,12 +317,12 @@ private fun UserResultItem(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         )
     ) {
-        Row(
+        FlowRow(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Box(
                 modifier = Modifier
@@ -353,7 +354,9 @@ private fun UserResultItem(
             }
             
             Column(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f, fill = false)
+                    .padding(vertical = 2.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
@@ -363,13 +366,13 @@ private fun UserResultItem(
                         fontWeight = FontWeight.SemiBold
                     ),
                     color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 1,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
                 
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
                     item.level?.let { level ->
                         Text(

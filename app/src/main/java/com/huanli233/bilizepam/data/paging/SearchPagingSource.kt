@@ -18,7 +18,7 @@ class SearchPagingSource(
             val result = when (searchType) {
                 "video" -> searchRepository.searchVideos(keyword, page)
                 "article" -> searchRepository.searchArticles(keyword, page)
-                "user" -> searchRepository.searchUsers(keyword, page)
+                "bili_user" -> searchRepository.searchUsers(keyword, page)
                 "live" -> searchRepository.searchLive(keyword, page)
                 else -> searchRepository.searchVideos(keyword, page)
             }

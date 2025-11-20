@@ -142,3 +142,35 @@ class ChineseNumberAdapter : TypeAdapter<Int>() {
         }
     }
 }
+
+class SafeStringToLongAdapter : TypeAdapter<Long>() {
+    override fun write(out: JsonWriter, value: Long?) {
+        out.value(value)
+    }
+
+    override fun read(`in`: JsonReader): Long {
+        return when (`in`.peek()) {
+            JsonToken.NUMBER -> `in`.nextLong()
+            JsonToken.STRING -> {
+                val str = `in`.nextString()
+                try {
+                    if (str.isBlank()) {
+                        0L
+                    } else {
+                        str.toLongOrNull() ?: 0L
+                    }
+                } catch (e: NumberFormatException) {
+                    0L
+                }
+            }
+            JsonToken.NULL -> {
+                `in`.nextNull()
+                0L
+            }
+            else -> {
+                `in`.skipValue()
+                0L
+            }
+        }
+    }
+}

@@ -52,11 +52,10 @@ class UserRepository @Inject constructor(
     }
 
     suspend fun followUser(mid: Long, isFollow: Boolean): Result<Int> {
-        val csrf = getCsrfToken()
         val act = if (isFollow) 1 else 2
         
         return bilibiliApi.api(IUserApi::class) {
-            followUser(mid, act, csrf)
+            followUser(mid, act)
         }.apiResult().map { 0 }
     }
     
@@ -70,13 +69,5 @@ class UserRepository @Inject constructor(
             AccountManager.repository.setActiveAccount(0)
         }
     }
-    
-    private fun getCsrfToken(): String {
-        val sharedPreferences = context.getSharedPreferences("bilibili", Context.MODE_PRIVATE)
-        val cookies = sharedPreferences.getString("cookies", "") ?: ""
-        
-        val csrfRegex = "bili_jct=([^;]+)".toRegex()
-        val matchResult = csrfRegex.find(cookies)
-        return matchResult?.groupValues?.get(1) ?: ""
-    }
+
 }

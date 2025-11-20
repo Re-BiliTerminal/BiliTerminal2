@@ -7,6 +7,7 @@ import com.huanli233.biliwebapi.bean.dynamic.DynamicFeedResponse
 import com.huanli233.biliwebapi.httplib.Domains
 import com.huanli233.biliwebapi.httplib.annotation.API
 import com.huanli233.biliwebapi.httplib.annotation.Csrf
+import com.huanli233.biliwebapi.httplib.annotation.DmImg
 import com.huanli233.biliwebapi.httplib.annotation.Queries
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -28,6 +29,7 @@ interface IDynamicApi {
     ): ApiResponse<DynamicFeedResponse>
 
     @GET("/x/polymer/web-dynamic/v1/feed/space")
+    @DmImg
     suspend fun getUserSpaceDynamicFeed(
         @Query("host_mid") hostMid: Long,
         @Query("timezone_offset") timezoneOffset: String = "-480",

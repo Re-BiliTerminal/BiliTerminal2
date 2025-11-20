@@ -6,6 +6,7 @@ import com.huanli233.biliwebapi.bean.user.UserArticleListResponse
 import com.huanli233.biliwebapi.bean.user.UserCardInfo
 import com.huanli233.biliwebapi.bean.user.UserVideoListResponse
 import com.huanli233.biliwebapi.httplib.annotation.Csrf
+import com.huanli233.biliwebapi.httplib.annotation.DmImg
 import com.huanli233.biliwebapi.httplib.annotation.WbiSign
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -29,6 +30,7 @@ interface IUserApi {
     ): ApiResponse<String>
 
     @WbiSign
+    @DmImg
     @GET("/x/space/wbi/arc/search")
     suspend fun getUserVideos(
         @Query("mid") mid: Long,
@@ -50,9 +52,10 @@ interface IUserApi {
     
     @FormUrlEncoded
     @POST("/x/relation/modify")
+    @DmImg
+    @Csrf
     suspend fun followUser(
         @Field("fid") mid: Long,
         @Field("act") act: Int,
-        @Field("csrf") csrf: String
     ): ApiResponse<Any>
 }

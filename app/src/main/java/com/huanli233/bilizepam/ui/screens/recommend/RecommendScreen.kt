@@ -180,13 +180,13 @@ private fun QuickAccessButtons(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+            .padding(horizontal = 6.dp, vertical = 2.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         Card(
             onClick = onPopularClick,
             modifier = Modifier.weight(1f),
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(8.dp),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer
             )
@@ -194,12 +194,12 @@ private fun QuickAccessButtons(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(12.dp),
+                    .padding(vertical = 8.dp, horizontal = 6.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "🔥 热门",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
@@ -208,7 +208,7 @@ private fun QuickAccessButtons(
         Card(
             onClick = onPreciousClick,
             modifier = Modifier.weight(1f),
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(8.dp),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer
             )
@@ -216,12 +216,12 @@ private fun QuickAccessButtons(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(12.dp),
+                    .padding(vertical = 8.dp, horizontal = 6.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "⭐ 入站必刷",
-                    style = MaterialTheme.typography.bodyMedium,
+                    text = "⭐ 必刷",
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }

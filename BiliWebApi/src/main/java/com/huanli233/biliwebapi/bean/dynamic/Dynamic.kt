@@ -111,7 +111,8 @@ data class DynamicMajor(
 
 @Parcelize
 data class DynamicArchive(
-    val aid: String,
+    @JsonAdapter(SafeStringToLongAdapter::class)
+    val aid: Long,
     val bvid: String,
     val cover: String,
     val title: String,
@@ -125,7 +126,7 @@ data class DynamicArchive(
 ) : Parcelable {
     fun toVideoInfo(author: UserInfo): VideoInfo {
         return VideoInfo(
-            aid = aid.toLongOrNull() ?: 0L,
+            aid = aid,
             bvid = bvid,
             cid = 0L,
             tid = 0,
@@ -162,8 +163,8 @@ data class DynamicArchive(
                 freeWatch = 0
             ),
             owner = author,
-            stat = stat?.toStat(aid.toLongOrNull() ?: 0L) ?: Stat(
-                aid = aid.toLongOrNull() ?: 0L,
+            stat = stat?.toStat(aid) ?: Stat(
+                aid = aid,
                 view = 0,
                 danmaku = 0,
                 reply = 0,
