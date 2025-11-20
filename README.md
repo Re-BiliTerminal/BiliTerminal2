@@ -3,28 +3,45 @@
 
 # BiliZepam
 
-轻量的第三方B站Android客户端
-
-Fork of [RobinNotBad/BiliClient](https://gitee.com/RobinNotBad/BiliClient)
+第三方B站Android手表客户端
 
 </div>
 
 ## 介绍
-这是一个**极其轻量级**的**B站客户端**，[哔哩终端](https://gitee.com/RobinNotBad/BiliClient) 的 Fork。最低支持**安卓4.0（API 14）**。本项目保留了哔哩终端的部分布局设计，借鉴了 [Re-WearBili](https://github.com/SpaceXC/Re-WearBili) 的部分开源代码和它们收集的部分 API，**本项目与 WearBili/Re-WearBili 无任何关系**。
+这是一个专为 **Wear OS 手表设备**设计的**第三方 B 站客户端**，基于 [哔哩终端](https://gitee.com/RobinNotBad/BiliClient) 开发。本项目借鉴了 [Re-WearBili](https://github.com/SpaceXC/Re-WearBili) 的部分开源代码和它们收集的部分 API，**本项目与 WearBili/Re-WearBili 无任何关系**。
 
-播放视频可选择使用内置播放器（暂未开发）或凉腕播放器。
+项目使用 **ExoPlayer** 作为内置播放器，支持在手表上直接播放视频。
 
 ## 关于此分支
 此分支试图重写大部分代码，以增强原项目的可读性和维护性。同时，使用 ``Material3`` 并改进界面观感和操作逻辑。
 
-使用了 `Kotlin` 、`Okhttp3 + Retrofit2` 、部分 ``Android Jetpack`` 组件和一些其他库。
+### 架构迁移
+**项目已从传统的 Android Views 架构完全迁移至 Jetpack Compose**，这是一次重大的技术革新：
 
-~~其实本来还想同时支持原主题和 ``Material3`` 主题，但是被控件适配问题击败了~~
+- **UI 框架**：从 Hikage + Views 迁移到声明式 UI（Jetpack Compose）
+- **架构模式**：采用 MVVM 架构，使用 StateFlow 进行状态管理
+- **Material Design**：全面使用 Material3 组件和设计规范
+- **Wear OS 支持**：针对手表设备优化，使用 Wear Compose Material3
+
+### 技术栈
+- `Kotlin` - 主要开发语言
+- `Jetpack Compose` - 声明式 UI 框架
+- `Wear Compose Material3` - 手表界面组件
+- `Okhttp3 + Retrofit2` - 网络请求
+- `Hilt` - 依赖注入
+- `Paging 3` - 分页加载
+- `Coil` - 图片加载
+- `ExoPlayer` - 视频播放
+- 其他 `Android Jetpack` 组件
+
+### 迁移优势
+- **更好的开发体验**：声明式 UI 减少样板代码
+- **更高的可维护性**：响应式状态管理，代码更清晰
+- **更流畅的动画**：Compose 内置动画系统
+- **更好的性能**：智能重组机制，减少不必要的 UI 更新
 
 ## 问题反馈
 ***不要向原项目反馈该分支的问题。***
-
-由于对项目的大幅度更改，可能会导致对于 Android 5.0 以下的兼容性出现一些问题。
 
 开发者没有太多条件进行测试，所以如果你遇到了问题，请提交 Issue。
 
