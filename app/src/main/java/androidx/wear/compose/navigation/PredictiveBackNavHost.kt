@@ -52,6 +52,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.SaveableStateHolder
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -82,6 +83,7 @@ internal fun PredictiveBackNavHost(
     graph: NavGraph,
     modifier: Modifier = Modifier,
     userSwipeEnabled: Boolean = true,
+    saveableStateHolder: SaveableStateHolder = rememberSaveableStateHolder(),
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val viewModelStoreOwner =
@@ -112,8 +114,6 @@ internal fun PredictiveBackNavHost(
         navController.setLifecycleOwner(lifecycleOwner)
         onDispose {}
     }
-
-    val stateHolder = rememberSaveableStateHolder()
 
     val previous = backStack.getOrNull(backStack.lastIndex - 1)
     // Get the current navigation backstack entry. If the backstack is empty, it could be because
@@ -245,7 +245,7 @@ internal fun PredictiveBackNavHost(
                         currentEntry.lifecycle.currentStateAsState().value !=
                             Lifecycle.State.DESTROYED
                     ) {
-                        currentEntry.LocalOwnersProvider(stateHolder) {
+                        currentEntry.LocalOwnersProvider(saveableStateHolder) {
                             DestinationContent(backStackEntry = currentEntry)
                         }
                     }

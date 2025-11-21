@@ -19,6 +19,8 @@ package androidx.wear.compose.navigation
 import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.SaveableStateHolder
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.navigation.NavGraph
@@ -78,16 +80,20 @@ public fun SwipeDismissableNavHost(
     state: SwipeDismissableNavHostState = rememberSwipeDismissableNavHostState(),
     route: String? = null,
     builder: NavGraphBuilder.() -> Unit,
-): Unit =
+) {
+    val saveableStateHolder = rememberSaveableStateHolder()
+    
     SwipeDismissableNavHost(
-        navController,
-        remember(route, startDestination, builder) {
+        navController = navController,
+        graph = remember(route, startDestination, builder) {
             navController.createGraph(startDestination, route, builder)
         },
-        modifier,
-        userSwipeEnabled,
+        modifier = modifier,
+        userSwipeEnabled = userSwipeEnabled,
         state = state,
+        saveableStateHolder = saveableStateHolder,
     )
+}
 
 /**
  * Provides a place in the Compose hierarchy for self-contained navigation to occur, with backwards
@@ -134,6 +140,7 @@ public fun SwipeDismissableNavHost(
     modifier: Modifier = Modifier,
     userSwipeEnabled: Boolean = true,
     state: SwipeDismissableNavHostState = rememberSwipeDismissableNavHostState(),
+    saveableStateHolder: SaveableStateHolder = rememberSaveableStateHolder(),
 ) {
     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.VANILLA_ICE_CREAM) {
         PredictiveBackNavHost(
@@ -141,6 +148,7 @@ public fun SwipeDismissableNavHost(
             graph = graph,
             modifier = modifier,
             userSwipeEnabled = userSwipeEnabled,
+            saveableStateHolder = saveableStateHolder,
         )
     } else {
         BasicSwipeToDismissBoxNavHost(
@@ -149,6 +157,7 @@ public fun SwipeDismissableNavHost(
             modifier = modifier,
             userSwipeEnabled = userSwipeEnabled,
             state = state,
+            saveableStateHolder = saveableStateHolder,
         )
     }
 }

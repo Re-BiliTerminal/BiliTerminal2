@@ -1,4 +1,4 @@
-package com.huanli233.bilizepam.ui.screens.bangumi
+﻿package com.huanli233.bilizepam.ui.screens.bangumi
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable

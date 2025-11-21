@@ -1,4 +1,4 @@
-package com.huanli233.bilizepam.ui.screens.precious
+﻿package com.huanli233.bilizepam.ui.screens.precious
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween

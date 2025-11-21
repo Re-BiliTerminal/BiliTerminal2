@@ -408,10 +408,22 @@ public class ScalingLazyListState(
     public companion object {
         /** The default [Saver] implementation for [ScalingLazyListState]. */
         public val Saver: Saver<ScalingLazyListState, Any> =
-            listSaver<ScalingLazyListState, Int>(
-                save = { listOf(it.centerItemIndex, it.centerItemScrollOffset) },
-                restore = {
-                    val scalingLazyColumnState = ScalingLazyListState(it[0], it[1])
+            Saver(
+                save = { state ->
+                    listOf(
+                        state.centerItemIndex,
+                        state.centerItemScrollOffset,
+                        state.lazyListState.firstVisibleItemIndex,
+                        state.lazyListState.firstVisibleItemScrollOffset
+                    )
+                },
+                restore = { saved ->
+                    val list = saved as List<*>
+                    val scalingLazyColumnState = ScalingLazyListState(list[0] as Int, list[1] as Int)
+                    scalingLazyColumnState.lazyListState = androidx.compose.foundation.lazy.LazyListState(
+                        list[2] as Int,
+                        list[3] as Int
+                    )
                     scalingLazyColumnState
                 },
             )

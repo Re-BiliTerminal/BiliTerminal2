@@ -1,4 +1,4 @@
-package com.huanli233.bilizepam.ui.screens.setting
+﻿package com.huanli233.bilizepam.ui.screens.setting
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.materialcore.copy
 import androidx.wear.compose.materialcore.plus
 import androidx.wear.compose.materialcore.toVerticalPadding
@@ -55,7 +56,7 @@ const val ID_QQ_GROUP = "719041250"
 fun AboutScreen(navController: NavController) {
     val uriHandler = LocalUriHandler.current
     var showGroupIdDialog by remember { mutableStateOf(false) }
-    val scrollState = androidx.wear.compose.foundation.lazy.rememberScalingLazyListState(initialCenterItemIndex = 0)
+    val scrollState = rememberScalingLazyListState(initialCenterItemIndex = 0)
     
     // Create ScrollBehavior for TopBar
     val scrollBehavior = rememberEnterAlwaysScrollBehavior()

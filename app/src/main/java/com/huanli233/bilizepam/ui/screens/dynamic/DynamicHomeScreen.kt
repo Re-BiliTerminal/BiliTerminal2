@@ -1,4 +1,4 @@
-package com.huanli233.bilizepam.ui.screens.dynamic
+﻿package com.huanli233.bilizepam.ui.screens.dynamic
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

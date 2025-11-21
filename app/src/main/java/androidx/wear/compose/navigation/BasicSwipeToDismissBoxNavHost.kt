@@ -64,6 +64,7 @@ internal fun BasicSwipeToDismissBoxNavHost(
     modifier: Modifier = Modifier,
     userSwipeEnabled: Boolean = true,
     state: SwipeDismissableNavHostState = rememberSwipeDismissableNavHostState(),
+    saveableStateHolder: SaveableStateHolder = rememberSaveableStateHolder(),
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val viewModelStoreOwner =
@@ -94,8 +95,6 @@ internal fun BasicSwipeToDismissBoxNavHost(
         navController.setLifecycleOwner(lifecycleOwner)
         onDispose {}
     }
-
-    val stateHolder = rememberSaveableStateHolder()
 
     val previous = if (backStack.size <= 1) null else backStack[backStack.lastIndex - 1]
     // Get the current navigation backstack entry. If the backstack is empty, it could be because
@@ -164,7 +163,7 @@ internal fun BasicSwipeToDismissBoxNavHost(
     ) { isBackground ->
         BoxedStackEntryContent(
             entry = if (isBackground) previous else current,
-            saveableStateHolder = stateHolder,
+            saveableStateHolder = saveableStateHolder,
             modifier =
                 if (isBackground) {
                     modifier

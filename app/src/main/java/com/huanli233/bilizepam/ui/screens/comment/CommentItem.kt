@@ -81,7 +81,7 @@ fun CommentItem(
             .clickable { onCommentClick(reply) },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
@@ -93,12 +93,7 @@ fun CommentItem(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 AsyncImage(
-                    model = reply.member.face?.takeIf { it.isNotBlank() }?.also {
-                        Log.d("CommentAvatar", "Loading avatar: $it for user: ${reply.member.name}")
-                    } ?: run {
-                        Log.w("CommentAvatar", "Avatar URL is null or empty for user: ${reply.member.name}")
-                        null
-                    },
+                    model = reply.member.face?.takeIf { it.isNotBlank() },
                     contentDescription = reply.member.name,
                     modifier = Modifier
                         .size(32.dp)
@@ -126,7 +121,7 @@ fun CommentItem(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f, fill = false)
                         ) {
                             Text(
                                 text = reply.member.name ?: "未知用户",
@@ -134,7 +129,8 @@ fun CommentItem(
                                 fontWeight = FontWeight.Medium,
                                 color = MaterialTheme.colorScheme.onSurface,
                                 maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.weight(1f, fill = false)
                             )
 
                             if (isTopReply) {

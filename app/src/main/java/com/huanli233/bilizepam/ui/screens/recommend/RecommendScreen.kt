@@ -10,8 +10,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocalFireDepartment
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
@@ -64,7 +69,7 @@ fun RecommendScreen(
 ) {
     val videos = viewModel.videos.collectAsLazyPagingItems()
     val scope = rememberCoroutineScope()
-    val scrollState = rememberScalingLazyListState(initialCenterItemIndex = 0)
+    val scrollState = rememberScalingLazyListState()
     var isRefreshing by remember { mutableStateOf(false) }
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
@@ -180,26 +185,34 @@ private fun QuickAccessButtons(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 6.dp, vertical = 2.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
     ) {
         Card(
             onClick = onPopularClick,
-            modifier = Modifier.weight(1f),
-            shape = RoundedCornerShape(8.dp),
+            shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer
-            )
+            ),
+            modifier = Modifier.height(32.dp)
         ) {
-            Box(
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp, horizontal = 6.dp),
-                contentAlignment = Alignment.Center
+                    .padding(horizontal = 12.dp, vertical = 6.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                Icon(
+                    imageVector = Icons.Filled.LocalFireDepartment,
+                    contentDescription = null,
+                    modifier = Modifier.size(14.dp),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
                 Text(
-                    text = "🔥 热门",
-                    style = MaterialTheme.typography.bodySmall,
+                    text = "热门",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.Medium
+                    ),
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
@@ -207,21 +220,29 @@ private fun QuickAccessButtons(
         
         Card(
             onClick = onPreciousClick,
-            modifier = Modifier.weight(1f),
-            shape = RoundedCornerShape(8.dp),
+            shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer
-            )
+            ),
+            modifier = Modifier.height(32.dp)
         ) {
-            Box(
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp, horizontal = 6.dp),
-                contentAlignment = Alignment.Center
+                    .padding(horizontal = 12.dp, vertical = 6.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                Icon(
+                    imageVector = Icons.Filled.Star,
+                    contentDescription = null,
+                    modifier = Modifier.size(14.dp),
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+                )
                 Text(
-                    text = "⭐ 必刷",
-                    style = MaterialTheme.typography.bodySmall,
+                    text = "必刷",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.Medium
+                    ),
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
