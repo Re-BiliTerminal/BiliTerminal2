@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,6 +58,13 @@ fun SettingsScreen(navController: NavController) {
                     icon = Icons.Outlined.Palette,
                     title = stringResource(id = R.string.settings_ui),
                     onClick = { navController.navigate(Screen.UiSettings.route) }
+                )
+            }
+            item {
+                SettingsItem(
+                    icon = Icons.Outlined.PlayArrow,
+                    title = stringResource(id = R.string.settings_player),
+                    onClick = { navController.navigate(Screen.PlayerSettings.route) }
                 )
             }
                 item {

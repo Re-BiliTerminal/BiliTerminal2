@@ -38,6 +38,7 @@ import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.ui.PlayerView
+import com.huanli233.bilizepam.data.setting.LocalData
 import androidx.wear.compose.material3.PaddingDefaults
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.verticalContentPadding
@@ -65,8 +66,10 @@ fun PlayerScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val settings by LocalData.settingsStateFlow.collectAsState()
+    val playerSettings = settings?.playerSettings
 
-    val exoPlayer = remember {
+    val exoPlayer = remember(playerSettings?.useSoftwareDecoder, playerSettings?.useTextureView) {
         val httpDataSourceFactory = DefaultHttpDataSource.Factory()
             .setUserAgent(BILIBILI_USER_AGENT)
             .setDefaultRequestProperties(
@@ -80,6 +83,15 @@ fun PlayerScreen(
 
         ExoPlayer.Builder(context)
             .setMediaSourceFactory(mediaSourceFactory)
+            .setRenderersFactory(
+                androidx.media3.exoplayer.DefaultRenderersFactory(context).apply {
+                    if (playerSettings?.useSoftwareDecoder == true) {
+                        setExtensionRendererMode(androidx.media3.exoplayer.DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
+                        setEnableDecoderFallback(true)
+                    }
+                }
+            )
+            .setVideoScalingMode(androidx.media3.common.C.VIDEO_SCALING_MODE_SCALE_TO_FIT)
             .build()
     }
 
@@ -118,11 +130,11 @@ fun PlayerScreen(
 
     var hasAppliedHistoryProgress by remember { mutableStateOf(false) }
     
-    LaunchedEffect(uiState.videoUrl) {
+    LaunchedEffect(uiState.videoUrl, playerSettings?.autoPlay) {
         if (uiState.videoUrl.isNotEmpty()) {
             exoPlayer.setMediaItem(MediaItem.fromUri(uiState.videoUrl))
             exoPlayer.prepare()
-            exoPlayer.playWhenReady = true
+            exoPlayer.playWhenReady = playerSettings?.autoPlay ?: true
             hasAppliedHistoryProgress = false
         }
     }
@@ -207,13 +219,41 @@ fun PlayerScreen(
                 .padding(vertical = PaddingDefaults.verticalOptContentPadding()),
             color = MaterialTheme.colorScheme.surface
         ) {
-            AndroidView(
-                factory = { ctx ->
-                    PlayerView(ctx).apply {
-                        player = exoPlayer
-                        useController = false
-                    }
-                },
+            key(playerSettings?.useTextureView) {
+                AndroidView(
+                    factory = { ctx ->
+                        val aspectRatioLayout = androidx.media3.ui.AspectRatioFrameLayout(ctx).apply {
+                            resizeMode = androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_FIT
+                        }
+                        
+                        val surfaceView = if (playerSettings?.useTextureView == true) {
+                            android.view.TextureView(ctx).also { textureView ->
+                                exoPlayer.setVideoTextureView(textureView)
+                            }
+                        } else {
+                            android.view.SurfaceView(ctx).also { surfaceView ->
+                                exoPlayer.setVideoSurfaceView(surfaceView)
+                            }
+                        }
+                        
+                        surfaceView.layoutParams = android.view.ViewGroup.LayoutParams(
+                            android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                            android.view.ViewGroup.LayoutParams.MATCH_PARENT
+                        )
+                        
+                        aspectRatioLayout.addView(surfaceView)
+                        
+                        exoPlayer.addListener(object : androidx.media3.common.Player.Listener {
+                            override fun onVideoSizeChanged(videoSize: androidx.media3.common.VideoSize) {
+                                aspectRatioLayout.setAspectRatio(
+                                    if (videoSize.height == 0) 0f 
+                                    else (videoSize.width * videoSize.pixelWidthHeightRatio) / videoSize.height
+                                )
+                            }
+                        })
+                        
+                        aspectRatioLayout
+                    },
                 modifier = Modifier
                     .fillMaxSize()
                     .pointerInput(Unit) {
@@ -327,6 +367,7 @@ fun PlayerScreen(
                                         pause()
                                     }
                                 }
+
                                 override fun updateTimer(timer: DanmakuTimer) {}
                                 override fun danmakuShown(danmaku: BaseDanmaku?) {}
                                 override fun drawingFinished() {}
@@ -346,6 +387,7 @@ fun PlayerScreen(
                         }
                     }
                 )
+            }
             }
         }
     }
@@ -607,7 +649,9 @@ fun PlayerControls(
                             isSeeking = false
                         },
                         valueRange = 0f..duration.toFloat().coerceAtLeast(1f),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
                     )
                 } else {
                     Slider(

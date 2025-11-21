@@ -1,4 +1,4 @@
-﻿package com.huanli233.bilizepam.ui.screens.dynamic
+package com.huanli233.bilizepam.ui.screens.dynamic
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
@@ -24,6 +24,7 @@ import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.ScreenScaffold
 import com.huanli233.bilizepam.R
+import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
 import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
 import com.huanli233.bilizepam.ui.screens.comment.CommentScreen
 import com.huanli233.bilizepam.ui.viewmodel.DynamicDetailUiState
@@ -52,12 +53,17 @@ fun DynamicDetailScreen(
         viewModel.loadDynamic(dynamicId)
     }
 
+    val scrollBehavior = rememberEnterAlwaysScrollBehavior()
+
     ScreenScaffold(
+        scrollState = commentScrollState,
         topBar = scrollAwareTopBar(
             title = stringResource(R.string.dynamic_detail),
             showBackIcon = true,
-            onBackClick = onNavigateBack
-        )
+            onBackClick = onNavigateBack,
+            scrollBehavior = scrollBehavior
+        ),
+        topBarScrollBehavior = scrollBehavior
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -98,23 +104,27 @@ fun DynamicDetailScreen(
                                     
                                     Spacer(modifier = Modifier.height(16.dp))
                                 }
-                                1 -> CommentScreen(
-                                    aid = state.dynamic.id.toLongOrNull() ?: 0L,
-                                    type = 17,
-                                    scrollState = commentScrollState,
-                                    paddingValues = paddingValues,
-                                    onCommentDetailClick = { replyId ->
-                                        val oid = state.dynamic.id.toLongOrNull() ?: 0L
-                                        navController.navigate("comment_detail/$replyId?oid=$oid&type=17")
-                                    },
-                                    onWriteReplyClick = { oid, rpid, parent, parentSender ->
-                                        navController.navigate("write_reply/$oid/$rpid/$parent?parentSender=${parentSender ?: ""}")
-                                    },
-                                    onUserClick = onUserClick,
-                                    onOpusClick = { opusId ->
-                                        navController.navigate("opus_detail/$opusId")
-                                    },
-                                )
+                                1 -> {
+                                    val commentOid = state.dynamic.basic?.commentIdStr?.toLongOrNull() 
+                                        ?: state.dynamic.id.toLongOrNull() 
+                                        ?: 0L
+                                    CommentScreen(
+                                        aid = commentOid,
+                                        type = 17,
+                                        scrollState = commentScrollState,
+                                        paddingValues = paddingValues,
+                                        onCommentDetailClick = { replyId ->
+                                            navController.navigate("comment_detail/$replyId?oid=$commentOid&type=17")
+                                        },
+                                        onWriteReplyClick = { oid, rpid, parent, parentSender ->
+                                            navController.navigate("write_reply/$oid/$rpid/$parent?parentSender=${parentSender ?: ""}")
+                                        },
+                                        onUserClick = onUserClick,
+                                        onOpusClick = { opusId ->
+                                            navController.navigate("opus_detail/$opusId")
+                                        },
+                                    )
+                                }
                             }
                         }
 

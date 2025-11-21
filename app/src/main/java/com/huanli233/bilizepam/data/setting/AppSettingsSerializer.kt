@@ -9,6 +9,7 @@ import com.huanli233.bilizepam.data.proto.ApiCache
 import com.huanli233.bilizepam.data.proto.AppSettings
 import com.huanli233.bilizepam.data.proto.ImageFormat
 import com.huanli233.bilizepam.data.proto.NightMode
+import com.huanli233.bilizepam.data.proto.PlayerSettings
 import com.huanli233.bilizepam.data.proto.Preferences
 import com.huanli233.bilizepam.data.proto.Theme
 import com.huanli233.bilizepam.data.proto.UiSettings
@@ -55,6 +56,12 @@ object AppSettingsSerializer : Serializer<AppSettings> {
             stopLoadImageWhileScrolling = false
             imageFormat = ImageFormat.IMAGE_FORMAT_JPEG
             asyncInflateEnabled = false
+        }
+        playerSettings = PlayerSettings.newBuilder().build {
+            useSoftwareDecoder = false
+            autoPlay = true
+            defaultQuality = 64
+            useTextureView = false
         }
         menuConfig = MenuConfig().toString()
     }

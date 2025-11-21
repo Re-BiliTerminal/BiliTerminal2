@@ -46,6 +46,13 @@ message Preferences {
   bool async_inflate_enabled = 4;
 }
 
+message PlayerSettings {
+  bool use_software_decoder = 1;
+  bool auto_play = 2;
+  int32 default_quality = 3;
+  bool use_texture_view = 4;
+}
+
 message AppSettings {
   int64 active_account_id = 1;
   bool first_run = 2;
@@ -56,6 +63,7 @@ message AppSettings {
   Theme theme = 5;
   ApiCache api_cache = 6;
   Preferences preferences = 7;
+  PlayerSettings player_settings = 10;
 
   string language = 8;
   string search_history = 9;

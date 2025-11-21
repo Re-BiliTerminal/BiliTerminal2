@@ -234,6 +234,16 @@
     <string name="open">打开</string>
     <string name="group_id">群号：%1$s</string>
     <string name="settings_ui">界面设置</string>
+    <string name="settings_player">播放器设置</string>
+    <string name="video_playback">视频播放</string>
+    <string name="use_software_decoder">使用软件解码</string>
+    <string name="use_software_decoder_desc">部分设备硬件解码会出现绿屏，启用此选项可解决</string>
+    <string name="use_texture_view">使用 TextureView</string>
+    <string name="use_texture_view_desc">使用 TextureView 替代 SurfaceView，可能解决绿屏问题</string>
+    <string name="auto_play">自动播放</string>
+    <string name="auto_play_desc">打开视频时自动开始播放</string>
+    <string name="playback_quality">播放画质</string>
+    <string name="default_quality">默认画质</string>
     <string name="scale">大小</string>
     <string name="preference">偏好</string>
     <string name="disable_fullscreen_dialog">非全屏Dialog</string>

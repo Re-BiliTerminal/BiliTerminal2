@@ -180,7 +180,7 @@ private fun DynamicsPage(
     }
     
     val dynamics = viewModel.dynamicFlow.collectAsLazyPagingItems()
-    val scrollState = rememberScalingLazyListState(initialCenterItemIndex = 0)
+    val scrollState = rememberScalingLazyListState()
     var isRefreshing by remember { mutableStateOf(false) }
 
     LaunchedEffect(dynamics.loadState.refresh) {
@@ -219,6 +219,7 @@ private fun DynamicsPage(
                     }
                     dynamics.loadState.refresh is LoadState.Error && dynamics.itemCount == 0 -> {
                         val error = (dynamics.loadState.refresh as LoadState.Error).error
+                        error.printStackTrace()
                         LoadingView(
                             state = LoadingState.ERROR,
                             errorMessage = error.message,

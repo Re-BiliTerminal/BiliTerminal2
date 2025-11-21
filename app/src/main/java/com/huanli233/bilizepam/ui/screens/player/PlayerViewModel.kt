@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.huanli233.bilizepam.api.apiResultNonNull
 import com.huanli233.bilizepam.api.bilibiliApi
 import com.huanli233.bilizepam.data.repository.VideoRepository
+import com.huanli233.bilizepam.data.setting.LocalData
 import com.huanli233.biliwebapi.api.interfaces.IVideoApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -66,8 +67,10 @@ class PlayerViewModel @Inject constructor(
             try {
                 _uiState.value = _uiState.value.copy(isLoading = true)
                 
+                val defaultQuality = LocalData.settingsStateFlow.value?.playerSettings?.defaultQuality ?: 64
+                
                 val playUrlResult = bilibiliApi.api(IVideoApi::class) {
-                    getPlayUrl(aid = aid, cid = cid, qn = 64)
+                    getPlayUrl(aid = aid, cid = cid, qn = defaultQuality)
                 }.apiResultNonNull()
                 
                 val playUrlData = playUrlResult.getOrNull()

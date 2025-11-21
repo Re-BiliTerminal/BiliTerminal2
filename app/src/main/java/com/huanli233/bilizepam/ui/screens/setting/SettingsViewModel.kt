@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.huanli233.bilizepam.data.proto.AppSettings
 import com.huanli233.bilizepam.data.proto.NightMode
+import com.huanli233.bilizepam.data.proto.PlayerSettings
 import com.huanli233.bilizepam.data.setting.LocalData
 import com.huanli233.bilizepam.data.setting.edit
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -84,6 +85,14 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launch {
             LocalData.edit {
                 theme = theme.edit { colorTheme = color }
+            }
+        }
+    }
+
+    fun updatePlayerSettings(settings: PlayerSettings) {
+        viewModelScope.launch {
+            LocalData.edit {
+                playerSettings = settings
             }
         }
     }

@@ -16,6 +16,7 @@ sealed class Screen(val route: String, @StringRes val titleResId: Int) {
     data object Settings : Screen("settings_root", R.string.settings)
 
     data object UiSettings : Screen("settings_ui", R.string.settings_ui)
+    data object PlayerSettings : Screen("settings_player", R.string.settings_player)
     data object About : Screen("settings_about", R.string.about)
     data object ThemeColor : Screen("settings_theme_color", R.string.theme_color)
     data object ViewPreview : Screen("view_preview", R.string.view_preview)
@@ -48,6 +49,7 @@ val allScreens = listOf(
     Screen.Dynamic,
     Screen.Settings,
     Screen.UiSettings,
+    Screen.PlayerSettings,
     Screen.About,
     Screen.ThemeColor,
     Screen.ViewPreview,

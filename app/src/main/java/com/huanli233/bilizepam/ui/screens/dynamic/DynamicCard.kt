@@ -296,7 +296,7 @@ fun DynamicCard(
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = formatCount((dynamic.modules.statsModule.forward?.count ?: 0).toLong()),
+                        text = formatCount((dynamic.modules.statsModule.forward.count ?: 0).toLong()),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

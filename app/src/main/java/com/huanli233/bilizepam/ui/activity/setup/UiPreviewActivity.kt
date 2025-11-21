@@ -52,7 +52,7 @@ fun UiPreviewContent(
     onFinish: () -> Unit
 ) {
     var currentTime by remember { mutableStateOf("") }
-    val scrollState = rememberScalingLazyListState(initialCenterItemIndex = 0)
+    val scrollState = rememberScalingLazyListState()
 
     LaunchedEffect(Unit) {
         val formatter = DateTimeFormatter.ofPattern("HH:mm")

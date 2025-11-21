@@ -113,7 +113,22 @@ public class ReflectiveTypeUtils {
             @Override
             public void read(JsonReader reader, Object value) throws IOException, IllegalAccessException {
                 updateReflectiveType(typeAdapter, field, fieldName);
-                Object fieldValue = typeAdapter.read(reader);
+                Object fieldValue;
+                try {
+                    fieldValue = typeAdapter.read(reader);
+                } catch (NumberFormatException e) {
+                    // 容错处理：当遇到空字符串或无效数字格式时，跳过该字段
+                    // 保留字段的默认值，避免因为后台数据问题导致崩溃
+                    reader.skipValue();
+                    return;
+                } catch (com.google.gson.JsonSyntaxException e) {
+                    // 容错处理：当遇到JSON语法错误时，跳过该字段
+                    if (e.getCause() instanceof NumberFormatException) {
+                        reader.skipValue();
+                        return;
+                    }
+                    throw e;
+                }
                 if (fieldValue == null) {
                     return;
                 }
