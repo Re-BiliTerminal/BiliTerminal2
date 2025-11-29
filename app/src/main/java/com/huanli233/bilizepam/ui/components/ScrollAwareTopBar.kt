@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.material3.PaddingDefaults
+import com.huanli233.bilizepam.utils.isRound
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -499,7 +500,7 @@ fun scrollAwareTopBar(
     val heightOffset = scrollBehavior?.state?.heightOffset ?: 0f
 
     val paddings = WindowInsets.systemBars.asPaddingValues()
-    val verticalOptPadding = with(density) { PaddingDefaults.verticalOptContentPadding().toPx() }
+    val verticalPadding = with(density) { if (isRound) PaddingDefaults.verticalContentPadding().toPx() else 0f }
     Box(
         modifier = modifier
             .offset { IntOffset(0, heightOffset.roundToInt()) }
@@ -517,8 +518,8 @@ fun scrollAwareTopBar(
                     val statusBarHeight = with(density) { 
                         systemBarsPadding.calculateTopPadding().toPx() 
                     }
-                    val contentHeight = hPx - statusBarHeight
-                    val hiddenOffset = -contentHeight + verticalOptPadding
+                    val contentHeight = hPx + statusBarHeight
+                    val hiddenOffset = -contentHeight - verticalPadding
                     if (state.heightOffsetLimit != hiddenOffset) {
                         state.heightOffsetLimit = hiddenOffset
                     }

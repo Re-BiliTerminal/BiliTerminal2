@@ -11,11 +11,13 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -72,11 +74,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -95,6 +103,12 @@ import master.flame.danmaku.danmaku.model.android.DanmakuContext
 import master.flame.danmaku.danmaku.model.android.SpannedCacheStuffer
 import master.flame.danmaku.danmaku.parser.BaseDanmakuParser
 import master.flame.danmaku.ui.widget.DanmakuView
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.min
+import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 @Composable
 fun PlayerScreen(
@@ -150,7 +164,6 @@ fun PlayerScreen(
 
     LaunchedEffect(viewModel.ijkPlayer, uiState.historyProgress) {
         if (!hasAppliedHistoryProgress && uiState.historyProgress > 5000) {
-            // 等待播放器准备就绪
             while (!viewModel.ijkPlayer.isPlaying && viewModel.ijkPlayer.duration <= 0) {
                 delay(100)
             }
@@ -179,7 +192,6 @@ fun PlayerScreen(
                 if (parser != null) {
                     danmakuParser = parser
                     Log.d("Danmaku", "Danmaku parser created successfully - parser: $danmakuParser")
-                    // 不要在这里访问 danmakus，因为还没有设置 Context
                     Log.d("Danmaku", "Parser ready, will get danmaku count after Context is set")
                 } else {
                     danmakuError = "Failed to load danmaku"
@@ -199,19 +211,18 @@ fun PlayerScreen(
         while (true) {
             currentPosition = viewModel.ijkPlayer.currentPosition
             duration = viewModel.ijkPlayer.duration.coerceAtLeast(0L)
-            
-            // 同步播放状态 - 检测自动播放
+
             val actuallyPlaying = viewModel.ijkPlayer.isPlaying
             if (actuallyPlaying != isPlaying) {
                 android.util.Log.d("PlayerScreen", "Syncing play state: $actuallyPlaying")
                 isPlaying = actuallyPlaying
             }
-            
+
             delay(250)
         }
     }
 
-    LaunchedEffect(showControls) {
+    LaunchedEffect(showControls, isPlaying) {
         if (showControls && isPlaying) {
             delay(4000)
             showControls = false
@@ -221,7 +232,6 @@ fun PlayerScreen(
     DisposableEffect(Unit) {
         onDispose {
             viewModel.reportFinalProgress(viewModel.ijkPlayer.currentPosition)
-            // 播放器释放由 ViewModel 处理
         }
     }
 
@@ -232,356 +242,344 @@ fun PlayerScreen(
             color = MaterialTheme.colorScheme.surface
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
-            // 根据设置选择 TextureView 或 SurfaceView
-            if (playerSettings?.useTextureView == true) {
-                AndroidView(
-                    factory = { ctx ->
-                        Log.d("PlayerScreen", "Creating FrameLayout with TextureView + DanmakuView")
-                        FrameLayout(ctx).apply {
-                            val textureView = TextureView(ctx).apply {
-                                surfaceTextureListener = object : TextureView.SurfaceTextureListener {
-                                    override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
-                                        android.util.Log.d("PlayerScreen", "TextureView surface available: ${width}x${height}")
-                                        viewModel.ijkPlayer.setSurface(Surface(surface))
-
-                                        if (viewModel.ijkPlayer.isPlayable && playerSettings?.autoPlay == true && !viewModel.ijkPlayer.isPlaying) {
-                                            android.util.Log.d("PlayerScreen", "Auto-starting playback after TextureView ready")
-                                            viewModel.ijkPlayer.start()
-                                            isPlaying = true
-                                        }
-                                    }
-
-                                    override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
-                                        android.util.Log.d("PlayerScreen", "TextureView size changed: ${width}x${height}")
-                                        viewModel.ijkPlayer.setSurface(Surface(surface))
-                                    }
-
-                                    override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
-                                        android.util.Log.d("PlayerScreen", "TextureView surface destroyed")
-                                        return false
-                                    }
-
-                                    override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
-                                        // no-op
-                                    }
-                                }
-                            }
-
-                            val danmakuOverlay = DanmakuView(ctx).apply {
-                                enableDanmakuDrawingCache(true)
-                                setBackgroundColor(android.graphics.Color.TRANSPARENT)
-                                danmakuView = this
-                                setCallback(object : DrawHandler.Callback {
-                                    override fun prepared() {
-                                        start()
-                                        seekTo(currentPosition)
-                                        
-                                        // 根据实际播放状态控制弹幕
-                                        if (!viewModel.ijkPlayer.isPlaying) {
-                                            pause()
-                                        }
-                                        
-                                        // 显示弹幕
-                                        if (uiState.isDanmakuVisible) {
-                                            show()
-                                        }
-                                    }
-
-                                    override fun updateTimer(timer: DanmakuTimer) {}
-                                    override fun danmakuShown(danmaku: BaseDanmaku?) {}
-
-                                    override fun drawingFinished() {}
-                                })
-                            }
-
-                            addView(textureView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-                            addView(danmakuOverlay, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-                        }
-                    },
-                    update = { root ->
-                        val danmakuOverlay = root.getChildAt(1) as DanmakuView
-                        if (danmakuParser != null) {
-                            try {
-                                danmakuOverlay.prepare(danmakuParser, danmakuContext)
-                            } catch (e: Exception) {
-                                Log.e("Danmaku", "Error preparing danmaku view", e)
-                                danmakuError = "Error preparing danmaku: ${e.message}"
-                            }
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .wrapContentSize(Alignment.Center)
-                        .aspectRatio(videoAspectRatio, matchHeightConstraintsFirst = false)
-                        .pointerInput(Unit) {
-                            detectTapGestures(
-                                onTap = { offset ->
-                                    // 只有点击视频中央区域才触发控制栏显隐
-                                    val centerY = size.height * 0.5f
-                                    val bottomControlsY = size.height * 0.75f
-                                    if (offset.y < bottomControlsY && offset.y > centerY * 0.3f) {
-                                        showControls = !showControls
-                                    }
-                                },
-                                onDoubleTap = {
-                                    if (isPlaying) {
-                                        viewModel.ijkPlayer.pause()
-                                        isPlaying = false
-                                    } else {
-                                        viewModel.ijkPlayer.start()
-                                        isPlaying = true
-                                    }
-                                },
-                                onLongPress = {
-                                    isLongPressing = true
-                                    playbackSpeed = 2f
-                                    viewModel.ijkPlayer.setSpeed(2f)
-                                },
-                                onPress = {
-                                    val pressed = tryAwaitRelease()
-                                    if (isLongPressing) {
-                                        isLongPressing = false
-                                        playbackSpeed = 1f
-                                        viewModel.ijkPlayer.setSpeed(1f)
-                                    }
-                                }
-                            )
-                        }
-                )
-            } else {
-                AndroidView(
-                    factory = { ctx ->
-                        android.util.Log.d("PlayerScreen", "Creating SurfaceView")
-                        SurfaceView(ctx)
-                    },
-                    update = { surfaceView ->
-                        surfaceView.holder.addCallback(object :
-                            android.view.SurfaceHolder.Callback {
-                            override fun surfaceCreated(holder: android.view.SurfaceHolder) {
-                                android.util.Log.d("PlayerScreen", "SurfaceView created")
-                                viewModel.ijkPlayer.setDisplay(holder)
-
-                                // 检查播放器状态，如果已准备好且设置了自动播放，则开始播放
-                                if (viewModel.ijkPlayer.isPlayable && playerSettings?.autoPlay == true && !viewModel.ijkPlayer.isPlaying) {
-                                    android.util.Log.d(
-                                        "PlayerScreen",
-                                        "Auto-starting playback after SurfaceView ready"
-                                    )
-                                    viewModel.ijkPlayer.start()
-                                    isPlaying = true
-                                }
-                            }
-
-                            override fun surfaceChanged(
-                                holder: android.view.SurfaceHolder,
-                                format: Int,
-                                width: Int,
-                                height: Int
-                            ) {
-                                android.util.Log.d(
-                                    "PlayerScreen",
-                                    "SurfaceView changed: ${width}x${height}"
-                                )
-                                viewModel.ijkPlayer.setDisplay(holder)
-                            }
-
-                            override fun surfaceDestroyed(holder: android.view.SurfaceHolder) {
-                                android.util.Log.d("PlayerScreen", "SurfaceView destroyed")
-                            }
-                        })
-                    },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .wrapContentSize(Alignment.Center)
-                        .aspectRatio(videoAspectRatio, matchHeightConstraintsFirst = false)
-                        .pointerInput(Unit) {
-                            detectTapGestures(
-                                onTap = { offset ->
-                                    // 只有点击视频中央区域才触发控制栏显隐
-                                    val centerY = size.height * 0.5f
-                                    val bottomControlsY = size.height * 0.75f
-                                    if (offset.y < bottomControlsY && offset.y > centerY * 0.3f) {
-                                        showControls = !showControls
-                                    }
-                                },
-                                onDoubleTap = {
-                                    if (isPlaying) {
-                                        viewModel.ijkPlayer.pause()
-                                        isPlaying = false
-                                    } else {
-                                        viewModel.ijkPlayer.start()
-                                        isPlaying = true
-                                    }
-                                },
-                                onLongPress = {
-                                    isLongPressing = true
-                                    playbackSpeed = 2f
-                                    viewModel.ijkPlayer.setSpeed(2f)
-                                },
-                                onPress = {
-                                    val pressed = tryAwaitRelease()
-                                    if (isLongPressing) {
-                                        isLongPressing = false
-                                        playbackSpeed = 1f
-                                        viewModel.ijkPlayer.setSpeed(1f)
-                                    }
-                                }
-                            )
-                        }
-                )
-
-                AnimatedVisibility(
-                    visible = buffering,
-                    enter = fadeIn(),
-                    exit = fadeOut()
-                ) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(48.dp),
-                        )
-                    }
-                }
-
-                var isDanmakuPrepared by remember { mutableStateOf(false) }
-
-                LaunchedEffect(isPlaying, isDanmakuPrepared) {
-                    if (isDanmakuPrepared && danmakuView != null) {
-                        if (isPlaying) {
-                            danmakuView?.resume()
-                        } else {
-                            danmakuView?.pause()
-                        }
-                    }
-                }
-
-                LaunchedEffect(uiState.isDanmakuVisible, isDanmakuPrepared) {
-                    android.util.Log.d("Danmaku", "Visibility changed - isDanmakuVisible: ${uiState.isDanmakuVisible}, isDanmakuPrepared: $isDanmakuPrepared")
-                    if (isDanmakuPrepared && danmakuView != null) {
-                        if (uiState.isDanmakuVisible) {
-                            danmakuView?.show()
-                            android.util.Log.d("Danmaku", "DanmakuView.show() called")
-                        } else {
-                            danmakuView?.hide()
-                            android.util.Log.d("Danmaku", "DanmakuView.hide() called")
-                        }
-                    }
-                }
-
-                LaunchedEffect(playbackSpeed, isDanmakuPrepared) {
-                    if (isDanmakuPrepared && danmakuView != null) {
-                        danmakuView?.setSpeed(playbackSpeed)
-                    }
-                }
-
-                if (uiState.isLoadingDanmaku) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Loading danmaku...")
-                    }
-                }
-
-                danmakuError?.let { error ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "Failed to load danmaku: $error",
-                            color = Color.Red,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
-                }
-
-                // SurfaceView 模式下的弹幕覆盖层
-                val shouldShowDanmaku = danmakuParser != null && playerSettings?.useTextureView != true && danmakuError == null
-                if (shouldShowDanmaku) {
+                if (playerSettings?.useTextureView == true) {
                     AndroidView(
                         factory = { ctx ->
-                            android.util.Log.d("Danmaku", "Creating DanmakuView - TextureView mode: ${playerSettings?.useTextureView}")
-                            DanmakuView(ctx).apply {
-                                enableDanmakuDrawingCache(true)
-                                setBackgroundColor(android.graphics.Color.TRANSPARENT)
+                            Log.d("PlayerScreen", "Creating FrameLayout with TextureView + DanmakuView")
+                            FrameLayout(ctx).apply {
+                                val textureView = TextureView(ctx).apply {
+                                    surfaceTextureListener = object : TextureView.SurfaceTextureListener {
+                                        override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
+                                            android.util.Log.d("PlayerScreen", "TextureView surface available: ${width}x${height}")
+                                            viewModel.ijkPlayer.setSurface(Surface(surface))
 
-                                bringToFront()
-                                
-                                // 添加调试信息
-                                android.util.Log.d("Danmaku", "DanmakuView created - Width: $width, Height: $height")
-                                android.util.Log.d("Danmaku", "DanmakuView visibility: $visibility")
-                                android.util.Log.d("Danmaku", "DanmakuView elevation: $elevation")
-                                
-                                setCallback(object : DrawHandler.Callback {
-                                    override fun prepared() {
-                                        isDanmakuPrepared = true
-                                        android.util.Log.d("Danmaku", "DanmakuView prepared - isShown: $isShown, visibility: $visibility")
-                                        android.util.Log.d("Danmaku", "DanmakuView bounds: left=$left, top=$top, right=$right, bottom=$bottom")
-                                        
-                                        // 现在可以安全地获取弹幕数量了
-                                        try {
-                                            val danmakuCount = danmakuParser?.danmakus?.size() ?: 0
-                                            android.util.Log.d("Danmaku", "Total danmaku count: $danmakuCount")
-                                        } catch (e: Exception) {
-                                            android.util.Log.e("Danmaku", "Error getting danmaku count: ${e.message}")
+                                            if (viewModel.ijkPlayer.isPlayable && playerSettings?.autoPlay == true && !viewModel.ijkPlayer.isPlaying) {
+                                                android.util.Log.d("PlayerScreen", "Auto-starting playback after TextureView ready")
+                                                viewModel.ijkPlayer.start()
+                                                isPlaying = true
+                                            }
                                         }
-                                        
-                                        start()
-                                        seekTo(currentPosition)
-                                        if (!isPlaying) {
-                                            pause()
-                                        }
-                                        android.util.Log.d("Danmaku", "DanmakuView started - isPlaying: $isPlaying")
-                                    }
 
-                                    override fun updateTimer(timer: DanmakuTimer) {
-                                        // 添加定时器调试
-                                        if (timer.currMillisecond % 5000 < 50) { // 每5秒打印一次
-                                            android.util.Log.d("Danmaku", "Timer update: ${timer.currMillisecond}ms")
+                                        override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
+                                            android.util.Log.d("PlayerScreen", "TextureView size changed: ${width}x${height}")
+                                            viewModel.ijkPlayer.setSurface(Surface(surface))
+                                        }
+
+                                        override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
+                                            android.util.Log.d("PlayerScreen", "TextureView surface destroyed")
+                                            return false
+                                        }
+
+                                        override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
                                         }
                                     }
-                                    
-                                    override fun danmakuShown(danmaku: BaseDanmaku?) {
-                                        android.util.Log.d("Danmaku", "Danmaku shown: ${danmaku?.text}")
-                                    }
-                                    
-                                    override fun drawingFinished() {
-                                        android.util.Log.v("Danmaku", "Drawing finished")
-                                    }
-                                })
-                                danmakuView = this
+                                }
+
+                                val danmakuOverlay = DanmakuView(ctx).apply {
+                                    enableDanmakuDrawingCache(true)
+                                    setBackgroundColor(android.graphics.Color.TRANSPARENT)
+                                    danmakuView = this
+                                    setCallback(object : DrawHandler.Callback {
+                                        override fun prepared() {
+                                            start()
+                                            seekTo(currentPosition)
+
+                                            if (!viewModel.ijkPlayer.isPlaying) {
+                                                pause()
+                                            }
+
+                                            if (uiState.isDanmakuVisible) {
+                                                show()
+                                            }
+                                        }
+
+                                        override fun updateTimer(timer: DanmakuTimer) {}
+                                        override fun danmakuShown(danmaku: BaseDanmaku?) {}
+                                        override fun drawingFinished() {}
+                                    })
+                                }
+
+                                addView(textureView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+                                addView(danmakuOverlay, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
                             }
                         },
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Red.copy(alpha = 0.1f)), // 临时添加半透明红色背景用于调试
-                        update = { view ->
-                            android.util.Log.d("Danmaku", "DanmakuView update called - prepared: $isDanmakuPrepared")
-                            android.util.Log.d("Danmaku", "DanmakuView size in update: ${view.width}x${view.height}")
-                            android.util.Log.d("Danmaku", "DanmakuView visibility in update: ${view.visibility}")
-                            
-                            if (!isDanmakuPrepared && danmakuParser != null) {
+                        update = { root ->
+                            val danmakuOverlay = root.getChildAt(1) as DanmakuView
+                            if (danmakuParser != null) {
                                 try {
-                                    view.prepare(danmakuParser, danmakuContext)
-                                    android.util.Log.d("Danmaku", "DanmakuView prepare called successfully")
+                                    danmakuOverlay.prepare(danmakuParser, danmakuContext)
                                 } catch (e: Exception) {
                                     Log.e("Danmaku", "Error preparing danmaku view", e)
                                     danmakuError = "Error preparing danmaku: ${e.message}"
                                 }
                             }
-                        }
+                        },
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .wrapContentSize(Alignment.Center)
+                            .aspectRatio(videoAspectRatio, matchHeightConstraintsFirst = false)
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onTap = { offset ->
+                                        val centerY = size.height * 0.5f
+                                        val bottomControlsY = size.height * 0.75f
+                                        if (offset.y < bottomControlsY && offset.y > centerY * 0.3f) {
+                                            showControls = !showControls
+                                        }
+                                    },
+                                    onDoubleTap = {
+                                        if (isPlaying) {
+                                            viewModel.ijkPlayer.pause()
+                                            isPlaying = false
+                                        } else {
+                                            viewModel.ijkPlayer.start()
+                                            isPlaying = true
+                                        }
+                                    },
+                                    onLongPress = {
+                                        isLongPressing = true
+                                        playbackSpeed = 2f
+                                        viewModel.ijkPlayer.setSpeed(2f)
+                                    },
+                                    onPress = {
+                                        tryAwaitRelease()
+                                        if (isLongPressing) {
+                                            isLongPressing = false
+                                            playbackSpeed = 1f
+                                            viewModel.ijkPlayer.setSpeed(1f)
+                                        }
+                                    }
+                                )
+                            }
                     )
+                } else {
+                    AndroidView(
+                        factory = { ctx ->
+                            android.util.Log.d("PlayerScreen", "Creating SurfaceView")
+                            SurfaceView(ctx)
+                        },
+                        update = { surfaceView ->
+                            surfaceView.holder.addCallback(object :
+                                android.view.SurfaceHolder.Callback {
+                                override fun surfaceCreated(holder: android.view.SurfaceHolder) {
+                                    android.util.Log.d("PlayerScreen", "SurfaceView created")
+                                    viewModel.ijkPlayer.setDisplay(holder)
+
+                                    if (viewModel.ijkPlayer.isPlayable && playerSettings?.autoPlay == true && !viewModel.ijkPlayer.isPlaying) {
+                                        android.util.Log.d(
+                                            "PlayerScreen",
+                                            "Auto-starting playback after SurfaceView ready"
+                                        )
+                                        viewModel.ijkPlayer.start()
+                                        isPlaying = true
+                                    }
+                                }
+
+                                override fun surfaceChanged(
+                                    holder: android.view.SurfaceHolder,
+                                    format: Int,
+                                    width: Int,
+                                    height: Int
+                                ) {
+                                    android.util.Log.d(
+                                        "PlayerScreen",
+                                        "SurfaceView changed: ${width}x${height}"
+                                    )
+                                    viewModel.ijkPlayer.setDisplay(holder)
+                                }
+
+                                override fun surfaceDestroyed(holder: android.view.SurfaceHolder) {
+                                    android.util.Log.d("PlayerScreen", "SurfaceView destroyed")
+                                }
+                            })
+                        },
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .wrapContentSize(Alignment.Center)
+                            .aspectRatio(videoAspectRatio, matchHeightConstraintsFirst = false)
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onTap = { offset ->
+                                        val centerY = size.height * 0.5f
+                                        val bottomControlsY = size.height * 0.75f
+                                        if (offset.y < bottomControlsY && offset.y > centerY * 0.3f) {
+                                            showControls = !showControls
+                                        }
+                                    },
+                                    onDoubleTap = {
+                                        if (isPlaying) {
+                                            viewModel.ijkPlayer.pause()
+                                            isPlaying = false
+                                        } else {
+                                            viewModel.ijkPlayer.start()
+                                            isPlaying = true
+                                        }
+                                    },
+                                    onLongPress = {
+                                        isLongPressing = true
+                                        playbackSpeed = 2f
+                                        viewModel.ijkPlayer.setSpeed(2f)
+                                    },
+                                    onPress = {
+                                        tryAwaitRelease()
+                                        if (isLongPressing) {
+                                            isLongPressing = false
+                                            playbackSpeed = 1f
+                                            viewModel.ijkPlayer.setSpeed(1f)
+                                        }
+                                    }
+                                )
+                            }
+                    )
+
+                    AnimatedVisibility(
+                        visible = buffering,
+                        enter = fadeIn(),
+                        exit = fadeOut()
+                    ) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(48.dp),
+                            )
+                        }
+                    }
+
+                    var isDanmakuPrepared by remember { mutableStateOf(false) }
+
+                    LaunchedEffect(isPlaying, isDanmakuPrepared) {
+                        if (isDanmakuPrepared && danmakuView != null) {
+                            if (isPlaying) {
+                                danmakuView?.resume()
+                            } else {
+                                danmakuView?.pause()
+                            }
+                        }
+                    }
+
+                    LaunchedEffect(uiState.isDanmakuVisible, isDanmakuPrepared) {
+                        android.util.Log.d("Danmaku", "Visibility changed - isDanmakuVisible: ${uiState.isDanmakuVisible}, isDanmakuPrepared: $isDanmakuPrepared")
+                        if (isDanmakuPrepared && danmakuView != null) {
+                            if (uiState.isDanmakuVisible) {
+                                danmakuView?.show()
+                                android.util.Log.d("Danmaku", "DanmakuView.show() called")
+                            } else {
+                                danmakuView?.hide()
+                                android.util.Log.d("Danmaku", "DanmakuView.hide() called")
+                            }
+                        }
+                    }
+
+                    LaunchedEffect(playbackSpeed, isDanmakuPrepared) {
+                        if (isDanmakuPrepared && danmakuView != null) {
+                            danmakuView?.setSpeed(playbackSpeed)
+                        }
+                    }
+
+                    if (uiState.isLoadingDanmaku) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Loading danmaku...")
+                        }
+                    }
+
+                    danmakuError?.let { error ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Failed to load danmaku: $error",
+                                color = Color.Red,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                    }
+
+                    val shouldShowDanmaku = danmakuParser != null && playerSettings?.useTextureView != true && danmakuError == null
+                    if (shouldShowDanmaku) {
+                        AndroidView(
+                            factory = { ctx ->
+                                android.util.Log.d("Danmaku", "Creating DanmakuView - TextureView mode: ${playerSettings?.useTextureView}")
+                                DanmakuView(ctx).apply {
+                                    enableDanmakuDrawingCache(true)
+                                    setBackgroundColor(android.graphics.Color.TRANSPARENT)
+
+                                    bringToFront()
+
+                                    android.util.Log.d("Danmaku", "DanmakuView created - Width: $width, Height: $height")
+                                    android.util.Log.d("Danmaku", "DanmakuView visibility: $visibility")
+                                    android.util.Log.d("Danmaku", "DanmakuView elevation: $elevation")
+
+                                    setCallback(object : DrawHandler.Callback {
+                                        override fun prepared() {
+                                            isDanmakuPrepared = true
+                                            android.util.Log.d("Danmaku", "DanmakuView prepared - isShown: $isShown, visibility: $visibility")
+                                            android.util.Log.d("Danmaku", "DanmakuView bounds: left=$left, top=$top, right=$right, bottom=$bottom")
+
+                                            try {
+                                                val danmakuCount = danmakuParser?.danmakus?.size() ?: 0
+                                                android.util.Log.d("Danmaku", "Total danmaku count: $danmakuCount")
+                                            } catch (e: Exception) {
+                                                android.util.Log.e("Danmaku", "Error getting danmaku count: ${e.message}")
+                                            }
+
+                                            start()
+                                            seekTo(currentPosition)
+                                            if (!isPlaying) {
+                                                pause()
+                                            }
+                                            android.util.Log.d("Danmaku", "DanmakuView started - isPlaying: $isPlaying")
+                                        }
+
+                                        override fun updateTimer(timer: DanmakuTimer) {
+                                            if (timer.currMillisecond % 5000 < 50) {
+                                                android.util.Log.d("Danmaku", "Timer update: ${timer.currMillisecond}ms")
+                                            }
+                                        }
+
+                                        override fun danmakuShown(danmaku: BaseDanmaku?) {
+                                            android.util.Log.d("Danmaku", "Danmaku shown: ${danmaku?.text}")
+                                        }
+
+                                        override fun drawingFinished() {
+                                            android.util.Log.v("Danmaku", "Drawing finished")
+                                        }
+                                    })
+                                    danmakuView = this
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Red.copy(alpha = 0.1f)),
+                            update = { view ->
+                                android.util.Log.d("Danmaku", "DanmakuView update called - prepared: $isDanmakuPrepared")
+                                android.util.Log.d("Danmaku", "DanmakuView size in update: ${view.width}x${view.height}")
+                                android.util.Log.d("Danmaku", "DanmakuView visibility in update: ${view.visibility}")
+
+                                if (!isDanmakuPrepared && danmakuParser != null) {
+                                    try {
+                                        view.prepare(danmakuParser, danmakuContext)
+                                        android.util.Log.d("Danmaku", "DanmakuView prepare called successfully")
+                                    } catch (e: Exception) {
+                                        Log.e("Danmaku", "Error preparing danmaku view", e)
+                                        danmakuError = "Error preparing danmaku: ${e.message}"
+                                    }
+                                }
+                            }
+                        )
+                    }
                 }
-            }
             }
         }
 
@@ -627,7 +625,8 @@ fun PlayerScreen(
                 viewModel.ijkPlayer.setSpeed(speed)
             },
             onSpeedClick = { showSpeedSelector = true },
-            onQualityClick = { showQualitySelector = true }
+            onQualityClick = { showQualitySelector = true },
+            onDismissRequest = { showControls = false }
         )
 
         if (showPageSelector && uiState.pages.isNotEmpty()) {
@@ -694,206 +693,44 @@ fun PlayerControls(
     isDanmakuVisible: Boolean,
     onSpeedChange: (Float) -> Unit,
     onSpeedClick: () -> Unit,
-    onQualityClick: () -> Unit
+    onQualityClick: () -> Unit,
+    onDismissRequest: () -> Unit
 ) {
     val isRound = isRoundDevice()
+
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn(animationSpec = tween(300)),
         exit = fadeOut(animationSpec = tween(300))
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            // 顶部渐变阴影背景
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) {
+                    onDismissRequest()
+                }
+        ) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .align(Alignment.TopCenter)
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                Color.Black.copy(alpha = 0.7f),
-                                Color.Black.copy(alpha = 0.3f),
-                                Color.Transparent
-                            )
-                        )
-                    )
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.4f))
             )
-            
+
             if (isRound) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(top = PaddingDefaults.verticalOptContentPadding())
-                ) {
-                    IconButton(
-                        onClick = onBackClick,
-                        modifier = Modifier.size(40.dp)
-                    ) {
-                        Icon(
-                            Icons.Default.ArrowBack,
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                }
-            } else {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.TopCenter)
-                        .clickable { onBackClick() }
-                        .padding(horizontal = 16.dp, vertical = 3.dp)
-                        .padding(top = PaddingDefaults.verticalOptContentPadding()),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        Icons.Default.ArrowBack,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = title,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = Color.White,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-            }
-
-            if (isLongPressing) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .background(
-                            Color.Black.copy(alpha = 0.7f),
-                            shape = CircleShape
-                        )
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                ) {
-                    Text(
-                        text = "${playbackSpeed}x",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-
-            // 底部渐变阴影背景
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
-                    .align(Alignment.BottomCenter)
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                Color.Transparent,
-                                Color.Black.copy(alpha = 0.3f),
-                                Color.Black.copy(alpha = 0.7f)
-                            )
-                        )
-                    )
-            )
-            
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .padding(
-                        horizontal = if (isRound) 8.dp else 16.dp,
-                        vertical = if (isRound) 8.dp else 12.dp
-                    )
-            ) {
                 var sliderPosition by remember { mutableFloatStateOf(0f) }
                 var isSeeking by remember { mutableStateOf(false) }
 
                 LaunchedEffect(currentPosition) {
-                    if (!isSeeking) {
-                        sliderPosition = currentPosition.toFloat()
-                    }
+                    if (!isSeeking) sliderPosition = currentPosition.toFloat()
                 }
 
-                if (isRound) {
-                    // 时间显示 - 单行居中
-                    Text(
-                        text = "${formatTime(currentPosition)} / ${formatTime(duration)}",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color.White,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentWidth(Alignment.CenterHorizontally)
-                    )
-                    
-                    Spacer(modifier = Modifier.height(4.dp))
-                    
-                    // 控制按钮行
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        IconButton(
-                            onClick = onPlayPauseClick,
-                            modifier = Modifier.size(40.dp)
-                        ) {
-                            Icon(
-                                imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-
-                        IconButton(
-                            onClick = onSpeedClick,
-                            modifier = Modifier.size(36.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Speed,
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                        
-                        IconButton(
-                            onClick = onDanmakuToggle,
-                            modifier = Modifier.size(36.dp)
-                        ) {
-                            Icon(
-                                imageVector = if (isDanmakuVisible) Icons.Default.Visibility
-                                else Icons.Default.VisibilityOff,
-                                contentDescription = null,
-                                tint = if (isDanmakuVisible) Color.White else Color.White.copy(alpha = 0.6f),
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                        
-                        IconButton(
-                            onClick = onQualityClick,
-                            modifier = Modifier.size(36.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.HighQuality,
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(6.dp))
-
-                    // 优化的进度条
-                    Slider(
+                Box(modifier = Modifier.fillMaxSize().padding(2.dp)) {
+                    ArcSeekbar(
                         value = sliderPosition,
+                        valueRange = 0f..duration.toFloat().coerceAtLeast(1f),
                         onValueChange = {
                             isSeeking = true
                             sliderPosition = it
@@ -902,17 +739,156 @@ fun PlayerControls(
                             onSeek(sliderPosition.toLong())
                             isSeeking = false
                         },
-                        valueRange = 0f..duration.toFloat().coerceAtLeast(1f),
-                        colors = SliderDefaults.colors(
-                            thumbColor = Color.White,
-                            activeTrackColor = MaterialTheme.colorScheme.primary,
-                            inactiveTrackColor = Color.White.copy(alpha = 0.3f)
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 12.dp)
+                        onDismissRequest = onDismissRequest,
+                        strokeWidth = 4.dp,
+                        thumbRadius = 6.dp
                     )
-                } else {
+                }
+
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    IconButton(
+                        onClick = onBackClick,
+                        modifier = Modifier.size(32.dp)
+                    ) {
+                        Icon(Icons.Default.ArrowBack, "Back", tint = Color.White)
+                    }
+                    Text(
+                        text = "${formatTime(currentPosition)} / ${formatTime(duration)}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color.White.copy(alpha = 0.8f),
+                        fontSize = 10.sp
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 24.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    IconButton(
+                        onClick = onPlayPauseClick,
+                        modifier = Modifier
+                            .size(56.dp)
+                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.3f), CircleShape)
+                    ) {
+                        Icon(
+                            imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(32.dp)
+                        )
+                    }
+
+                    Box(modifier = Modifier.align(Alignment.CenterStart)) {
+                        IconButton(onClick = onSpeedClick) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Icon(Icons.Default.Speed, null, tint = Color.White, modifier = Modifier.size(20.dp))
+                                Text("${playbackSpeed}x", style = MaterialTheme.typography.labelSmall, fontSize = 8.sp, color = Color.White)
+                            }
+                        }
+                    }
+
+                    Box(modifier = Modifier.align(Alignment.CenterEnd)) {
+                        IconButton(onClick = onDanmakuToggle) {
+                            Icon(
+                                imageVector = if (isDanmakuVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                null,
+                                tint = if (isDanmakuVisible) Color.White else Color.White.copy(alpha = 0.5f),
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
+
+                    Box(modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 24.dp)) {
+                        IconButton(onClick = onQualityClick, modifier = Modifier.size(32.dp)) {
+                            Icon(Icons.Default.HighQuality, null, tint = Color.White, modifier = Modifier.size(20.dp))
+                        }
+                    }
+                }
+
+                if (isLongPressing) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = 0.6f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(Icons.Default.FastForward, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(32.dp))
+                            Text("2.0x", style = MaterialTheme.typography.titleLarge, color = Color.White, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
+            } else {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.TopCenter)
+                        .background(
+                            Brush.verticalGradient(
+                                colors = listOf(Color.Black.copy(alpha = 0.7f), Color.Transparent)
+                            )
+                        )
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                        .padding(top = PaddingDefaults.verticalOptContentPadding()),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = onBackClick) {
+                        Icon(Icons.Default.ArrowBack, null, tint = Color.White)
+                    }
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+
+                if (isLongPressing) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .padding(top = 60.dp)
+                            .background(Color.Black.copy(alpha = 0.7f), CircleShape)
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                    ) {
+                        Text(
+                            text = "${playbackSpeed}x",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
+                        .background(
+                            Brush.verticalGradient(
+                                colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.8f))
+                            )
+                        )
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                        .padding(bottom = PaddingDefaults.verticalOptContentPadding())
+                        .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) { onDismissRequest() }
+                ) {
+                    var sliderPosition by remember { mutableFloatStateOf(0f) }
+                    var isSeeking by remember { mutableStateOf(false) }
+
+                    LaunchedEffect(currentPosition) {
+                        if (!isSeeking) sliderPosition = currentPosition.toFloat()
+                    }
+
                     Slider(
                         value = sliderPosition,
                         onValueChange = {
@@ -932,70 +908,36 @@ fun PlayerControls(
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    Column(
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "${formatTime(currentPosition)} / ${formatTime(duration)}",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = Color.White
-                            )
+                        Text(
+                            text = "${formatTime(currentPosition)} / ${formatTime(duration)}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.White
+                        )
 
-                            Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                                IconButton(
-                                    onClick = onPlayPauseClick,
-                                    modifier = Modifier.size(36.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                                        contentDescription = null,
-                                        tint = Color.White,
-                                        modifier = Modifier.size(22.dp)
-                                    )
-                                }
-
-                                IconButton(
-                                    onClick = onSpeedClick,
-                                    modifier = Modifier.size(36.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Speed,
-                                        contentDescription = null,
-                                        tint = Color.White,
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                }
-                                
-                                IconButton(
-                                    onClick = onDanmakuToggle,
-                                    modifier = Modifier.size(36.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = if (isDanmakuVisible) Icons.Default.Visibility
-                                        else Icons.Default.VisibilityOff,
-                                        contentDescription = null,
-                                        tint = if (isDanmakuVisible) Color.White else Color.White.copy(alpha = 0.6f),
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                }
-                                
-                                IconButton(
-                                    onClick = onQualityClick,
-                                    modifier = Modifier.size(36.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.HighQuality,
-                                        contentDescription = null,
-                                        tint = Color.White,
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            IconButton(onClick = onPlayPauseClick) {
+                                Icon(
+                                    if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                                    null, tint = Color.White
+                                )
+                            }
+                            IconButton(onClick = onSpeedClick) {
+                                Icon(Icons.Default.Speed, null, tint = Color.White)
+                            }
+                            IconButton(onClick = onDanmakuToggle) {
+                                Icon(
+                                    if (isDanmakuVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                    null,
+                                    tint = if (isDanmakuVisible) Color.White else Color.White.copy(alpha = 0.6f)
+                                )
+                            }
+                            IconButton(onClick = onQualityClick) {
+                                Icon(Icons.Default.HighQuality, null, tint = Color.White)
                             }
                         }
                     }
@@ -1019,12 +961,10 @@ fun SpeedSelectionDialog(
     onSpeedSelected: (Float) -> Unit
 ) {
     val speedOptions = listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f)
-    
+
     AdaptDialog(
         onDismissRequest = onDismiss,
-        confirmButton = { close ->
-            // 不需要确认按钮，点击选项即可
-        },
+        confirmButton = { },
         title = { Text("播放速度") },
         text = {
             Column {
@@ -1032,7 +972,7 @@ fun SpeedSelectionDialog(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { 
+                            .clickable {
                                 onSpeedSelected(speed)
                                 onDismiss()
                             }
@@ -1041,7 +981,7 @@ fun SpeedSelectionDialog(
                     ) {
                         RadioButton(
                             selected = currentSpeed == speed,
-                            onClick = { 
+                            onClick = {
                                 onSpeedSelected(speed)
                                 onDismiss()
                             }
@@ -1153,4 +1093,119 @@ fun QualitySelectionDialog(
             }
         }
     )
+}
+
+@Composable
+fun ArcSeekbar(
+    value: Float,
+    valueRange: ClosedFloatingPointRange<Float>,
+    onValueChange: (Float) -> Unit,
+    onValueChangeFinished: (() -> Unit)? = null,
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
+    strokeWidth: Dp = 4.dp,
+    thumbRadius: Dp = 8.dp,
+    activeColor: Color = MaterialTheme.colorScheme.primary,
+    inactiveColor: Color = Color.White.copy(alpha = 0.3f)
+) {
+    val density = LocalContext.current.resources.displayMetrics.density
+    val strokeWidthPx = strokeWidth.value * density
+    val thumbRadiusPx = thumbRadius.value * density
+
+    val startAngle = 135f
+    val sweepAngle = 270f
+
+    var isDragging by remember { mutableStateOf(false) }
+
+    Canvas(
+        modifier = modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = { offset ->
+                        val center = Offset((size.width / 2).toFloat(), (size.height / 2).toFloat())
+                        val radius = min(size.width, size.height) / 2 - strokeWidthPx / 2 - thumbRadiusPx
+                        val dist = sqrt((offset.x - center.x).pow(2) + (offset.y - center.y).pow(2))
+
+                        val touchThreshold = 25 * density
+
+                        if (dist >= radius - touchThreshold && dist <= radius + touchThreshold) {
+                            val angle = (Math.toDegrees(atan2(offset.y - center.y, offset.x - center.x).toDouble()) + 360) % 360
+                            var effectiveAngle = angle
+                            if (angle < 90) effectiveAngle += 360
+
+                            if (effectiveAngle in startAngle..(startAngle + sweepAngle)) {
+                                val progress = (effectiveAngle - startAngle) / sweepAngle
+                                val newValue = valueRange.start + progress * (valueRange.endInclusive - valueRange.start)
+                                onValueChange(newValue.toFloat().coerceIn(valueRange.start, valueRange.endInclusive))
+                                onValueChangeFinished?.invoke()
+                            } else {
+                                onDismissRequest()
+                            }
+                        } else {
+                            onDismissRequest()
+                        }
+                    }
+                )
+            }
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = { isDragging = true },
+                    onDragEnd = {
+                        isDragging = false
+                        onValueChangeFinished?.invoke()
+                    },
+                    onDragCancel = { isDragging = false },
+                    onDrag = { change, _ ->
+                        val center = Offset((size.width / 2).toFloat(), (size.height / 2).toFloat())
+                        val offset = change.position
+
+                        val angle = (Math.toDegrees(atan2(offset.y - center.y, offset.x - center.x).toDouble()) + 360) % 360
+                        var effectiveAngle = angle
+                        if (angle < 90) effectiveAngle += 360
+
+                        val clampedAngle = effectiveAngle.coerceIn(startAngle.toDouble(), (startAngle + sweepAngle).toDouble())
+
+                        val progress = (clampedAngle - startAngle) / sweepAngle
+                        val newValue = valueRange.start + progress * (valueRange.endInclusive - valueRange.start)
+                        onValueChange(newValue.toFloat())
+                    }
+                )
+            }
+    ) {
+        val center = Offset(size.width / 2, size.height / 2)
+        val radius = min(size.width, size.height) / 2 - strokeWidthPx / 2 - thumbRadiusPx
+
+        drawArc(
+            color = inactiveColor,
+            startAngle = startAngle,
+            sweepAngle = sweepAngle,
+            useCenter = false,
+            topLeft = Offset(center.x - radius, center.y - radius),
+            size = Size(radius * 2, radius * 2),
+            style = Stroke(width = strokeWidthPx, cap = StrokeCap.Round)
+        )
+
+        val progress = ((value - valueRange.start) / (valueRange.endInclusive - valueRange.start)).coerceIn(0f, 1f)
+        val progressSweep = (progress * sweepAngle).toFloat()
+
+        if (progressSweep > 0) {
+            drawArc(
+                color = activeColor,
+                startAngle = startAngle,
+                sweepAngle = progressSweep,
+                useCenter = false,
+                topLeft = Offset(center.x - radius, center.y - radius),
+                size = Size(radius * 2, radius * 2),
+                style = Stroke(width = strokeWidthPx, cap = StrokeCap.Round)
+            )
+        }
+
+        val thumbAngleRad = Math.toRadians((startAngle + progressSweep).toDouble())
+        val thumbX = center.x + radius * cos(thumbAngleRad).toFloat()
+        val thumbY = center.y + radius * sin(thumbAngleRad).toFloat()
+
+        drawCircle(color = Color.White, radius = thumbRadiusPx, center = Offset(thumbX, thumbY))
+        drawCircle(color = activeColor.copy(alpha = 0.3f), radius = thumbRadiusPx + 4f, center = Offset(thumbX, thumbY))
+    }
 }

@@ -205,14 +205,6 @@ private fun UiSetupStep(
         ) {
 
             item {
-                SettingSwitchItem(
-                    text = stringResource(R.string.round_screen_adaptation),
-                    checked = state.roundMode,
-                    onCheckedChange = viewModel::onRoundModeChanged
-                )
-            }
-
-            item {
                 val selectionIndex = when (state.nightMode) {
                     NightMode.NIGHT_MODE_AUTO, NightMode.UNRECOGNIZED -> 0
                     NightMode.NIGHT_MODE_DAY -> 1
@@ -330,24 +322,5 @@ private fun UiSetupStep(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun SettingSwitchItem(
-    text: String,
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onCheckedChange(!checked) }
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(text, modifier = Modifier.weight(1f), fontSize = 14.sp)
-        Switch(checked = checked, onCheckedChange = {})
     }
 }

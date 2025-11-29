@@ -83,96 +83,72 @@ fun UiSettingsScreen(
                 contentPadding = paddingValues
             ) {
 
-            item {
-                SettingsItem(
-                    title = stringResource(id = R.string.view_preview),
-                    onClick = { context.start<UiPreviewActivity>() }
-                )
-            }
-
-            item {
-                SettingsCategory(title = stringResource(id = R.string.scale))
-            }
-
-            item {
-                SettingsItem(
-                    title = stringResource(id = R.string.interface_scale),
-                    summary = stringResource(R.string.setting_ui_desc),
-                    onClick = { showUiScaleDialog = true }
-                )
-            }
-
-            item {
-                SettingsItem(
-                    title = stringResource(id = R.string.density),
-                    summary = stringResource(R.string.setting_ui_density_desc),
-                    onClick = { showDensityDialog = true }
-                )
-            }
-
-            item {
-                SettingsCategory(title = stringResource(id = R.string.preference))
-            }
-
-            item {
-                val nightModeEntries = stringArrayResource(R.array.dark_theme_modes)
-                val nightModeSummary = when(currentSettings.theme.nightMode) {
-                    NightMode.NIGHT_MODE_AUTO -> nightModeEntries[0]
-                    NightMode.NIGHT_MODE_DAY -> nightModeEntries[1]
-                    NightMode.NIGHT_MODE_NIGHT -> nightModeEntries[2]
-                    else -> nightModeEntries[0]
+                item {
+                    SettingsItem(
+                        title = stringResource(id = R.string.view_preview),
+                        onClick = { context.start<UiPreviewActivity>() }
+                    )
                 }
-                SettingsItem(
-                    title = stringResource(id = R.string.dark_theme),
-                    summary = nightModeSummary,
-                    onClick = { showNightModeDialog = true }
-                )
-            }
 
-            item {
-                SwitchSettingsItem(
-                    title = stringResource(id = R.string.system_accent_color),
-                    checked = currentSettings.theme.followSystemAccent,
-                    onCheckedChange = viewModel::updateFollowSystemAccent
-                )
-            }
+                item {
+                    SettingsCategory(title = stringResource(id = R.string.scale))
+                }
 
-            item {
-                SettingsItem(
-                    title = stringResource(id = R.string.theme_color),
-                    onClick = { navController.navigate(Screen.ThemeColor.route) }
-                )
-            }
+                item {
+                    SettingsItem(
+                        title = stringResource(id = R.string.interface_scale),
+                        summary = stringResource(R.string.setting_ui_desc),
+                        onClick = { showUiScaleDialog = true }
+                    )
+                }
 
-            item {
-                SwitchSettingsItem(
-                    title = stringResource(id = R.string.round_screen_adaptation),
-                    checked = currentSettings.uiSettings.roundMode,
-                    onCheckedChange = viewModel::updateRoundMode
-                )
-            }
+                item {
+                    SettingsItem(
+                        title = stringResource(id = R.string.density),
+                        summary = stringResource(R.string.setting_ui_density_desc),
+                        onClick = { showDensityDialog = true }
+                    )
+                }
 
-            item {
-                SwitchSettingsItem(
-                    title = stringResource(id = R.string.animation),
-                    checked = currentSettings.theme.animationsEnabled,
-                    onCheckedChange = viewModel::updateAnimations
-                )
-            }
+                item {
+                    SettingsCategory(title = stringResource(id = R.string.preference))
+                }
 
-            item {
-                SwitchSettingsItem(
-                    title = stringResource(id = R.string.disable_fullscreen_dialog),
-                    checked = currentSettings.theme.fullScreenDialogDisabled,
-                    onCheckedChange = viewModel::updateDisableFullscreenDialog
-                )
-            }
+                item {
+                    val nightModeEntries = stringArrayResource(R.array.dark_theme_modes)
+                    val nightModeSummary = when(currentSettings.theme.nightMode) {
+                        NightMode.NIGHT_MODE_AUTO -> nightModeEntries[0]
+                        NightMode.NIGHT_MODE_DAY -> nightModeEntries[1]
+                        NightMode.NIGHT_MODE_NIGHT -> nightModeEntries[2]
+                        else -> nightModeEntries[0]
+                    }
+                    SettingsItem(
+                        title = stringResource(id = R.string.dark_theme),
+                        summary = nightModeSummary,
+                        onClick = { showNightModeDialog = true }
+                    )
+                }
 
                 item {
                     SwitchSettingsItem(
-                        title = stringResource(id = R.string.new_loading_animation),
-                        checked = currentSettings.theme.newLoadingWidgetEnabled,
-                        onCheckedChange = viewModel::updateNewLoadingWidget
+                        title = stringResource(id = R.string.system_accent_color),
+                        checked = currentSettings.theme.followSystemAccent,
+                        onCheckedChange = viewModel::updateFollowSystemAccent
+                    )
+                }
+
+                item {
+                    SettingsItem(
+                        title = stringResource(id = R.string.theme_color),
+                        onClick = { navController.navigate(Screen.ThemeColor.route) }
+                    )
+                }
+
+                item {
+                    SwitchSettingsItem(
+                        title = stringResource(id = R.string.disable_fullscreen_dialog),
+                        checked = currentSettings.theme.fullScreenDialogDisabled,
+                        onCheckedChange = viewModel::updateDisableFullscreenDialog
                     )
                 }
             }
