@@ -3,6 +3,8 @@ package com.huanli233.bilizepam.ui.screens.user
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -77,8 +79,8 @@ fun MySpaceScreen(
                         .fillMaxSize()
                         .verticalScroll(scrollState)
                         .padding(paddingValues)
-                        .padding(horizontal = 12.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                        .padding(horizontal = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Spacer(modifier = Modifier.height(4.dp))
                     
@@ -108,6 +110,7 @@ fun MySpaceScreen(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun UserInfoCard(
     navUserInfo: com.huanli233.biliwebapi.bean.user.NavUserInfo,
@@ -124,15 +127,15 @@ private fun UserInfoCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
                 model = navUserInfo.face,
                 contentDescription = null,
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(40.dp)
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
@@ -148,8 +151,9 @@ private fun UserInfoCard(
                     overflow = TextOverflow.Ellipsis
                 )
                 
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
                     Text(
                         text = "${navUserInfo.money.toInt()} 硬币",
@@ -167,6 +171,7 @@ private fun UserInfoCard(
             Icon(
                 imageVector = Icons.Default.ChevronRight,
                 contentDescription = null,
+                modifier = Modifier.size(16.dp),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
@@ -221,14 +226,14 @@ private fun MenuItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+            .padding(horizontal = 12.dp, vertical = 10.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            modifier = Modifier.size(20.dp),
+            modifier = Modifier.size(18.dp),
             tint = MaterialTheme.colorScheme.primary
         )
         
@@ -241,7 +246,7 @@ private fun MenuItem(
         Icon(
             imageVector = Icons.Default.ChevronRight,
             contentDescription = null,
-            modifier = Modifier.size(16.dp),
+            modifier = Modifier.size(14.dp),
             tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
