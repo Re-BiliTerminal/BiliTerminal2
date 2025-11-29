@@ -13,6 +13,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +30,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
@@ -36,8 +38,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.FastForward
+import androidx.compose.material.icons.filled.HighQuality
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Card
@@ -50,6 +56,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -308,7 +315,14 @@ fun PlayerScreen(
                         .aspectRatio(videoAspectRatio, matchHeightConstraintsFirst = false)
                         .pointerInput(Unit) {
                             detectTapGestures(
-                                onTap = { showControls = !showControls },
+                                onTap = { offset ->
+                                    // 只有点击视频中央区域才触发控制栏显隐
+                                    val centerY = size.height * 0.5f
+                                    val bottomControlsY = size.height * 0.75f
+                                    if (offset.y < bottomControlsY && offset.y > centerY * 0.3f) {
+                                        showControls = !showControls
+                                    }
+                                },
                                 onDoubleTap = {
                                     if (isPlaying) {
                                         viewModel.ijkPlayer.pause()
@@ -382,8 +396,13 @@ fun PlayerScreen(
                         .aspectRatio(videoAspectRatio, matchHeightConstraintsFirst = false)
                         .pointerInput(Unit) {
                             detectTapGestures(
-                                onTap = {
-                                    showControls = !showControls
+                                onTap = { offset ->
+                                    // 只有点击视频中央区域才触发控制栏显隐
+                                    val centerY = size.height * 0.5f
+                                    val bottomControlsY = size.height * 0.75f
+                                    if (offset.y < bottomControlsY && offset.y > centerY * 0.3f) {
+                                        showControls = !showControls
+                                    }
                                 },
                                 onDoubleTap = {
                                     if (isPlaying) {
@@ -684,6 +703,23 @@ fun PlayerControls(
         exit = fadeOut(animationSpec = tween(300))
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
+            // 顶部渐变阴影背景
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(80.dp)
+                    .align(Alignment.TopCenter)
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Black.copy(alpha = 0.7f),
+                                Color.Black.copy(alpha = 0.3f),
+                                Color.Transparent
+                            )
+                        )
+                    )
+            )
+            
             if (isRound) {
                 Box(
                     modifier = Modifier
@@ -692,18 +728,13 @@ fun PlayerControls(
                 ) {
                     IconButton(
                         onClick = onBackClick,
-                        modifier = Modifier
-                            .size(40.dp)
-                            .background(
-                                Color.Black.copy(alpha = 0.6f),
-                                shape = CircleShape
-                            )
+                        modifier = Modifier.size(40.dp)
                     ) {
                         Icon(
                             Icons.Default.ArrowBack,
                             contentDescription = null,
                             tint = Color.White,
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(24.dp)
                         )
                     }
                 }
@@ -712,9 +743,6 @@ fun PlayerControls(
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.TopCenter)
-                        .background(
-                            Color.Black.copy(alpha = 0.6f)
-                        )
                         .clickable { onBackClick() }
                         .padding(horizontal = 16.dp, vertical = 3.dp)
                         .padding(top = PaddingDefaults.verticalOptContentPadding()),
@@ -757,16 +785,30 @@ fun PlayerControls(
                 }
             }
 
+            // 底部渐变阴影背景
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp)
+                    .align(Alignment.BottomCenter)
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color.Black.copy(alpha = 0.3f),
+                                Color.Black.copy(alpha = 0.7f)
+                            )
+                        )
+                    )
+            )
+            
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
-                    .background(
-                        Color.Black.copy(alpha = 0.6f)
-                    )
                     .padding(
-                        horizontal = if (isRound) 12.dp else 16.dp,
-                        vertical = if (isRound) 12.dp else 12.dp
+                        horizontal = if (isRound) 8.dp else 16.dp,
+                        vertical = if (isRound) 8.dp else 12.dp
                     )
             ) {
                 var sliderPosition by remember { mutableFloatStateOf(0f) }
@@ -779,14 +821,27 @@ fun PlayerControls(
                 }
 
                 if (isRound) {
+                    // 时间显示 - 单行居中
+                    Text(
+                        text = "${formatTime(currentPosition)} / ${formatTime(duration)}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color.White,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentWidth(Alignment.CenterHorizontally)
+                    )
+                    
+                    Spacer(modifier = Modifier.height(4.dp))
+                    
+                    // 控制按钮行
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                        horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(
                             onClick = onPlayPauseClick,
-                            modifier = Modifier.size(36.dp)
+                            modifier = Modifier.size(40.dp)
                         ) {
                             Icon(
                                 imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
@@ -796,61 +851,47 @@ fun PlayerControls(
                             )
                         }
 
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                        IconButton(
+                            onClick = onSpeedClick,
+                            modifier = Modifier.size(36.dp)
                         ) {
-                            Text(
-                                text = "${formatTime(currentPosition)} / ${formatTime(duration)}",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = Color.White
+                            Icon(
+                                imageVector = Icons.Default.Speed,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(20.dp)
                             )
                         }
-
-                        Row(horizontalArrangement = Arrangement.spacedBy(0.dp)) {
-                            IconButton(
-                                onClick = onSpeedClick,
-                                modifier = Modifier.size(32.dp)
-                            ) {
-                                Text(
-                                    text = if (playbackSpeed == 1f) "速" else "${playbackSpeed}x",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = Color.White,
-                                    fontSize = 10.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                            
-                            IconButton(
-                                onClick = onDanmakuToggle,
-                                modifier = Modifier.size(32.dp)
-                            ) {
-                                Icon(
-                                    imageVector = if (isDanmakuVisible) Icons.Default.Visibility
-                                    else Icons.Default.VisibilityOff,
-                                    contentDescription = null,
-                                    tint = Color.White,
-                                    modifier = Modifier.size(18.dp)
-                                )
-                            }
-                            
-                            IconButton(
-                                onClick = onQualityClick,
-                                modifier = Modifier.size(32.dp)
-                            ) {
-                                Text(
-                                    text = "清",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = Color.White,
-                                    fontSize = 10.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
+                        
+                        IconButton(
+                            onClick = onDanmakuToggle,
+                            modifier = Modifier.size(36.dp)
+                        ) {
+                            Icon(
+                                imageVector = if (isDanmakuVisible) Icons.Default.Visibility
+                                else Icons.Default.VisibilityOff,
+                                contentDescription = null,
+                                tint = if (isDanmakuVisible) Color.White else Color.White.copy(alpha = 0.6f),
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                        
+                        IconButton(
+                            onClick = onQualityClick,
+                            modifier = Modifier.size(36.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.HighQuality,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(20.dp)
+                            )
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(6.dp))
 
+                    // 优化的进度条
                     Slider(
                         value = sliderPosition,
                         onValueChange = {
@@ -862,9 +903,14 @@ fun PlayerControls(
                             isSeeking = false
                         },
                         valueRange = 0f..duration.toFloat().coerceAtLeast(1f),
+                        colors = SliderDefaults.colors(
+                            thumbColor = Color.White,
+                            activeTrackColor = MaterialTheme.colorScheme.primary,
+                            inactiveTrackColor = Color.White.copy(alpha = 0.3f)
+                        ),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = 12.dp)
                     )
                 } else {
                     Slider(
@@ -878,6 +924,11 @@ fun PlayerControls(
                             isSeeking = false
                         },
                         valueRange = 0f..duration.toFloat().coerceAtLeast(1f),
+                        colors = SliderDefaults.colors(
+                            thumbColor = Color.White,
+                            activeTrackColor = MaterialTheme.colorScheme.primary,
+                            inactiveTrackColor = Color.White.copy(alpha = 0.3f)
+                        ),
                         modifier = Modifier.fillMaxWidth()
                     )
 
@@ -913,11 +964,11 @@ fun PlayerControls(
                                     onClick = onSpeedClick,
                                     modifier = Modifier.size(36.dp)
                                 ) {
-                                    Text(
-                                        text = if (playbackSpeed == 1f) "倍速" else "${playbackSpeed}x",
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = Color.White,
-                                        fontSize = 10.sp
+                                    Icon(
+                                        imageVector = Icons.Default.Speed,
+                                        contentDescription = null,
+                                        tint = Color.White,
+                                        modifier = Modifier.size(20.dp)
                                     )
                                 }
                                 
@@ -929,8 +980,20 @@ fun PlayerControls(
                                         imageVector = if (isDanmakuVisible) Icons.Default.Visibility
                                         else Icons.Default.VisibilityOff,
                                         contentDescription = null,
+                                        tint = if (isDanmakuVisible) Color.White else Color.White.copy(alpha = 0.6f),
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                                
+                                IconButton(
+                                    onClick = onQualityClick,
+                                    modifier = Modifier.size(36.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.HighQuality,
+                                        contentDescription = null,
                                         tint = Color.White,
-                                        modifier = Modifier.size(22.dp)
+                                        modifier = Modifier.size(20.dp)
                                     )
                                 }
                             }

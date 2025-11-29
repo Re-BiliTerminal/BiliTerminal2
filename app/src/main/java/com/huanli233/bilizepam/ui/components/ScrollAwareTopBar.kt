@@ -286,8 +286,6 @@ fun ScrollAwareTopBar(
     onMenuClick: (() -> Unit)? = null,
     onHeightMeasured: ((Dp) -> Unit)? = null
 ) {
-    val density = LocalDensity.current
-    
     ScrollAwareTopBarImpl(
         title = title,
         scrollBehavior = scrollBehavior,
@@ -484,7 +482,7 @@ fun scrollAwareTopBar(
  * Base implementation that renders the actual TopBar with Material3 ScrollBehavior
  */
 @Composable
-private fun ScrollAwareTopBarImpl(
+    private fun ScrollAwareTopBarImpl(
     title: String,
     scrollBehavior: TopBarScrollBehavior?,
     showBackIcon: Boolean,
@@ -494,15 +492,14 @@ private fun ScrollAwareTopBarImpl(
     modifier: Modifier,
     onHeightMeasured: ((Dp) -> Unit)? = null
 ) {
-    val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
-    val topPadding = with(LocalDensity.current) { 
-        (systemBarsPadding.calculateTopPadding() + PaddingDefaults.verticalContentPadding()).toPx()
-    }
+    // WearTopBar now handles its own status bar padding
     val density = LocalDensity.current
 
     // Calculate offset from scroll behavior
     val heightOffset = scrollBehavior?.state?.heightOffset ?: 0f
 
+    val paddings = WindowInsets.systemBars.asPaddingValues()
+    val verticalOptPadding = with(density) { PaddingDefaults.verticalOptContentPadding().toPx() }
     Box(
         modifier = modifier
             .offset { IntOffset(0, heightOffset.roundToInt()) }
@@ -513,8 +510,15 @@ private fun ScrollAwareTopBarImpl(
                 val hPx = coordinates.size.height.toFloat()
                 
                 // Update scroll behavior state with height information
+                // TopBar 现在包含状态栏，但我们只需要隐藏内容部分
                 scrollBehavior?.state?.let { state ->
-                    val hiddenOffset = -(hPx + topPadding)
+                    // 只隐藏 TopBar 内容部分，保留状态栏
+                    val systemBarsPadding = paddings
+                    val statusBarHeight = with(density) { 
+                        systemBarsPadding.calculateTopPadding().toPx() 
+                    }
+                    val contentHeight = hPx - statusBarHeight
+                    val hiddenOffset = -contentHeight + verticalOptPadding
                     if (state.heightOffsetLimit != hiddenOffset) {
                         state.heightOffsetLimit = hiddenOffset
                     }

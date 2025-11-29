@@ -903,7 +903,7 @@ public fun ScreenScaffold(
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopCenter)
-                        .padding(top = contentPadding.calculateTopPadding().coerceAtLeast(0.dp) + topBarOffset.value.coerceAtLeast(0.dp))
+                        .padding(top = topBarOffset.value.coerceAtLeast(0.dp))
                         .onGloballyPositioned { coordinates ->
                             val h = with(density) {
                                 coordinates.size.height.toDp()

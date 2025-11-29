@@ -25,7 +25,8 @@ import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.materialcore.toVerticalPadding
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.ui.activity.base.BaseActivity
-import com.huanli233.bilizepam.ui.components.WearTopBar
+import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
+import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
 import com.huanli233.bilizepam.ui.theme.BiliZepamTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -62,21 +63,24 @@ fun UiPreviewContent(
         }
     }
 
-    ScreenScaffold(scrollState = scrollState) {
+    val scrollBehavior = rememberEnterAlwaysScrollBehavior()
+    ScreenScaffold(
+        scrollState = scrollState,
+        topBar = scrollAwareTopBar(
+            title = stringResource(R.string.view_preview),
+            showBackIcon = true,
+            scrollBehavior = scrollBehavior,
+            onBackClick = onFinish
+        ),
+        topBarScrollBehavior = scrollBehavior
+    ) { paddingValues ->
         ScalingLazyColumn(
             modifier = Modifier.fillMaxSize(),
             state = scrollState,
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = it.toVerticalPadding()
+            contentPadding = paddingValues
         ) {
-            item {
-                WearTopBar(
-                    title = stringResource(R.string.view_preview),
-                    showBackIcon = true,
-                    modifier = Modifier.clickable { onFinish() }
-                )
-            }
             item {
                 Text(
                     text = currentTime,

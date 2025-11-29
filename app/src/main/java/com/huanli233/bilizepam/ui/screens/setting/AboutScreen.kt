@@ -1,4 +1,4 @@
-﻿package com.huanli233.bilizepam.ui.screens.setting
+package com.huanli233.bilizepam.ui.screens.setting
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -44,7 +44,6 @@ import com.huanli233.bilizepam.BuildConfig
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
 import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
-import com.huanli233.bilizepam.ui.components.WearTopBar
 import com.huanli233.bilizepam.ui.dialog.AdaptDialog
 import com.huanli233.bilizepam.ui.dialog.FullScreenAlertDialog
 

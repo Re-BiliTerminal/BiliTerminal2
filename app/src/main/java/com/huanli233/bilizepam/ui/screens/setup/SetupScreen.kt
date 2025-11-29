@@ -40,11 +40,11 @@ import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.ScreenScaffold
 import com.huanli233.bilizepam.R
+import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
 import com.huanli233.bilizepam.data.proto.NightMode
 import com.huanli233.bilizepam.data.setting.LocalData
 import com.huanli233.bilizepam.data.setting.edit
 import com.huanli233.bilizepam.ui.activity.setup.UiPreviewActivity
-import com.huanli233.bilizepam.ui.components.WearTopBar
 import com.huanli233.bilizepam.ui.dialog.AdaptDialog
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -148,18 +148,18 @@ fun SetupScreen(
 private fun WelcomeStep(onNext: () -> Unit) {
     val scrollState = rememberScalingLazyListState(initialCenterItemIndex = 0)
 
-    ScreenScaffold(scrollState = scrollState) {
+    ScreenScaffold(
+        scrollState = scrollState,
+        topBar = scrollAwareTopBar(
+            title = stringResource(R.string.welcome),
+            showBackIcon = false
+        )
+    ) { paddingValues ->
         ScalingLazyColumn(
             modifier = Modifier.fillMaxSize(),
             state = scrollState,
-            contentPadding = it
+            contentPadding = paddingValues
         ) {
-            item {
-                WearTopBar(
-                    title = stringResource(R.string.welcome),
-                    showBackIcon = false
-                )
-            }
             item {
                 Text(
                     text = stringResource(id = R.string.setup_introduction),
@@ -191,18 +191,18 @@ private fun UiSetupStep(
     val context = LocalContext.current
     val darkThemeModes = remember { context.resources.getStringArray(R.array.dark_theme_modes) }
 
-    ScreenScaffold(scrollState = scrollState) {
+    ScreenScaffold(
+        scrollState = scrollState,
+        topBar = scrollAwareTopBar(
+            title = stringResource(R.string.initialize_setting),
+            showBackIcon = false
+        )
+    ) { paddingValues ->
         ScalingLazyColumn(
             modifier = Modifier.fillMaxSize(),
             state = scrollState,
-            contentPadding = it
+            contentPadding = paddingValues
         ) {
-            item {
-                WearTopBar(
-                    title = stringResource(R.string.initialize_setting),
-                    showBackIcon = false
-                )
-            }
 
             item {
                 SettingSwitchItem(

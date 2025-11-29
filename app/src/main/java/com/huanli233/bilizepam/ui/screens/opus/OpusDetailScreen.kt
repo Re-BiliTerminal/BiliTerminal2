@@ -2,8 +2,8 @@
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
+import androidx.wear.compose.foundation.pager.HorizontalPager
+import androidx.wear.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
@@ -164,7 +164,7 @@ fun OpusDetailScreen(
                                     color = MaterialTheme.colorScheme.primary,
                                 )
                             ),
-                            pagerState = pagerState,
+                            pagerState = pagerState.pagerState,
                             modifier = Modifier
                                 .run {
                                     with (this@Box) {
