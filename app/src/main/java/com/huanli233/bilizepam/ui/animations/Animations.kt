@@ -18,8 +18,6 @@ import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import androidx.transition.TransitionValues
-import com.ethanhua.skeleton.Skeleton
-import com.ethanhua.skeleton.SkeletonScreen
 import com.google.android.material.transition.MaterialFade
 import com.huanli233.bilizepam.data.setting.LocalData
 import com.huanli233.bilizepam.utils.extensions.invisible
@@ -208,21 +206,5 @@ fun TextView.animateTextChange(
         this.text = newText
     } else {
         this.text = newText
-    }
-}
-
-/* Skeleton */
-fun View.showSkeleton(layout: Int): SkeletonScreen? {
-    return if (LocalData.settings.theme.animationsEnabled) {
-        Skeleton
-            .bind(this)
-            .load(layout)
-            .duration(1000)
-            .shimmer(true)
-            .angle(30)
-            .build()
-            .show()
-    } else {
-        null
     }
 }

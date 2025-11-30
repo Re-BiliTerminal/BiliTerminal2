@@ -1,7 +1,10 @@
 package com.huanli233.bilizepam.ui.screens.recommend
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -56,6 +59,7 @@ import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
 import com.huanli233.biliwebapi.bean.video.VideoInfo
 import kotlinx.coroutines.launch
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,84 +98,134 @@ fun RecommendScreen(
         ),
         topBarScrollBehavior = scrollBehavior // Pass the same ScrollBehavior to ScreenScaffold
     ) { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize()) {
-            PullToRefreshBox(
-                isRefreshing = isRefreshing,
-                onRefresh = {
-                    isRefreshing = true
-                    videos.refresh()
-                },
-                modifier = Modifier.fillMaxSize()
-            ) {
-                ScalingLazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    state = scrollState,
-                    contentPadding = paddingValues
-                ) {
-                    item {
-                        QuickAccessButtons(
+        val currentLoadState = if (isRefreshing) LoadState.Loading else videos.loadState.refresh
+        
+        Crossfade(
+            targetState = currentLoadState,
+            animationSpec = tween(durationMillis = 300),
+            label = "ContentStateTransition",
+            modifier = Modifier.fillMaxSize()
+        ) { state ->
+            when (state) {
+                is LoadState.Loading -> {
+                    if (videos.itemCount == 0 || isRefreshing) {
+                        LoadingView(
+                            state = LoadingState.LOADING,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        // 有内容时的加载更多，显示内容
+                        ContentView(
+                            videos = videos,
+                            scrollState = scrollState,
+                            paddingValues = paddingValues,
+                            isRefreshing = isRefreshing,
+                            onRefresh = {
+                                isRefreshing = true
+                                videos.refresh()
+                            },
                             onPopularClick = onPopularClick,
-                            onPreciousClick = onPreciousClick
-                        )
-                    }
-
-                item {
-                    Crossfade(
-                        targetState = if (isRefreshing) LoadState.Loading else videos.loadState.refresh,
-                        animationSpec = tween(durationMillis = 300),
-                        label = "ContentStateTransition",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) { state ->
-                        when (state) {
-                            is LoadState.Loading -> {
-                                if (videos.itemCount == 0 || isRefreshing) {
-                                    LoadingView(
-                                        state = LoadingState.LOADING,
-                                        modifier = Modifier.fillMaxSize()
-                                            .height(screenHeight * 0.7f)
-                                    )
-                                }
-                            }
-                            is LoadState.Error -> {
-                                val error = state.error
-                                LoadingView(
-                                    state = LoadingState.ERROR,
-                                    errorMessage = error.message,
-                                    onRetry = { videos.retry() },
-                                    modifier = Modifier.fillMaxSize()
-                                        .height(screenHeight * 0.7f)
-                                )
-                            }
-                            is LoadState.NotLoading if videos.itemCount == 0 -> {
-                                LoadingView(
-                                    state = LoadingState.EMPTY,
-                                    modifier = Modifier.fillMaxSize()
-                                        .height(screenHeight * 0.7f)
-                                )
-                            }
-                            else -> {}
-                        }
-                    }
-                }
-
-                items(
-                    count = videos.itemCount,
-                    key = { index -> videos.peek(index)?.aid?.takeIf { it != 0L } ?: index }
-                ) { index ->
-                    val video = videos[index]
-                    if (video != null && video.bvid.isNotEmpty()) {
-                        VideoCard(
-                            videoInfo = video,
-                            onClick = { onVideoClick(video) }
+                            onPreciousClick = onPreciousClick,
+                            onVideoClick = onVideoClick
                         )
                     }
                 }
-
-                    item {
-                        LoadingFooter(videos)
+                is LoadState.Error -> {
+                    if (videos.itemCount == 0) {
+                        LoadingView(
+                            state = LoadingState.ERROR,
+                            errorMessage = state.error.message,
+                            onRetry = { videos.retry() },
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        // 有内容时的错误，显示内容
+                        ContentView(
+                            videos = videos,
+                            scrollState = scrollState,
+                            paddingValues = paddingValues,
+                            isRefreshing = isRefreshing,
+                            onRefresh = {
+                                isRefreshing = true
+                                videos.refresh()
+                            },
+                            onPopularClick = onPopularClick,
+                            onPreciousClick = onPreciousClick,
+                            onVideoClick = onVideoClick
+                        )
                     }
                 }
+                is LoadState.NotLoading -> {
+                    if (videos.itemCount == 0) {
+                        LoadingView(
+                            state = LoadingState.EMPTY,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        // 正常内容显示
+                        ContentView(
+                            videos = videos,
+                            scrollState = scrollState,
+                            paddingValues = paddingValues,
+                            isRefreshing = isRefreshing,
+                            onRefresh = {
+                                isRefreshing = true
+                                videos.refresh()
+                            },
+                            onPopularClick = onPopularClick,
+                            onPreciousClick = onPreciousClick,
+                            onVideoClick = onVideoClick
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ContentView(
+    videos: LazyPagingItems<VideoInfo>,
+    scrollState: ScalingLazyListState,
+    paddingValues: PaddingValues,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
+    onPopularClick: () -> Unit,
+    onPreciousClick: () -> Unit,
+    onVideoClick: (VideoInfo) -> Unit
+) {
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = onRefresh,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        ScalingLazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            state = scrollState,
+            contentPadding = paddingValues
+        ) {
+            item {
+                QuickAccessButtons(
+                    onPopularClick = onPopularClick,
+                    onPreciousClick = onPreciousClick
+                )
+            }
+
+            items(
+                count = videos.itemCount,
+                key = { index -> videos.peek(index)?.aid?.takeIf { it != 0L } ?: index }
+            ) { index ->
+                val video = videos[index]
+                if (video != null && video.bvid.isNotEmpty()) {
+                    VideoCard(
+                        videoInfo = video,
+                        onClick = { onVideoClick(video) }
+                    )
+                }
+            }
+
+            item {
+                LoadingFooter(videos)
             }
         }
     }

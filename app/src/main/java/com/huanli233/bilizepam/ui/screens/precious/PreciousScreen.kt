@@ -1,4 +1,4 @@
-﻿package com.huanli233.bilizepam.ui.screens.precious
+package com.huanli233.bilizepam.ui.screens.precious
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
@@ -24,8 +24,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
+import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.ScreenScaffold
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.paging.compose.LazyPagingItems
 import com.huanli233.bilizepam.ui.components.VideoCard
 import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
 import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
@@ -59,92 +62,140 @@ fun PreciousScreen(
     ScreenScaffold(
         scrollState = scrollState,
         topBar = scrollAwareTopBar(
-            title = "⭐ 入站必刷",
+            title = "入站必刷",
             showBackIcon = true,
             onBackClick = onNavigateBack,
             scrollBehavior = scrollBehavior
         ),
         topBarScrollBehavior = scrollBehavior
     ) { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize()) {
-            PullToRefreshBox(
-                isRefreshing = isRefreshing,
-                onRefresh = {
-                    isRefreshing = true
-                    videos.refresh()
-                },
-                modifier = Modifier.fillMaxSize()
-            ) {
-                ScalingLazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    state = scrollState,
-                    contentPadding = paddingValues
-                ) {
-                    item {
-                        Crossfade(
-                            targetState = if (isRefreshing) LoadState.Loading else videos.loadState.refresh,
-                            animationSpec = tween(durationMillis = 300),
-                            label = "ContentStateTransition",
-                            modifier = Modifier.fillMaxWidth()
-                        ) { state ->
-                            when (state) {
-                                is LoadState.Loading -> {
-                                    LoadingView(
-                                        state = LoadingState.LOADING,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(screenHeight * 0.6f)
-                                    )
-                                }
-                                is LoadState.Error -> {
-                                    LoadingView(
-                                        state = LoadingState.ERROR,
-                                        errorMessage = state.error.message ?: "Unknown error",
-                                        onRetry = { videos.retry() },
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(screenHeight * 0.6f)
-                                    )
-                                }
-                                else -> {}
-                            }
-                        }
+        val currentLoadState = if (isRefreshing) LoadState.Loading else videos.loadState.refresh
+        
+        Crossfade(
+            targetState = currentLoadState,
+            animationSpec = tween(durationMillis = 300),
+            label = "ContentStateTransition",
+            modifier = Modifier.fillMaxSize()
+        ) { state ->
+            when (state) {
+                is LoadState.Loading -> {
+                    if (videos.itemCount == 0 || isRefreshing) {
+                        LoadingView(
+                            state = LoadingState.LOADING,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        ContentView(
+                            videos = videos,
+                            scrollState = scrollState,
+                            paddingValues = paddingValues,
+                            isRefreshing = isRefreshing,
+                            onRefresh = {
+                                isRefreshing = true
+                                videos.refresh()
+                            },
+                            onVideoClick = onVideoClick
+                        )
                     }
+                }
+                is LoadState.Error -> {
+                    if (videos.itemCount == 0) {
+                        LoadingView(
+                            state = LoadingState.ERROR,
+                            errorMessage = state.error.message ?: "Unknown error",
+                            onRetry = { videos.retry() },
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        ContentView(
+                            videos = videos,
+                            scrollState = scrollState,
+                            paddingValues = paddingValues,
+                            isRefreshing = isRefreshing,
+                            onRefresh = {
+                                isRefreshing = true
+                                videos.refresh()
+                            },
+                            onVideoClick = onVideoClick
+                        )
+                    }
+                }
+                is LoadState.NotLoading -> {
+                    if (videos.itemCount == 0) {
+                        LoadingView(
+                            state = LoadingState.EMPTY,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        ContentView(
+                            videos = videos,
+                            scrollState = scrollState,
+                            paddingValues = paddingValues,
+                            isRefreshing = isRefreshing,
+                            onRefresh = {
+                                isRefreshing = true
+                                videos.refresh()
+                            },
+                            onVideoClick = onVideoClick
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
 
-                    items(videos.itemCount) { index ->
-                        videos[index]?.let { video ->
-                            VideoCard(
-                                videoInfo = video,
-                                onClick = { onVideoClick(video) }
-                            )
-                        }
-                    }
+@Composable
+private fun ContentView(
+    videos: LazyPagingItems<VideoInfo>,
+    scrollState: ScalingLazyListState,
+    paddingValues: PaddingValues,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
+    onVideoClick: (VideoInfo) -> Unit
+) {
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = onRefresh,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        ScalingLazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            state = scrollState,
+            contentPadding = paddingValues
+        ) {
+            items(videos.itemCount) { index ->
+                videos[index]?.let { video ->
+                    VideoCard(
+                        videoInfo = video,
+                        onClick = { onVideoClick(video) }
+                    )
+                }
+            }
 
-                    item {
-                        when (val appendState = videos.loadState.append) {
-                            is LoadState.Loading -> {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
-                                }
-                            }
-                            is LoadState.Error -> {
-                                LoadingView(
-                                    state = LoadingState.ERROR,
-                                    errorMessage = appendState.error.message ?: "Unknown error",
-                                    onRetry = { videos.retry() },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(100.dp)
-                                )
-                            }
-                            else -> {}
+            item {
+                when (val appendState = videos.loadState.append) {
+                    is LoadState.Loading -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp))
                         }
                     }
+                    is LoadState.Error -> {
+                        LoadingView(
+                            state = LoadingState.ERROR,
+                            errorMessage = appendState.error.message ?: "Unknown error",
+                            onRetry = { videos.retry() },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(100.dp)
+                        )
+                    }
+                    else -> {}
                 }
             }
         }

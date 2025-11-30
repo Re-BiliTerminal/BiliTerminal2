@@ -237,7 +237,7 @@ configurations.all {
 dependencies {
 
     // https://github.com/SkywalkerDarren/Skeleton, a fork of https://github.com/ethanhua/Skeleton
-    implementation(project(":Skeleton"))
+//    implementation(project(":Skeleton"))
     implementation(libs.shimmer)
 
     implementation(project(":ijkplayer-java"))

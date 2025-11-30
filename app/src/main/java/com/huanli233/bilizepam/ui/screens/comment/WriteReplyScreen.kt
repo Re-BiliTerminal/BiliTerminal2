@@ -76,118 +76,113 @@ fun WriteReplyScreen(
         ),
         topBarScrollBehavior = scrollBehavior
     ) { paddingValues ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp)
+                .padding(paddingValues),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Column(
+                    Text(
+                        text = "写评论",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    OutlinedTextField(
+                        value = replyText,
+                        onValueChange = { replyText = it },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                            .heightIn(min = 120.dp),
+                        placeholder = {
+                            Text(
+                                text = "写一条友善的评论...",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Sentences,
+                            imeAction = ImeAction.Send
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onSend = {
+                                if (replyText.isNotBlank()) {
+                                    keyboardController?.hide()
+                                    viewModel.sendReply(oid, rpid, parent, replyText.trim())
+                                }
+                            }
+                        ),
+                        enabled = !uiState.isSending,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
                     ) {
-                        Text(
-                            text = "写评论",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-
-                        OutlinedTextField(
-                            value = replyText,
-                            onValueChange = { replyText = it },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = 120.dp),
-                            placeholder = {
-                                Text(
-                                    text = "写一条友善的评论...",
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
+                        Button(
+                            onClick = {
+                                if (replyText.isNotBlank()) {
+                                    keyboardController?.hide()
+                                    viewModel.sendReply(oid, rpid, parent, replyText.trim())
+                                }
                             },
-                            keyboardOptions = KeyboardOptions(
-                                capitalization = KeyboardCapitalization.Sentences,
-                                imeAction = ImeAction.Send
-                            ),
-                            keyboardActions = KeyboardActions(
-                                onSend = {
-                                    if (replyText.isNotBlank()) {
-                                        keyboardController?.hide()
-                                        viewModel.sendReply(oid, rpid, parent, replyText.trim())
-                                    }
-                                }
-                            ),
-                            enabled = !uiState.isSending,
-                            shape = RoundedCornerShape(8.dp)
-                        )
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.End
+                            enabled = !uiState.isSending && replyText.isNotBlank(),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary
+                            )
                         ) {
-                            Button(
-                                onClick = {
-                                    if (replyText.isNotBlank()) {
-                                        keyboardController?.hide()
-                                        viewModel.sendReply(oid, rpid, parent, replyText.trim())
-                                    }
-                                },
-                                enabled = !uiState.isSending && replyText.isNotBlank(),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.primary
+                            if (uiState.isSending) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(16.dp),
+                                    strokeWidth = 2.dp,
+                                    color = MaterialTheme.colorScheme.onPrimary
                                 )
-                            ) {
-                                if (uiState.isSending) {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier.size(16.dp),
-                                        strokeWidth = 2.dp,
-                                        color = MaterialTheme.colorScheme.onPrimary
-                                    )
-                                } else {
-                                    Icon(
-                                        imageVector = Icons.Filled.Send,
-                                        contentDescription = "发送",
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                }
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text(
-                                    text = if (uiState.isSending) "发送中..." else "发送",
-                                    style = MaterialTheme.typography.labelMedium
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Filled.Send,
+                                    contentDescription = "发送",
+                                    modifier = Modifier.size(16.dp)
                                 )
                             }
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = if (uiState.isSending) "发送中..." else "发送",
+                                style = MaterialTheme.typography.labelMedium
+                            )
                         }
                     }
                 }
+            }
 
-                if (uiState.error != null) {
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(8.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.errorContainer
-                        )
-                    ) {
-                        Text(
-                            text = uiState.error!!,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onErrorContainer,
-                            modifier = Modifier.padding(12.dp)
-                        )
-                    }
+            if (uiState.error != null) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer
+                    )
+                ) {
+                    Text(
+                        text = uiState.error!!,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onErrorContainer,
+                        modifier = Modifier.padding(12.dp)
+                    )
                 }
             }
         }
