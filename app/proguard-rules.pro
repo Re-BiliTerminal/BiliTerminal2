@@ -24,6 +24,7 @@
 -keep class tv.danmaku.ijk.media.** {*;}
 -keep class com.netease.hearttouch.brotlij.** {*;}
 
+-keep class com.hjq.gson.factory.** {*;}
 -keep class com.huanli233.biliwebapi.bean.** {*;}
 -keep class * extends com.google.protobuf.GeneratedMessageLite {*;}
 
@@ -32,8 +33,7 @@
     @org.greenrobot.eventbus.Subscribe <methods>;
 }
 -keep enum org.greenrobot.eventbus.ThreadMode { *; }
--dontwarn com.geetest.sdk.**
--keep class com.geetest.sdk.**{*;}
+-keep class com.geetest.sdk.** {*;}
 # Only required if you use AsyncExecutor
 -keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
     <init>(java.lang.Throwable);
@@ -41,24 +41,10 @@
 
 -keepattributes SourceFile,LineNumberTable
 
--dontwarn master.flame.danmaku.controller.DrawHandler$Callback
--dontwarn master.flame.danmaku.controller.IDanmakuView
--dontwarn master.flame.danmaku.danmaku.loader.ILoader
--dontwarn master.flame.danmaku.danmaku.loader.android.DanmakuLoaderFactory
--dontwarn master.flame.danmaku.danmaku.model.AbsDisplayer
--dontwarn master.flame.danmaku.danmaku.model.BaseDanmaku
--dontwarn master.flame.danmaku.danmaku.model.DanmakuTimer
--dontwarn master.flame.danmaku.danmaku.model.IDanmakus
--dontwarn master.flame.danmaku.danmaku.model.android.DanmakuContext
--dontwarn master.flame.danmaku.danmaku.model.android.DanmakuFactory
--dontwarn master.flame.danmaku.danmaku.model.android.Danmakus
--dontwarn master.flame.danmaku.danmaku.parser.BaseDanmakuParser
--dontwarn master.flame.danmaku.danmaku.parser.IDataSource
--dontwarn master.flame.danmaku.danmaku.parser.android.BiliDanmukuParser
--dontwarn master.flame.danmaku.danmaku.model.android.BaseCacheStuffer$Proxy
--dontwarn master.flame.danmaku.danmaku.model.android.BaseCacheStuffer
--dontwarn master.flame.danmaku.danmaku.model.android.SpannedCacheStuffer
--dontwarn master.flame.danmaku.ui.widget.DanmakuView
+-keep class master.flame.danmaku.danmaku.** { *; }
+-keep class master.flame.danmaku.** { *; }
+-keep class tv.danmaku.ijk.media.player.** { *; }
+
 -dontwarn androidx.navigation.NavType$Companion
 
 -keepclassmembers class * extends android.view.View {
@@ -67,4 +53,40 @@
 }
 -keepclassmembers class * extends android.view.ViewGroup$LayoutParams {
     <init>(int, int);
+}
+-keep interface tv.danmaku.ijk.media.player.IMediaPlayer$OnPreparedListener { *; }
+-keep interface tv.danmaku.ijk.media.player.IMediaPlayer$OnCompletionListener { *; }
+-keep interface tv.danmaku.ijk.media.player.IMediaPlayer$OnErrorListener { *; }
+-keep interface tv.danmaku.ijk.media.player.IMediaPlayer$OnInfoListener { *; }
+-keep interface tv.danmaku.ijk.media.player.IMediaPlayer$OnVideoSizeChangedListener { *; }
+-keep interface tv.danmaku.ijk.media.player.IMediaPlayer$OnSeekCompleteListener { *; }
+-keep interface tv.danmaku.ijk.media.player.IMediaPlayer$OnBufferingUpdateListener { *; }
+
+-keepclassmembers interface tv.danmaku.ijk.media.player.IMediaPlayer {
+    public *;
+}
+
+-keepclassmembers class * {
+    *** lambda$*(...);
+}
+
+-keepclassmembers class * {
+    public void onPrepared(tv.danmaku.ijk.media.player.IMediaPlayer);
+    public void onCompletion(tv.danmaku.ijk.media.player.IMediaPlayer);
+    public boolean onError(tv.danmaku.ijk.media.player.IMediaPlayer, int, int);
+    public boolean onInfo(tv.danmaku.ijk.media.player.IMediaPlayer, int, int);
+    public void onVideoSizeChanged(tv.danmaku.ijk.media.player.IMediaPlayer, int, int, int, int);
+    public void onSeekComplete(tv.danmaku.ijk.media.player.IMediaPlayer);
+    public void onBufferingUpdate(tv.danmaku.ijk.media.player.IMediaPlayer, int);
+}
+
+-keepclassmembers class * {
+    tv.danmaku.ijk.media.player.IMediaPlayer *$lambda$*$*(...);
+    *** *$lambda$*$*(tv.danmaku.ijk.media.player.IMediaPlayer);
+    *** *$lambda$*$*(tv.danmaku.ijk.media.player.IMediaPlayer, int, int);
+    *** *$lambda$*$*(tv.danmaku.ijk.media.player.IMediaPlayer, int, int, int, int);
+}
+
+-keepclassmembers class com.huanli233.bilizepam.ui.screens.player.PlayerViewModel {
+    <methods>;
 }

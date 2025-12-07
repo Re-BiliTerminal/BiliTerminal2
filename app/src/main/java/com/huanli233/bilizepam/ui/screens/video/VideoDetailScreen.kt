@@ -85,6 +85,9 @@ import androidx.core.graphics.toColorInt
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.foundation.isRoundDevice
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
+import androidx.wear.compose.foundation.rememberActiveFocusRequester
+import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
+import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material3.PaddingDefaults
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.TimeText
@@ -378,10 +381,15 @@ private fun VideoDetailContent(
     onTagClick: (String) -> Unit
 ) {
     val videoInfo = uiState.videoInfo ?: return
+    val focusRequester = rememberActiveFocusRequester()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .rotaryScrollable(
+                behavior = RotaryScrollableDefaults.behavior(scrollState),
+                focusRequester = focusRequester
+            )
             .verticalScroll(scrollState)
             .padding(horizontal = 12.dp)
             .padding(bottom = 12.dp)

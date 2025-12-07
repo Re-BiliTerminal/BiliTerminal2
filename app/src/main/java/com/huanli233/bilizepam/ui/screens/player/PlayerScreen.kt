@@ -83,6 +83,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -90,6 +91,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.foundation.isRoundDevice
+import androidx.wear.compose.foundation.rememberActiveFocusRequester
+import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
+import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material3.PaddingDefaults
 import androidx.wear.compose.material3.ScreenScaffold
 import com.huanli233.bilizepam.data.setting.LocalData
@@ -127,6 +131,7 @@ fun PlayerScreen(
     var duration by remember { mutableLongStateOf(0L) }
     var showControls by remember { mutableStateOf(true) }
     var buffering by remember { mutableStateOf(false) }
+    var isVideoReady by remember { mutableStateOf(false) }
     var showPageSelector by remember { mutableStateOf(false) }
     var showQualitySelector by remember { mutableStateOf(false) }
     var showSpeedSelector by remember { mutableStateOf(false) }
@@ -180,6 +185,15 @@ fun PlayerScreen(
             viewModel.startProgressReporting { viewModel.ijkPlayer.currentPosition }
         } else {
             viewModel.stopProgressReporting()
+        }
+    }
+
+    // 监听视频准备状态
+    LaunchedEffect(uiState.videoUrl) {
+        if (uiState.videoUrl.isNotEmpty()) {
+            isVideoReady = true
+        } else {
+            isVideoReady = false
         }
     }
 
@@ -241,23 +255,51 @@ fun PlayerScreen(
                 .padding(vertical = PaddingDefaults.verticalOptContentPadding()),
             color = MaterialTheme.colorScheme.surface
         ) {
-            Box(modifier = Modifier.fillMaxSize()) {
+            val focusRequester = rememberActiveFocusRequester()
+            
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .rotaryScrollable(
+                        behavior = RotaryScrollableDefaults.behavior(
+                            scrollableState = object : androidx.compose.foundation.gestures.ScrollableState {
+                                override val isScrollInProgress: Boolean = false
+                                override fun dispatchRawDelta(delta: Float): Float {
+                                    // 表冠滚动时调整进度
+                                    val newPosition = (currentPosition + (delta * 1000).toLong())
+                                        .coerceIn(0L, duration)
+                                    viewModel.ijkPlayer.seekTo(newPosition)
+                                    return delta
+                                }
+                                override suspend fun scroll(
+                                    scrollPriority: androidx.compose.foundation.MutatePriority,
+                                    block: suspend androidx.compose.foundation.gestures.ScrollScope.() -> Unit
+                                ) {
+                                    // 不需要实现
+                                }
+                            }
+                        ),
+                        focusRequester = focusRequester
+                    )
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = {
+                                // 点击任意位置切换控制栏显示状态
+                                showControls = !showControls
+                            }
+                        )
+                    }
+            ) {
                 if (playerSettings?.useTextureView == true) {
                     AndroidView(
                         factory = { ctx ->
-                            Log.d("PlayerScreen", "Creating FrameLayout with TextureView + DanmakuView")
+                            Log.d("PlayerScreen", "Creating FrameLayout with TextureView + DanmakuView + LoadingOverlay")
                             FrameLayout(ctx).apply {
                                 val textureView = TextureView(ctx).apply {
                                     surfaceTextureListener = object : TextureView.SurfaceTextureListener {
                                         override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
                                             android.util.Log.d("PlayerScreen", "TextureView surface available: ${width}x${height}")
                                             viewModel.ijkPlayer.setSurface(Surface(surface))
-
-                                            if (viewModel.ijkPlayer.isPlayable && playerSettings?.autoPlay == true && !viewModel.ijkPlayer.isPlaying) {
-                                                android.util.Log.d("PlayerScreen", "Auto-starting playback after TextureView ready")
-                                                viewModel.ijkPlayer.start()
-                                                isPlaying = true
-                                            }
                                         }
 
                                         override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
@@ -299,8 +341,79 @@ fun PlayerScreen(
                                     })
                                 }
 
+                                // 创建LoadingOverlay - 使用ComposeView确保正确的层级
+                                val loadingOverlay = androidx.compose.ui.platform.ComposeView(ctx).apply {
+                                    setContent {
+                                        val currentUiState by viewModel.uiState.collectAsState()
+                                        val shouldShowVideoLoading = currentUiState.isLoading || (!isVideoReady && currentUiState.videoUrl.isEmpty())
+                                        
+                                        if (shouldShowVideoLoading) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .background(Color.Black.copy(alpha = 0.9f)),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Column(
+                                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                                    verticalArrangement = Arrangement.Center
+                                                ) {
+                                                    CircularProgressIndicator(
+                                                        color = MaterialTheme.colorScheme.primary,
+                                                        modifier = Modifier.size(48.dp),
+                                                        strokeWidth = 4.dp
+                                                    )
+                                                    Spacer(modifier = Modifier.height(16.dp))
+                                                    Text(
+                                                        text = if (currentUiState.isLoading) "Loading video..." else "Preparing player...",
+                                                        color = Color.White,
+                                                        style = MaterialTheme.typography.bodyMedium
+                                                    )
+                                                    Spacer(modifier = Modifier.height(8.dp))
+                                                    Text(
+                                                        text = "TextureView mode",
+                                                        color = Color.Gray,
+                                                        style = MaterialTheme.typography.bodySmall
+                                                    )
+                                                }
+                                            }
+                                        }
+                                        
+                                        // 错误状态显示
+                                        currentUiState.error?.let { error ->
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .background(Color.Black.copy(alpha = 0.9f)),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Column(
+                                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                                    verticalArrangement = Arrangement.Center
+                                                ) {
+                                                    Text(
+                                                        text = "Failed to load video",
+                                                        color = Color.White,
+                                                        style = MaterialTheme.typography.bodyLarge,
+                                                        fontWeight = FontWeight.Bold
+                                                    )
+                                                    Spacer(modifier = Modifier.height(8.dp))
+                                                    Text(
+                                                        text = error,
+                                                        color = Color.Red,
+                                                        style = MaterialTheme.typography.bodySmall,
+                                                        textAlign = TextAlign.Center
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // 添加视图到FrameLayout，确保正确的层级顺序
                                 addView(textureView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
                                 addView(danmakuOverlay, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+                                addView(loadingOverlay, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
                             }
                         },
                         update = { root ->
@@ -320,13 +433,6 @@ fun PlayerScreen(
                             .aspectRatio(videoAspectRatio, matchHeightConstraintsFirst = false)
                             .pointerInput(Unit) {
                                 detectTapGestures(
-                                    onTap = { offset ->
-                                        val centerY = size.height * 0.5f
-                                        val bottomControlsY = size.height * 0.75f
-                                        if (offset.y < bottomControlsY && offset.y > centerY * 0.3f) {
-                                            showControls = !showControls
-                                        }
-                                    },
                                     onDoubleTap = {
                                         if (isPlaying) {
                                             viewModel.ijkPlayer.pause()
@@ -365,14 +471,7 @@ fun PlayerScreen(
                                     android.util.Log.d("PlayerScreen", "SurfaceView created")
                                     viewModel.ijkPlayer.setDisplay(holder)
 
-                                    if (viewModel.ijkPlayer.isPlayable && playerSettings?.autoPlay == true && !viewModel.ijkPlayer.isPlaying) {
-                                        android.util.Log.d(
-                                            "PlayerScreen",
-                                            "Auto-starting playback after SurfaceView ready"
-                                        )
-                                        viewModel.ijkPlayer.start()
-                                        isPlaying = true
-                                    }
+                                    // 自动播放逻辑已在PlayerViewModel的onPrepared中处理
                                 }
 
                                 override fun surfaceChanged(
@@ -399,13 +498,6 @@ fun PlayerScreen(
                             .aspectRatio(videoAspectRatio, matchHeightConstraintsFirst = false)
                             .pointerInput(Unit) {
                                 detectTapGestures(
-                                    onTap = { offset ->
-                                        val centerY = size.height * 0.5f
-                                        val bottomControlsY = size.height * 0.75f
-                                        if (offset.y < bottomControlsY && offset.y > centerY * 0.3f) {
-                                            showControls = !showControls
-                                        }
-                                    },
                                     onDoubleTap = {
                                         if (isPlaying) {
                                             viewModel.ijkPlayer.pause()
@@ -478,19 +570,99 @@ fun PlayerScreen(
                         }
                     }
 
-                    if (uiState.isLoadingDanmaku) {
+                    // 视频加载动画 - 仅在SurfaceView模式下显示（TextureView模式在AndroidView内部处理）
+                    if (playerSettings?.useTextureView != true) {
+                        val shouldShowVideoLoading = uiState.isLoading || (!isVideoReady && uiState.videoUrl.isEmpty())
+                        if (shouldShowVideoLoading) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(Color.Black.copy(alpha = 0.7f)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    CircularProgressIndicator(
+                                        color = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(48.dp),
+                                        strokeWidth = 4.dp
+                                    )
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                    Text(
+                                        text = if (uiState.isLoading) "Loading video..." else "Preparing player...",
+                                        color = Color.White,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text(
+                                        text = "SurfaceView mode",
+                                        color = Color.Gray,
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    // 弹幕加载动画
+                    if (uiState.isLoadingDanmaku && !uiState.isLoading) {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(16.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            CircularProgressIndicator()
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("Loading danmaku...")
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                CircularProgressIndicator(
+                                    color = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(32.dp)
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "Loading danmaku...",
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
                         }
                     }
 
+                    // 视频错误显示 - 仅在SurfaceView模式下显示（TextureView模式在AndroidView内部处理）
+                    if (playerSettings?.useTextureView != true) {
+                        uiState.error?.let { error ->
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(Color.Black.copy(alpha = 0.8f)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = "Failed to load video",
+                                        color = Color.White,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text(
+                                        text = error,
+                                        color = Color.Red,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    // 弹幕错误显示
                     danmakuError?.let { error ->
                         Box(
                             modifier = Modifier
@@ -560,8 +732,7 @@ fun PlayerScreen(
                                 }
                             },
                             modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.Red.copy(alpha = 0.1f)),
+                                .fillMaxSize(),
                             update = { view ->
                                 android.util.Log.d("Danmaku", "DanmakuView update called - prepared: $isDanmakuPrepared")
                                 android.util.Log.d("Danmaku", "DanmakuView size in update: ${view.width}x${view.height}")

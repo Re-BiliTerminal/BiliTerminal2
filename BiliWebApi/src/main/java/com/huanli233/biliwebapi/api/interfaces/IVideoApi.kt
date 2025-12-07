@@ -1,7 +1,11 @@
 package com.huanli233.biliwebapi.api.interfaces
 
 import com.huanli233.biliwebapi.bean.ApiResponse
+import com.huanli233.biliwebapi.bean.video.DurlItem
+import com.huanli233.biliwebapi.bean.video.FavoriteFolder
+import com.huanli233.biliwebapi.bean.video.FavoriteFoldersResponse
 import com.huanli233.biliwebapi.bean.video.PlayerInfo
+import com.huanli233.biliwebapi.bean.video.PlayUrlData
 import com.huanli233.biliwebapi.bean.video.SubtitleContent
 import com.huanli233.biliwebapi.bean.video.Tag
 import com.huanli233.biliwebapi.bean.video.VideoInfo
@@ -114,32 +118,3 @@ interface IVideoApi {
         @Field("platform") platform: String = "pc"
     ): ApiResponse<Unit>
 }
-
-data class FavoriteFoldersResponse(
-    val count: Int = 0,
-    val list: List<FavoriteFolder>? = null
-)
-
-data class FavoriteFolder(
-    val id: Long = 0,
-    val fid: Long = 0,
-    val mid: Long = 0,
-    val title: String = "",
-    val cover: String = "",
-    val mediaCount: Int = 0,
-    val maxCount: Int = 999,
-    val favState: Int = 0
-)
-
-data class PlayUrlData(
-    val durl: List<DurlItem>? = null,
-    val quality: Int = 0,
-    val acceptQuality: List<Int>? = null,
-    val acceptDescription: List<String>? = null
-)
-
-data class DurlItem(
-    val url: String = "",
-    val size: Long = 0,
-    val length: Long = 0
-)

@@ -149,7 +149,10 @@ class PlayerViewModel @Inject constructor(
                 }
                 
                 // 设置数据源和请求头
-                val headers = mapOf("Referer" to BILIBILI_REFERER)
+                val headers = mapOf(
+                    "Referer" to BILIBILI_REFERER
+                )
+                Log.d("PlayerViewModel", "Setting headers: $headers")
                 ijkPlayer.setDataSource(videoUrl, headers)
                 ijkPlayer.prepareAsync()
                 

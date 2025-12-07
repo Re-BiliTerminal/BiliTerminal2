@@ -7,8 +7,8 @@ import com.huanli233.bilizepam.api.apiResult
 import com.huanli233.bilizepam.api.apiResultNonNull
 import com.huanli233.bilizepam.api.bilibiliApi
 import com.huanli233.bilizepam.data.account.AccountManager
-import com.huanli233.biliwebapi.api.interfaces.FavoriteFolder
 import com.huanli233.biliwebapi.api.interfaces.IVideoApi
+import com.huanli233.biliwebapi.bean.video.FavoriteFolder
 import com.huanli233.biliwebapi.bean.video.Tag
 import com.huanli233.biliwebapi.bean.video.VideoInfo
 import com.huanli233.biliwebapi.bean.video.VideoRelation
