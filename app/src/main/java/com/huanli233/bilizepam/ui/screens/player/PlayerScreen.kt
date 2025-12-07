@@ -281,14 +281,6 @@ fun PlayerScreen(
                         ),
                         focusRequester = focusRequester
                     )
-                    .pointerInput(Unit) {
-                        detectTapGestures(
-                            onTap = {
-                                // 点击任意位置切换控制栏显示状态
-                                showControls = !showControls
-                            }
-                        )
-                    }
             ) {
                 if (playerSettings?.useTextureView == true) {
                     AndroidView(
@@ -752,6 +744,20 @@ fun PlayerScreen(
                     }
                 }
             }
+            
+            // 透明点击层 - 处理全屏点击事件
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = {
+                                // 点击任意位置切换控制栏显示状态
+                                showControls = !showControls
+                            }
+                        )
+                    }
+            )
         }
 
         PlayerControls(
