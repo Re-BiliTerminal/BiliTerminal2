@@ -9,6 +9,7 @@ import androidx.paging.cachedIn
 import com.huanli233.bilizepam.data.repository.ReplyRepository
 import com.huanli233.biliwebapi.bean.reply.Reply
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,8 +35,8 @@ class CommentDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(CommentDetailUiState())
     val uiState: StateFlow<CommentDetailUiState> = _uiState.asStateFlow()
 
-    private val _events = MutableStateFlow<CommentDetailEvent?>(null)
-    val events: Flow<CommentDetailEvent> = _events.asStateFlow().filterNotNull()
+    private val _events = Channel<CommentDetailEvent>(Channel.BUFFERED)
+    val events: Flow<CommentDetailEvent> = _events.receiveAsFlow()
 
     private var currentOid: Long = 0
     private var currentReplyId: Long = 0
@@ -104,16 +105,16 @@ class CommentDetailViewModel @Inject constructor(
                         likedReplies = currentLikedReplies,
                         replyLikeCounts = currentLikeCounts
                     )
-                    _events.value = CommentDetailEvent.LikeSuccess(replyId, !isCurrentlyLiked)
+                    _events.send(CommentDetailEvent.LikeSuccess(replyId, !isCurrentlyLiked))
                 }.onFailure { error ->
                     if (error.message?.contains("登录") == true) {
-                        _events.value = CommentDetailEvent.LoginRequired("请先登录后再点赞")
+                        _events.send(CommentDetailEvent.LoginRequired("请先登录后再点赞"))
                     } else {
-                        _events.value = CommentDetailEvent.LikeFailed(error.message ?: "点赞失败")
+                        _events.send(CommentDetailEvent.LikeFailed(error.message ?: "点赞失败"))
                     }
                 }
             } catch (e: Exception) {
-                _events.value = CommentDetailEvent.LikeFailed("网络错误")
+                _events.send(CommentDetailEvent.LikeFailed("网络错误"))
             } finally {
                 _uiState.value = _uiState.value.copy(isLikingReply = false)
             }

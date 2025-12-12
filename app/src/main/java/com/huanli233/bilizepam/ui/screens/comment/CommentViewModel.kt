@@ -11,6 +11,7 @@ import com.huanli233.bilizepam.data.repository.ReplyRepository
 import com.huanli233.biliwebapi.bean.reply.Reply
 import com.huanli233.biliwebapi.bean.reply.RepliesControl
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -45,8 +46,8 @@ class CommentViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(CommentUiState())
     val uiState: StateFlow<CommentUiState> = _uiState.asStateFlow()
 
-    private val _events = MutableStateFlow<CommentEvent?>(null)
-    val events: Flow<CommentEvent> = _events.asStateFlow().filterNotNull()
+    private val _events = Channel<CommentEvent>(Channel.BUFFERED)
+    val events: Flow<CommentEvent> = _events.receiveAsFlow()
 
     private var currentOid: Long = 0
     private var currentType: Int = 1
@@ -134,16 +135,16 @@ class CommentViewModel @Inject constructor(
                         likedReplies = currentLikedReplies,
                         replyLikeCounts = currentLikeCounts
                     )
-                    _events.value = CommentEvent.LikeSuccess(replyId, !isCurrentlyLiked)
+                    _events.send(CommentEvent.LikeSuccess(replyId, !isCurrentlyLiked))
                 }.onFailure { error ->
                     if (error.message?.contains("登录") == true) {
-                        _events.value = CommentEvent.LoginRequired("请先登录后再点赞")
+                        _events.send(CommentEvent.LoginRequired("请先登录后再点赞"))
                     } else {
-                        _events.value = CommentEvent.LikeFailed(error.message ?: "点赞失败")
+                        _events.send(CommentEvent.LikeFailed(error.message ?: "点赞失败"))
                     }
                 }
             } catch (e: Exception) {
-                _events.value = CommentEvent.LikeFailed("网络错误")
+                _events.send(CommentEvent.LikeFailed("网络错误"))
             } finally {
                 _uiState.value = _uiState.value.copy(isLikingReply = false)
             }
