@@ -14,8 +14,10 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -74,6 +76,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -91,7 +94,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.foundation.isRoundDevice
-import androidx.wear.compose.foundation.rememberActiveFocusRequester
+import androidx.compose.ui.focus.FocusRequester
+import androidx.wear.compose.foundation.hierarchicalFocusGroup
+import androidx.wear.compose.foundation.requestFocusOnHierarchyActive
 import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
 import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material3.PaddingDefaults
@@ -252,32 +257,29 @@ fun PlayerScreen(
     ScreenScaffold {
         Surface(
             modifier = Modifier.fillMaxSize()
-                .padding(vertical = PaddingDefaults.verticalOptContentPadding()),
+                .padding(vertical = PaddingDefaults.verticalOptContentPadding())
+                .hierarchicalFocusGroup(true),
             color = MaterialTheme.colorScheme.surface
         ) {
-            val focusRequester = rememberActiveFocusRequester()
+            val focusRequester = remember { FocusRequester() }
+            val scrollableState = rememberScrollableState { delta ->
+                // 表冠滚动时调整进度，delta为负值表示向下滚动（快进），正值表示向上滚动（快退）
+                val seekDelta = (-delta * 500).toLong() // 调整灵敏度，负号反转方向
+                val newPosition = (currentPosition + seekDelta).coerceIn(0L, duration)
+                if (newPosition != currentPosition) {
+                    viewModel.ijkPlayer.seekTo(newPosition)
+                }
+                delta
+            }
             
             Box(
                 modifier = Modifier
                     .fillMaxSize()
+                    .requestFocusOnHierarchyActive()
                     .rotaryScrollable(
                         behavior = RotaryScrollableDefaults.behavior(
-                            scrollableState = object : androidx.compose.foundation.gestures.ScrollableState {
-                                override val isScrollInProgress: Boolean = false
-                                override fun dispatchRawDelta(delta: Float): Float {
-                                    // 表冠滚动时调整进度
-                                    val newPosition = (currentPosition + (delta * 1000).toLong())
-                                        .coerceIn(0L, duration)
-                                    viewModel.ijkPlayer.seekTo(newPosition)
-                                    return delta
-                                }
-                                override suspend fun scroll(
-                                    scrollPriority: androidx.compose.foundation.MutatePriority,
-                                    block: suspend androidx.compose.foundation.gestures.ScrollScope.() -> Unit
-                                ) {
-                                    // 不需要实现
-                                }
-                            }
+                            scrollableState = scrollableState,
+                            flingBehavior = null // 禁用惯性滚动，视频进度控制不需要
                         ),
                         focusRequester = focusRequester
                     )
