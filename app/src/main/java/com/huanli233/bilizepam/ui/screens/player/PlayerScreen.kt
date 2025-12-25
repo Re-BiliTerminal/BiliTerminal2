@@ -1,12 +1,17 @@
 package com.huanli233.bilizepam.ui.screens.player
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.SurfaceTexture
+import android.os.Build
 import android.util.Log
 import android.view.Surface
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -17,6 +22,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -48,6 +54,7 @@ import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Speed
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Card
@@ -82,7 +89,10 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.PointerInputChange
+import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -92,9 +102,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.foundation.isRoundDevice
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.wear.compose.foundation.hierarchicalFocusGroup
 import androidx.wear.compose.foundation.requestFocusOnHierarchyActive
 import androidx.wear.compose.foundation.rotary.RotaryScrollableDefaults
@@ -102,7 +114,9 @@ import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material3.PaddingDefaults
 import androidx.wear.compose.material3.ScreenScaffold
 import com.huanli233.bilizepam.data.setting.LocalData
+import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.ui.dialog.AdaptDialog
+import com.huanli233.bilizepam.utils.MsgUtil
 import kotlinx.coroutines.delay
 import master.flame.danmaku.controller.DrawHandler
 import master.flame.danmaku.danmaku.model.BaseDanmaku
@@ -146,6 +160,32 @@ fun PlayerScreen(
     var playbackSpeed by remember { mutableFloatStateOf(1f) }
     var isLongPressing by remember { mutableStateOf(false) }
     val videoAspectRatio = uiState.videoAspectRatio
+
+    var videoScale by remember { mutableFloatStateOf(1f) }
+    var videoOffset by remember { mutableStateOf(Offset.Zero) }
+    var videoContainerSizePx by remember { mutableStateOf(androidx.compose.ui.unit.IntSize.Zero) }
+
+    var pendingDownload by remember { mutableStateOf(false) }
+
+    val storagePermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        val shouldRun = pendingDownload
+        pendingDownload = false
+        if (granted && shouldRun) {
+            viewModel.enqueueDownload(aid = uiState.aid, cid = uiState.cid, title = uiState.title)
+        } else if (!granted) {
+            MsgUtil.showMsg(context.getString(R.string.msg_storage_permission_denied))
+        }
+    }
+
+    fun canWriteToPublicDownloads(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) return true
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED
+    }
 
     val scope = rememberCoroutineScope()
 
@@ -284,6 +324,38 @@ fun PlayerScreen(
                         focusRequester = focusRequester
                     )
             ) {
+                fun clampVideoOffset(offset: Offset, scale: Float): Offset {
+                    if (scale <= 1f) return Offset.Zero
+                    val w = videoContainerSizePx.width.toFloat()
+                    val h = videoContainerSizePx.height.toFloat()
+                    if (w <= 0f || h <= 0f) return Offset.Zero
+
+                    val maxX = (w * (scale - 1f)) / 2f
+                    val maxY = (h * (scale - 1f)) / 2f
+                    return Offset(
+                        x = offset.x.coerceIn(-maxX, maxX),
+                        y = offset.y.coerceIn(-maxY, maxY)
+                    )
+                }
+
+                val zoomGestureModifier = Modifier
+                    .onSizeChanged { size ->
+                        videoContainerSizePx = size
+                        videoOffset = clampVideoOffset(videoOffset, videoScale)
+                    }
+                    .pointerInput(Unit) {
+                        detectTransformGestures { _, pan, zoom, _ ->
+                            val newScale = (videoScale * zoom).coerceIn(1f, 3f)
+                            val newOffset = if (newScale <= 1f) {
+                                Offset.Zero
+                            } else {
+                                clampVideoOffset(videoOffset + pan, newScale)
+                            }
+                            videoScale = newScale
+                            videoOffset = newOffset
+                        }
+                    }
+
                 if (playerSettings?.useTextureView == true) {
                     AndroidView(
                         factory = { ctx ->
@@ -425,6 +497,13 @@ fun PlayerScreen(
                             .fillMaxSize()
                             .wrapContentSize(Alignment.Center)
                             .aspectRatio(videoAspectRatio, matchHeightConstraintsFirst = false)
+                            .then(zoomGestureModifier)
+                            .graphicsLayer {
+                                scaleX = videoScale
+                                scaleY = videoScale
+                                translationX = videoOffset.x
+                                translationY = videoOffset.y
+                            }
                             .pointerInput(Unit) {
                                 detectTapGestures(
                                     onDoubleTap = {
@@ -490,6 +569,13 @@ fun PlayerScreen(
                             .fillMaxSize()
                             .wrapContentSize(Alignment.Center)
                             .aspectRatio(videoAspectRatio, matchHeightConstraintsFirst = false)
+                            .then(zoomGestureModifier)
+                            .graphicsLayer {
+                                scaleX = videoScale
+                                scaleY = videoScale
+                                translationX = videoOffset.x
+                                translationY = videoOffset.y
+                            }
                             .pointerInput(Unit) {
                                 detectTapGestures(
                                     onDoubleTap = {
@@ -771,41 +857,43 @@ fun PlayerScreen(
             playbackSpeed = playbackSpeed,
             isLongPressing = isLongPressing,
             onPlayPauseClick = {
-                android.util.Log.d(
-                    "PlayerScreen",
-                    "Play/Pause clicked, current isPlaying: $isPlaying"
-                )
-                android.util.Log.d(
-                    "PlayerScreen",
-                    "Player state - isPlayable: ${viewModel.ijkPlayer.isPlayable}, duration: ${viewModel.ijkPlayer.duration}"
-                )
-
                 if (isPlaying) {
-                    val result = viewModel.ijkPlayer.pause()
+                    viewModel.ijkPlayer.pause()
                     isPlaying = false
-                    android.util.Log.d("PlayerScreen", "Player paused, result: $result")
                 } else {
-                    val result = viewModel.ijkPlayer.start()
+                    viewModel.ijkPlayer.start()
                     isPlaying = true
-                    android.util.Log.d("PlayerScreen", "Player started, result: $result")
                 }
             },
             onSeek = { position ->
                 viewModel.ijkPlayer.seekTo(position)
-                danmakuParser?.let {
-                    danmakuView?.seekTo(position)
-                }
             },
             onBackClick = onNavigateBack,
-            onDanmakuToggle = { viewModel.toggleDanmaku() },
+            onDanmakuToggle = {
+                viewModel.toggleDanmaku()
+            },
             isDanmakuVisible = uiState.isDanmakuVisible,
             onSpeedChange = { speed ->
                 playbackSpeed = speed
                 viewModel.ijkPlayer.setSpeed(speed)
             },
-            onSpeedClick = { showSpeedSelector = true },
-            onQualityClick = { showQualitySelector = true },
-            onDismissRequest = { showControls = false }
+            onSpeedClick = {
+                showSpeedSelector = true
+            },
+            onQualityClick = {
+                showQualitySelector = true
+            },
+            onDownloadClick = {
+                if (canWriteToPublicDownloads()) {
+                    viewModel.enqueueDownload(aid = uiState.aid, cid = uiState.cid, title = uiState.title)
+                } else {
+                    pendingDownload = true
+                    storagePermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                }
+            },
+            onDismissRequest = {
+                showControls = false
+            }
         )
 
         if (showPageSelector && uiState.pages.isNotEmpty()) {
@@ -873,6 +961,7 @@ fun PlayerControls(
     onSpeedChange: (Float) -> Unit,
     onSpeedClick: () -> Unit,
     onQualityClick: () -> Unit,
+    onDownloadClick: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
     val isRound = isRoundDevice()
@@ -985,8 +1074,13 @@ fun PlayerControls(
                     }
 
                     Box(modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 24.dp)) {
-                        IconButton(onClick = onQualityClick, modifier = Modifier.size(32.dp)) {
-                            Icon(Icons.Default.HighQuality, null, tint = Color.White, modifier = Modifier.size(20.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            IconButton(onClick = onQualityClick, modifier = Modifier.size(32.dp)) {
+                                Icon(Icons.Default.HighQuality, null, tint = Color.White, modifier = Modifier.size(20.dp))
+                            }
+                            IconButton(onClick = onDownloadClick, modifier = Modifier.size(32.dp)) {
+                                Icon(Icons.Default.Download, null, tint = Color.White, modifier = Modifier.size(20.dp))
+                            }
                         }
                     }
                 }
@@ -1117,6 +1211,9 @@ fun PlayerControls(
                             }
                             IconButton(onClick = onQualityClick) {
                                 Icon(Icons.Default.HighQuality, null, tint = Color.White)
+                            }
+                            IconButton(onClick = onDownloadClick) {
+                                Icon(Icons.Default.Download, null, tint = Color.White)
                             }
                         }
                     }

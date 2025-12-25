@@ -507,7 +507,7 @@ fun MainScreen(mainNavController: androidx.navigation.NavController) {
                 )
             }
 
-            composable("download_list") {
+            composable(Screen.DownloadList.route) {
                 DownloadListScreen(
                     onNavigateBack = { contentNavController.popBackStack() }
                 )

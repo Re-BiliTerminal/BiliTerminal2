@@ -161,6 +161,7 @@
     <string name="open_source_info">开源信息</string>
     <string name="relay">转发</string>
     <string name="download">缓存</string>
+    <string name="download_manager">下载管理</string>
 
     <string name="not_set_text">未设置</string>
 
@@ -398,6 +399,8 @@
     
     <string name="msg_watch_later_success">已添加到稍后再看</string>
     <string name="msg_download_dev">下载功能开发中...</string>
+    <string name="msg_download_enqueued">已加入下载队列：%1$d 个</string>
+    <string name="msg_storage_permission_denied">未授予存储权限，无法下载（Android 9 及以下需要该权限）</string>
 
     <string description="Lets the user know that the time unit being changed is hour. Appears on the top of the TimePicker component. [CHAR_LIMIT=8]" name="wear_m3c_time_picker_hour">Hour</string>
     <string description="Lets the user know that the time unit being changed is minute. Appears on the top of the TimePicker component. [CHAR_LIMIT=8]" name="wear_m3c_time_picker_minute">Minute</string>

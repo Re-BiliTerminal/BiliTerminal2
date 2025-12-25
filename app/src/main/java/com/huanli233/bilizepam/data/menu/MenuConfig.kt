@@ -6,6 +6,7 @@ import androidx.compose.material.icons.automirrored.outlined.Login
 import androidx.compose.material.icons.automirrored.outlined.PlaylistPlay
 import androidx.compose.material.icons.outlined.Newspaper
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -20,6 +21,7 @@ val DEFAULT_MENU_LIST = listOf(
     menuItem("login", NavRoutes.LOGIN, R.string.login, Icons.AutoMirrored.Outlined.Login, requireNotLoggedIn = true, notMenuActivity = true),
     menuItem("recommend", Screen.Recommend.route, R.string.recommend, Icons.AutoMirrored.Outlined.PlaylistPlay),
     menuItem("dynamic", Screen.Dynamic.route, R.string.dynamic, Icons.Outlined.Newspaper, requireLoggedIn = true),
+    menuItem("download_manager", Screen.DownloadList.route, R.string.download_manager, Icons.Outlined.Download),
     menuItem("my_space", Screen.MySpace.route, R.string.my_space, Icons.Outlined.Person, requireLoggedIn = true),
     menuItem("search", Screen.Search.route, R.string.search, Icons.Outlined.Search),
     menuItem("settings", Screen.Settings.route, R.string.settings, Icons.Outlined.Settings, required = true)

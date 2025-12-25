@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.huanli233.bilizepam.api.apiResultNonNull
 import com.huanli233.bilizepam.api.bilibiliApi
+import com.huanli233.bilizepam.data.download.DownloadManager
+import com.huanli233.bilizepam.data.download.DownloadRequest
 import com.huanli233.bilizepam.data.repository.VideoRepository
 import com.huanli233.bilizepam.data.setting.LocalData
 import com.huanli233.biliwebapi.api.interfaces.IVideoApi
@@ -32,7 +34,8 @@ private const val BILIBILI_REFERER = "https://bilibili.com"
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
-    private val videoRepository: VideoRepository
+    private val videoRepository: VideoRepository,
+    private val downloadManager: DownloadManager
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow(PlayerUiState())
@@ -135,6 +138,38 @@ class PlayerViewModel @Inject constructor(
             false
         }
     }
+
+     fun enqueueDownload(aid: Long, cid: Long, title: String) {
+         if (aid <= 0L || cid <= 0L) return
+
+         viewModelScope.launch {
+             val quality = _uiState.value.currentQuality
+             val playUrlResult = bilibiliApi.api(IVideoApi::class) {
+                 getPlayUrl(aid = aid, cid = cid, qn = quality)
+             }.apiResultNonNull()
+
+             val url = playUrlResult.getOrNull()?.durl?.firstOrNull()?.url.orEmpty()
+             if (url.isBlank()) return@launch
+
+             val safeTitle = sanitizeFileName(title)
+             val fileName = if (safeTitle.isBlank()) {
+                 "video_${aid}_$cid.mp4"
+             } else {
+                 "$safeTitle-$cid.mp4"
+             }
+
+             downloadManager.enqueue(
+                DownloadRequest(
+                    key = "video_${aid}_${cid}_$quality",
+                    url = url,
+                    headersJson = "{\"Referer\":\"$BILIBILI_REFERER\",\"User-Agent\":\"$BILIBILI_USER_AGENT\"}",
+                    coverUrl = uiState.value.coverUrl.takeIf { it.isNotBlank() },
+                    fileName = fileName,
+                    mimeType = "video/mp4"
+                )
+            )
+         }
+     }
     
     fun playVideo(videoUrl: String) {
         if (videoUrl.isEmpty()) return
@@ -181,7 +216,8 @@ class PlayerViewModel @Inject constructor(
                     }
                     _uiState.value = _uiState.value.copy(
                         pages = pages,
-                        title = videoInfo.title
+                        title = videoInfo.title,
+                        coverUrl = videoInfo.pic
                     )
                 }
             } catch (e: Exception) {
@@ -447,6 +483,21 @@ class PlayerViewModel @Inject constructor(
     }
 }
 
+ private fun sanitizeFileName(value: String): String {
+     return value
+         .replace("\\\\", "_")
+         .replace("/", "_")
+         .replace(":", "_")
+         .replace("*", "_")
+         .replace("?", "_")
+         .replace("\"", "_")
+         .replace("<", "_")
+         .replace(">", "_")
+         .replace("|", "_")
+         .trim()
+         .take(80)
+ }
+
 data class PlayerUiState(
     val isLoading: Boolean = false,
     val isLoadingDanmaku: Boolean = false,
@@ -455,6 +506,7 @@ data class PlayerUiState(
     val videoUrl: String = "",
     val danmakuUrl: String = "",
     val title: String = "",
+    val coverUrl: String = "",
     val aid: Long = 0,
     val cid: Long = 0,
     val pages: List<VideoPage> = emptyList(),

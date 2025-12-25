@@ -1,5 +1,8 @@
 package com.huanli233.bilizepam.ui.screens.video
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
@@ -52,6 +55,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -82,6 +87,7 @@ import com.huanli233.bilizepam.utils.extensions.formatToDate
 import com.huanli233.bilizepam.utils.extensions.toTime
 import com.huanli233.biliwebapi.bean.user.UserInfo
 import androidx.core.graphics.toColorInt
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.foundation.isRoundDevice
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
@@ -110,6 +116,28 @@ fun VideoDetailScreen(
     var showCoinDialog by remember { mutableStateOf(false) }
     var showFavoriteDialog by remember { mutableStateOf(false) }
     var showDownloadDialog by remember { mutableStateOf(false) }
+
+    var pendingDownloadPages by remember { mutableStateOf<List<VideoPage>?>(null) }
+
+    val storagePermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        val pages = pendingDownloadPages
+        pendingDownloadPages = null
+        if (granted && pages != null) {
+            viewModel.enqueueDownloads(pages)
+        } else if (!granted) {
+            MsgUtil.showMsg(context.getString(R.string.msg_storage_permission_denied))
+        }
+    }
+
+    fun canWriteToPublicDownloads(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) return true
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED
+    }
 
     LaunchedEffect(uiState.videoInfo) {
         val videoInfo = uiState.videoInfo
@@ -151,6 +179,9 @@ fun VideoDetailScreen(
                 }
                 is VideoDetailEvent.OperationFailed -> {
                     MsgUtil.showMsg(event.message ?: context.getString(R.string.msg_operation_failed))
+                }
+                is VideoDetailEvent.DownloadEnqueued -> {
+                    MsgUtil.showMsg(context.getString(R.string.msg_download_enqueued, event.count))
                 }
             }
         }
@@ -339,7 +370,12 @@ fun VideoDetailScreen(
             pages = pages,
             onDismiss = { showDownloadDialog = false },
             onConfirm = { selectedPages ->
-                MsgUtil.showMsg(context.getString(R.string.msg_download_dev))
+                if (canWriteToPublicDownloads()) {
+                    viewModel.enqueueDownloads(selectedPages)
+                } else {
+                    pendingDownloadPages = selectedPages
+                    storagePermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                }
                 showDownloadDialog = false
             }
         )

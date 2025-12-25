@@ -15,6 +15,8 @@ sealed class Screen(val route: String, @StringRes val titleResId: Int) {
     data object Dynamic : Screen("dynamic", R.string.dynamic)
     data object Settings : Screen("settings_root", R.string.settings)
 
+    data object DownloadList : Screen("download_list", R.string.download_manager)
+
     data object UiSettings : Screen("settings_ui", R.string.settings_ui)
     data object PlayerSettings : Screen("settings_player", R.string.settings_player)
     data object About : Screen("settings_about", R.string.about)

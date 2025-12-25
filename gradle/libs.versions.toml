@@ -115,7 +115,7 @@ geetestSensebot = "4.4.4"
 brotliDec = "0.1.2"
 brotli4j = "1.18.0"
 xlog = "1.11.1"
-agp = "8.11.0"
+agp = "8.13.2"
 # noinspection GradleDependency
 kotlin = "2.1.20"
 # noinspection GradleDependency

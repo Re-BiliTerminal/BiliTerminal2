@@ -153,7 +153,12 @@
     <string name="open_source_info">Open Source Info</string>
     <string name="watch_later">Watch Later</string>
     <string name="relay">Repost</string>
-    <string name="download">Download</string>
+    <string name="download">Cache</string>
+    <string name="download_manager">Downloads</string>
+
+    <string name="msg_download_enqueued">Added to download queue: %1$d</string>
+
+    <string name="msg_storage_permission_denied">Storage permission not granted. Required on Android 9 and below.</string>
 
     <string name="not_set_text">Not set</string>
 

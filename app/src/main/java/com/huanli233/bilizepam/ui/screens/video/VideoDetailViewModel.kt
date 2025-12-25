@@ -7,6 +7,10 @@ import com.huanli233.bilizepam.api.apiResult
 import com.huanli233.bilizepam.api.apiResultNonNull
 import com.huanli233.bilizepam.api.bilibiliApi
 import com.huanli233.bilizepam.data.account.AccountManager
+import com.huanli233.bilizepam.data.download.DownloadManager
+import com.huanli233.bilizepam.data.download.DownloadRequest
+import com.huanli233.bilizepam.data.setting.LocalData
+import com.huanli233.bilizepam.ui.dialog.VideoPage
 import com.huanli233.biliwebapi.api.interfaces.IVideoApi
 import com.huanli233.biliwebapi.bean.video.FavoriteFolder
 import com.huanli233.biliwebapi.bean.video.Tag
@@ -43,11 +47,13 @@ sealed interface VideoDetailEvent {
     data object FavoriteSuccess : VideoDetailEvent
     data object WatchLaterSuccess : VideoDetailEvent
     data class OperationFailed(val message: String?) : VideoDetailEvent
+    data class DownloadEnqueued(val count: Int) : VideoDetailEvent
 }
 
 @HiltViewModel
 class VideoDetailViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val downloadManager: DownloadManager
 ) : ViewModel() {
 
     private val avid = savedStateHandle.get<Long>("avid") ?: 0
@@ -316,4 +322,72 @@ class VideoDetailViewModel @Inject constructor(
             }
         }
     }
+
+    fun enqueueDownloads(pages: List<VideoPage>) {
+        val videoInfo = _uiState.value.videoInfo ?: return
+        if (pages.isEmpty()) return
+
+        viewModelScope.launch {
+            val defaultQuality = LocalData.settings.playerSettings?.defaultQuality ?: 64
+            val title = sanitizeFileName(videoInfo.title)
+            var successCount = 0
+
+            for (page in pages) {
+                val playUrlResult = bilibiliApi.api(IVideoApi::class) {
+                    getPlayUrl(aid = videoInfo.aid, cid = page.cid, qn = defaultQuality)
+                }.apiResultNonNull()
+
+                val playUrlData = playUrlResult.getOrNull()
+                val url = playUrlData?.durl?.firstOrNull()?.url.orEmpty()
+
+                if (url.isBlank()) {
+                    _events.send(VideoDetailEvent.OperationFailed("获取下载地址失败"))
+                    continue
+                }
+
+                val fileName = buildString {
+                    append(title)
+                    append("-P")
+                    append(page.page)
+                    val part = sanitizeFileName(page.part)
+                    if (part.isNotBlank()) {
+                        append("-")
+                        append(part)
+                    }
+                    append(".mp4")
+                }
+
+                downloadManager.enqueue(
+                    DownloadRequest(
+                        key = "video_${videoInfo.aid}_${page.cid}_$defaultQuality",
+                        url = url,
+                        headersJson = "{\"Referer\":\"https://bilibili.com\",\"User-Agent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36\"}",
+                        coverUrl = videoInfo.pic,
+                        fileName = fileName,
+                        mimeType = "video/mp4"
+                    )
+                )
+                successCount += 1
+            }
+
+            if (successCount > 0) {
+                _events.send(VideoDetailEvent.DownloadEnqueued(successCount))
+            }
+        }
+    }
+}
+
+private fun sanitizeFileName(value: String): String {
+    return value
+        .replace("\\\\", "_")
+        .replace("/", "_")
+        .replace(":", "_")
+        .replace("*", "_")
+        .replace("?", "_")
+        .replace("\"", "_")
+        .replace("<", "_")
+        .replace(">", "_")
+        .replace("|", "_")
+        .trim()
+        .take(80)
 }
