@@ -97,6 +97,21 @@ fun PlayerSettingsScreen(
 
                 item {
                     SwitchSettingsItem(
+                        title = stringResource(id = R.string.enable_one_finger_zoom),
+                        summary = stringResource(id = R.string.enable_one_finger_zoom_desc),
+                        checked = currentSettings.playerSettings.enableOneFingerZoom,
+                        onCheckedChange = {
+                            viewModel.updatePlayerSettings(
+                                currentSettings.playerSettings.edit {
+                                    enableOneFingerZoom = it
+                                }
+                            )
+                        }
+                    )
+                }
+
+                item {
+                    SwitchSettingsItem(
                         title = stringResource(id = R.string.auto_play),
                         summary = stringResource(id = R.string.auto_play_desc),
                         checked = currentSettings.playerSettings.autoPlay,

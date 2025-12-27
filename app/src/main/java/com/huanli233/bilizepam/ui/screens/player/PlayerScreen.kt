@@ -20,10 +20,12 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -93,8 +95,10 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.PointerInputScope
+import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -118,6 +122,7 @@ import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.ui.dialog.AdaptDialog
 import com.huanli233.bilizepam.utils.MsgUtil
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withTimeoutOrNull
 import master.flame.danmaku.controller.DrawHandler
 import master.flame.danmaku.danmaku.model.BaseDanmaku
 import master.flame.danmaku.danmaku.model.DanmakuTimer
@@ -160,6 +165,13 @@ fun PlayerScreen(
     var playbackSpeed by remember { mutableFloatStateOf(1f) }
     var isLongPressing by remember { mutableStateOf(false) }
     val videoAspectRatio = uiState.videoAspectRatio
+
+    val viewConfig = LocalViewConfiguration.current
+    val touchSlopPx = viewConfig.touchSlop
+    val doubleTapTimeoutMillis = viewConfig.doubleTapTimeoutMillis
+    val longPressTimeoutMillis = viewConfig.longPressTimeoutMillis
+
+    val enableOneFingerZoom = playerSettings?.enableOneFingerZoom == true
 
     var videoScale by remember { mutableFloatStateOf(1f) }
     var videoOffset by remember { mutableStateOf(Offset.Zero) }
@@ -311,7 +323,7 @@ fun PlayerScreen(
                 }
                 delta
             }
-            
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -338,360 +350,502 @@ fun PlayerScreen(
                     )
                 }
 
-                val zoomGestureModifier = Modifier
-                    .onSizeChanged { size ->
-                        videoContainerSizePx = size
-                        videoOffset = clampVideoOffset(videoOffset, videoScale)
-                    }
-                    .pointerInput(Unit) {
-                        detectTransformGestures { _, pan, zoom, _ ->
+                val videoMeasureModifier = Modifier.onSizeChanged { size ->
+                    videoContainerSizePx = size
+                    videoOffset = clampVideoOffset(videoOffset, videoScale)
+                }
+
+                val videoGestureModifier = Modifier.pointerInput(
+                    enableOneFingerZoom,
+                    videoContainerSizePx,
+                    touchSlopPx,
+                    doubleTapTimeoutMillis,
+                    longPressTimeoutMillis
+                ) {
+                    awaitEachGesture {
+                        fun togglePlayPause() {
+                            if (isPlaying) {
+                                viewModel.ijkPlayer.pause()
+                                isPlaying = false
+                            } else {
+                                viewModel.ijkPlayer.start()
+                                isPlaying = true
+                            }
+                        }
+
+                        fun applyTwoFingerTransform(c1: PointerInputChange, c2: PointerInputChange) {
+                            val prevP1 = c1.previousPosition
+                            val prevP2 = c2.previousPosition
+                            val curP1 = c1.position
+                            val curP2 = c2.position
+
+                            val prevCentroid = (prevP1 + prevP2) / 2f
+                            val curCentroid = (curP1 + curP2) / 2f
+                            val pan = curCentroid - prevCentroid
+
+                            val prevDiff = prevP1 - prevP2
+                            val curDiff = curP1 - curP2
+                            val prevDist = sqrt(prevDiff.x * prevDiff.x + prevDiff.y * prevDiff.y)
+                            val curDist = sqrt(curDiff.x * curDiff.x + curDiff.y * curDiff.y)
+                            val zoom = if (prevDist > 0f) curDist / prevDist else 1f
+
                             val newScale = (videoScale * zoom).coerceIn(1f, 3f)
                             val newOffset = if (newScale <= 1f) {
                                 Offset.Zero
                             } else {
                                 clampVideoOffset(videoOffset + pan, newScale)
                             }
+
                             videoScale = newScale
                             videoOffset = newOffset
                         }
+
+                        val firstDown = awaitFirstDown(requireUnconsumed = false)
+                        val firstPointerId = firstDown.id
+                        val firstDownPosition = firstDown.position
+
+                        var didLongPress = false
+                        var didPan = false
+
+                        while (true) {
+                            val event = awaitPointerEvent()
+                            val pressed = event.changes.filter { it.pressed }
+                            if (pressed.size >= 2) {
+                                val p1 = pressed[0]
+                                val p2 = pressed[1]
+                                while (true) {
+                                    val e = awaitPointerEvent()
+                                    val p = e.changes.filter { it.pressed }
+                                    if (p.size < 2) break
+                                    val c1 = p[0]
+                                    val c2 = p[1]
+                                    applyTwoFingerTransform(c1, c2)
+                                    c1.consume()
+                                    c2.consume()
+                                }
+                                return@awaitEachGesture
+                            }
+
+                            val change = event.changes.firstOrNull { it.id == firstPointerId } ?: break
+                            if (!change.pressed) break
+
+                            val totalDelta = change.position - firstDownPosition
+                            val movedDistance = sqrt(totalDelta.x * totalDelta.x + totalDelta.y * totalDelta.y)
+
+                            if (!didLongPress && !didPan && movedDistance < touchSlopPx) {
+                                val elapsed = change.uptimeMillis - firstDown.uptimeMillis
+                                if (elapsed >= longPressTimeoutMillis) {
+                                    didLongPress = true
+                                    isLongPressing = true
+                                    playbackSpeed = 2f
+                                    viewModel.ijkPlayer.setSpeed(2f)
+                                }
+                            }
+
+                            if (didLongPress) {
+                                change.consume()
+                                continue
+                            }
+
+                            if (!didPan && videoScale > 1f && movedDistance >= touchSlopPx) {
+                                didPan = true
+                            }
+
+                            if (didPan) {
+                                val delta = change.position - change.previousPosition
+                                val newOffset = clampVideoOffset(videoOffset + delta, videoScale)
+                                if (newOffset != videoOffset) {
+                                    videoOffset = newOffset
+                                }
+                                change.consume()
+                                continue
+                            }
+                        }
+
+                        if (didLongPress) {
+                            isLongPressing = false
+                            playbackSpeed = 1f
+                            viewModel.ijkPlayer.setSpeed(1f)
+                            return@awaitEachGesture
+                        }
+
+                        if (didPan) {
+                            return@awaitEachGesture
+                        }
+
+                        val secondDown = withTimeoutOrNull(doubleTapTimeoutMillis.toLong()) {
+                            awaitFirstDown(requireUnconsumed = false)
+                        }
+
+                        if (secondDown == null) {
+                            showControls = !showControls
+                            return@awaitEachGesture
+                        }
+
+                        if (!enableOneFingerZoom) {
+                            togglePlayPause()
+                            return@awaitEachGesture
+                        }
+
+                        val secondPointerId = secondDown.id
+                        val secondDownPosition = secondDown.position
+                        val zoomStartSlopPx = touchSlopPx * 0.5f
+                        var hasDragged = false
+
+                        while (true) {
+                            val event = awaitPointerEvent()
+                            val pressed = event.changes.filter { it.pressed }
+                            if (pressed.size >= 2) {
+                                val p1 = pressed[0]
+                                val p2 = pressed[1]
+                                while (true) {
+                                    val e = awaitPointerEvent()
+                                    val p = e.changes.filter { it.pressed }
+                                    if (p.size < 2) break
+                                    val c1 = p[0]
+                                    val c2 = p[1]
+                                    applyTwoFingerTransform(c1, c2)
+                                    c1.consume()
+                                    c2.consume()
+                                }
+                                return@awaitEachGesture
+                            }
+
+                            val change = event.changes.firstOrNull { it.id == secondPointerId } ?: break
+                            if (!change.pressed) break
+
+                            val delta = change.position - change.previousPosition
+                            if (!hasDragged) {
+                                val totalDelta = change.position - secondDownPosition
+                                val totalDistance = sqrt(totalDelta.x * totalDelta.x + totalDelta.y * totalDelta.y)
+                                if (totalDistance < zoomStartSlopPx) {
+                                    change.consume()
+                                    continue
+                                }
+                            }
+
+                            hasDragged = true
+                            val sensitivity = 0.005f
+                            val scaleFactor = (1f - delta.y * sensitivity)
+                            val newScale = (videoScale * scaleFactor).coerceIn(1f, 3f)
+                            videoScale = newScale
+                            if (newScale <= 1f) {
+                                videoOffset = Offset.Zero
+                            } else {
+                                videoOffset = clampVideoOffset(videoOffset, newScale)
+                            }
+                            change.consume()
+                        }
+
+                        if (!hasDragged) {
+                            togglePlayPause()
+                        }
+                    }
+                }
+
+                val videoContainerModifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentSize(Alignment.Center)
+                    .aspectRatio(videoAspectRatio, matchHeightConstraintsFirst = false)
+                    .then(videoMeasureModifier)
+                    .graphicsLayer {
+                        scaleX = videoScale
+                        scaleY = videoScale
+                        translationX = videoOffset.x
+                        translationY = videoOffset.y
                     }
 
                 if (playerSettings?.useTextureView == true) {
-                    AndroidView(
-                        factory = { ctx ->
-                            Log.d("PlayerScreen", "Creating FrameLayout with TextureView + DanmakuView + LoadingOverlay")
-                            FrameLayout(ctx).apply {
-                                val textureView = TextureView(ctx).apply {
-                                    surfaceTextureListener = object : TextureView.SurfaceTextureListener {
-                                        override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
-                                            android.util.Log.d("PlayerScreen", "TextureView surface available: ${width}x${height}")
-                                            viewModel.ijkPlayer.setSurface(Surface(surface))
-                                        }
-
-                                        override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
-                                            android.util.Log.d("PlayerScreen", "TextureView size changed: ${width}x${height}")
-                                            viewModel.ijkPlayer.setSurface(Surface(surface))
-                                        }
-
-                                        override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
-                                            android.util.Log.d("PlayerScreen", "TextureView surface destroyed")
-                                            return false
-                                        }
-
-                                        override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
-                                        }
-                                    }
-                                }
-
-                                val danmakuOverlay = DanmakuView(ctx).apply {
-                                    enableDanmakuDrawingCache(true)
-                                    setBackgroundColor(android.graphics.Color.TRANSPARENT)
-                                    danmakuView = this
-                                    setCallback(object : DrawHandler.Callback {
-                                        override fun prepared() {
-                                            start()
-                                            seekTo(currentPosition)
-
-                                            if (!viewModel.ijkPlayer.isPlaying) {
-                                                pause()
-                                            }
-
-                                            if (uiState.isDanmakuVisible) {
-                                                show()
-                                            }
-                                        }
-
-                                        override fun updateTimer(timer: DanmakuTimer) {}
-                                        override fun danmakuShown(danmaku: BaseDanmaku?) {}
-                                        override fun drawingFinished() {}
-                                    })
-                                }
-
-                                // 创建LoadingOverlay - 使用ComposeView确保正确的层级
-                                val loadingOverlay = androidx.compose.ui.platform.ComposeView(ctx).apply {
-                                    setContent {
-                                        val currentUiState by viewModel.uiState.collectAsState()
-                                        val shouldShowVideoLoading = currentUiState.isLoading || (!isVideoReady && currentUiState.videoUrl.isEmpty())
-                                        
-                                        if (shouldShowVideoLoading) {
-                                            Box(
-                                                modifier = Modifier
-                                                    .fillMaxSize()
-                                                    .background(Color.Black.copy(alpha = 0.9f)),
-                                                contentAlignment = Alignment.Center
-                                            ) {
-                                                Column(
-                                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                                    verticalArrangement = Arrangement.Center
-                                                ) {
-                                                    CircularProgressIndicator(
-                                                        color = MaterialTheme.colorScheme.primary,
-                                                        modifier = Modifier.size(48.dp),
-                                                        strokeWidth = 4.dp
-                                                    )
-                                                    Spacer(modifier = Modifier.height(16.dp))
-                                                    Text(
-                                                        text = if (currentUiState.isLoading) "Loading video..." else "Preparing player...",
-                                                        color = Color.White,
-                                                        style = MaterialTheme.typography.bodyMedium
-                                                    )
-                                                    Spacer(modifier = Modifier.height(8.dp))
-                                                    Text(
-                                                        text = "TextureView mode",
-                                                        color = Color.Gray,
-                                                        style = MaterialTheme.typography.bodySmall
-                                                    )
-                                                }
-                                            }
-                                        }
-                                        
-                                        // 错误状态显示
-                                        currentUiState.error?.let { error ->
-                                            Box(
-                                                modifier = Modifier
-                                                    .fillMaxSize()
-                                                    .background(Color.Black.copy(alpha = 0.9f)),
-                                                contentAlignment = Alignment.Center
-                                            ) {
-                                                Column(
-                                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                                    verticalArrangement = Arrangement.Center
-                                                ) {
-                                                    Text(
-                                                        text = "Failed to load video",
-                                                        color = Color.White,
-                                                        style = MaterialTheme.typography.bodyLarge,
-                                                        fontWeight = FontWeight.Bold
-                                                    )
-                                                    Spacer(modifier = Modifier.height(8.dp))
-                                                    Text(
-                                                        text = error,
-                                                        color = Color.Red,
-                                                        style = MaterialTheme.typography.bodySmall,
-                                                        textAlign = TextAlign.Center
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                                // 添加视图到FrameLayout，确保正确的层级顺序
-                                addView(textureView, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-                                addView(danmakuOverlay, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-                                addView(loadingOverlay, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-                            }
-                        },
-                        update = { root ->
-                            val danmakuOverlay = root.getChildAt(1) as DanmakuView
-                            if (danmakuParser != null) {
-                                try {
-                                    danmakuOverlay.prepare(danmakuParser, danmakuContext)
-                                } catch (e: Exception) {
-                                    Log.e("Danmaku", "Error preparing danmaku view", e)
-                                    danmakuError = "Error preparing danmaku: ${e.message}"
-                                }
-                            }
-                        },
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .wrapContentSize(Alignment.Center)
-                            .aspectRatio(videoAspectRatio, matchHeightConstraintsFirst = false)
-                            .then(zoomGestureModifier)
-                            .graphicsLayer {
-                                scaleX = videoScale
-                                scaleY = videoScale
-                                translationX = videoOffset.x
-                                translationY = videoOffset.y
-                            }
-                            .pointerInput(Unit) {
-                                detectTapGestures(
-                                    onDoubleTap = {
-                                        if (isPlaying) {
-                                            viewModel.ijkPlayer.pause()
-                                            isPlaying = false
-                                        } else {
-                                            viewModel.ijkPlayer.start()
-                                            isPlaying = true
-                                        }
-                                    },
-                                    onLongPress = {
-                                        isLongPressing = true
-                                        playbackSpeed = 2f
-                                        viewModel.ijkPlayer.setSpeed(2f)
-                                    },
-                                    onPress = {
-                                        tryAwaitRelease()
-                                        if (isLongPressing) {
-                                            isLongPressing = false
-                                            playbackSpeed = 1f
-                                            viewModel.ijkPlayer.setSpeed(1f)
-                                        }
-                                    }
+                    Box(modifier = videoContainerModifier) {
+                        AndroidView(
+                            factory = { ctx ->
+                                Log.d(
+                                    "PlayerScreen",
+                                    "Creating FrameLayout with TextureView + DanmakuView + LoadingOverlay"
                                 )
-                            }
-                    )
-                } else {
-                    AndroidView(
-                        factory = { ctx ->
-                            android.util.Log.d("PlayerScreen", "Creating SurfaceView")
-                            SurfaceView(ctx)
-                        },
-                        update = { surfaceView ->
-                            surfaceView.holder.addCallback(object :
-                                android.view.SurfaceHolder.Callback {
-                                override fun surfaceCreated(holder: android.view.SurfaceHolder) {
-                                    android.util.Log.d("PlayerScreen", "SurfaceView created")
-                                    viewModel.ijkPlayer.setDisplay(holder)
+                                FrameLayout(ctx).apply {
+                                    val textureView = TextureView(ctx).apply {
+                                        surfaceTextureListener =
+                                            object : TextureView.SurfaceTextureListener {
+                                                override fun onSurfaceTextureAvailable(
+                                                    surface: SurfaceTexture,
+                                                    width: Int,
+                                                    height: Int
+                                                ) {
+                                                    android.util.Log.d(
+                                                        "PlayerScreen",
+                                                        "TextureView surface available: ${width}x${height}"
+                                                    )
+                                                    viewModel.ijkPlayer.setSurface(Surface(surface))
+                                                }
 
-                                    // 自动播放逻辑已在PlayerViewModel的onPrepared中处理
-                                }
+                                                override fun onSurfaceTextureSizeChanged(
+                                                    surface: SurfaceTexture,
+                                                    width: Int,
+                                                    height: Int
+                                                ) {
+                                                    android.util.Log.d(
+                                                        "PlayerScreen",
+                                                        "TextureView size changed: ${width}x${height}"
+                                                    )
+                                                    viewModel.ijkPlayer.setSurface(Surface(surface))
+                                                }
 
-                                override fun surfaceChanged(
-                                    holder: android.view.SurfaceHolder,
-                                    format: Int,
-                                    width: Int,
-                                    height: Int
-                                ) {
-                                    android.util.Log.d(
-                                        "PlayerScreen",
-                                        "SurfaceView changed: ${width}x${height}"
+                                                override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
+                                                    android.util.Log.d(
+                                                        "PlayerScreen",
+                                                        "TextureView surface destroyed"
+                                                    )
+                                                    return false
+                                                }
+
+                                                override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
+                                                }
+                                            }
+                                    }
+
+                                    val danmakuOverlay = DanmakuView(ctx).apply {
+                                        enableDanmakuDrawingCache(true)
+                                        setBackgroundColor(android.graphics.Color.TRANSPARENT)
+                                        danmakuView = this
+                                        setCallback(object : DrawHandler.Callback {
+                                            override fun prepared() {
+                                                start()
+                                                seekTo(currentPosition)
+
+                                                if (!viewModel.ijkPlayer.isPlaying) {
+                                                    pause()
+                                                }
+
+                                                if (uiState.isDanmakuVisible) {
+                                                    show()
+                                                }
+                                            }
+
+                                            override fun updateTimer(timer: DanmakuTimer) {}
+                                            override fun danmakuShown(danmaku: BaseDanmaku?) {}
+                                            override fun drawingFinished() {}
+                                        })
+                                    }
+
+                                    // 创建LoadingOverlay - 使用ComposeView确保正确的层级
+                                    val loadingOverlay =
+                                        androidx.compose.ui.platform.ComposeView(ctx).apply {
+                                            setContent {
+                                                val currentUiState by viewModel.uiState.collectAsState()
+                                                val shouldShowVideoLoading =
+                                                    currentUiState.isLoading || (!isVideoReady && currentUiState.videoUrl.isEmpty())
+
+                                                if (shouldShowVideoLoading) {
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .fillMaxSize()
+                                                            .background(Color.Black.copy(alpha = 0.9f)),
+                                                        contentAlignment = Alignment.Center
+                                                    ) {
+                                                        Column(
+                                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                                            verticalArrangement = Arrangement.Center
+                                                        ) {
+                                                            CircularProgressIndicator(
+                                                                color = MaterialTheme.colorScheme.primary,
+                                                                modifier = Modifier.size(48.dp),
+                                                                strokeWidth = 4.dp
+                                                            )
+                                                            Spacer(modifier = Modifier.height(16.dp))
+                                                            Text(
+                                                                text = if (currentUiState.isLoading) "Loading video..." else "Preparing player...",
+                                                                color = Color.White,
+                                                                style = MaterialTheme.typography.bodyMedium
+                                                            )
+                                                            Spacer(modifier = Modifier.height(8.dp))
+                                                            Text(
+                                                                text = "TextureView mode",
+                                                                color = Color.Gray,
+                                                                style = MaterialTheme.typography.bodySmall
+                                                            )
+                                                        }
+                                                    }
+                                                }
+
+                                                // 错误状态显示
+                                                currentUiState.error?.let { error ->
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .fillMaxSize()
+                                                            .background(Color.Black.copy(alpha = 0.9f)),
+                                                        contentAlignment = Alignment.Center
+                                                    ) {
+                                                        Column(
+                                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                                            verticalArrangement = Arrangement.Center
+                                                        ) {
+                                                            Text(
+                                                                text = "Failed to load video",
+                                                                color = Color.White,
+                                                                style = MaterialTheme.typography.bodyLarge,
+                                                                fontWeight = FontWeight.Bold
+                                                            )
+                                                            Spacer(modifier = Modifier.height(8.dp))
+                                                            Text(
+                                                                text = error,
+                                                                color = Color.Red,
+                                                                style = MaterialTheme.typography.bodySmall,
+                                                                textAlign = TextAlign.Center
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                    // 添加视图到FrameLayout，确保正确的层级顺序
+                                    addView(
+                                        textureView,
+                                        FrameLayout.LayoutParams(
+                                            ViewGroup.LayoutParams.MATCH_PARENT,
+                                            ViewGroup.LayoutParams.MATCH_PARENT
+                                        )
                                     )
-                                    viewModel.ijkPlayer.setDisplay(holder)
+                                    addView(
+                                        danmakuOverlay,
+                                        FrameLayout.LayoutParams(
+                                            ViewGroup.LayoutParams.MATCH_PARENT,
+                                            ViewGroup.LayoutParams.MATCH_PARENT
+                                        )
+                                    )
+                                    addView(
+                                        loadingOverlay,
+                                        FrameLayout.LayoutParams(
+                                            ViewGroup.LayoutParams.MATCH_PARENT,
+                                            ViewGroup.LayoutParams.MATCH_PARENT
+                                        )
+                                    )
                                 }
-
-                                override fun surfaceDestroyed(holder: android.view.SurfaceHolder) {
-                                    android.util.Log.d("PlayerScreen", "SurfaceView destroyed")
-                                }
-                            })
-                        },
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .wrapContentSize(Alignment.Center)
-                            .aspectRatio(videoAspectRatio, matchHeightConstraintsFirst = false)
-                            .then(zoomGestureModifier)
-                            .graphicsLayer {
-                                scaleX = videoScale
-                                scaleY = videoScale
-                                translationX = videoOffset.x
-                                translationY = videoOffset.y
-                            }
-                            .pointerInput(Unit) {
-                                detectTapGestures(
-                                    onDoubleTap = {
-                                        if (isPlaying) {
-                                            viewModel.ijkPlayer.pause()
-                                            isPlaying = false
-                                        } else {
-                                            viewModel.ijkPlayer.start()
-                                            isPlaying = true
-                                        }
-                                    },
-                                    onLongPress = {
-                                        isLongPressing = true
-                                        playbackSpeed = 2f
-                                        viewModel.ijkPlayer.setSpeed(2f)
-                                    },
-                                    onPress = {
-                                        tryAwaitRelease()
-                                        if (isLongPressing) {
-                                            isLongPressing = false
-                                            playbackSpeed = 1f
-                                            viewModel.ijkPlayer.setSpeed(1f)
-                                        }
+                            },
+                            update = { root ->
+                                val danmakuOverlay = root.getChildAt(1) as DanmakuView
+                                if (danmakuParser != null) {
+                                    try {
+                                        danmakuOverlay.prepare(danmakuParser, danmakuContext)
+                                    } catch (e: Exception) {
+                                        Log.e("Danmaku", "Error preparing danmaku view", e)
+                                        danmakuError = "Error preparing danmaku: ${e.message}"
                                     }
-                                )
-                            }
-                    )
+                                }
+                            },
+                            modifier = Modifier.fillMaxSize()
+                        )
 
-                    AnimatedVisibility(
-                        visible = buffering,
-                        enter = fadeIn(),
-                        exit = fadeOut()
-                    ) {
                         Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(48.dp),
-                            )
+                            modifier = Modifier
+                                .matchParentSize()
+                                .then(videoGestureModifier)
+                        )
+                    }
+                } else {
+                    Box(modifier = videoContainerModifier) {
+                        AndroidView(
+                            factory = { ctx ->
+                                android.util.Log.d("PlayerScreen", "Creating SurfaceView")
+                                SurfaceView(ctx)
+                            },
+                            update = { surfaceView ->
+                                surfaceView.holder.addCallback(object :
+                                    android.view.SurfaceHolder.Callback {
+                                    override fun surfaceCreated(holder: android.view.SurfaceHolder) {
+                                        android.util.Log.d("PlayerScreen", "SurfaceView created")
+                                        viewModel.ijkPlayer.setDisplay(holder)
+
+                                        // 自动播放逻辑已在PlayerViewModel的onPrepared中处理
+                                    }
+
+                                    override fun surfaceChanged(
+                                        holder: android.view.SurfaceHolder,
+                                        format: Int,
+                                        width: Int,
+                                        height: Int
+                                    ) {
+                                        android.util.Log.d(
+                                            "PlayerScreen",
+                                            "SurfaceView changed: ${width}x${height}"
+                                        )
+                                        viewModel.ijkPlayer.setDisplay(holder)
+                                    }
+
+                                    override fun surfaceDestroyed(holder: android.view.SurfaceHolder) {
+                                        android.util.Log.d("PlayerScreen", "SurfaceView destroyed")
+                                    }
+                                })
+                            },
+                            modifier = Modifier.fillMaxSize()
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .then(videoGestureModifier)
+                        )
+                    }
+                }
+                AnimatedVisibility(
+                    visible = buffering,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(48.dp),
+                        )
+                    }
+                }
+
+                var isDanmakuPrepared by remember { mutableStateOf(false) }
+
+                LaunchedEffect(isPlaying, isDanmakuPrepared) {
+                    if (isDanmakuPrepared && danmakuView != null) {
+                        if (isPlaying) {
+                            danmakuView?.resume()
+                        } else {
+                            danmakuView?.pause()
                         }
                     }
+                }
 
-                    var isDanmakuPrepared by remember { mutableStateOf(false) }
-
-                    LaunchedEffect(isPlaying, isDanmakuPrepared) {
-                        if (isDanmakuPrepared && danmakuView != null) {
-                            if (isPlaying) {
-                                danmakuView?.resume()
-                            } else {
-                                danmakuView?.pause()
-                            }
+                LaunchedEffect(uiState.isDanmakuVisible, isDanmakuPrepared) {
+                    android.util.Log.d(
+                        "Danmaku",
+                        "Visibility changed - isDanmakuVisible: ${uiState.isDanmakuVisible}, isDanmakuPrepared: $isDanmakuPrepared"
+                    )
+                    if (isDanmakuPrepared && danmakuView != null) {
+                        if (uiState.isDanmakuVisible) {
+                            danmakuView?.show()
+                            android.util.Log.d("Danmaku", "DanmakuView.show() called")
+                        } else {
+                            danmakuView?.hide()
+                            android.util.Log.d("Danmaku", "DanmakuView.hide() called")
                         }
                     }
+                }
 
-                    LaunchedEffect(uiState.isDanmakuVisible, isDanmakuPrepared) {
-                        android.util.Log.d("Danmaku", "Visibility changed - isDanmakuVisible: ${uiState.isDanmakuVisible}, isDanmakuPrepared: $isDanmakuPrepared")
-                        if (isDanmakuPrepared && danmakuView != null) {
-                            if (uiState.isDanmakuVisible) {
-                                danmakuView?.show()
-                                android.util.Log.d("Danmaku", "DanmakuView.show() called")
-                            } else {
-                                danmakuView?.hide()
-                                android.util.Log.d("Danmaku", "DanmakuView.hide() called")
-                            }
-                        }
+                LaunchedEffect(playbackSpeed, isDanmakuPrepared) {
+                    if (isDanmakuPrepared && danmakuView != null) {
+                        danmakuView?.setSpeed(playbackSpeed)
                     }
+                }
 
-                    LaunchedEffect(playbackSpeed, isDanmakuPrepared) {
-                        if (isDanmakuPrepared && danmakuView != null) {
-                            danmakuView?.setSpeed(playbackSpeed)
-                        }
-                    }
-
-                    // 视频加载动画 - 仅在SurfaceView模式下显示（TextureView模式在AndroidView内部处理）
-                    if (playerSettings?.useTextureView != true) {
-                        val shouldShowVideoLoading = uiState.isLoading || (!isVideoReady && uiState.videoUrl.isEmpty())
-                        if (shouldShowVideoLoading) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(Color.Black.copy(alpha = 0.7f)),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.Center
-                                ) {
-                                    CircularProgressIndicator(
-                                        color = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier.size(48.dp),
-                                        strokeWidth = 4.dp
-                                    )
-                                    Spacer(modifier = Modifier.height(16.dp))
-                                    Text(
-                                        text = if (uiState.isLoading) "Loading video..." else "Preparing player...",
-                                        color = Color.White,
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Text(
-                                        text = "SurfaceView mode",
-                                        color = Color.Gray,
-                                        style = MaterialTheme.typography.bodySmall
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    // 弹幕加载动画
-                    if (uiState.isLoadingDanmaku && !uiState.isLoading) {
+                // 视频加载动画 - 仅在SurfaceView模式下显示（TextureView模式在AndroidView内部处理）
+                if (playerSettings?.useTextureView != true) {
+                    val shouldShowVideoLoading =
+                        uiState.isLoading || (!isVideoReady && uiState.videoUrl.isEmpty())
+                    if (shouldShowVideoLoading) {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(16.dp),
+                                .background(Color.Black.copy(alpha = 0.7f)),
                             contentAlignment = Alignment.Center
                         ) {
                             Column(
@@ -700,245 +854,308 @@ fun PlayerScreen(
                             ) {
                                 CircularProgressIndicator(
                                     color = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(32.dp)
+                                    modifier = Modifier.size(48.dp),
+                                    strokeWidth = 4.dp
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = if (uiState.isLoading) "Loading video..." else "Preparing player...",
+                                    color = Color.White,
+                                    style = MaterialTheme.typography.bodyMedium
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(
-                                    text = "Loading danmaku...",
+                                    text = "SurfaceView mode",
+                                    color = Color.Gray,
                                     style = MaterialTheme.typography.bodySmall
                                 )
                             }
                         }
                     }
+                }
 
-                    // 视频错误显示 - 仅在SurfaceView模式下显示（TextureView模式在AndroidView内部处理）
-                    if (playerSettings?.useTextureView != true) {
-                        uiState.error?.let { error ->
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(Color.Black.copy(alpha = 0.8f)),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.Center
-                                ) {
-                                    Text(
-                                        text = "Failed to load video",
-                                        color = Color.White,
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Text(
-                                        text = error,
-                                        color = Color.Red,
-                                        style = MaterialTheme.typography.bodySmall,
-                                        textAlign = TextAlign.Center
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    // 弹幕错误显示
-                    danmakuError?.let { error ->
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            contentAlignment = Alignment.Center
+                // 弹幕加载动画
+                if (uiState.isLoadingDanmaku && !uiState.isLoading) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
                         ) {
+                            CircularProgressIndicator(
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(32.dp)
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "Failed to load danmaku: $error",
-                                color = Color.Red,
+                                text = "Loading danmaku...",
                                 style = MaterialTheme.typography.bodySmall
                             )
                         }
                     }
+                }
 
-                    val shouldShowDanmaku = danmakuParser != null && playerSettings?.useTextureView != true && danmakuError == null
-                    if (shouldShowDanmaku) {
-                        AndroidView(
-                            factory = { ctx ->
-                                android.util.Log.d("Danmaku", "Creating DanmakuView - TextureView mode: ${playerSettings?.useTextureView}")
-                                DanmakuView(ctx).apply {
-                                    enableDanmakuDrawingCache(true)
-                                    setBackgroundColor(android.graphics.Color.TRANSPARENT)
-
-                                    bringToFront()
-
-                                    android.util.Log.d("Danmaku", "DanmakuView created - Width: $width, Height: $height")
-                                    android.util.Log.d("Danmaku", "DanmakuView visibility: $visibility")
-                                    android.util.Log.d("Danmaku", "DanmakuView elevation: $elevation")
-
-                                    setCallback(object : DrawHandler.Callback {
-                                        override fun prepared() {
-                                            isDanmakuPrepared = true
-                                            android.util.Log.d("Danmaku", "DanmakuView prepared - isShown: $isShown, visibility: $visibility")
-                                            android.util.Log.d("Danmaku", "DanmakuView bounds: left=$left, top=$top, right=$right, bottom=$bottom")
-
-                                            try {
-                                                val danmakuCount = danmakuParser?.danmakus?.size() ?: 0
-                                                android.util.Log.d("Danmaku", "Total danmaku count: $danmakuCount")
-                                            } catch (e: Exception) {
-                                                android.util.Log.e("Danmaku", "Error getting danmaku count: ${e.message}")
-                                            }
-
-                                            start()
-                                            seekTo(currentPosition)
-                                            if (!isPlaying) {
-                                                pause()
-                                            }
-                                            android.util.Log.d("Danmaku", "DanmakuView started - isPlaying: $isPlaying")
-                                        }
-
-                                        override fun updateTimer(timer: DanmakuTimer) {
-                                            if (timer.currMillisecond % 5000 < 50) {
-                                                android.util.Log.d("Danmaku", "Timer update: ${timer.currMillisecond}ms")
-                                            }
-                                        }
-
-                                        override fun danmakuShown(danmaku: BaseDanmaku?) {
-                                            android.util.Log.d("Danmaku", "Danmaku shown: ${danmaku?.text}")
-                                        }
-
-                                        override fun drawingFinished() {
-                                            android.util.Log.v("Danmaku", "Drawing finished")
-                                        }
-                                    })
-                                    danmakuView = this
-                                }
-                            },
+                // 视频错误显示 - 仅在SurfaceView模式下显示（TextureView模式在AndroidView内部处理）
+                if (playerSettings?.useTextureView != true) {
+                    uiState.error?.let { error ->
+                        Box(
                             modifier = Modifier
-                                .fillMaxSize(),
-                            update = { view ->
-                                android.util.Log.d("Danmaku", "DanmakuView update called - prepared: $isDanmakuPrepared")
-                                android.util.Log.d("Danmaku", "DanmakuView size in update: ${view.width}x${view.height}")
-                                android.util.Log.d("Danmaku", "DanmakuView visibility in update: ${view.visibility}")
-
-                                if (!isDanmakuPrepared && danmakuParser != null) {
-                                    try {
-                                        view.prepare(danmakuParser, danmakuContext)
-                                        android.util.Log.d("Danmaku", "DanmakuView prepare called successfully")
-                                    } catch (e: Exception) {
-                                        Log.e("Danmaku", "Error preparing danmaku view", e)
-                                        danmakuError = "Error preparing danmaku: ${e.message}"
-                                    }
-                                }
+                                .fillMaxSize()
+                                .background(Color.Black.copy(alpha = 0.8f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = "Failed to load video",
+                                    color = Color.White,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = error,
+                                    color = Color.Red,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    textAlign = TextAlign.Center
+                                )
                             }
+                        }
+                    }
+                }
+
+                // 弹幕错误显示
+                danmakuError?.let { error ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Failed to load danmaku: $error",
+                            color = Color.Red,
+                            style = MaterialTheme.typography.bodySmall
                         )
                     }
+                }
+
+                val shouldShowDanmaku =
+                    danmakuParser != null && playerSettings?.useTextureView != true && danmakuError == null
+                if (shouldShowDanmaku) {
+                    AndroidView(
+                        factory = { ctx ->
+                            android.util.Log.d(
+                                "Danmaku",
+                                "Creating DanmakuView - TextureView mode: ${playerSettings?.useTextureView}"
+                            )
+                            DanmakuView(ctx).apply {
+                                enableDanmakuDrawingCache(true)
+                                setBackgroundColor(android.graphics.Color.TRANSPARENT)
+
+                                bringToFront()
+
+                                android.util.Log.d(
+                                    "Danmaku",
+                                    "DanmakuView created - Width: $width, Height: $height"
+                                )
+                                android.util.Log.d("Danmaku", "DanmakuView visibility: $visibility")
+                                android.util.Log.d("Danmaku", "DanmakuView elevation: $elevation")
+
+                                setCallback(object : DrawHandler.Callback {
+                                    override fun prepared() {
+                                        isDanmakuPrepared = true
+                                        android.util.Log.d(
+                                            "Danmaku",
+                                            "DanmakuView prepared - isShown: $isShown, visibility: $visibility"
+                                        )
+                                        android.util.Log.d(
+                                            "Danmaku",
+                                            "DanmakuView bounds: left=$left, top=$top, right=$right, bottom=$bottom"
+                                        )
+
+                                        try {
+                                            val danmakuCount = danmakuParser?.danmakus?.size() ?: 0
+                                            android.util.Log.d(
+                                                "Danmaku",
+                                                "Total danmaku count: $danmakuCount"
+                                            )
+                                        } catch (e: Exception) {
+                                            android.util.Log.e(
+                                                "Danmaku",
+                                                "Error getting danmaku count: ${e.message}"
+                                            )
+                                        }
+
+                                        start()
+                                        seekTo(currentPosition)
+                                        if (!isPlaying) {
+                                            pause()
+                                        }
+                                        android.util.Log.d(
+                                            "Danmaku",
+                                            "DanmakuView started - isPlaying: $isPlaying"
+                                        )
+                                    }
+
+                                    override fun updateTimer(timer: DanmakuTimer) {
+                                        if (timer.currMillisecond % 5000 < 50) {
+                                            android.util.Log.d(
+                                                "Danmaku",
+                                                "Timer update: ${timer.currMillisecond}ms"
+                                            )
+                                        }
+                                    }
+
+                                    override fun danmakuShown(danmaku: BaseDanmaku?) {
+                                        android.util.Log.d(
+                                            "Danmaku",
+                                            "Danmaku shown: ${danmaku?.text}"
+                                        )
+                                    }
+
+                                    override fun drawingFinished() {
+                                        android.util.Log.v("Danmaku", "Drawing finished")
+                                    }
+                                })
+                                danmakuView = this
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        update = { view ->
+                            android.util.Log.d(
+                                "Danmaku",
+                                "DanmakuView update called - prepared: $isDanmakuPrepared"
+                            )
+                            android.util.Log.d(
+                                "Danmaku",
+                                "DanmakuView size in update: ${view.width}x${view.height}"
+                            )
+                            android.util.Log.d(
+                                "Danmaku",
+                                "DanmakuView visibility in update: ${view.visibility}"
+                            )
+
+                            if (!isDanmakuPrepared && danmakuParser != null) {
+                                try {
+                                    view.prepare(danmakuParser, danmakuContext)
+                                    android.util.Log.d(
+                                        "Danmaku",
+                                        "DanmakuView prepare called successfully"
+                                    )
+                                } catch (e: Exception) {
+                                    Log.e("Danmaku", "Error preparing danmaku view", e)
+                                    danmakuError = "Error preparing danmaku: ${e.message}"
+                                }
+                            }
+                        }
+                    )
                 }
             }
-            
-            // 透明点击层 - 处理全屏点击事件
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .pointerInput(Unit) {
-                        detectTapGestures(
-                            onTap = {
-                                // 点击任意位置切换控制栏显示状态
-                                showControls = !showControls
-                            }
-                        )
-                    }
-            )
         }
+    }
 
-        PlayerControls(
-            visible = showControls,
-            isPlaying = isPlaying,
-            currentPosition = currentPosition,
-            duration = duration,
-            title = uiState.title,
-            playbackSpeed = playbackSpeed,
-            isLongPressing = isLongPressing,
-            onPlayPauseClick = {
-                if (isPlaying) {
-                    viewModel.ijkPlayer.pause()
-                    isPlaying = false
-                } else {
-                    viewModel.ijkPlayer.start()
-                    isPlaying = true
-                }
-            },
-            onSeek = { position ->
-                viewModel.ijkPlayer.seekTo(position)
-            },
-            onBackClick = onNavigateBack,
-            onDanmakuToggle = {
-                viewModel.toggleDanmaku()
-            },
-            isDanmakuVisible = uiState.isDanmakuVisible,
-            onSpeedChange = { speed ->
-                playbackSpeed = speed
-                viewModel.ijkPlayer.setSpeed(speed)
-            },
-            onSpeedClick = {
-                showSpeedSelector = true
-            },
-            onQualityClick = {
-                showQualitySelector = true
-            },
-            onDownloadClick = {
-                if (canWriteToPublicDownloads()) {
-                    viewModel.enqueueDownload(aid = uiState.aid, cid = uiState.cid, title = uiState.title)
-                } else {
-                    pendingDownload = true
-                    storagePermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                }
-            },
-            onDismissRequest = {
-                showControls = false
+    PlayerControls(
+        visible = showControls,
+        isPlaying = isPlaying,
+        currentPosition = currentPosition,
+        duration = duration,
+        title = uiState.title,
+        playbackSpeed = playbackSpeed,
+        isLongPressing = isLongPressing,
+        onPlayPauseClick = {
+            if (isPlaying) {
+                viewModel.ijkPlayer.pause()
+                isPlaying = false
+            } else {
+                viewModel.ijkPlayer.start()
+                isPlaying = true
+            }
+        },
+        onSeek = { position ->
+            viewModel.ijkPlayer.seekTo(position)
+        },
+        onBackClick = onNavigateBack,
+        onDanmakuToggle = {
+            viewModel.toggleDanmaku()
+        },
+        isDanmakuVisible = uiState.isDanmakuVisible,
+        onSpeedChange = { speed ->
+            playbackSpeed = speed
+            viewModel.ijkPlayer.setSpeed(speed)
+        },
+        onSpeedClick = {
+            showSpeedSelector = true
+        },
+        onQualityClick = {
+            showQualitySelector = true
+        },
+        onDownloadClick = {
+            if (canWriteToPublicDownloads()) {
+                viewModel.enqueueDownload(
+                    aid = uiState.aid,
+                    cid = uiState.cid,
+                    title = uiState.title
+                )
+            } else {
+                pendingDownload = true
+                storagePermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            }
+        },
+        onDismissRequest = {
+            showControls = false
+        }
+    )
+
+    if (showPageSelector && uiState.pages.isNotEmpty()) {
+        PageSelectorDialog(
+            pages = uiState.pages,
+            currentPage = uiState.currentPage,
+            onDismiss = { showPageSelector = false },
+            onPageSelected = { page ->
+                viewModel.loadVideo(aid, uiState.pages[page].cid)
+                showPageSelector = false
             }
         )
+    }
 
-        if (showPageSelector && uiState.pages.isNotEmpty()) {
-            PageSelectorDialog(
-                pages = uiState.pages,
-                currentPage = uiState.currentPage,
-                onDismiss = { showPageSelector = false },
-                onPageSelected = { page ->
-                    viewModel.loadVideo(aid, uiState.pages[page].cid)
-                    showPageSelector = false
-                }
-            )
-        }
+    if (showQualitySelector) {
+        QualitySelectionDialog(
+            currentQuality = playerSettings?.defaultQuality ?: 64,
+            availableQualities = uiState.availableQualities,
+            onDismiss = { showQualitySelector = false },
+            onQualitySelected = { quality ->
+                viewModel.changeQuality(quality)
+                showQualitySelector = false
+            }
+        )
+    }
 
-        if (showQualitySelector) {
-            QualitySelectionDialog(
-                currentQuality = playerSettings?.defaultQuality ?: 64,
-                availableQualities = uiState.availableQualities,
-                onDismiss = { showQualitySelector = false },
-                onQualitySelected = { quality ->
-                    viewModel.changeQuality(quality)
-                    showQualitySelector = false
-                }
-            )
-        }
+    if (showSpeedSelector) {
+        SpeedSelectionDialog(
+            currentSpeed = playbackSpeed,
+            onDismiss = { showSpeedSelector = false },
+            onSpeedSelected = { speed ->
+                playbackSpeed = speed
+                viewModel.ijkPlayer.setSpeed(speed)
+                showSpeedSelector = false
+            }
+        )
+    }
 
-        if (showSpeedSelector) {
-            SpeedSelectionDialog(
-                currentSpeed = playbackSpeed,
-                onDismiss = { showSpeedSelector = false },
-                onSpeedSelected = { speed ->
-                    playbackSpeed = speed
-                    viewModel.ijkPlayer.setSpeed(speed)
-                    showSpeedSelector = false
-                }
-            )
-        }
-
-        LaunchedEffect(uiState.pages) {
-            if (uiState.pages.isNotEmpty() && cid == 0L) {
-                if (uiState.pages.size == 1) {
-                    viewModel.loadVideo(aid, uiState.pages[0].cid)
-                } else {
-                    showPageSelector = true
-                }
+    LaunchedEffect(uiState.pages) {
+        if (uiState.pages.isNotEmpty() && cid == 0L) {
+            if (uiState.pages.size == 1) {
+                viewModel.loadVideo(aid, uiState.pages[0].cid)
+            } else {
+                showPageSelector = true
             }
         }
     }

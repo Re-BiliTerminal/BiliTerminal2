@@ -51,6 +51,7 @@ message PlayerSettings {
   bool auto_play = 2;
   int32 default_quality = 3;
   bool use_texture_view = 4;
+  bool enable_one_finger_zoom = 5;
 }
 
 message AppSettings {

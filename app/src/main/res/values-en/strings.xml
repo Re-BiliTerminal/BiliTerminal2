@@ -156,6 +156,9 @@
     <string name="download">Cache</string>
     <string name="download_manager">Downloads</string>
 
+    <string name="enable_one_finger_zoom">One-finger zoom</string>
+    <string name="enable_one_finger_zoom_desc">Enable vertical drag to zoom with one finger (pinch zoom is always available)</string>
+
     <string name="msg_download_enqueued">Added to download queue: %1$d</string>
 
     <string name="msg_storage_permission_denied">Storage permission not granted. Required on Android 9 and below.</string>
