@@ -247,6 +247,12 @@
     <string name="group_id">Group ID: %1$s</string>
     <string name="settings_ui">Interface Settings</string>
     <string name="settings_player">Player Settings</string>
+    <string name="settings_language">Language Settings</string>
+    <string name="language_system">Follow System</string>
+    <string name="language_simplified_chinese">Simplified Chinese</string>
+    <string name="language_traditional_chinese">Traditional Chinese</string>
+    <string name="language_english">English</string>
+    <string name="language_japanese">日本語</string>
     <string name="video_playback">Video Playback</string>
     <string name="use_software_decoder">Use Software Decoder</string>
     <string name="use_software_decoder_desc">Some devices may show green screen with hardware decoding. Enable this option to fix it.</string>

@@ -51,6 +51,7 @@ class BiliTerminal : MultiDexApplication() {
         }
         lastThemeMode = LocalData.settings.theme.nightMode.toSystemValue()
         setDefaultNightMode(lastThemeMode)
+        LocaleDelegate.defaultLocale = getLocale()
         applicationScope.launch {
             LocalData.settingsStateFlow.collectLatest { config ->
                 config?.let {
@@ -59,6 +60,11 @@ class BiliTerminal : MultiDexApplication() {
                         withContext(Dispatchers.Main) {
                             setDefaultNightMode(lastThemeMode)
                         }
+                    }
+                    // Update locale when language changes
+                    val newLocale = getLocale(it.language)
+                    if (LocaleDelegate.defaultLocale != newLocale) {
+                        LocaleDelegate.defaultLocale = newLocale
                     }
                 }
             }

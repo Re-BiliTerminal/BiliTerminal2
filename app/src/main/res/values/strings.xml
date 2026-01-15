@@ -236,6 +236,12 @@
     <string name="group_id">群号：%1$s</string>
     <string name="settings_ui">界面设置</string>
     <string name="settings_player">播放器设置</string>
+    <string name="settings_language">语言设置</string>
+    <string name="language_system">跟随系统</string>
+    <string name="language_simplified_chinese">简体中文</string>
+    <string name="language_traditional_chinese">繁体中文</string>
+    <string name="language_english">English</string>
+    <string name="language_japanese">日本語</string>
     <string name="video_playback">视频播放</string>
     <string name="use_software_decoder">使用软件解码</string>
     <string name="use_software_decoder_desc">部分设备硬件解码会出现绿屏，启用此选项可解决</string>

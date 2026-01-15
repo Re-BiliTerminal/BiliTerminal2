@@ -45,6 +45,7 @@ import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
 import com.huanli233.bilizepam.ui.dialog.AdaptDialog
 import com.huanli233.bilizepam.ui.navigation.Screen
 import splitties.activities.start
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,6 +58,7 @@ fun UiSettingsScreen(
     var showUiScaleDialog by remember { mutableStateOf(false) }
     var showDensityDialog by remember { mutableStateOf(false) }
     var showNightModeDialog by remember { mutableStateOf(false) }
+    var showLanguageDialog by remember { mutableStateOf(false) }
 
     val currentSettings = settings ?: return
 
@@ -112,6 +114,15 @@ fun UiSettingsScreen(
 
                 item {
                     SettingsCategory(title = stringResource(id = R.string.preference))
+                }
+
+                item {
+                    val languageDisplayName = getLanguageDisplayName(currentSettings.language)
+                    SettingsItem(
+                        title = stringResource(id = R.string.settings_language),
+                        summary = languageDisplayName,
+                        onClick = { showLanguageDialog = true }
+                    )
                 }
 
                 item {
@@ -184,6 +195,17 @@ fun UiSettingsScreen(
             onConfirm = {
                 viewModel.updateNightMode(it)
                 showNightModeDialog = false
+            }
+        )
+    }
+
+    if (showLanguageDialog) {
+        LanguageDialog(
+            currentLanguage = currentSettings.language,
+            onDismiss = { showLanguageDialog = false },
+            onConfirm = { languageTag ->
+                viewModel.updateLanguage(languageTag)
+                showLanguageDialog = false
             }
         )
     }
@@ -317,4 +339,82 @@ private fun NightModeDialog(
             }
         }
     )
+}
+
+@Composable
+private fun LanguageDialog(
+    currentLanguage: String,
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit
+) {
+    var selectedLanguage by remember { mutableStateOf(currentLanguage) }
+    
+    val languageOptions = listOf(
+        stringResource(R.string.language_system) to "",
+        stringResource(R.string.language_simplified_chinese) to "zh-CN",
+        stringResource(R.string.language_traditional_chinese) to "zh-TW",
+        stringResource(R.string.language_english) to "en",
+        stringResource(R.string.language_japanese) to "ja",
+    )
+
+    AdaptDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(id = R.string.settings_language)) },
+        text = {
+            Column(Modifier.selectableGroup()) {
+                languageOptions.forEach { (displayName, languageTag) ->
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .selectable(
+                                selected = (selectedLanguage == languageTag),
+                                onClick = { selectedLanguage = languageTag },
+                                role = Role.RadioButton
+                            )
+                            .padding(vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = (selectedLanguage == languageTag),
+                            onClick = null
+                        )
+                        Text(
+                            text = displayName,
+                            modifier = Modifier.padding(start = 16.dp),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                }
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(id = android.R.string.cancel))
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { onConfirm(selectedLanguage) }) {
+                Text(stringResource(id = android.R.string.ok))
+            }
+        }
+    )
+}
+
+@Composable
+private fun getLanguageDisplayName(languageTag: String): String {
+    return when {
+        languageTag.isEmpty() || languageTag == "SYSTEM" -> stringResource(R.string.language_system)
+        languageTag == "zh-CN" -> stringResource(R.string.language_simplified_chinese)
+        languageTag == "zh-TW" -> stringResource(R.string.language_traditional_chinese)
+        languageTag == "en" -> stringResource(R.string.language_english)
+        languageTag == "ja" -> stringResource(R.string.language_japanese)
+        else -> {
+            try {
+                val locale = Locale.forLanguageTag(languageTag)
+                locale.getDisplayName(locale)
+            } catch (e: Exception) {
+                languageTag
+            }
+        }
+    }
 }

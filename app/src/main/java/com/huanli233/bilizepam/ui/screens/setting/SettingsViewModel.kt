@@ -96,4 +96,12 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
             }
         }
     }
+
+    fun updateLanguage(languageTag: String) {
+        viewModelScope.launch {
+            LocalData.edit {
+                language = languageTag
+            }
+        }
+    }
 }

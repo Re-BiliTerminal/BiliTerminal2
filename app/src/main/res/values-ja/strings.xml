@@ -236,6 +236,12 @@
     <string name="group_id">グループ番号：%1$s</string>
     <string name="settings_ui">インターフェース設定</string>
     <string name="settings_player">プレイヤー設定</string>
+    <string name="settings_language">言語設定</string>
+    <string name="language_system">システムに従う</string>
+    <string name="language_simplified_chinese">簡体字中国語</string>
+    <string name="language_traditional_chinese">繁体字中国語</string>
+    <string name="language_english">English</string>
+    <string name="language_japanese">日本語</string>
     <string name="video_playback">動画再生</string>
     <string name="use_software_decoder">ソフトウェアデコーダーを使用</string>
     <string name="use_software_decoder_desc">一部のデバイスではハードウェアデコードで緑画面が表示される場合があります。このオプションを有効にすると解決できます。</string>

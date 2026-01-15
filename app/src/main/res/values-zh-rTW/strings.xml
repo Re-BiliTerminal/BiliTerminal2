@@ -228,6 +228,12 @@
     <string name="group_id">群號：%1$s</string>
     <string name="settings_ui">介面設定</string>
     <string name="settings_player">播放器設定</string>
+    <string name="settings_language">語言設定</string>
+    <string name="language_system">跟隨系統</string>
+    <string name="language_simplified_chinese">簡體中文</string>
+    <string name="language_traditional_chinese">繁體中文</string>
+    <string name="language_english">English</string>
+    <string name="language_japanese">日本語</string>
     <string name="video_playback">影片播放</string>
     <string name="use_software_decoder">使用軟體解碼</string>
     <string name="use_software_decoder_desc">部分裝置硬體解碼會出現綠屏，啟用此選項可解決</string>
