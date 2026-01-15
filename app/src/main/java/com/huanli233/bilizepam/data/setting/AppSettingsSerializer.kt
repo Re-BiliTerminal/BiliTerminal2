@@ -63,6 +63,10 @@ object AppSettingsSerializer : Serializer<AppSettings> {
             autoPlay = true
             defaultQuality = 64
             useTextureView = false
+            defaultDanmakuEnabled = true
+            defaultSpeed = 1.0f
+            rememberDanmakuEnabled = false
+            rememberSpeed = false
         }
         menuConfig = MenuConfig().toString()
     }

@@ -253,6 +253,13 @@
     <string name="auto_play_desc">動画を開いたときに自動的に再生を開始します</string>
     <string name="playback_quality">再生画質</string>
     <string name="default_quality">デフォルト画質</string>
+    <string name="default_danmaku_enabled">デフォルト弾幕</string>
+    <string name="default_danmaku_enabled_desc">動画を開いたときにデフォルトで弾幕を表示</string>
+    <string name="default_speed">デフォルト再生速度</string>
+    <string name="remember_danmaku_enabled">弾幕状態を記憶</string>
+    <string name="remember_danmaku_enabled_desc">各動画の弾幕オン/オフ状態を記憶</string>
+    <string name="remember_speed">再生速度を記憶</string>
+    <string name="remember_speed_desc">各動画の再生速度を記憶</string>
     <string name="scale">サイズ</string>
     <string name="preference">プリファレンス</string>
     <string name="disable_fullscreen_dialog">非フルスクリーンダイナログ</string>

@@ -41,6 +41,7 @@ fun PlayerSettingsScreen(
     val currentSettings = settings ?: return
 
     var showQualityDialog by remember { mutableStateOf(false) }
+    var showSpeedDialog by remember { mutableStateOf(false) }
 
     val scrollState = rememberScalingLazyListState()
     val scrollBehavior = rememberEnterAlwaysScrollBehavior()
@@ -142,6 +143,63 @@ fun PlayerSettingsScreen(
                         onClick = { showQualityDialog = true }
                     )
                 }
+
+                item {
+                    SettingsCategory(title = stringResource(id = R.string.preference))
+                }
+
+                item {
+                    SwitchSettingsItem(
+                        title = stringResource(id = R.string.default_danmaku_enabled),
+                        summary = stringResource(id = R.string.default_danmaku_enabled_desc),
+                        checked = currentSettings.playerSettings.defaultDanmakuEnabled,
+                        onCheckedChange = {
+                            viewModel.updatePlayerSettings(
+                                currentSettings.playerSettings.edit {
+                                    defaultDanmakuEnabled = it
+                                }
+                            )
+                        }
+                    )
+                }
+
+                item {
+                    SettingsItem(
+                        title = stringResource(id = R.string.default_speed),
+                        summary = "${currentSettings.playerSettings.defaultSpeed}x",
+                        onClick = { showSpeedDialog = true }
+                    )
+                }
+
+                item {
+                    SwitchSettingsItem(
+                        title = stringResource(id = R.string.remember_danmaku_enabled),
+                        summary = stringResource(id = R.string.remember_danmaku_enabled_desc),
+                        checked = currentSettings.playerSettings.rememberDanmakuEnabled,
+                        onCheckedChange = {
+                            viewModel.updatePlayerSettings(
+                                currentSettings.playerSettings.edit {
+                                    rememberDanmakuEnabled = it
+                                }
+                            )
+                        }
+                    )
+                }
+
+                item {
+                    SwitchSettingsItem(
+                        title = stringResource(id = R.string.remember_speed),
+                        summary = stringResource(id = R.string.remember_speed_desc),
+                        checked = currentSettings.playerSettings.rememberSpeed,
+                        onCheckedChange = {
+                            viewModel.updatePlayerSettings(
+                                currentSettings.playerSettings.edit {
+                                    rememberSpeed = it
+                                }
+                            )
+                        }
+                    )
+                }
             }
         }
     }
@@ -157,6 +215,21 @@ fun PlayerSettingsScreen(
                     }
                 )
                 showQualityDialog = false
+            }
+        )
+    }
+
+    if (showSpeedDialog) {
+        SpeedSelectionDialog(
+            currentSpeed = currentSettings.playerSettings.defaultSpeed,
+            onDismiss = { showSpeedDialog = false },
+            onConfirm = { speed ->
+                viewModel.updatePlayerSettings(
+                    currentSettings.playerSettings.edit {
+                        defaultSpeed = speed
+                    }
+                )
+                showSpeedDialog = false
             }
         )
     }
@@ -215,6 +288,71 @@ private fun QualitySelectionDialog(
                 }
             ) {
                 Text("确定")
+            }
+        },
+        dismissButton = {
+            androidx.compose.material3.TextButton(onClick = onDismiss) {
+                Text(stringResource(id = R.string.cancel))
+            }
+        }
+    )
+}
+
+@Composable
+private fun SpeedSelectionDialog(
+    currentSpeed: Float,
+    onDismiss: () -> Unit,
+    onConfirm: (Float) -> Unit
+) {
+    val speedOptions = listOf(
+        0.5f to "0.5x",
+        0.75f to "0.75x",
+        1.0f to "1.0x",
+        1.25f to "1.25x",
+        1.5f to "1.5x",
+        1.75f to "1.75x",
+        2.0f to "2.0x"
+    )
+
+    var selectedSpeed by remember { mutableStateOf(currentSpeed) }
+
+    AdaptDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(id = R.string.default_speed)) },
+        text = {
+            Column(Modifier.selectableGroup()) {
+                speedOptions.forEach { (speed, label) ->
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .selectable(
+                                selected = (speed == selectedSpeed),
+                                onClick = { selectedSpeed = speed },
+                                role = Role.RadioButton
+                            )
+                            .padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = (speed == selectedSpeed),
+                            onClick = null
+                        )
+                        Text(
+                            text = label,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = { close ->
+            androidx.compose.material3.TextButton(
+                onClick = {
+                    onConfirm(selectedSpeed)
+                    close()
+                }
+            ) {
+                Text(stringResource(id = R.string.confirm))
             }
         },
         dismissButton = {

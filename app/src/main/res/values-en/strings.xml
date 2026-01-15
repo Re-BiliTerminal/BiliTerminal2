@@ -169,6 +169,13 @@
     <string name="auto_play_desc">Automatically start playback when opening videos</string>
     <string name="playback_quality">Playback Quality</string>
     <string name="default_quality">Default Quality</string>
+    <string name="default_danmaku_enabled">Default Danmaku</string>
+    <string name="default_danmaku_enabled_desc">Show danmaku by default when opening videos</string>
+    <string name="default_speed">Default Speed</string>
+    <string name="remember_danmaku_enabled">Remember Danmaku State</string>
+    <string name="remember_danmaku_enabled_desc">Remember danmaku on/off state for each video</string>
+    <string name="remember_speed">Remember Speed</string>
+    <string name="remember_speed_desc">Remember playback speed for each video</string>
 
     <string name="msg_download_enqueued">Added to download queue: %1$d</string>
 

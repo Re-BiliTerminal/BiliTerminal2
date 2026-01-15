@@ -163,6 +163,8 @@ fun PlayerScreen(
     var danmakuView by remember { mutableStateOf<DanmakuView?>(null) }
     var danmakuError by remember { mutableStateOf<String?>(null) }
     var playbackSpeed by remember { mutableFloatStateOf(1f) }
+    
+    val videoStateCache = remember { mutableMapOf<String, Pair<Boolean, Float>>() }
     var isLongPressing by remember { mutableStateOf(false) }
     val videoAspectRatio = uiState.videoAspectRatio
 
@@ -219,6 +221,45 @@ fun PlayerScreen(
     LaunchedEffect(aid, cid) {
         if (cid > 0) {
             viewModel.loadVideo(aid, cid)
+            
+            val videoKey = "${aid}_${cid}"
+            val playerSettings = settings?.playerSettings
+            
+            if (playerSettings?.rememberDanmakuEnabled == true || playerSettings?.rememberSpeed == true) {
+                val cachedState = videoStateCache[videoKey]
+                if (cachedState != null) {
+                    if (playerSettings.rememberDanmakuEnabled) {
+                        viewModel.setDanmakuVisible(cachedState.first)
+                    }
+                    if (playerSettings.rememberSpeed) {
+                        playbackSpeed = cachedState.second
+                        viewModel.ijkPlayer.setSpeed(playbackSpeed)
+                    }
+                } else {
+                    val defaultDanmaku = playerSettings?.defaultDanmakuEnabled ?: true
+                    val defaultSpeed = playerSettings?.defaultSpeed ?: 1.0f
+                    
+                    if (playerSettings.rememberDanmakuEnabled) {
+                        viewModel.setDanmakuVisible(defaultDanmaku)
+                    } else {
+                        viewModel.setDanmakuVisible(defaultDanmaku)
+                    }
+                    
+                    if (playerSettings.rememberSpeed) {
+                        playbackSpeed = defaultSpeed
+                        viewModel.ijkPlayer.setSpeed(playbackSpeed)
+                    } else {
+                        playbackSpeed = defaultSpeed
+                        viewModel.ijkPlayer.setSpeed(playbackSpeed)
+                    }
+                    
+                    videoStateCache[videoKey] = Pair(defaultDanmaku, defaultSpeed)
+                }
+            } else {
+                viewModel.setDanmakuVisible(playerSettings?.defaultDanmakuEnabled ?: true)
+                playbackSpeed = playerSettings?.defaultSpeed ?: 1.0f
+                viewModel.ijkPlayer.setSpeed(playbackSpeed)
+            }
         }
     }
 
@@ -1085,11 +1126,23 @@ fun PlayerScreen(
         onBackClick = onNavigateBack,
         onDanmakuToggle = {
             viewModel.toggleDanmaku()
+            val playerSettings = settings?.playerSettings
+            if (playerSettings?.rememberDanmakuEnabled == true) {
+                val videoKey = "${uiState.aid}_${uiState.cid}"
+                val currentSpeed = playbackSpeed
+                videoStateCache[videoKey] = Pair(uiState.isDanmakuVisible, currentSpeed)
+            }
         },
         isDanmakuVisible = uiState.isDanmakuVisible,
         onSpeedChange = { speed ->
             playbackSpeed = speed
             viewModel.ijkPlayer.setSpeed(speed)
+            val playerSettings = settings?.playerSettings
+            if (playerSettings?.rememberSpeed == true) {
+                val videoKey = "${uiState.aid}_${uiState.cid}"
+                val currentDanmaku = uiState.isDanmakuVisible
+                videoStateCache[videoKey] = Pair(currentDanmaku, speed)
+            }
         },
         onSpeedClick = {
             showSpeedSelector = true
@@ -1145,6 +1198,12 @@ fun PlayerScreen(
             onSpeedSelected = { speed ->
                 playbackSpeed = speed
                 viewModel.ijkPlayer.setSpeed(speed)
+                val playerSettings = settings?.playerSettings
+                if (playerSettings?.rememberSpeed == true) {
+                    val videoKey = "${uiState.aid}_${uiState.cid}"
+                    val currentDanmaku = uiState.isDanmakuVisible
+                    videoStateCache[videoKey] = Pair(currentDanmaku, speed)
+                }
                 showSpeedSelector = false
             }
         )

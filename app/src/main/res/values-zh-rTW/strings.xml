@@ -245,6 +245,13 @@
     <string name="auto_play_desc">打開影片時自動開始播放</string>
     <string name="playback_quality">播放畫質</string>
     <string name="default_quality">預設畫質</string>
+    <string name="default_danmaku_enabled">預設彈幕開關</string>
+    <string name="default_danmaku_enabled_desc">打開影片時預設顯示彈幕</string>
+    <string name="default_speed">預設倍速</string>
+    <string name="remember_danmaku_enabled">記憶彈幕開關</string>
+    <string name="remember_danmaku_enabled_desc">記住每個影片的彈幕開關狀態</string>
+    <string name="remember_speed">記憶倍速</string>
+    <string name="remember_speed_desc">記住每個影片的播放倍速</string>
     <string name="scale">大小</string>
     <string name="preference">偏好</string>
     <string name="disable_fullscreen_dialog">非全螢幕Dialog</string>

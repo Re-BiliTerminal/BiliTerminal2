@@ -53,6 +53,10 @@ message PlayerSettings {
   int32 default_quality = 3;
   bool use_texture_view = 4;
   bool enable_one_finger_zoom = 5;
+  bool default_danmaku_enabled = 6;
+  float default_speed = 7;
+  bool remember_danmaku_enabled = 8;
+  bool remember_speed = 9;
 }
 
 message AppSettings {
