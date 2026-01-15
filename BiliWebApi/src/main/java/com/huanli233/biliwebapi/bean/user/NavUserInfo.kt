@@ -62,8 +62,7 @@ data class NavUserInfo(
                 avatarSubscript = vipAvatarSubscript,
                 nicknameColor = vipNicknameColor,
                 role = 0,
-            ),
-            space = SpaceImage("", "")
+            )
         )
     }
 }

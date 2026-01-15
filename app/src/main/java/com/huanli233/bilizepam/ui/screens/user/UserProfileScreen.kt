@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import com.huanli233.bilizepam.R
 import androidx.compose.runtime.LaunchedEffect
@@ -69,6 +70,8 @@ import androidx.compose.ui.text.font.FontWeight
 import com.huanli233.biliwebapi.bean.series.UserSeriesList
 import com.huanli233.bilizepam.data.account.AccountManager
 import com.huanli233.bilizepam.ui.dialog.AdaptDialog
+import com.huanli233.bilizepam.data.setting.LocalData
+import androidx.compose.ui.graphics.Brush
 
 @Composable
 fun UserProfileScreen(
@@ -276,14 +279,39 @@ private fun ProfilePage(
     currentUserMid: Long,
     onLogoutClick: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(paddingValues)
-            .padding(horizontal = 12.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
+    val settings by LocalData.settingsStateFlow.collectAsState()
+    val backgroundEnabled = settings?.uiSettings?.userProfileBackgroundEnabled ?: false
+    val backgroundImageUrl = userInfo?.space?.lImg?.takeIf { it.isNotEmpty() }
+    val density = LocalDensity.current
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (backgroundEnabled && backgroundImageUrl != null) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(backgroundImageUrl)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        color = Color.Black.copy(alpha = 0.7f)
+                    )
+            )
+        }
+        
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(paddingValues)
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -371,6 +399,7 @@ private fun ProfilePage(
                     }
                 )
             }
+        }
         }
     }
 }

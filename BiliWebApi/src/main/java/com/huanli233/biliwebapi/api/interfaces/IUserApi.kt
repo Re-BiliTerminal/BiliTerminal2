@@ -21,7 +21,8 @@ interface IUserApi {
 
     @GET("/x/web-interface/card")
     suspend fun getCard(
-        @Query("mid") userId: String
+        @Query("mid") userId: String,
+        @Query("photo") photo: Boolean = true
     ): ApiResponse<UserCardInfo>
 
     @GET("/x/space/notice")

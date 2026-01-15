@@ -164,11 +164,24 @@ fun UiSettingsScreen(
                 }
 
                 item {
+                    SettingsCategory(title = stringResource(id = R.string.ui_style_settings))
+                }
+
+                item {
                     SwitchSettingsItem(
                         title = stringResource(id = R.string.video_card_background_style),
                         summary = stringResource(id = R.string.video_card_background_style_desc),
                         checked = currentSettings.uiSettings.videoCardBackgroundStyle,
                         onCheckedChange = viewModel::updateVideoCardBackgroundStyle
+                    )
+                }
+
+                item {
+                    SwitchSettingsItem(
+                        title = stringResource(id = R.string.user_profile_background),
+                        summary = stringResource(id = R.string.user_profile_background_desc),
+                        checked = currentSettings.uiSettings.userProfileBackgroundEnabled,
+                        onCheckedChange = viewModel::updateUserProfileBackgroundEnabled
                     )
                 }
             }

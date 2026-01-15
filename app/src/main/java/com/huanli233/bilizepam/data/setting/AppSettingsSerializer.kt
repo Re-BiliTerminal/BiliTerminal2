@@ -40,6 +40,7 @@ object AppSettingsSerializer : Serializer<AppSettings> {
             marqueeEnabled = true
             gridListEnabled = false
             videoCardBackgroundStyle = false
+            userProfileBackgroundEnabled = false
         }
         theme = Theme.newBuilder().build {
             nightMode = NightMode.NIGHT_MODE_NIGHT

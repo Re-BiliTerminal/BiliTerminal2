@@ -112,4 +112,12 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
             }
         }
     }
+
+    fun updateUserProfileBackgroundEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            LocalData.edit {
+                uiSettings = uiSettings.edit { userProfileBackgroundEnabled = enabled }
+            }
+        }
+    }
 }

@@ -24,6 +24,7 @@ message UiSettings {
   bool grid_list_enabled = 7;
   bool round_mode = 8;
   bool video_card_background_style = 9;
+  bool user_profile_background_enabled = 10;
 }
 
 message Theme {

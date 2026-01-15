@@ -276,6 +276,9 @@
     <string name="theme_color">主题颜色</string>
     <string name="video_card_background_style">封面背景卡片</string>
     <string name="video_card_background_style_desc">将视频封面作为卡片背景</string>
+    <string name="user_profile_background">个人主页背景</string>
+    <string name="user_profile_background_desc">在个人主页显示背景头图</string>
+    <string name="ui_style_settings">UI样式</string>
 
     <string name="color_sakura">櫻花</string>
     <string name="color_red">紅色</string>

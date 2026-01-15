@@ -284,6 +284,9 @@
     <string name="theme_color">テーマカラー</string>
     <string name="video_card_background_style">カバー背景カード</string>
     <string name="video_card_background_style_desc">動画のカバーをカードの背景として使用</string>
+    <string name="user_profile_background">ユーザープロフィール背景</string>
+    <string name="user_profile_background_desc">ユーザー情報に背景ヘッダー画像を表示する</string>
+    <string name="ui_style_settings">UIスタイル</string>
 
     <string name="color_sakura">桜花</string>
     <string name="color_red">紅色</string>

@@ -289,6 +289,9 @@
     <string name="theme_color">Theme Color</string>
     <string name="video_card_background_style">Cover Background Card</string>
     <string name="video_card_background_style_desc">Use video cover as card background</string>
+    <string name="user_profile_background">User Profile Background</string>
+    <string name="user_profile_background_desc">Show background header image on user profile</string>
+    <string name="ui_style_settings">UI Style</string>
 
     <string name="color_sakura">Sakura</string>
     <string name="color_red">Red</string>
