@@ -91,6 +91,7 @@
     <string name="desc_huanli233">Creator of this branch</string>
     <string name="disclaimer">Disclaimer</string>
     <string name="recommend">Recommendation</string>
+    <string name="dynamic">Dynamic</string>
     <string name="precious">Bilibili Must-Watch Classics</string>
     <string name="popular">Trending</string>
     <string name="loading">Loading...</string>
@@ -128,6 +129,10 @@
     <string name="favorite">Favorite</string>
     <string name="coin">Coin</string>
     <string name="like">Like</string>
+    <string name="my_space">My Space</string>
+    <string name="history">History</string>
+    <string name="following">Following</string>
+    <string name="opus_favorite">Image/Text Collection</string>
     <string name="article_detail">Article Details</string>
     <string name="opus_favorite_collection">Image/Text Collection</string>
     <string name="operation_failed">Operation failed: %1$s</string>
@@ -147,6 +152,8 @@
     <string name="player_not_found">Player not found</string>
     <string name="tip_live_player">Switch to built-in player if playback fails</string>
     <string name="dynamic_info">Dynamic Details</string>
+    <string name="dynamic_detail">Dynamic Details</string>
+    <string name="opus_detail">Image/Text Details</string>
     <string name="empty_tip">Nothing here yet!</string>
     <string name="login_qrcode_network_error">Failed to fetch QR code - Network error</string>
     <string name="login_qrcode_api_error">Login API might be outdated - Contact developer</string>
@@ -158,6 +165,10 @@
 
     <string name="enable_one_finger_zoom">One-finger zoom</string>
     <string name="enable_one_finger_zoom_desc">Enable vertical drag to zoom with one finger (pinch zoom is always available)</string>
+    <string name="auto_play">Auto Play</string>
+    <string name="auto_play_desc">Automatically start playback when opening videos</string>
+    <string name="playback_quality">Playback Quality</string>
+    <string name="default_quality">Default Quality</string>
 
     <string name="msg_download_enqueued">Added to download queue: %1$d</string>
 
@@ -235,6 +246,12 @@
     <string name="open">Open</string>
     <string name="group_id">Group ID: %1$s</string>
     <string name="settings_ui">Interface Settings</string>
+    <string name="settings_player">Player Settings</string>
+    <string name="video_playback">Video Playback</string>
+    <string name="use_software_decoder">Use Software Decoder</string>
+    <string name="use_software_decoder_desc">Some devices may show green screen with hardware decoding. Enable this option to fix it.</string>
+    <string name="use_texture_view">Use TextureView</string>
+    <string name="use_texture_view_desc">Use TextureView instead of SurfaceView, may fix green screen issues</string>
     <string name="scale">Size</string>
     <string name="preference">Preferences</string>
     <string name="disable_fullscreen_dialog">Non-Fullscreen Dialog</string>
@@ -244,7 +261,15 @@
         translatable="false">Density</string>
     <string name="animation">Animation</string>
     <string name="system_accent_color">System Accent Color</string>
-    <string name="video_detail">Video Details</string>
+    <string name="video_detail_page">Video Details</string>
+    <string name="video_detail">Details</string>
+    <string name="video_comments">Comments</string>
+    <string name="video_recommend">Recommendations</string>
+    <string name="video_info">Video Info</string>
+    <string name="video_uploader">UP主</string>
+    <string name="uploader">UP主</string>
+    <string name="uploaders">UP主 (%1$d)</string>
+    <string name="video_collection">Collection</string>
     <string name="tag">Tag</string>
     <string name="request_relation_failed">Failed to fetch relation info: %1$s</string>
     <string name="like_failed_with_msg">Like failed: %1$s</string>
@@ -277,6 +302,7 @@
     <string name="copy_all">Copy all</string>
     <string name="copied">Copied!</string>
     <string name="new_loading_animation">New loading animation</string>
+    <string name="error">Error</string>
 
     <string-array name="icon_license">
         <item>Interface Settings: Newicons | MIT License</item>
@@ -338,5 +364,58 @@
         <item>dynamic_info</item>
         <item>article</item>
     </array>
+
+    <string name="action_play">Play</string>
+    <string name="action_like">Like</string>
+    <string name="action_coin">Coin</string>
+    <string name="action_favorite">Favorite</string>
+    <string name="action_watch_later">Watch Later</string>
+    <string name="action_download">Cache</string>
+    <string name="action_share">Repost</string>
+    <string name="action_save">Save</string>
+    <string name="action_back">Back</string>
+    <string name="action_confirm">Confirm</string>
+    <string name="action_cancel">Cancel</string>
+    
+    <string name="dialog_coin_title">Coin</string>
+    <string name="dialog_coin_select">Select coin amount</string>
+    <string name="dialog_coin_also_like">Also like</string>
+    <string name="dialog_favorite_title">Add to Collection</string>
+    
+    <string name="msg_like_success">Like successful</string>
+    <string name="msg_cancel_success">Cancel successful</string>
+    <string name="msg_coin_success">Coin successful</string>
+    <string name="msg_favorite_success">Favorite successful</string>
+    <string name="msg_operation_failed">Operation failed</string>
+    <string name="msg_not_logged_in">Not logged in yet~</string>
+    <string name="msg_loading">Loading...</string>
+    <string name="msg_image_saved">Image saved</string>
+    <string name="msg_save_failed">Save failed</string>
+    <string name="msg_watch_later_success">Added to Watch Later</string>
+    <string name="msg_download_dev">Download feature in development...</string>
+    
+    <string name="placeholder_comments">Comments feature in development...</string>
+    <string name="placeholder_recommend">Recommendations feature in development...</string>
+    <string name="placeholder_user_profile">User profile page in development...</string>
+    <string name="placeholder_collection">Collection details page in development...</string>
+    <string name="placeholder_player">Player in development...</string>
+    
+    <string name="next">Next</string>
+    <string name="video_uploaders">UP主</string>
+    
+    <string name="search">Search</string>
+    <string name="search_result">Search Results</string>
+    <string name="search_hint">Enter keywords</string>
+    <string name="search_history">Search History</string>
+    <string name="search_suggestions">Search Suggestions</string>
+    <string name="search_video">Video</string>
+    <string name="search_user">User</string>
+    <string name="search_article">Article</string>
+    <string name="search_live">Live</string>
+    <string name="search_empty">No input yet~</string>
+    <string name="search_no_result">No results found</string>
+    <string name="clear_history">Clear History</string>
+    <string name="no_results">No results found</string>
+    <string name="error_occurred">An error occurred</string>
 
 </resources>
