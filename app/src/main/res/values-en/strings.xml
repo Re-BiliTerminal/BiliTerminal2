@@ -280,6 +280,8 @@
     <string name="request_relation_failed">Failed to fetch relation info: %1$s</string>
     <string name="like_failed_with_msg">Like failed: %1$s</string>
     <string name="theme_color">Theme Color</string>
+    <string name="video_card_background_style">Cover Background Card</string>
+    <string name="video_card_background_style_desc">Use video cover as card background</string>
 
     <string name="color_sakura">Sakura</string>
     <string name="color_red">Red</string>

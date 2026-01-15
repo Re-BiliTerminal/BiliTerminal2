@@ -23,6 +23,7 @@ message UiSettings {
   bool marquee_enabled = 6;
   bool grid_list_enabled = 7;
   bool round_mode = 8;
+  bool video_card_background_style = 9;
 }
 
 message Theme {

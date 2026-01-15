@@ -104,4 +104,12 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
             }
         }
     }
+
+    fun updateVideoCardBackgroundStyle(enabled: Boolean) {
+        viewModelScope.launch {
+            LocalData.edit {
+                uiSettings = uiSettings.edit { videoCardBackgroundStyle = enabled }
+            }
+        }
+    }
 }

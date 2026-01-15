@@ -265,6 +265,8 @@
     <string name="request_relation_failed">獲取操作資訊失敗：%1$s</string>
     <string name="like_failed_with_msg">按讚失敗：%1$s</string>
     <string name="theme_color">主題顏色</string>
+    <string name="video_card_background_style">封面背景卡片</string>
+    <string name="video_card_background_style_desc">將影片封面作為卡片背景</string>
 
     <string name="color_sakura">櫻花</string>
     <string name="color_red">紅色</string>

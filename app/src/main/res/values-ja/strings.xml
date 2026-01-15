@@ -275,6 +275,8 @@
     <string name="request_relation_failed">操作情報取得失敗：%1$s</string>
     <string name="like_failed_with_msg">いいね失敗：%1$s</string>
     <string name="theme_color">テーマカラー</string>
+    <string name="video_card_background_style">カバー背景カード</string>
+    <string name="video_card_background_style_desc">動画のカバーをカードの背景として使用</string>
 
     <string name="color_sakura">桜花</string>
     <string name="color_red">紅色</string>

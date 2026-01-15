@@ -162,6 +162,15 @@ fun UiSettingsScreen(
                         onCheckedChange = viewModel::updateDisableFullscreenDialog
                     )
                 }
+
+                item {
+                    SwitchSettingsItem(
+                        title = stringResource(id = R.string.video_card_background_style),
+                        summary = stringResource(id = R.string.video_card_background_style_desc),
+                        checked = currentSettings.uiSettings.videoCardBackgroundStyle,
+                        onCheckedChange = viewModel::updateVideoCardBackgroundStyle
+                    )
+                }
             }
         }
     }

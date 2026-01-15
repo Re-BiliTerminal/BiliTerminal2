@@ -39,6 +39,7 @@ object AppSettingsSerializer : Serializer<AppSettings> {
             snackbarEnabled = true
             marqueeEnabled = true
             gridListEnabled = false
+            videoCardBackgroundStyle = false
         }
         theme = Theme.newBuilder().build {
             nightMode = NightMode.NIGHT_MODE_NIGHT
