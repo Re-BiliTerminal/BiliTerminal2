@@ -1,5 +1,6 @@
 package com.huanli233.bilizepam.ui.screens.user
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,9 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Favorite
@@ -23,8 +23,9 @@ import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.WatchLater
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,12 +36,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
+import androidx.wear.compose.foundation.lazy.items
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.ScreenScaffold
 import coil3.compose.AsyncImage
 import com.huanli233.bilizepam.R
+import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
 import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
 import com.huanli233.bilizepam.ui.screens.recommend.LoadingState
 import com.huanli233.bilizepam.ui.screens.recommend.LoadingView
@@ -56,15 +62,19 @@ fun MySpaceScreen(
     viewModel: MySpaceViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val scrollState = rememberScrollState()
+    val scrollState = rememberScalingLazyListState(initialCenterItemIndex = 0)
+    val scrollBehavior = rememberEnterAlwaysScrollBehavior()
 
     ScreenScaffold(
+        scrollState = scrollState,
         topBar = scrollAwareTopBar(
             title = stringResource(R.string.my_space),
             showBackIcon = false,
             showMenuIcon = true,
-            onMenuClick = onMenuClick
-        )
+            onMenuClick = onMenuClick,
+            scrollBehavior = scrollBehavior
+        ),
+        topBarScrollBehavior = scrollBehavior
     ) { paddingValues ->
         when (val state = uiState) {
             is MySpaceUiState.Loading -> {
@@ -74,29 +84,57 @@ fun MySpaceScreen(
                 )
             }
             is MySpaceUiState.Success -> {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(scrollState)
-                        .padding(paddingValues)
-                        .padding(horizontal = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                val menuItems = listOf(
+                    MenuItemData(
+                        icon = Icons.Default.History,
+                        title = stringResource(R.string.history),
+                        onClick = onNavigateToHistory
+                    ),
+                    MenuItemData(
+                        icon = Icons.Default.WatchLater,
+                        title = stringResource(R.string.watch_later),
+                        onClick = onNavigateToWatchLater
+                    ),
+                    MenuItemData(
+                        icon = Icons.Default.Favorite,
+                        title = stringResource(R.string.favorite),
+                        onClick = onNavigateToFavorite
+                    ),
+                    MenuItemData(
+                        icon = Icons.Default.People,
+                        title = stringResource(R.string.following),
+                        onClick = onNavigateToFollowing
+                    )
+                )
+                
+                ScalingLazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = scrollState,
+                    contentPadding = paddingValues,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Spacer(modifier = Modifier.height(4.dp))
+                    item {
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
                     
-                    UserInfoCard(
-                        navUserInfo = state.navUserInfo,
-                        onClick = { onNavigateToUserProfile(state.navUserInfo.mid) }
-                    )
+                    item {
+                        UserInfoCard(
+                            navUserInfo = state.navUserInfo,
+                            onClick = { onNavigateToUserProfile(state.navUserInfo.mid) }
+                        )
+                    }
 
-                    MenuSection(
-                        onNavigateToHistory = onNavigateToHistory,
-                        onNavigateToWatchLater = onNavigateToWatchLater,
-                        onNavigateToFavorite = onNavigateToFavorite,
-                        onNavigateToFollowing = onNavigateToFollowing
-                    )
+                    items(menuItems) { menuItem ->
+                        MenuItem(
+                            icon = menuItem.icon,
+                            title = menuItem.title,
+                            onClick = menuItem.onClick
+                        )
+                    }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                 }
             }
             is MySpaceUiState.Error -> {
@@ -109,6 +147,12 @@ fun MySpaceScreen(
         }
     }
 }
+
+private data class MenuItemData(
+    val icon: androidx.compose.ui.graphics.vector.ImageVector,
+    val title: String,
+    val onClick: () -> Unit
+)
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -179,82 +223,34 @@ private fun UserInfoCard(
 }
 
 @Composable
-private fun MenuSection(
-    onNavigateToHistory: () -> Unit,
-    onNavigateToWatchLater: () -> Unit,
-    onNavigateToFavorite: () -> Unit,
-    onNavigateToFollowing: () -> Unit
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Column {
-            MenuItem(
-                icon = Icons.Default.History,
-                title = stringResource(R.string.history),
-                onClick = onNavigateToHistory
-            )
-            HorizontalDivider()
-            MenuItem(
-                icon = Icons.Default.WatchLater,
-                title = stringResource(R.string.watch_later),
-                onClick = onNavigateToWatchLater
-            )
-            HorizontalDivider()
-            MenuItem(
-                icon = Icons.Default.Favorite,
-                title = stringResource(R.string.favorite),
-                onClick = onNavigateToFavorite
-            )
-            HorizontalDivider()
-            MenuItem(
-                icon = Icons.Default.People,
-                title = stringResource(R.string.following),
-                onClick = onNavigateToFollowing
-            )
-        }
-    }
-}
-
-@Composable
 private fun MenuItem(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     title: String,
     onClick: () -> Unit
 ) {
-    Row(
+    ListItem(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(horizontal = 12.dp, vertical = 10.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            modifier = Modifier.size(18.dp),
-            tint = MaterialTheme.colorScheme.primary
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .clickable(onClick = onClick),
+        headlineContent = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium
+            )
+        },
+        leadingContent = {
+            Icon(
+                imageVector = icon,
+                contentDescription = title,
+                modifier = Modifier.size(28.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+        },
+        colors = ListItemDefaults.colors(
+            containerColor = androidx.compose.ui.graphics.Color.Transparent
         )
-        
-        Text(
-            text = title,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.weight(1f)
-        )
-        
-        Icon(
-            imageVector = Icons.Default.ChevronRight,
-            contentDescription = null,
-            modifier = Modifier.size(14.dp),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
-}
-
-private fun formatNumber(num: Int): String {
-    return when {
-        num >= 10000 -> String.format("%.1f万", num / 10000.0)
-        else -> num.toString()
-    }
+    )
 }
