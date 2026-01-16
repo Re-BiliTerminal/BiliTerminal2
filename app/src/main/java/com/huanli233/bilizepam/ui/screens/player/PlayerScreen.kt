@@ -209,12 +209,19 @@ fun PlayerScreen(
         val scaleFactor = fontSize / defaultFontSize
         
         DanmakuContext.create().apply {
-            setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3f)
+            val strokeWidth = playerSettings?.danmakuStrokeWidth ?: 3f
+            setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, strokeWidth)
             setScaleTextSize(scaleFactor)
-            setDanmakuTransparency(0.8f)
+            val transparency = playerSettings?.danmakuTransparency ?: 0.8f
+            setDanmakuTransparency(transparency)
             setCacheStuffer(SpannedCacheStuffer(), null)
             setMaximumVisibleSizeInScreen(playerSettings?.danmakuMaxCount ?: 50)
-            setDuplicateMergingEnabled(true)
+            val mergeDuplicate = playerSettings?.danmakuMergeDuplicate ?: true
+            setDuplicateMergingEnabled(mergeDuplicate)
+            val scrollSpeed = playerSettings?.danmakuScrollSpeed ?: 1.0f
+            setScrollSpeedFactor(scrollSpeed)
+            val bold = playerSettings?.danmakuBold ?: false
+            setDanmakuBold(bold)
             
             setR2LDanmakuVisibility(playerSettings?.danmakuScrollEnabled ?: true)
             setFTDanmakuVisibility(playerSettings?.danmakuTopEnabled ?: true)

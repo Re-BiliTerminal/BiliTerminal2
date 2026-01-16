@@ -74,6 +74,13 @@ object AppSettingsSerializer : Serializer<AppSettings> {
             danmakuTopEnabled = true
             danmakuBottomEnabled = true
             danmakuAdvancedEnabled = true
+            danmakuTransparency = 0.8f
+            danmakuScrollSpeed = 1.0f
+            danmakuStrokeWidth = 3f
+            danmakuMergeDuplicate = true
+            danmakuBold = false
+            danmakuAreaTop = 0.0f
+            danmakuAreaBottom = 0.0f
         }
         menuConfig = MenuConfig().toString()
     }

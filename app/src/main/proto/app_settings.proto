@@ -64,6 +64,13 @@ message PlayerSettings {
   bool danmaku_top_enabled = 13;
   bool danmaku_bottom_enabled = 14;
   bool danmaku_advanced_enabled = 15;
+  float danmaku_transparency = 16;
+  float danmaku_scroll_speed = 17;
+  float danmaku_stroke_width = 18;
+  bool danmaku_merge_duplicate = 19;
+  bool danmaku_bold = 20;
+  float danmaku_area_top = 21;
+  float danmaku_area_bottom = 22;
 }
 
 message AppSettings {

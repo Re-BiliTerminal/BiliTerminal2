@@ -187,6 +187,20 @@
     <string name="danmaku_bottom_enabled_desc">Show bottom danmaku</string>
     <string name="danmaku_advanced_enabled">Advanced Danmaku</string>
     <string name="danmaku_advanced_enabled_desc">Show advanced danmaku</string>
+    <string name="danmaku_transparency">Danmaku Transparency</string>
+    <string name="danmaku_transparency_desc">Set danmaku transparency</string>
+    <string name="danmaku_scroll_speed">Danmaku Scroll Speed</string>
+    <string name="danmaku_scroll_speed_desc">Set danmaku scroll speed multiplier</string>
+    <string name="danmaku_stroke_width">Danmaku Stroke Width</string>
+    <string name="danmaku_stroke_width_desc">Set danmaku text stroke width</string>
+    <string name="danmaku_merge_duplicate">Merge Duplicate Danmaku</string>
+    <string name="danmaku_merge_duplicate_desc">Merge danmaku with same content</string>
+    <string name="danmaku_bold">Danmaku Bold</string>
+    <string name="danmaku_bold_desc">Set danmaku text to bold</string>
+    <string name="danmaku_area_top">Top Area</string>
+    <string name="danmaku_area_top_desc">Set top danmaku display area percentage</string>
+    <string name="danmaku_area_bottom">Bottom Area</string>
+    <string name="danmaku_area_bottom_desc">Set bottom danmaku display area percentage</string>
 
     <string name="msg_download_enqueued">Added to download queue: %1$d</string>
 

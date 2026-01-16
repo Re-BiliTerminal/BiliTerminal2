@@ -44,6 +44,11 @@ fun PlayerSettingsScreen(
     var showSpeedDialog by remember { mutableStateOf(false) }
     var showFontSizeDialog by remember { mutableStateOf(false) }
     var showMaxCountDialog by remember { mutableStateOf(false) }
+    var showTransparencyDialog by remember { mutableStateOf(false) }
+    var showScrollSpeedDialog by remember { mutableStateOf(false) }
+    var showStrokeWidthDialog by remember { mutableStateOf(false) }
+    var showAreaTopDialog by remember { mutableStateOf(false) }
+    var showAreaBottomDialog by remember { mutableStateOf(false) }
 
     val scrollState = rememberScalingLazyListState()
     val scrollBehavior = rememberEnterAlwaysScrollBehavior()
@@ -282,6 +287,76 @@ fun PlayerSettingsScreen(
                         }
                     )
                 }
+
+                item {
+                    SettingsItem(
+                        title = stringResource(id = R.string.danmaku_transparency),
+                        summary = "${(currentSettings.playerSettings.danmakuTransparency * 100).toInt()}%",
+                        onClick = { showTransparencyDialog = true }
+                    )
+                }
+
+                item {
+                    SettingsItem(
+                        title = stringResource(id = R.string.danmaku_scroll_speed),
+                        summary = "${currentSettings.playerSettings.danmakuScrollSpeed}x",
+                        onClick = { showScrollSpeedDialog = true }
+                    )
+                }
+
+                item {
+                    SettingsItem(
+                        title = stringResource(id = R.string.danmaku_stroke_width),
+                        summary = "${currentSettings.playerSettings.danmakuStrokeWidth}",
+                        onClick = { showStrokeWidthDialog = true }
+                    )
+                }
+
+                item {
+                    SwitchSettingsItem(
+                        title = stringResource(id = R.string.danmaku_merge_duplicate),
+                        summary = stringResource(id = R.string.danmaku_merge_duplicate_desc),
+                        checked = currentSettings.playerSettings.danmakuMergeDuplicate,
+                        onCheckedChange = {
+                            viewModel.updatePlayerSettings(
+                                currentSettings.playerSettings.edit {
+                                    danmakuMergeDuplicate = it
+                                }
+                            )
+                        }
+                    )
+                }
+
+                item {
+                    SwitchSettingsItem(
+                        title = stringResource(id = R.string.danmaku_bold),
+                        summary = stringResource(id = R.string.danmaku_bold_desc),
+                        checked = currentSettings.playerSettings.danmakuBold,
+                        onCheckedChange = {
+                            viewModel.updatePlayerSettings(
+                                currentSettings.playerSettings.edit {
+                                    danmakuBold = it
+                                }
+                            )
+                        }
+                    )
+                }
+
+                item {
+                    SettingsItem(
+                        title = stringResource(id = R.string.danmaku_area_top),
+                        summary = "${(currentSettings.playerSettings.danmakuAreaTop * 100).toInt()}%",
+                        onClick = { showAreaTopDialog = true }
+                    )
+                }
+
+                item {
+                    SettingsItem(
+                        title = stringResource(id = R.string.danmaku_area_bottom),
+                        summary = "${(currentSettings.playerSettings.danmakuAreaBottom * 100).toInt()}%",
+                        onClick = { showAreaBottomDialog = true }
+                    )
+                }
             }
         }
     }
@@ -342,6 +417,81 @@ fun PlayerSettingsScreen(
                     }
                 )
                 showMaxCountDialog = false
+            }
+        )
+    }
+
+    if (showTransparencyDialog) {
+        TransparencySelectionDialog(
+            currentTransparency = currentSettings.playerSettings.danmakuTransparency,
+            onDismiss = { showTransparencyDialog = false },
+            onConfirm = { transparency ->
+                viewModel.updatePlayerSettings(
+                    currentSettings.playerSettings.edit {
+                        danmakuTransparency = transparency
+                    }
+                )
+                showTransparencyDialog = false
+            }
+        )
+    }
+
+    if (showScrollSpeedDialog) {
+        ScrollSpeedSelectionDialog(
+            currentSpeed = currentSettings.playerSettings.danmakuScrollSpeed,
+            onDismiss = { showScrollSpeedDialog = false },
+            onConfirm = { speed ->
+                viewModel.updatePlayerSettings(
+                    currentSettings.playerSettings.edit {
+                        danmakuScrollSpeed = speed
+                    }
+                )
+                showScrollSpeedDialog = false
+            }
+        )
+    }
+
+    if (showStrokeWidthDialog) {
+        StrokeWidthSelectionDialog(
+            currentWidth = currentSettings.playerSettings.danmakuStrokeWidth,
+            onDismiss = { showStrokeWidthDialog = false },
+            onConfirm = { width ->
+                viewModel.updatePlayerSettings(
+                    currentSettings.playerSettings.edit {
+                        danmakuStrokeWidth = width
+                    }
+                )
+                showStrokeWidthDialog = false
+            }
+        )
+    }
+
+    if (showAreaTopDialog) {
+        AreaTopSelectionDialog(
+            currentArea = currentSettings.playerSettings.danmakuAreaTop,
+            onDismiss = { showAreaTopDialog = false },
+            onConfirm = { area ->
+                viewModel.updatePlayerSettings(
+                    currentSettings.playerSettings.edit {
+                        danmakuAreaTop = area
+                    }
+                )
+                showAreaTopDialog = false
+            }
+        )
+    }
+
+    if (showAreaBottomDialog) {
+        AreaBottomSelectionDialog(
+            currentArea = currentSettings.playerSettings.danmakuAreaBottom,
+            onDismiss = { showAreaBottomDialog = false },
+            onConfirm = { area ->
+                viewModel.updatePlayerSettings(
+                    currentSettings.playerSettings.edit {
+                        danmakuAreaBottom = area
+                    }
+                )
+                showAreaBottomDialog = false
             }
         )
     }
@@ -593,6 +743,328 @@ private fun MaxCountSelectionDialog(
             androidx.compose.material3.TextButton(
                 onClick = {
                     onConfirm(selectedMaxCount)
+                    close()
+                }
+            ) {
+                Text(stringResource(id = R.string.confirm))
+            }
+        },
+        dismissButton = {
+            androidx.compose.material3.TextButton(onClick = onDismiss) {
+                Text(stringResource(id = R.string.cancel))
+            }
+        }
+    )
+}
+
+@Composable
+private fun TransparencySelectionDialog(
+    currentTransparency: Float,
+    onDismiss: () -> Unit,
+    onConfirm: (Float) -> Unit
+) {
+    val transparencyOptions = listOf(
+        0.0f to "0%",
+        0.25f to "25%",
+        0.5f to "50%",
+        0.75f to "75%",
+        0.8f to "80%",
+        0.9f to "90%",
+        1.0f to "100%"
+    )
+
+    var selectedTransparency by remember { mutableStateOf(currentTransparency) }
+
+    AdaptDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(id = R.string.danmaku_transparency)) },
+        text = {
+            Column(Modifier.selectableGroup()) {
+                transparencyOptions.forEach { (transparency, label) ->
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .selectable(
+                                selected = (transparency == selectedTransparency),
+                                onClick = { selectedTransparency = transparency },
+                                role = Role.RadioButton
+                            )
+                            .padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = (transparency == selectedTransparency),
+                            onClick = null
+                        )
+                        Text(
+                            text = label,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = { close ->
+            androidx.compose.material3.TextButton(
+                onClick = {
+                    onConfirm(selectedTransparency)
+                    close()
+                }
+            ) {
+                Text(stringResource(id = R.string.confirm))
+            }
+        },
+        dismissButton = {
+            androidx.compose.material3.TextButton(onClick = onDismiss) {
+                Text(stringResource(id = R.string.cancel))
+            }
+        }
+    )
+}
+
+@Composable
+private fun ScrollSpeedSelectionDialog(
+    currentSpeed: Float,
+    onDismiss: () -> Unit,
+    onConfirm: (Float) -> Unit
+) {
+    val speedOptions = listOf(
+        0.5f to "0.5x",
+        0.75f to "0.75x",
+        1.0f to "1.0x",
+        1.25f to "1.25x",
+        1.5f to "1.5x",
+        2.0f to "2.0x",
+        3.0f to "3.0x"
+    )
+
+    var selectedSpeed by remember { mutableStateOf(currentSpeed) }
+
+    AdaptDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(id = R.string.danmaku_scroll_speed)) },
+        text = {
+            Column(Modifier.selectableGroup()) {
+                speedOptions.forEach { (speed, label) ->
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .selectable(
+                                selected = (speed == selectedSpeed),
+                                onClick = { selectedSpeed = speed },
+                                role = Role.RadioButton
+                            )
+                            .padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = (speed == selectedSpeed),
+                            onClick = null
+                        )
+                        Text(
+                            text = label,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = { close ->
+            androidx.compose.material3.TextButton(
+                onClick = {
+                    onConfirm(selectedSpeed)
+                    close()
+                }
+            ) {
+                Text(stringResource(id = R.string.confirm))
+            }
+        },
+        dismissButton = {
+            androidx.compose.material3.TextButton(onClick = onDismiss) {
+                Text(stringResource(id = R.string.cancel))
+            }
+        }
+    )
+}
+
+@Composable
+private fun StrokeWidthSelectionDialog(
+    currentWidth: Float,
+    onDismiss: () -> Unit,
+    onConfirm: (Float) -> Unit
+) {
+    val widthOptions = listOf(
+        0f to "0",
+        1f to "1",
+        2f to "2",
+        3f to "3",
+        4f to "4",
+        5f to "5"
+    )
+
+    var selectedWidth by remember { mutableStateOf(currentWidth) }
+
+    AdaptDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(id = R.string.danmaku_stroke_width)) },
+        text = {
+            Column(Modifier.selectableGroup()) {
+                widthOptions.forEach { (width, label) ->
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .selectable(
+                                selected = (width == selectedWidth),
+                                onClick = { selectedWidth = width },
+                                role = Role.RadioButton
+                            )
+                            .padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = (width == selectedWidth),
+                            onClick = null
+                        )
+                        Text(
+                            text = label,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = { close ->
+            androidx.compose.material3.TextButton(
+                onClick = {
+                    onConfirm(selectedWidth)
+                    close()
+                }
+            ) {
+                Text(stringResource(id = R.string.confirm))
+            }
+        },
+        dismissButton = {
+            androidx.compose.material3.TextButton(onClick = onDismiss) {
+                Text(stringResource(id = R.string.cancel))
+            }
+        }
+    )
+}
+
+@Composable
+private fun AreaTopSelectionDialog(
+    currentArea: Float,
+    onDismiss: () -> Unit,
+    onConfirm: (Float) -> Unit
+) {
+    val areaOptions = listOf(
+        0.0f to "0%",
+        0.1f to "10%",
+        0.2f to "20%",
+        0.3f to "30%",
+        0.4f to "40%",
+        0.5f to "50%"
+    )
+
+    var selectedArea by remember { mutableStateOf(currentArea) }
+
+    AdaptDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(id = R.string.danmaku_area_top)) },
+        text = {
+            Column(Modifier.selectableGroup()) {
+                areaOptions.forEach { (area, label) ->
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .selectable(
+                                selected = (area == selectedArea),
+                                onClick = { selectedArea = area },
+                                role = Role.RadioButton
+                            )
+                            .padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = (area == selectedArea),
+                            onClick = null
+                        )
+                        Text(
+                            text = label,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = { close ->
+            androidx.compose.material3.TextButton(
+                onClick = {
+                    onConfirm(selectedArea)
+                    close()
+                }
+            ) {
+                Text(stringResource(id = R.string.confirm))
+            }
+        },
+        dismissButton = {
+            androidx.compose.material3.TextButton(onClick = onDismiss) {
+                Text(stringResource(id = R.string.cancel))
+            }
+        }
+    )
+}
+
+@Composable
+private fun AreaBottomSelectionDialog(
+    currentArea: Float,
+    onDismiss: () -> Unit,
+    onConfirm: (Float) -> Unit
+) {
+    val areaOptions = listOf(
+        0.0f to "0%",
+        0.1f to "10%",
+        0.2f to "20%",
+        0.3f to "30%",
+        0.4f to "40%",
+        0.5f to "50%"
+    )
+
+    var selectedArea by remember { mutableStateOf(currentArea) }
+
+    AdaptDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(id = R.string.danmaku_area_bottom)) },
+        text = {
+            Column(Modifier.selectableGroup()) {
+                areaOptions.forEach { (area, label) ->
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .selectable(
+                                selected = (area == selectedArea),
+                                onClick = { selectedArea = area },
+                                role = Role.RadioButton
+                            )
+                            .padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = (area == selectedArea),
+                            onClick = null
+                        )
+                        Text(
+                            text = label,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = { close ->
+            androidx.compose.material3.TextButton(
+                onClick = {
+                    onConfirm(selectedArea)
                     close()
                 }
             ) {
