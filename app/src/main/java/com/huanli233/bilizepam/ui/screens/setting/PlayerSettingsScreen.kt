@@ -1,14 +1,21 @@
 package com.huanli233.bilizepam.ui.screens.setting
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.material3.RadioButton
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -19,7 +26,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -30,7 +36,6 @@ import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.data.setting.edit
 import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
 import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
-import com.huanli233.bilizepam.ui.dialog.AdaptDialog
 
 @Composable
 fun PlayerSettingsScreen(
@@ -362,8 +367,16 @@ fun PlayerSettingsScreen(
     }
 
     if (showQualityDialog) {
-        QualitySelectionDialog(
-            currentQuality = currentSettings.playerSettings.defaultQuality,
+        SelectionDialog(
+            title = stringResource(id = R.string.default_quality),
+            options = listOf(
+                0 to "自动",
+                16 to "流畅 360P",
+                32 to "清晰 480P",
+                64 to "高清 720P",
+                80 to "高清 1080P"
+            ),
+            currentValue = currentSettings.playerSettings.defaultQuality,
             onDismiss = { showQualityDialog = false },
             onConfirm = { quality ->
                 viewModel.updatePlayerSettings(
@@ -377,8 +390,18 @@ fun PlayerSettingsScreen(
     }
 
     if (showSpeedDialog) {
-        SpeedSelectionDialog(
-            currentSpeed = currentSettings.playerSettings.defaultSpeed,
+        SelectionDialog(
+            title = stringResource(id = R.string.default_speed),
+            options = listOf(
+                0.5f to "0.5x",
+                0.75f to "0.75x",
+                1.0f to "1.0x",
+                1.25f to "1.25x",
+                1.5f to "1.5x",
+                1.75f to "1.75x",
+                2.0f to "2.0x"
+            ),
+            currentValue = currentSettings.playerSettings.defaultSpeed,
             onDismiss = { showSpeedDialog = false },
             onConfirm = { speed ->
                 viewModel.updatePlayerSettings(
@@ -392,8 +415,19 @@ fun PlayerSettingsScreen(
     }
 
     if (showFontSizeDialog) {
-        FontSizeSelectionDialog(
-            currentFontSize = currentSettings.playerSettings.danmakuFontSize,
+        SelectionDialog(
+            title = stringResource(id = R.string.danmaku_font_size),
+            options = listOf(
+                10f to "10sp",
+                12f to "12sp",
+                14f to "14sp",
+                16f to "16sp",
+                18f to "18sp",
+                20f to "20sp",
+                22f to "22sp",
+                24f to "24sp"
+            ),
+            currentValue = currentSettings.playerSettings.danmakuFontSize,
             onDismiss = { showFontSizeDialog = false },
             onConfirm = { fontSize ->
                 viewModel.updatePlayerSettings(
@@ -407,8 +441,19 @@ fun PlayerSettingsScreen(
     }
 
     if (showMaxCountDialog) {
-        MaxCountSelectionDialog(
-            currentMaxCount = currentSettings.playerSettings.danmakuMaxCount,
+        SelectionDialog(
+            title = stringResource(id = R.string.danmaku_max_count),
+            options = listOf(
+                10 to "10",
+                20 to "20",
+                30 to "30",
+                50 to "50",
+                80 to "80",
+                100 to "100",
+                150 to "150",
+                200 to "200"
+            ),
+            currentValue = currentSettings.playerSettings.danmakuMaxCount,
             onDismiss = { showMaxCountDialog = false },
             onConfirm = { maxCount ->
                 viewModel.updatePlayerSettings(
@@ -422,8 +467,18 @@ fun PlayerSettingsScreen(
     }
 
     if (showTransparencyDialog) {
-        TransparencySelectionDialog(
-            currentTransparency = currentSettings.playerSettings.danmakuTransparency,
+        SelectionDialog(
+            title = stringResource(id = R.string.danmaku_transparency),
+            options = listOf(
+                0.0f to "0%",
+                0.25f to "25%",
+                0.5f to "50%",
+                0.75f to "75%",
+                0.8f to "80%",
+                0.9f to "90%",
+                1.0f to "100%"
+            ),
+            currentValue = currentSettings.playerSettings.danmakuTransparency,
             onDismiss = { showTransparencyDialog = false },
             onConfirm = { transparency ->
                 viewModel.updatePlayerSettings(
@@ -437,8 +492,18 @@ fun PlayerSettingsScreen(
     }
 
     if (showScrollSpeedDialog) {
-        ScrollSpeedSelectionDialog(
-            currentSpeed = currentSettings.playerSettings.danmakuScrollSpeed,
+        SelectionDialog(
+            title = stringResource(id = R.string.danmaku_scroll_speed),
+            options = listOf(
+                0.5f to "0.5x",
+                0.75f to "0.75x",
+                1.0f to "1.0x",
+                1.25f to "1.25x",
+                1.5f to "1.5x",
+                2.0f to "2.0x",
+                3.0f to "3.0x"
+            ),
+            currentValue = currentSettings.playerSettings.danmakuScrollSpeed,
             onDismiss = { showScrollSpeedDialog = false },
             onConfirm = { speed ->
                 viewModel.updatePlayerSettings(
@@ -452,8 +517,17 @@ fun PlayerSettingsScreen(
     }
 
     if (showStrokeWidthDialog) {
-        StrokeWidthSelectionDialog(
-            currentWidth = currentSettings.playerSettings.danmakuStrokeWidth,
+        SelectionDialog(
+            title = stringResource(id = R.string.danmaku_stroke_width),
+            options = listOf(
+                0f to "0",
+                1f to "1",
+                2f to "2",
+                3f to "3",
+                4f to "4",
+                5f to "5"
+            ),
+            currentValue = currentSettings.playerSettings.danmakuStrokeWidth,
             onDismiss = { showStrokeWidthDialog = false },
             onConfirm = { width ->
                 viewModel.updatePlayerSettings(
@@ -467,8 +541,17 @@ fun PlayerSettingsScreen(
     }
 
     if (showAreaTopDialog) {
-        AreaTopSelectionDialog(
-            currentArea = currentSettings.playerSettings.danmakuAreaTop,
+        SelectionDialog(
+            title = stringResource(id = R.string.danmaku_area_top),
+            options = listOf(
+                0.0f to "0%",
+                0.1f to "10%",
+                0.2f to "20%",
+                0.3f to "30%",
+                0.4f to "40%",
+                0.5f to "50%"
+            ),
+            currentValue = currentSettings.playerSettings.danmakuAreaTop,
             onDismiss = { showAreaTopDialog = false },
             onConfirm = { area ->
                 viewModel.updatePlayerSettings(
@@ -482,8 +565,17 @@ fun PlayerSettingsScreen(
     }
 
     if (showAreaBottomDialog) {
-        AreaBottomSelectionDialog(
-            currentArea = currentSettings.playerSettings.danmakuAreaBottom,
+        SelectionDialog(
+            title = stringResource(id = R.string.danmaku_area_bottom),
+            options = listOf(
+                0.0f to "0%",
+                0.1f to "10%",
+                0.2f to "20%",
+                0.3f to "30%",
+                0.4f to "40%",
+                0.5f to "50%"
+            ),
+            currentValue = currentSettings.playerSettings.danmakuAreaBottom,
             onDismiss = { showAreaBottomDialog = false },
             onConfirm = { area ->
                 viewModel.updatePlayerSettings(
@@ -498,583 +590,96 @@ fun PlayerSettingsScreen(
 }
 
 @Composable
-private fun QualitySelectionDialog(
-    currentQuality: Int,
+private fun <T> SelectionDialog(
+    title: String,
+    options: List<Pair<T, String>>,
+    currentValue: T,
     onDismiss: () -> Unit,
-    onConfirm: (Int) -> Unit
+    onConfirm: (T) -> Unit
 ) {
-    val qualityOptions = listOf(
-        0 to "自动",
-        16 to "流畅 360P",
-        32 to "清晰 480P",
-        64 to "高清 720P",
-        80 to "高清 1080P"
-    )
+    val scrollState = rememberScalingLazyListState()
 
-    var selectedQuality by remember { mutableStateOf(currentQuality) }
-
-    AdaptDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(id = R.string.default_quality)) },
-        text = {
-            Column(Modifier.selectableGroup()) {
-                qualityOptions.forEach { (quality, label) ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = (quality == selectedQuality),
-                                onClick = { selectedQuality = quality },
-                                role = Role.RadioButton
-                            )
-                            .padding(vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = (quality == selectedQuality),
-                            onClick = null
-                        )
-                        Text(
-                            text = label,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = { close ->
-            androidx.compose.material3.TextButton(
-                onClick = {
-                    onConfirm(selectedQuality)
-                    close()
-                }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        ScreenScaffold(
+            scrollState = scrollState,
+            topBar = scrollAwareTopBar(
+                title = title,
+                showBackIcon = true,
+                onBackClick = onDismiss
+            )
+        ) { paddingValues ->
+            ScalingLazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                state = scrollState,
+                contentPadding = paddingValues,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("确定")
-            }
-        },
-        dismissButton = {
-            androidx.compose.material3.TextButton(onClick = onDismiss) {
-                Text(stringResource(id = R.string.cancel))
+                items(options.size) { index ->
+                    val (value, label) = options[index]
+                    SelectionItem(
+                        label = label,
+                        isSelected = value == currentValue,
+                        onClick = {
+                            onConfirm(value)
+                            onDismiss()
+                        }
+                    )
+                }
             }
         }
-    )
+    }
 }
 
 @Composable
-private fun SpeedSelectionDialog(
-    currentSpeed: Float,
-    onDismiss: () -> Unit,
-    onConfirm: (Float) -> Unit
+private fun SelectionItem(
+    label: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
 ) {
-    val speedOptions = listOf(
-        0.5f to "0.5x",
-        0.75f to "0.75x",
-        1.0f to "1.0x",
-        1.25f to "1.25x",
-        1.5f to "1.5x",
-        1.75f to "1.75x",
-        2.0f to "2.0x"
-    )
-
-    var selectedSpeed by remember { mutableStateOf(currentSpeed) }
-
-    AdaptDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(id = R.string.default_speed)) },
-        text = {
-            Column(Modifier.selectableGroup()) {
-                speedOptions.forEach { (speed, label) ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = (speed == selectedSpeed),
-                                onClick = { selectedSpeed = speed },
-                                role = Role.RadioButton
-                            )
-                            .padding(vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = (speed == selectedSpeed),
-                            onClick = null
-                        )
-                        Text(
-                            text = label,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-                }
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected) {
+                MaterialTheme.colorScheme.primaryContainer
+            } else {
+                MaterialTheme.colorScheme.surface
             }
-        },
-        confirmButton = { close ->
-            androidx.compose.material3.TextButton(
-                onClick = {
-                    onConfirm(selectedSpeed)
-                    close()
+        ),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyLarge,
+                color = if (isSelected) {
+                    MaterialTheme.colorScheme.onPrimaryContainer
+                } else {
+                    MaterialTheme.colorScheme.onSurface
                 }
-            ) {
-                Text(stringResource(id = R.string.confirm))
-            }
-        },
-        dismissButton = {
-            androidx.compose.material3.TextButton(onClick = onDismiss) {
-                Text(stringResource(id = R.string.cancel))
+            )
+
+            if (isSelected) {
+                Icon(
+                    imageVector = Icons.Filled.Check,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.size(20.dp)
+                )
             }
         }
-    )
+    }
 }
 
-@Composable
-private fun FontSizeSelectionDialog(
-    currentFontSize: Float,
-    onDismiss: () -> Unit,
-    onConfirm: (Float) -> Unit
-) {
-    val fontSizeOptions = listOf(
-        10f to "10sp",
-        12f to "12sp",
-        14f to "14sp",
-        16f to "16sp",
-        18f to "18sp",
-        20f to "20sp",
-        22f to "22sp",
-        24f to "24sp"
-    )
-
-    var selectedFontSize by remember { mutableStateOf(currentFontSize) }
-
-    AdaptDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(id = R.string.danmaku_font_size)) },
-        text = {
-            Column(Modifier.selectableGroup()) {
-                fontSizeOptions.forEach { (fontSize, label) ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = (fontSize == selectedFontSize),
-                                onClick = { selectedFontSize = fontSize },
-                                role = Role.RadioButton
-                            )
-                            .padding(vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = (fontSize == selectedFontSize),
-                            onClick = null
-                        )
-                        Text(
-                            text = label,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = { close ->
-            androidx.compose.material3.TextButton(
-                onClick = {
-                    onConfirm(selectedFontSize)
-                    close()
-                }
-            ) {
-                Text(stringResource(id = R.string.confirm))
-            }
-        },
-        dismissButton = {
-            androidx.compose.material3.TextButton(onClick = onDismiss) {
-                Text(stringResource(id = R.string.cancel))
-            }
-        }
-    )
-}
-
-@Composable
-private fun MaxCountSelectionDialog(
-    currentMaxCount: Int,
-    onDismiss: () -> Unit,
-    onConfirm: (Int) -> Unit
-) {
-    val maxCountOptions = listOf(
-        10 to "10",
-        20 to "20",
-        30 to "30",
-        50 to "50",
-        80 to "80",
-        100 to "100",
-        150 to "150",
-        200 to "200"
-    )
-
-    var selectedMaxCount by remember { mutableStateOf(currentMaxCount) }
-
-    AdaptDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(id = R.string.danmaku_max_count)) },
-        text = {
-            Column(Modifier.selectableGroup()) {
-                maxCountOptions.forEach { (maxCount, label) ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = (maxCount == selectedMaxCount),
-                                onClick = { selectedMaxCount = maxCount },
-                                role = Role.RadioButton
-                            )
-                            .padding(vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = (maxCount == selectedMaxCount),
-                            onClick = null
-                        )
-                        Text(
-                            text = label,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = { close ->
-            androidx.compose.material3.TextButton(
-                onClick = {
-                    onConfirm(selectedMaxCount)
-                    close()
-                }
-            ) {
-                Text(stringResource(id = R.string.confirm))
-            }
-        },
-        dismissButton = {
-            androidx.compose.material3.TextButton(onClick = onDismiss) {
-                Text(stringResource(id = R.string.cancel))
-            }
-        }
-    )
-}
-
-@Composable
-private fun TransparencySelectionDialog(
-    currentTransparency: Float,
-    onDismiss: () -> Unit,
-    onConfirm: (Float) -> Unit
-) {
-    val transparencyOptions = listOf(
-        0.0f to "0%",
-        0.25f to "25%",
-        0.5f to "50%",
-        0.75f to "75%",
-        0.8f to "80%",
-        0.9f to "90%",
-        1.0f to "100%"
-    )
-
-    var selectedTransparency by remember { mutableStateOf(currentTransparency) }
-
-    AdaptDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(id = R.string.danmaku_transparency)) },
-        text = {
-            Column(Modifier.selectableGroup()) {
-                transparencyOptions.forEach { (transparency, label) ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = (transparency == selectedTransparency),
-                                onClick = { selectedTransparency = transparency },
-                                role = Role.RadioButton
-                            )
-                            .padding(vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = (transparency == selectedTransparency),
-                            onClick = null
-                        )
-                        Text(
-                            text = label,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = { close ->
-            androidx.compose.material3.TextButton(
-                onClick = {
-                    onConfirm(selectedTransparency)
-                    close()
-                }
-            ) {
-                Text(stringResource(id = R.string.confirm))
-            }
-        },
-        dismissButton = {
-            androidx.compose.material3.TextButton(onClick = onDismiss) {
-                Text(stringResource(id = R.string.cancel))
-            }
-        }
-    )
-}
-
-@Composable
-private fun ScrollSpeedSelectionDialog(
-    currentSpeed: Float,
-    onDismiss: () -> Unit,
-    onConfirm: (Float) -> Unit
-) {
-    val speedOptions = listOf(
-        0.5f to "0.5x",
-        0.75f to "0.75x",
-        1.0f to "1.0x",
-        1.25f to "1.25x",
-        1.5f to "1.5x",
-        2.0f to "2.0x",
-        3.0f to "3.0x"
-    )
-
-    var selectedSpeed by remember { mutableStateOf(currentSpeed) }
-
-    AdaptDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(id = R.string.danmaku_scroll_speed)) },
-        text = {
-            Column(Modifier.selectableGroup()) {
-                speedOptions.forEach { (speed, label) ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = (speed == selectedSpeed),
-                                onClick = { selectedSpeed = speed },
-                                role = Role.RadioButton
-                            )
-                            .padding(vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = (speed == selectedSpeed),
-                            onClick = null
-                        )
-                        Text(
-                            text = label,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = { close ->
-            androidx.compose.material3.TextButton(
-                onClick = {
-                    onConfirm(selectedSpeed)
-                    close()
-                }
-            ) {
-                Text(stringResource(id = R.string.confirm))
-            }
-        },
-        dismissButton = {
-            androidx.compose.material3.TextButton(onClick = onDismiss) {
-                Text(stringResource(id = R.string.cancel))
-            }
-        }
-    )
-}
-
-@Composable
-private fun StrokeWidthSelectionDialog(
-    currentWidth: Float,
-    onDismiss: () -> Unit,
-    onConfirm: (Float) -> Unit
-) {
-    val widthOptions = listOf(
-        0f to "0",
-        1f to "1",
-        2f to "2",
-        3f to "3",
-        4f to "4",
-        5f to "5"
-    )
-
-    var selectedWidth by remember { mutableStateOf(currentWidth) }
-
-    AdaptDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(id = R.string.danmaku_stroke_width)) },
-        text = {
-            Column(Modifier.selectableGroup()) {
-                widthOptions.forEach { (width, label) ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = (width == selectedWidth),
-                                onClick = { selectedWidth = width },
-                                role = Role.RadioButton
-                            )
-                            .padding(vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = (width == selectedWidth),
-                            onClick = null
-                        )
-                        Text(
-                            text = label,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = { close ->
-            androidx.compose.material3.TextButton(
-                onClick = {
-                    onConfirm(selectedWidth)
-                    close()
-                }
-            ) {
-                Text(stringResource(id = R.string.confirm))
-            }
-        },
-        dismissButton = {
-            androidx.compose.material3.TextButton(onClick = onDismiss) {
-                Text(stringResource(id = R.string.cancel))
-            }
-        }
-    )
-}
-
-@Composable
-private fun AreaTopSelectionDialog(
-    currentArea: Float,
-    onDismiss: () -> Unit,
-    onConfirm: (Float) -> Unit
-) {
-    val areaOptions = listOf(
-        0.0f to "0%",
-        0.1f to "10%",
-        0.2f to "20%",
-        0.3f to "30%",
-        0.4f to "40%",
-        0.5f to "50%"
-    )
-
-    var selectedArea by remember { mutableStateOf(currentArea) }
-
-    AdaptDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(id = R.string.danmaku_area_top)) },
-        text = {
-            Column(Modifier.selectableGroup()) {
-                areaOptions.forEach { (area, label) ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = (area == selectedArea),
-                                onClick = { selectedArea = area },
-                                role = Role.RadioButton
-                            )
-                            .padding(vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = (area == selectedArea),
-                            onClick = null
-                        )
-                        Text(
-                            text = label,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = { close ->
-            androidx.compose.material3.TextButton(
-                onClick = {
-                    onConfirm(selectedArea)
-                    close()
-                }
-            ) {
-                Text(stringResource(id = R.string.confirm))
-            }
-        },
-        dismissButton = {
-            androidx.compose.material3.TextButton(onClick = onDismiss) {
-                Text(stringResource(id = R.string.cancel))
-            }
-        }
-    )
-}
-
-@Composable
-private fun AreaBottomSelectionDialog(
-    currentArea: Float,
-    onDismiss: () -> Unit,
-    onConfirm: (Float) -> Unit
-) {
-    val areaOptions = listOf(
-        0.0f to "0%",
-        0.1f to "10%",
-        0.2f to "20%",
-        0.3f to "30%",
-        0.4f to "40%",
-        0.5f to "50%"
-    )
-
-    var selectedArea by remember { mutableStateOf(currentArea) }
-
-    AdaptDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(id = R.string.danmaku_area_bottom)) },
-        text = {
-            Column(Modifier.selectableGroup()) {
-                areaOptions.forEach { (area, label) ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = (area == selectedArea),
-                                onClick = { selectedArea = area },
-                                role = Role.RadioButton
-                            )
-                            .padding(vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = (area == selectedArea),
-                            onClick = null
-                        )
-                        Text(
-                            text = label,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = { close ->
-            androidx.compose.material3.TextButton(
-                onClick = {
-                    onConfirm(selectedArea)
-                    close()
-                }
-            ) {
-                Text(stringResource(id = R.string.confirm))
-            }
-        },
-        dismissButton = {
-            androidx.compose.material3.TextButton(onClick = onDismiss) {
-                Text(stringResource(id = R.string.cancel))
-            }
-        }
-    )
-}
