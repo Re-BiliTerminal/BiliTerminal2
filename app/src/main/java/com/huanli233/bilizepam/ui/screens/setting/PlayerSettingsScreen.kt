@@ -42,6 +42,8 @@ fun PlayerSettingsScreen(
 
     var showQualityDialog by remember { mutableStateOf(false) }
     var showSpeedDialog by remember { mutableStateOf(false) }
+    var showFontSizeDialog by remember { mutableStateOf(false) }
+    var showMaxCountDialog by remember { mutableStateOf(false) }
 
     val scrollState = rememberScalingLazyListState()
     val scrollBehavior = rememberEnterAlwaysScrollBehavior()
@@ -200,6 +202,86 @@ fun PlayerSettingsScreen(
                         }
                     )
                 }
+
+                item {
+                    SettingsCategory(title = stringResource(id = R.string.danmaku_settings))
+                }
+
+                item {
+                    SettingsItem(
+                        title = stringResource(id = R.string.danmaku_font_size),
+                        summary = "${currentSettings.playerSettings.danmakuFontSize}sp",
+                        onClick = { showFontSizeDialog = true }
+                    )
+                }
+
+                item {
+                    SettingsItem(
+                        title = stringResource(id = R.string.danmaku_max_count),
+                        summary = "${currentSettings.playerSettings.danmakuMaxCount}",
+                        onClick = { showMaxCountDialog = true }
+                    )
+                }
+
+                item {
+                    SwitchSettingsItem(
+                        title = stringResource(id = R.string.danmaku_scroll_enabled),
+                        summary = stringResource(id = R.string.danmaku_scroll_enabled_desc),
+                        checked = currentSettings.playerSettings.danmakuScrollEnabled,
+                        onCheckedChange = {
+                            viewModel.updatePlayerSettings(
+                                currentSettings.playerSettings.edit {
+                                    danmakuScrollEnabled = it
+                                }
+                            )
+                        }
+                    )
+                }
+
+                item {
+                    SwitchSettingsItem(
+                        title = stringResource(id = R.string.danmaku_top_enabled),
+                        summary = stringResource(id = R.string.danmaku_top_enabled_desc),
+                        checked = currentSettings.playerSettings.danmakuTopEnabled,
+                        onCheckedChange = {
+                            viewModel.updatePlayerSettings(
+                                currentSettings.playerSettings.edit {
+                                    danmakuTopEnabled = it
+                                }
+                            )
+                        }
+                    )
+                }
+
+                item {
+                    SwitchSettingsItem(
+                        title = stringResource(id = R.string.danmaku_bottom_enabled),
+                        summary = stringResource(id = R.string.danmaku_bottom_enabled_desc),
+                        checked = currentSettings.playerSettings.danmakuBottomEnabled,
+                        onCheckedChange = {
+                            viewModel.updatePlayerSettings(
+                                currentSettings.playerSettings.edit {
+                                    danmakuBottomEnabled = it
+                                }
+                            )
+                        }
+                    )
+                }
+
+                item {
+                    SwitchSettingsItem(
+                        title = stringResource(id = R.string.danmaku_advanced_enabled),
+                        summary = stringResource(id = R.string.danmaku_advanced_enabled_desc),
+                        checked = currentSettings.playerSettings.danmakuAdvancedEnabled,
+                        onCheckedChange = {
+                            viewModel.updatePlayerSettings(
+                                currentSettings.playerSettings.edit {
+                                    danmakuAdvancedEnabled = it
+                                }
+                            )
+                        }
+                    )
+                }
             }
         }
     }
@@ -230,6 +312,36 @@ fun PlayerSettingsScreen(
                     }
                 )
                 showSpeedDialog = false
+            }
+        )
+    }
+
+    if (showFontSizeDialog) {
+        FontSizeSelectionDialog(
+            currentFontSize = currentSettings.playerSettings.danmakuFontSize,
+            onDismiss = { showFontSizeDialog = false },
+            onConfirm = { fontSize ->
+                viewModel.updatePlayerSettings(
+                    currentSettings.playerSettings.edit {
+                        danmakuFontSize = fontSize
+                    }
+                )
+                showFontSizeDialog = false
+            }
+        )
+    }
+
+    if (showMaxCountDialog) {
+        MaxCountSelectionDialog(
+            currentMaxCount = currentSettings.playerSettings.danmakuMaxCount,
+            onDismiss = { showMaxCountDialog = false },
+            onConfirm = { maxCount ->
+                viewModel.updatePlayerSettings(
+                    currentSettings.playerSettings.edit {
+                        danmakuMaxCount = maxCount
+                    }
+                )
+                showMaxCountDialog = false
             }
         )
     }
@@ -349,6 +461,138 @@ private fun SpeedSelectionDialog(
             androidx.compose.material3.TextButton(
                 onClick = {
                     onConfirm(selectedSpeed)
+                    close()
+                }
+            ) {
+                Text(stringResource(id = R.string.confirm))
+            }
+        },
+        dismissButton = {
+            androidx.compose.material3.TextButton(onClick = onDismiss) {
+                Text(stringResource(id = R.string.cancel))
+            }
+        }
+    )
+}
+
+@Composable
+private fun FontSizeSelectionDialog(
+    currentFontSize: Float,
+    onDismiss: () -> Unit,
+    onConfirm: (Float) -> Unit
+) {
+    val fontSizeOptions = listOf(
+        10f to "10sp",
+        12f to "12sp",
+        14f to "14sp",
+        16f to "16sp",
+        18f to "18sp",
+        20f to "20sp",
+        22f to "22sp",
+        24f to "24sp"
+    )
+
+    var selectedFontSize by remember { mutableStateOf(currentFontSize) }
+
+    AdaptDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(id = R.string.danmaku_font_size)) },
+        text = {
+            Column(Modifier.selectableGroup()) {
+                fontSizeOptions.forEach { (fontSize, label) ->
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .selectable(
+                                selected = (fontSize == selectedFontSize),
+                                onClick = { selectedFontSize = fontSize },
+                                role = Role.RadioButton
+                            )
+                            .padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = (fontSize == selectedFontSize),
+                            onClick = null
+                        )
+                        Text(
+                            text = label,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = { close ->
+            androidx.compose.material3.TextButton(
+                onClick = {
+                    onConfirm(selectedFontSize)
+                    close()
+                }
+            ) {
+                Text(stringResource(id = R.string.confirm))
+            }
+        },
+        dismissButton = {
+            androidx.compose.material3.TextButton(onClick = onDismiss) {
+                Text(stringResource(id = R.string.cancel))
+            }
+        }
+    )
+}
+
+@Composable
+private fun MaxCountSelectionDialog(
+    currentMaxCount: Int,
+    onDismiss: () -> Unit,
+    onConfirm: (Int) -> Unit
+) {
+    val maxCountOptions = listOf(
+        10 to "10",
+        20 to "20",
+        30 to "30",
+        50 to "50",
+        80 to "80",
+        100 to "100",
+        150 to "150",
+        200 to "200"
+    )
+
+    var selectedMaxCount by remember { mutableStateOf(currentMaxCount) }
+
+    AdaptDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(id = R.string.danmaku_max_count)) },
+        text = {
+            Column(Modifier.selectableGroup()) {
+                maxCountOptions.forEach { (maxCount, label) ->
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .selectable(
+                                selected = (maxCount == selectedMaxCount),
+                                onClick = { selectedMaxCount = maxCount },
+                                role = Role.RadioButton
+                            )
+                            .padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = (maxCount == selectedMaxCount),
+                            onClick = null
+                        )
+                        Text(
+                            text = label,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = { close ->
+            androidx.compose.material3.TextButton(
+                onClick = {
+                    onConfirm(selectedMaxCount)
                     close()
                 }
             ) {

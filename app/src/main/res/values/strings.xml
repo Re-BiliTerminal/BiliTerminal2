@@ -266,6 +266,17 @@
     <string name="remember_danmaku_enabled_desc">记住每个视频的弹幕开关状态</string>
     <string name="remember_speed">记忆倍速</string>
     <string name="remember_speed_desc">记住每个视频的播放倍速</string>
+    <string name="danmaku_settings">弹幕设置</string>
+    <string name="danmaku_font_size">弹幕字体大小</string>
+    <string name="danmaku_max_count">同屏数量</string>
+    <string name="danmaku_scroll_enabled">滚动弹幕</string>
+    <string name="danmaku_scroll_enabled_desc">显示滚动弹幕</string>
+    <string name="danmaku_top_enabled">顶部弹幕</string>
+    <string name="danmaku_top_enabled_desc">显示顶部弹幕</string>
+    <string name="danmaku_bottom_enabled">底部弹幕</string>
+    <string name="danmaku_bottom_enabled_desc">显示底部弹幕</string>
+    <string name="danmaku_advanced_enabled">高级弹幕</string>
+    <string name="danmaku_advanced_enabled_desc">显示高级弹幕</string>
     <string name="scale">大小</string>
     <string name="preference">偏好</string>
     <string name="disable_fullscreen_dialog">非全屏Dialog</string>

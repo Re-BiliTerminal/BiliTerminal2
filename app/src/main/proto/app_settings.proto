@@ -58,6 +58,12 @@ message PlayerSettings {
   float default_speed = 7;
   bool remember_danmaku_enabled = 8;
   bool remember_speed = 9;
+  float danmaku_font_size = 10;
+  int32 danmaku_max_count = 11;
+  bool danmaku_scroll_enabled = 12;
+  bool danmaku_top_enabled = 13;
+  bool danmaku_bottom_enabled = 14;
+  bool danmaku_advanced_enabled = 15;
 }
 
 message AppSettings {

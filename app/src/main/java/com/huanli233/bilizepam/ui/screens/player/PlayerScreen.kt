@@ -203,14 +203,23 @@ fun PlayerScreen(
 
     val scope = rememberCoroutineScope()
 
-    val danmakuContext = remember {
+    val danmakuContext = remember(playerSettings) {
+        val defaultFontSize = 16f
+        val fontSize = playerSettings?.danmakuFontSize ?: defaultFontSize
+        val scaleFactor = fontSize / defaultFontSize
+        
         DanmakuContext.create().apply {
             setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3f)
-            setScaleTextSize(1.2f)
+            setScaleTextSize(scaleFactor)
             setDanmakuTransparency(0.8f)
             setCacheStuffer(SpannedCacheStuffer(), null)
-            setMaximumVisibleSizeInScreen(100)
+            setMaximumVisibleSizeInScreen(playerSettings?.danmakuMaxCount ?: 50)
             setDuplicateMergingEnabled(true)
+            
+            setR2LDanmakuVisibility(playerSettings?.danmakuScrollEnabled ?: true)
+            setFTDanmakuVisibility(playerSettings?.danmakuTopEnabled ?: true)
+            setFBDanmakuVisibility(playerSettings?.danmakuBottomEnabled ?: true)
+            setSpecialDanmakuVisibility(playerSettings?.danmakuAdvancedEnabled ?: true)
         }
     }
 
@@ -875,6 +884,16 @@ fun PlayerScreen(
                 LaunchedEffect(playbackSpeed, isDanmakuPrepared) {
                     if (isDanmakuPrepared && danmakuView != null) {
                         danmakuView?.setSpeed(playbackSpeed)
+                    }
+                }
+
+                LaunchedEffect(danmakuContext, isDanmakuPrepared, danmakuParser) {
+                    if (isDanmakuPrepared && danmakuView != null && danmakuParser != null) {
+                        try {
+                            danmakuView?.prepare(danmakuParser, danmakuContext)
+                        } catch (e: Exception) {
+                            Log.e("Danmaku", "Error updating danmaku context", e)
+                        }
                     }
                 }
 

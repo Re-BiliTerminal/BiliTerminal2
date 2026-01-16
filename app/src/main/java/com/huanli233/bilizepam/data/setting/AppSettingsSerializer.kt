@@ -68,6 +68,12 @@ object AppSettingsSerializer : Serializer<AppSettings> {
             defaultSpeed = 1.0f
             rememberDanmakuEnabled = false
             rememberSpeed = false
+            danmakuFontSize = 16f
+            danmakuMaxCount = 50
+            danmakuScrollEnabled = true
+            danmakuTopEnabled = true
+            danmakuBottomEnabled = true
+            danmakuAdvancedEnabled = true
         }
         menuConfig = MenuConfig().toString()
     }

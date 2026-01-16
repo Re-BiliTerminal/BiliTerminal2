@@ -176,6 +176,17 @@
     <string name="remember_danmaku_enabled_desc">Remember danmaku on/off state for each video</string>
     <string name="remember_speed">Remember Speed</string>
     <string name="remember_speed_desc">Remember playback speed for each video</string>
+    <string name="danmaku_settings">Danmaku Settings</string>
+    <string name="danmaku_font_size">Danmaku Font Size</string>
+    <string name="danmaku_max_count">Max On-Screen Count</string>
+    <string name="danmaku_scroll_enabled">Scroll Danmaku</string>
+    <string name="danmaku_scroll_enabled_desc">Show scroll danmaku</string>
+    <string name="danmaku_top_enabled">Top Danmaku</string>
+    <string name="danmaku_top_enabled_desc">Show top danmaku</string>
+    <string name="danmaku_bottom_enabled">Bottom Danmaku</string>
+    <string name="danmaku_bottom_enabled_desc">Show bottom danmaku</string>
+    <string name="danmaku_advanced_enabled">Advanced Danmaku</string>
+    <string name="danmaku_advanced_enabled_desc">Show advanced danmaku</string>
 
     <string name="msg_download_enqueued">Added to download queue: %1$d</string>
 
