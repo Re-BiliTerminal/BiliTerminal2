@@ -184,6 +184,24 @@ fun UiSettingsScreen(
                         onCheckedChange = viewModel::updateUserProfileBackgroundEnabled
                     )
                 }
+
+                item {
+                    SwitchSettingsItem(
+                        title = stringResource(id = R.string.collection_card_background_style),
+                        summary = stringResource(id = R.string.collection_card_background_style_desc),
+                        checked = currentSettings.uiSettings.collectionCardBackgroundStyle,
+                        onCheckedChange = viewModel::updateCollectionCardBackgroundStyle
+                    )
+                }
+
+                item {
+                    SwitchSettingsItem(
+                        title = stringResource(id = R.string.favorite_folder_card_background_style),
+                        summary = stringResource(id = R.string.favorite_folder_card_background_style_desc),
+                        checked = currentSettings.uiSettings.favoriteFolderCardBackgroundStyle,
+                        onCheckedChange = viewModel::updateFavoriteFolderCardBackgroundStyle
+                    )
+                }
             }
         }
     }

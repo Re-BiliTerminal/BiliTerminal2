@@ -41,6 +41,8 @@ object AppSettingsSerializer : Serializer<AppSettings> {
             gridListEnabled = false
             videoCardBackgroundStyle = false
             userProfileBackgroundEnabled = false
+            collectionCardBackgroundStyle = false
+            favoriteFolderCardBackgroundStyle = false
         }
         theme = Theme.newBuilder().build {
             nightMode = NightMode.NIGHT_MODE_NIGHT

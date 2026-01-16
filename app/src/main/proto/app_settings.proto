@@ -25,6 +25,8 @@ message UiSettings {
   bool round_mode = 8;
   bool video_card_background_style = 9;
   bool user_profile_background_enabled = 10;
+  bool collection_card_background_style = 11;
+  bool favorite_folder_card_background_style = 12;
 }
 
 message Theme {

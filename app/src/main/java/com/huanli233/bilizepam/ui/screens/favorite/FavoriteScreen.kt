@@ -56,6 +56,11 @@ import com.huanli233.bilizepam.ui.viewmodel.FavoriteUiState
 import com.huanli233.bilizepam.ui.viewmodel.FavoriteViewModel
 import com.huanli233.biliwebapi.bean.favorite.FavoriteBox
 import kotlinx.coroutines.launch
+import com.huanli233.bilizepam.data.setting.LocalData
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.background
+import com.valentinilk.shimmer.shimmer
 
 @Composable
 fun FavoriteScreen(
@@ -167,73 +172,165 @@ private fun FavoriteFolderCard(
     folder: FavoriteBox,
     onClick: () -> Unit
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        ),
-        onClick = onClick
-    ) {
-        Row(
+    val settings by LocalData.settingsStateFlow.collectAsState()
+    val useBackgroundStyle = settings?.uiSettings?.favoriteFolderCardBackgroundStyle ?: false
+    val coverUrl = folder.videos?.firstOrNull()?.pic ?: ""
+    
+    if (useBackgroundStyle && coverUrl.isNotEmpty()) {
+        FavoriteFolderCardWithBackground(
+            folder = folder,
+            coverUrl = coverUrl,
+            onClick = onClick
+        )
+    } else {
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                .padding(horizontal = 8.dp, vertical = 4.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant
+            ),
+            onClick = onClick
         ) {
-            val coverUrl = folder.videos?.firstOrNull()?.pic ?: ""
-            if (coverUrl.isNotEmpty()) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(coverUrl)
-                        .crossfade(200)
-                        .build(),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(60.dp)
-                        .clip(RoundedCornerShape(8.dp)),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                Box(
-                    modifier = Modifier
-                        .size(60.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .padding(8.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Article,
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                if (coverUrl.isNotEmpty()) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(coverUrl)
+                            .crossfade(200)
+                            .build(),
                         contentDescription = null,
-                        modifier = Modifier.size(40.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        modifier = Modifier
+                            .size(60.dp)
+                            .clip(RoundedCornerShape(8.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .size(60.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .padding(8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Article,
+                            contentDescription = null,
+                            modifier = Modifier.size(40.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(vertical = 2.dp)
+                ) {
+                    Text(
+                        text = folder.name,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontWeight = FontWeight.SemiBold
+                        ),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "${folder.count}/${folder.maxCount}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
+        }
+    }
+}
 
+@Composable
+private fun FavoriteFolderCardWithBackground(
+    folder: FavoriteBox,
+    coverUrl: String,
+    onClick: () -> Unit
+) {
+    var isLoading by remember { mutableStateOf(true) }
+    
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .height(90.dp),
+        shape = RoundedCornerShape(12.dp),
+        onClick = onClick
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(coverUrl)
+                    .crossfade(200)
+                    .build(),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(12.dp)),
+                contentScale = ContentScale.Crop,
+                onSuccess = { isLoading = false },
+                onError = { isLoading = false }
+            )
+            
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .shimmer()
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))
+                )
+            }
+            
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color.Black.copy(alpha = 0.7f)
+                            )
+                        )
+                    )
+            )
+            
             Column(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(vertical = 2.dp)
+                    .fillMaxSize()
+                    .padding(12.dp),
+                verticalArrangement = Arrangement.Bottom
             ) {
                 Text(
                     text = folder.name,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = FontWeight.SemiBold
                     ),
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = Color.White,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
+                
+                Spacer(modifier = Modifier.height(6.dp))
+                
                 Text(
                     text = "${folder.count}/${folder.maxCount}",
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = Color.White.copy(alpha = 0.9f)
                 )
             }
         }

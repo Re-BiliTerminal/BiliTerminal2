@@ -317,6 +317,10 @@
     <string name="video_card_background_style_desc">動画のカバーをカードの背景として使用</string>
     <string name="user_profile_background">ユーザープロフィール背景</string>
     <string name="user_profile_background_desc">ユーザー情報に背景ヘッダー画像を表示する</string>
+    <string name="collection_card_background_style">コンプリートカード背景</string>
+    <string name="collection_card_background_style_desc">カバーをコンプリートカードの背景として使用</string>
+    <string name="favorite_folder_card_background_style">お気に入りフォルダカード背景</string>
+    <string name="favorite_folder_card_background_style_desc">カバーをお気に入りフォルダカードの背景として使用</string>
     <string name="ui_style_settings">UIスタイル</string>
 
     <string name="color_sakura">桜花</string>

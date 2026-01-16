@@ -72,6 +72,8 @@ import com.huanli233.bilizepam.data.account.AccountManager
 import com.huanli233.bilizepam.ui.dialog.AdaptDialog
 import com.huanli233.bilizepam.data.setting.LocalData
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.runtime.collectAsState
+import com.valentinilk.shimmer.shimmer
 
 @Composable
 fun UserProfileScreen(
@@ -773,56 +775,155 @@ private fun SeriesCard(
     series: UserSeriesList.SeriesItem,
     onClick: (UserSeriesList.SeriesItem) -> Unit
 ) {
+    val settings by LocalData.settingsStateFlow.collectAsState()
+    val useBackgroundStyle = settings?.uiSettings?.collectionCardBackgroundStyle ?: false
+    
+    if (useBackgroundStyle && series.meta.cover.isNotEmpty()) {
+        SeriesCardWithBackground(
+            series = series,
+            onClick = onClick
+        )
+    } else {
+        Card(
+            onClick = { onClick(series) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 4.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainer
+            )
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                if (series.meta.cover.isNotEmpty()) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(series.meta.cover)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = series.meta.name,
+                        modifier = Modifier
+                            .size(60.dp)
+                            .clip(RoundedCornerShape(4.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = series.meta.name,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    
+                    if (series.meta.description.isNotEmpty()) {
+                        Text(
+                            text = series.meta.description,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = if (series.type == "season") "合集" else "系列",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            text = "${series.meta.total}个视频",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SeriesCardWithBackground(
+    series: UserSeriesList.SeriesItem,
+    onClick: (UserSeriesList.SeriesItem) -> Unit
+) {
+    var isLoading by remember { mutableStateOf(true) }
+    
     Card(
         onClick = { onClick(series) },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
-        )
+            .padding(horizontal = 12.dp, vertical = 4.dp)
+            .height(90.dp),
+        shape = RoundedCornerShape(12.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            if (series.meta.cover.isNotEmpty()) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(series.meta.cover)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = series.meta.name,
+        Box(modifier = Modifier.fillMaxSize()) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(series.meta.cover)
+                    .crossfade(200)
+                    .build(),
+                contentDescription = series.meta.name,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(12.dp)),
+                contentScale = ContentScale.Crop,
+                onSuccess = { isLoading = false },
+                onError = { isLoading = false }
+            )
+            
+            if (isLoading) {
+                Box(
                     modifier = Modifier
-                        .size(60.dp)
-                        .clip(RoundedCornerShape(4.dp)),
-                    contentScale = ContentScale.Crop
+                        .fillMaxSize()
+                        .shimmer()
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))
                 )
             }
             
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color.Black.copy(alpha = 0.7f)
+                            )
+                        )
+                    )
+            )
+            
             Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(12.dp),
+                verticalArrangement = Arrangement.Bottom
             ) {
                 Text(
                     text = series.meta.name,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
+                    color = Color.White,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
                 
-                if (series.meta.description.isNotEmpty()) {
-                    Text(
-                        text = series.meta.description,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
+                Spacer(modifier = Modifier.height(6.dp))
                 
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -831,12 +932,12 @@ private fun SeriesCard(
                     Text(
                         text = if (series.type == "season") "合集" else "系列",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary
+                        color = Color.White.copy(alpha = 0.9f)
                     )
                     Text(
                         text = "${series.meta.total}个视频",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = Color.White.copy(alpha = 0.9f)
                     )
                 }
             }
