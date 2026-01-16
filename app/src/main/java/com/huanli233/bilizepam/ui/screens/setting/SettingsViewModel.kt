@@ -120,4 +120,10 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
             }
         }
     }
+
+    fun clearAllSettings() {
+        viewModelScope.launch {
+            LocalData.clearAllSettings()
+        }
+    }
 }

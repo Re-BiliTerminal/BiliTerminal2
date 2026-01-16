@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.PlayArrow
@@ -67,13 +68,23 @@ fun SettingsScreen(navController: NavController) {
                     onClick = { navController.navigate(Screen.PlayerSettings.route) }
                 )
             }
-                item {
-                    SettingsItem(
-                        icon = Icons.Outlined.Info,
-                        title = stringResource(id = R.string.about),
-                        onClick = { navController.navigate(Screen.About.route) }
-                    )
-                }
+            item {
+                SettingsCategory(title = stringResource(id = R.string.advanced))
+            }
+            item {
+                SettingsItem(
+                    icon = Icons.Outlined.Build,
+                    title = stringResource(id = R.string.developer_options),
+                    onClick = { navController.navigate(Screen.DeveloperOptions.route) }
+                )
+            }
+            item {
+                SettingsItem(
+                    icon = Icons.Outlined.Info,
+                    title = stringResource(id = R.string.about),
+                    onClick = { navController.navigate(Screen.About.route) }
+                )
+            }
             }
         }
     }

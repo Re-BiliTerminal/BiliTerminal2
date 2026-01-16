@@ -22,6 +22,7 @@ sealed class Screen(val route: String, @StringRes val titleResId: Int) {
     data object About : Screen("settings_about", R.string.about)
     data object ThemeColor : Screen("settings_theme_color", R.string.theme_color)
     data object ViewPreview : Screen("view_preview", R.string.view_preview)
+    data object DeveloperOptions : Screen("settings_developer", R.string.developer_options)
     
     data object VideoDetail : Screen("video_detail/{avid}/{bvid}", R.string.app_name) {
         fun createRoute(avid: Long, bvid: String) = "video_detail/$avid/$bvid"

@@ -237,6 +237,12 @@
     <string name="settings_ui">インターフェース設定</string>
     <string name="settings_player">プレイヤー設定</string>
     <string name="settings_language">言語設定</string>
+    <string name="developer_options">開発者オプション</string>
+    <string name="advanced">詳細</string>
+    <string name="data_management">データ管理</string>
+    <string name="clear_settings">設定をクリア</string>
+    <string name="clear_settings_desc">すべての設定項目をデフォルト値にリセットします。更新後に新しい設定項目のデフォルト値の問題を解決するために使用されます</string>
+    <string name="clear_settings_warning">すべての設定をクリアしてもよろしいですか？この操作により、すべての設定項目がデフォルト値にリセットされ、元に戻すことはできません。</string>
     <string name="language_system">システムに従う</string>
     <string name="language_simplified_chinese">簡体字中国語</string>
     <string name="language_traditional_chinese">繁体字中国語</string>

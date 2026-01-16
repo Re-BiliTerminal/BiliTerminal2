@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.wear.compose.navigation.composable
 import com.huanli233.bilizepam.ui.screens.setting.AboutScreen
+import com.huanli233.bilizepam.ui.screens.setting.DeveloperOptionsScreen
 import com.huanli233.bilizepam.ui.screens.setting.PlayerSettingsScreen
 import com.huanli233.bilizepam.ui.screens.setting.SettingsScreen
 import com.huanli233.bilizepam.ui.screens.setting.ThemeColorScreen
@@ -30,5 +31,8 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
     }
     composable(Screen.ViewPreview.route) {
         Box(modifier = Modifier.fillMaxSize())
+    }
+    composable(Screen.DeveloperOptions.route) {
+        DeveloperOptionsScreen(navController = navController)
     }
 }

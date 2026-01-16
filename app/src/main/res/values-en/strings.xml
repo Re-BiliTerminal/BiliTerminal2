@@ -255,6 +255,12 @@
     <string name="settings_ui">Interface Settings</string>
     <string name="settings_player">Player Settings</string>
     <string name="settings_language">Language Settings</string>
+    <string name="developer_options">Developer Options</string>
+    <string name="advanced">Advanced</string>
+    <string name="data_management">Data Management</string>
+    <string name="clear_settings">Clear Settings</string>
+    <string name="clear_settings_desc">Reset all settings to default values, used to resolve default value issues for new settings after updates</string>
+    <string name="clear_settings_warning">Are you sure you want to clear all settings? This action will reset all settings to default values and cannot be undone.</string>
     <string name="language_system">Follow System</string>
     <string name="language_simplified_chinese">Simplified Chinese</string>
     <string name="language_traditional_chinese">Traditional Chinese</string>

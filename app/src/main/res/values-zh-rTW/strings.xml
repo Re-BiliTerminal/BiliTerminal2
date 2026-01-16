@@ -229,6 +229,12 @@
     <string name="settings_ui">介面設定</string>
     <string name="settings_player">播放器設定</string>
     <string name="settings_language">語言設定</string>
+    <string name="developer_options">開發者選項</string>
+    <string name="advanced">進階</string>
+    <string name="data_management">資料管理</string>
+    <string name="clear_settings">清空設定</string>
+    <string name="clear_settings_desc">將所有設定項重置為預設值，用於解決更新後新設定項的預設值問題</string>
+    <string name="clear_settings_warning">確定要清空所有設定嗎？此操作會將所有設定項重置為預設值，且無法撤銷。</string>
     <string name="language_system">跟隨系統</string>
     <string name="language_simplified_chinese">簡體中文</string>
     <string name="language_traditional_chinese">繁體中文</string>
