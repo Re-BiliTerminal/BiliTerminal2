@@ -66,4 +66,10 @@ object LocalData {
         }
     }
 
+    suspend fun clearAllSettings(): AppSettings {
+        return updateData {
+            AppSettingsSerializer.defaultValue
+        }
+    }
+
 }

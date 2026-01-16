@@ -7,6 +7,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class UserCardInfo(
     val card: UserCard,
+    val space: SpaceImage?,
     val following: Boolean,
     @SerializedName("archive_count") val archiveCount: Int,
     @SerializedName("article_count") val articleCount: Int,
@@ -36,8 +37,7 @@ data class UserCard(
     val nameplate: Nameplate,
     @SerializedName("Official") val official: Official,
     @SerializedName("official_verify") val officialVerify: OfficialVerify,
-    val vip: Vip,
-    val space: SpaceImage
+    val vip: Vip
 ) : Parcelable {
     fun toUserInfo() = UserInfo(
         mid = mid.toLongOrNull() ?: -1,

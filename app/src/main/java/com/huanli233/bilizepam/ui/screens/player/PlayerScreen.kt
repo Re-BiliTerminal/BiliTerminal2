@@ -163,6 +163,8 @@ fun PlayerScreen(
     var danmakuView by remember { mutableStateOf<DanmakuView?>(null) }
     var danmakuError by remember { mutableStateOf<String?>(null) }
     var playbackSpeed by remember { mutableFloatStateOf(1f) }
+    
+    val videoStateCache = remember { mutableMapOf<String, Pair<Boolean, Float>>() }
     var isLongPressing by remember { mutableStateOf(false) }
     val videoAspectRatio = uiState.videoAspectRatio
 
@@ -201,14 +203,30 @@ fun PlayerScreen(
 
     val scope = rememberCoroutineScope()
 
-    val danmakuContext = remember {
+    val danmakuContext = remember(playerSettings) {
+        val defaultFontSize = 16f
+        val fontSize = playerSettings?.danmakuFontSize ?: defaultFontSize
+        val scaleFactor = fontSize / defaultFontSize
+        
         DanmakuContext.create().apply {
-            setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3f)
-            setScaleTextSize(1.2f)
-            setDanmakuTransparency(0.8f)
+            val strokeWidth = playerSettings?.danmakuStrokeWidth ?: 3f
+            setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, strokeWidth)
+            setScaleTextSize(scaleFactor)
+            val transparency = playerSettings?.danmakuTransparency ?: 0.8f
+            setDanmakuTransparency(transparency)
             setCacheStuffer(SpannedCacheStuffer(), null)
-            setMaximumVisibleSizeInScreen(100)
-            setDuplicateMergingEnabled(true)
+            setMaximumVisibleSizeInScreen(playerSettings?.danmakuMaxCount ?: 50)
+            val mergeDuplicate = playerSettings?.danmakuMergeDuplicate ?: true
+            setDuplicateMergingEnabled(mergeDuplicate)
+            val scrollSpeed = playerSettings?.danmakuScrollSpeed ?: 1.0f
+            setScrollSpeedFactor(scrollSpeed)
+            val bold = playerSettings?.danmakuBold ?: false
+            setDanmakuBold(bold)
+            
+            setR2LDanmakuVisibility(playerSettings?.danmakuScrollEnabled ?: true)
+            setFTDanmakuVisibility(playerSettings?.danmakuTopEnabled ?: true)
+            setFBDanmakuVisibility(playerSettings?.danmakuBottomEnabled ?: true)
+            setSpecialDanmakuVisibility(playerSettings?.danmakuAdvancedEnabled ?: true)
         }
     }
 
@@ -219,6 +237,45 @@ fun PlayerScreen(
     LaunchedEffect(aid, cid) {
         if (cid > 0) {
             viewModel.loadVideo(aid, cid)
+            
+            val videoKey = "${aid}_${cid}"
+            val playerSettings = settings?.playerSettings
+            
+            if (playerSettings?.rememberDanmakuEnabled == true || playerSettings?.rememberSpeed == true) {
+                val cachedState = videoStateCache[videoKey]
+                if (cachedState != null) {
+                    if (playerSettings.rememberDanmakuEnabled) {
+                        viewModel.setDanmakuVisible(cachedState.first)
+                    }
+                    if (playerSettings.rememberSpeed) {
+                        playbackSpeed = cachedState.second
+                        viewModel.ijkPlayer.setSpeed(playbackSpeed)
+                    }
+                } else {
+                    val defaultDanmaku = playerSettings?.defaultDanmakuEnabled ?: true
+                    val defaultSpeed = playerSettings?.defaultSpeed ?: 1.0f
+                    
+                    if (playerSettings.rememberDanmakuEnabled) {
+                        viewModel.setDanmakuVisible(defaultDanmaku)
+                    } else {
+                        viewModel.setDanmakuVisible(defaultDanmaku)
+                    }
+                    
+                    if (playerSettings.rememberSpeed) {
+                        playbackSpeed = defaultSpeed
+                        viewModel.ijkPlayer.setSpeed(playbackSpeed)
+                    } else {
+                        playbackSpeed = defaultSpeed
+                        viewModel.ijkPlayer.setSpeed(playbackSpeed)
+                    }
+                    
+                    videoStateCache[videoKey] = Pair(defaultDanmaku, defaultSpeed)
+                }
+            } else {
+                viewModel.setDanmakuVisible(playerSettings?.defaultDanmakuEnabled ?: true)
+                playbackSpeed = playerSettings?.defaultSpeed ?: 1.0f
+                viewModel.ijkPlayer.setSpeed(playbackSpeed)
+            }
         }
     }
 
@@ -837,6 +894,16 @@ fun PlayerScreen(
                     }
                 }
 
+                LaunchedEffect(danmakuContext, isDanmakuPrepared, danmakuParser) {
+                    if (isDanmakuPrepared && danmakuView != null && danmakuParser != null) {
+                        try {
+                            danmakuView?.prepare(danmakuParser, danmakuContext)
+                        } catch (e: Exception) {
+                            Log.e("Danmaku", "Error updating danmaku context", e)
+                        }
+                    }
+                }
+
                 // 视频加载动画 - 仅在SurfaceView模式下显示（TextureView模式在AndroidView内部处理）
                 if (playerSettings?.useTextureView != true) {
                     val shouldShowVideoLoading =
@@ -1085,11 +1152,23 @@ fun PlayerScreen(
         onBackClick = onNavigateBack,
         onDanmakuToggle = {
             viewModel.toggleDanmaku()
+            val playerSettings = settings?.playerSettings
+            if (playerSettings?.rememberDanmakuEnabled == true) {
+                val videoKey = "${uiState.aid}_${uiState.cid}"
+                val currentSpeed = playbackSpeed
+                videoStateCache[videoKey] = Pair(uiState.isDanmakuVisible, currentSpeed)
+            }
         },
         isDanmakuVisible = uiState.isDanmakuVisible,
         onSpeedChange = { speed ->
             playbackSpeed = speed
             viewModel.ijkPlayer.setSpeed(speed)
+            val playerSettings = settings?.playerSettings
+            if (playerSettings?.rememberSpeed == true) {
+                val videoKey = "${uiState.aid}_${uiState.cid}"
+                val currentDanmaku = uiState.isDanmakuVisible
+                videoStateCache[videoKey] = Pair(currentDanmaku, speed)
+            }
         },
         onSpeedClick = {
             showSpeedSelector = true
@@ -1145,6 +1224,12 @@ fun PlayerScreen(
             onSpeedSelected = { speed ->
                 playbackSpeed = speed
                 viewModel.ijkPlayer.setSpeed(speed)
+                val playerSettings = settings?.playerSettings
+                if (playerSettings?.rememberSpeed == true) {
+                    val videoKey = "${uiState.aid}_${uiState.cid}"
+                    val currentDanmaku = uiState.isDanmakuVisible
+                    videoStateCache[videoKey] = Pair(currentDanmaku, speed)
+                }
                 showSpeedSelector = false
             }
         )

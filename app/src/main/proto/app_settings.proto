@@ -23,6 +23,8 @@ message UiSettings {
   bool marquee_enabled = 6;
   bool grid_list_enabled = 7;
   bool round_mode = 8;
+  bool video_card_background_style = 9;
+  bool user_profile_background_enabled = 10;
 }
 
 message Theme {
@@ -52,6 +54,23 @@ message PlayerSettings {
   int32 default_quality = 3;
   bool use_texture_view = 4;
   bool enable_one_finger_zoom = 5;
+  bool default_danmaku_enabled = 6;
+  float default_speed = 7;
+  bool remember_danmaku_enabled = 8;
+  bool remember_speed = 9;
+  float danmaku_font_size = 10;
+  int32 danmaku_max_count = 11;
+  bool danmaku_scroll_enabled = 12;
+  bool danmaku_top_enabled = 13;
+  bool danmaku_bottom_enabled = 14;
+  bool danmaku_advanced_enabled = 15;
+  float danmaku_transparency = 16;
+  float danmaku_scroll_speed = 17;
+  float danmaku_stroke_width = 18;
+  bool danmaku_merge_duplicate = 19;
+  bool danmaku_bold = 20;
+  float danmaku_area_top = 21;
+  float danmaku_area_bottom = 22;
 }
 
 message AppSettings {

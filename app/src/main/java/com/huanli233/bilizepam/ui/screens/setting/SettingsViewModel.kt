@@ -96,4 +96,34 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
             }
         }
     }
+
+    fun updateLanguage(languageTag: String) {
+        viewModelScope.launch {
+            LocalData.edit {
+                language = languageTag
+            }
+        }
+    }
+
+    fun updateVideoCardBackgroundStyle(enabled: Boolean) {
+        viewModelScope.launch {
+            LocalData.edit {
+                uiSettings = uiSettings.edit { videoCardBackgroundStyle = enabled }
+            }
+        }
+    }
+
+    fun updateUserProfileBackgroundEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            LocalData.edit {
+                uiSettings = uiSettings.edit { userProfileBackgroundEnabled = enabled }
+            }
+        }
+    }
+
+    fun clearAllSettings() {
+        viewModelScope.launch {
+            LocalData.clearAllSettings()
+        }
+    }
 }

@@ -374,6 +374,12 @@ class PlayerViewModel @Inject constructor(
         )
     }
     
+    fun setDanmakuVisible(visible: Boolean) {
+        _uiState.value = _uiState.value.copy(
+            isDanmakuVisible = visible
+        )
+    }
+    
     fun changeQuality(quality: Int) {
         val currentState = _uiState.value
         if (currentState.aid > 0 && currentState.cid > 0) {

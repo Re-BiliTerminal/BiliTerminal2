@@ -39,6 +39,8 @@ object AppSettingsSerializer : Serializer<AppSettings> {
             snackbarEnabled = true
             marqueeEnabled = true
             gridListEnabled = false
+            videoCardBackgroundStyle = false
+            userProfileBackgroundEnabled = false
         }
         theme = Theme.newBuilder().build {
             nightMode = NightMode.NIGHT_MODE_NIGHT
@@ -62,6 +64,23 @@ object AppSettingsSerializer : Serializer<AppSettings> {
             autoPlay = true
             defaultQuality = 64
             useTextureView = false
+            defaultDanmakuEnabled = true
+            defaultSpeed = 1.0f
+            rememberDanmakuEnabled = false
+            rememberSpeed = false
+            danmakuFontSize = 16f
+            danmakuMaxCount = 50
+            danmakuScrollEnabled = true
+            danmakuTopEnabled = true
+            danmakuBottomEnabled = true
+            danmakuAdvancedEnabled = true
+            danmakuTransparency = 0.8f
+            danmakuScrollSpeed = 1.0f
+            danmakuStrokeWidth = 3f
+            danmakuMergeDuplicate = true
+            danmakuBold = false
+            danmakuAreaTop = 0.0f
+            danmakuAreaBottom = 0.0f
         }
         menuConfig = MenuConfig().toString()
     }

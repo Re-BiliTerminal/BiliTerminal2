@@ -83,6 +83,7 @@
     <string name="desc_huanli233">此分支的建立者</string>
     <string name="disclaimer">免責宣告</string>
     <string name="recommend">推薦</string>
+    <string name="dynamic">動態</string>
     <string name="precious">入站必刷</string>
     <string name="popular">熱門</string>
     <string name="loading">載入中</string>
@@ -120,6 +121,10 @@
     <string name="favorite">收藏</string>
     <string name="coin">投幣</string>
     <string name="like">按讚</string>
+    <string name="my_space">我的</string>
+    <string name="history">歷史記錄</string>
+    <string name="following">關注</string>
+    <string name="opus_favorite">圖文收藏夾</string>
     <string name="article_detail">專欄詳情</string>
     <string name="opus_favorite_collection">圖文收藏夾</string>
     <string name="operation_failed">操作失敗：%1$s</string>
@@ -139,6 +144,8 @@
     <string name="player_not_found">未找到播放器</string>
     <string name="tip_live_player">若無法播放請更換為內建播放器</string>
     <string name="dynamic_info">動態詳情</string>
+    <string name="dynamic_detail">動態詳情</string>
+    <string name="opus_detail">圖文詳情</string>
     <string name="empty_tip">空空如也</string>
     <string name="login_qrcode_network_error">獲取二維碼失敗，網路錯誤</string>
     <string name="login_qrcode_api_error">登入介面可能失效，請找開發者</string>
@@ -146,6 +153,7 @@
     <string name="watch_later">稍後再看</string>
     <string name="relay">轉發</string>
     <string name="download">快取</string>
+    <string name="download_manager">下載管理</string>
 
     <string name="not_set_text">未設定</string>
 
@@ -219,6 +227,62 @@
     <string name="open">打開</string>
     <string name="group_id">群號：%1$s</string>
     <string name="settings_ui">介面設定</string>
+    <string name="settings_player">播放器設定</string>
+    <string name="settings_language">語言設定</string>
+    <string name="developer_options">開發者選項</string>
+    <string name="advanced">進階</string>
+    <string name="data_management">資料管理</string>
+    <string name="clear_settings">清空設定</string>
+    <string name="clear_settings_desc">將所有設定項重置為預設值，用於解決更新後新設定項的預設值問題</string>
+    <string name="clear_settings_warning">確定要清空所有設定嗎？此操作會將所有設定項重置為預設值，且無法撤銷。</string>
+    <string name="language_system">跟隨系統</string>
+    <string name="language_simplified_chinese">簡體中文</string>
+    <string name="language_traditional_chinese">繁體中文</string>
+    <string name="language_english">English</string>
+    <string name="language_japanese">日本語</string>
+    <string name="video_playback">影片播放</string>
+    <string name="use_software_decoder">使用軟體解碼</string>
+    <string name="use_software_decoder_desc">部分裝置硬體解碼會出現綠屏，啟用此選項可解決</string>
+    <string name="use_texture_view">使用 TextureView</string>
+    <string name="use_texture_view_desc">使用 TextureView 替代 SurfaceView，可能解決綠屏問題</string>
+    <string name="enable_one_finger_zoom">單指縮放</string>
+    <string name="enable_one_finger_zoom_desc">開啟後可用單指上下滑動縮放（兩指縮放始終可用）</string>
+    <string name="auto_play">自動播放</string>
+    <string name="auto_play_desc">打開影片時自動開始播放</string>
+    <string name="playback_quality">播放畫質</string>
+    <string name="default_quality">預設畫質</string>
+    <string name="default_danmaku_enabled">預設彈幕開關</string>
+    <string name="default_danmaku_enabled_desc">打開影片時預設顯示彈幕</string>
+    <string name="default_speed">預設倍速</string>
+    <string name="remember_danmaku_enabled">記憶彈幕開關</string>
+    <string name="remember_danmaku_enabled_desc">記住每個影片的彈幕開關狀態</string>
+    <string name="remember_speed">記憶倍速</string>
+    <string name="remember_speed_desc">記住每個影片的播放倍速</string>
+    <string name="danmaku_settings">彈幕設定</string>
+    <string name="danmaku_font_size">彈幕字體大小</string>
+    <string name="danmaku_max_count">同屏數量</string>
+    <string name="danmaku_scroll_enabled">滾動彈幕</string>
+    <string name="danmaku_scroll_enabled_desc">顯示滾動彈幕</string>
+    <string name="danmaku_top_enabled">頂部彈幕</string>
+    <string name="danmaku_top_enabled_desc">顯示頂部彈幕</string>
+    <string name="danmaku_bottom_enabled">底部彈幕</string>
+    <string name="danmaku_bottom_enabled_desc">顯示底部彈幕</string>
+    <string name="danmaku_advanced_enabled">進階彈幕</string>
+    <string name="danmaku_advanced_enabled_desc">顯示進階彈幕</string>
+    <string name="danmaku_transparency">彈幕透明度</string>
+    <string name="danmaku_transparency_desc">設定彈幕的透明度</string>
+    <string name="danmaku_scroll_speed">彈幕滾動速度</string>
+    <string name="danmaku_scroll_speed_desc">設定彈幕的滾動速度倍數</string>
+    <string name="danmaku_stroke_width">彈幕描邊寬度</string>
+    <string name="danmaku_stroke_width_desc">設定彈幕文字的描邊寬度</string>
+    <string name="danmaku_merge_duplicate">合併相同彈幕</string>
+    <string name="danmaku_merge_duplicate_desc">合併相同內容的彈幕</string>
+    <string name="danmaku_bold">彈幕加粗</string>
+    <string name="danmaku_bold_desc">將彈幕文字設定為加粗</string>
+    <string name="danmaku_area_top">頂部區域</string>
+    <string name="danmaku_area_top_desc">設定頂部彈幕顯示區域的百分比</string>
+    <string name="danmaku_area_bottom">底部區域</string>
+    <string name="danmaku_area_bottom_desc">設定底部彈幕顯示區域的百分比</string>
     <string name="scale">大小</string>
     <string name="preference">偏好</string>
     <string name="disable_fullscreen_dialog">非全螢幕Dialog</string>
@@ -226,11 +290,24 @@
     <string name="density" translatable="false">Density</string>
     <string name="animation">動畫</string>
     <string name="system_accent_color">系統主題色</string>
-    <string name="video_detail">影片詳情</string>
+    <string name="video_detail_page">影片詳情</string>
+    <string name="video_detail">詳情</string>
+    <string name="video_comments">評論</string>
+    <string name="video_recommend">推薦</string>
+    <string name="video_info">影片資訊</string>
+    <string name="video_uploader">UP主</string>
+    <string name="uploader">UP主</string>
+    <string name="uploaders">UP主 (%1$d)</string>
+    <string name="video_collection">合集</string>
     <string name="tag">標籤</string>
     <string name="request_relation_failed">獲取操作資訊失敗：%1$s</string>
     <string name="like_failed_with_msg">按讚失敗：%1$s</string>
     <string name="theme_color">主題顏色</string>
+    <string name="video_card_background_style">封面背景卡片</string>
+    <string name="video_card_background_style_desc">將影片封面作為卡片背景</string>
+    <string name="user_profile_background">個人主頁背景</string>
+    <string name="user_profile_background_desc">在個人主頁顯示背景頭圖</string>
+    <string name="ui_style_settings">UI樣式</string>
 
     <string name="color_sakura">櫻花</string>
     <string name="color_red">紅色</string>
@@ -259,6 +336,7 @@
     <string name="copy_all">複製全部</string>
     <string name="copied">已複製</string>
     <string name="new_loading_animation">新的載入動畫</string>
+    <string name="error">錯誤</string>
 
     <string-array name="icon_license">
         <item>介面設定: Newicons, MIT License</item>
@@ -318,5 +396,58 @@
         <item>dynamic_info</item>
         <item>article</item>
     </array>
+
+    <string name="action_play">播放</string>
+    <string name="action_like">按讚</string>
+    <string name="action_coin">投幣</string>
+    <string name="action_favorite">收藏</string>
+    <string name="action_watch_later">稍後再看</string>
+    <string name="action_download">快取</string>
+    <string name="action_share">轉發</string>
+    <string name="action_save">保存</string>
+    <string name="action_back">返回</string>
+    <string name="action_confirm">確定</string>
+    <string name="action_cancel">取消</string>
+    
+    <string name="dialog_coin_title">投幣</string>
+    <string name="dialog_coin_select">選擇投幣數量</string>
+    <string name="dialog_coin_also_like">同時按讚</string>
+    <string name="dialog_favorite_title">收藏到</string>
+    
+    <string name="msg_like_success">按讚成功</string>
+    <string name="msg_cancel_success">取消成功</string>
+    <string name="msg_coin_success">投幣成功</string>
+    <string name="msg_favorite_success">收藏成功</string>
+    <string name="msg_operation_failed">操作失敗</string>
+    <string name="msg_not_logged_in">還沒有登入喵~</string>
+    <string name="msg_loading">載入中...</string>
+    <string name="msg_image_saved">圖片已保存</string>
+    <string name="msg_save_failed">保存失敗</string>
+    <string name="msg_watch_later_success">已添加到稍後再看</string>
+    <string name="msg_download_dev">下載功能開發中...</string>
+    
+    <string name="placeholder_comments">評論區功能開發中...</string>
+    <string name="placeholder_recommend">相關推薦功能開發中...</string>
+    <string name="placeholder_user_profile">用戶詳情頁開發中...</string>
+    <string name="placeholder_collection">合集詳情頁開發中...</string>
+    <string name="placeholder_player">播放器開發中...</string>
+    
+    <string name="next">下一步</string>
+    <string name="video_uploaders">UP主</string>
+    
+    <string name="search">搜尋</string>
+    <string name="search_result">搜尋結果</string>
+    <string name="search_hint">輸入關鍵詞</string>
+    <string name="search_history">搜尋歷史</string>
+    <string name="search_suggestions">搜尋建議</string>
+    <string name="search_video">影片</string>
+    <string name="search_user">用戶</string>
+    <string name="search_article">專欄</string>
+    <string name="search_live">直播</string>
+    <string name="search_empty">還沒輸入內容喵~</string>
+    <string name="search_no_result">沒有找到相關內容</string>
+    <string name="clear_history">清除歷史</string>
+    <string name="no_results">沒有找到相關內容</string>
+    <string name="error_occurred">出錯了</string>
 
 </resources>

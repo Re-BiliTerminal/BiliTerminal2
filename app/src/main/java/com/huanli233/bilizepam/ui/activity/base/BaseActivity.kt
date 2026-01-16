@@ -93,7 +93,8 @@ open class BaseActivity : ThemedAppCompatActivity() {
         // Check for changes that require the activity to be recreated
         val needsRecreate = oldSettings.uiSettings.uiScale != newSettings.uiSettings.uiScale ||
                 oldSettings.uiSettings.density != newSettings.uiSettings.density || oldSettings.theme.nightMode != newSettings.theme.nightMode ||
-                oldSettings.theme.colorTheme != newSettings.theme.colorTheme || oldSettings.theme.followSystemAccent != newSettings.theme.followSystemAccent
+                oldSettings.theme.colorTheme != newSettings.theme.colorTheme || oldSettings.theme.followSystemAccent != newSettings.theme.followSystemAccent ||
+                oldSettings.language != newSettings.language
 
         if (needsRecreate) {
             recreate()
