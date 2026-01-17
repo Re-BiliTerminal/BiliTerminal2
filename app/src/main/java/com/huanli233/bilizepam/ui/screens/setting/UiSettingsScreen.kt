@@ -7,13 +7,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -28,7 +25,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,6 +36,7 @@ import androidx.wear.compose.materialcore.toVerticalPadding
 import com.huanli233.bilizepam.R
 import com.huanli233.bilizepam.data.proto.NightMode
 import com.huanli233.bilizepam.ui.activity.setup.UiPreviewActivity
+import com.huanli233.bilizepam.ui.components.SelectionDialog
 import com.huanli233.bilizepam.ui.components.scrollAwareTopBar
 import com.huanli233.bilizepam.ui.components.rememberEnterAlwaysScrollBehavior
 import com.huanli233.bilizepam.ui.dialog.AdaptDialog
@@ -229,8 +226,15 @@ fun UiSettingsScreen(
     }
 
     if (showNightModeDialog) {
-        NightModeDialog(
-            currentMode = currentSettings.theme.nightMode,
+        val nightModeEntries = stringArrayResource(R.array.dark_theme_modes)
+        SelectionDialog(
+            title = stringResource(id = R.string.dark_theme),
+            options = listOf(
+                NightMode.NIGHT_MODE_AUTO to nightModeEntries[0],
+                NightMode.NIGHT_MODE_DAY to nightModeEntries[1],
+                NightMode.NIGHT_MODE_NIGHT to nightModeEntries[2]
+            ),
+            currentValue = currentSettings.theme.nightMode,
             onDismiss = { showNightModeDialog = false },
             onConfirm = {
                 viewModel.updateNightMode(it)
@@ -240,8 +244,16 @@ fun UiSettingsScreen(
     }
 
     if (showLanguageDialog) {
-        LanguageDialog(
-            currentLanguage = currentSettings.language,
+        SelectionDialog(
+            title = stringResource(id = R.string.settings_language),
+            options = listOf(
+                "" to stringResource(R.string.language_system),
+                "zh-CN" to stringResource(R.string.language_simplified_chinese),
+                "zh-TW" to stringResource(R.string.language_traditional_chinese),
+                "en" to stringResource(R.string.language_english),
+                "ja" to stringResource(R.string.language_japanese)
+            ),
+            currentValue = currentSettings.language,
             onDismiss = { showLanguageDialog = false },
             onConfirm = { languageTag ->
                 viewModel.updateLanguage(languageTag)
@@ -324,121 +336,6 @@ private fun DensityDialog(
     )
 }
 
-@Composable
-private fun NightModeDialog(
-    currentMode: NightMode,
-    onDismiss: () -> Unit,
-    onConfirm: (NightMode) -> Unit
-) {
-    var selectedMode by remember { mutableStateOf(currentMode) }
-    val nightModeEntries = stringArrayResource(R.array.dark_theme_modes)
-    val options = listOf(
-        nightModeEntries[0] to NightMode.NIGHT_MODE_AUTO,
-        nightModeEntries[1] to NightMode.NIGHT_MODE_DAY,
-        nightModeEntries[2] to NightMode.NIGHT_MODE_NIGHT,
-    )
-
-    AdaptDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(id = R.string.dark_theme)) },
-        text = {
-            Column(Modifier.selectableGroup()) {
-                options.forEach { (text, mode) ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = (selectedMode == mode),
-                                onClick = { selectedMode = mode },
-                                role = Role.RadioButton
-                            )
-                            .padding(vertical = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = (selectedMode == mode),
-                            onClick = null
-                        )
-                        Text(
-                            text = text,
-                            modifier = Modifier.padding(start = 16.dp),
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    }
-                }
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(id = android.R.string.cancel))
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = { onConfirm(selectedMode) }) {
-                Text(stringResource(id = android.R.string.ok))
-            }
-        }
-    )
-}
-
-@Composable
-private fun LanguageDialog(
-    currentLanguage: String,
-    onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit
-) {
-    var selectedLanguage by remember { mutableStateOf(currentLanguage) }
-    
-    val languageOptions = listOf(
-        stringResource(R.string.language_system) to "",
-        stringResource(R.string.language_simplified_chinese) to "zh-CN",
-        stringResource(R.string.language_traditional_chinese) to "zh-TW",
-        stringResource(R.string.language_english) to "en",
-        stringResource(R.string.language_japanese) to "ja",
-    )
-
-    AdaptDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(id = R.string.settings_language)) },
-        text = {
-            Column(Modifier.selectableGroup()) {
-                languageOptions.forEach { (displayName, languageTag) ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = (selectedLanguage == languageTag),
-                                onClick = { selectedLanguage = languageTag },
-                                role = Role.RadioButton
-                            )
-                            .padding(vertical = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = (selectedLanguage == languageTag),
-                            onClick = null
-                        )
-                        Text(
-                            text = displayName,
-                            modifier = Modifier.padding(start = 16.dp),
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    }
-                }
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(id = android.R.string.cancel))
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = { onConfirm(selectedLanguage) }) {
-                Text(stringResource(id = android.R.string.ok))
-            }
-        }
-    )
-}
 
 @Composable
 private fun getLanguageDisplayName(languageTag: String): String {
