@@ -307,6 +307,10 @@
     <string name="video_card_background_style_desc">將影片封面作為卡片背景</string>
     <string name="user_profile_background">個人主頁背景</string>
     <string name="user_profile_background_desc">在個人主頁顯示背景頭圖</string>
+    <string name="collection_card_background_style">合集卡片背景</string>
+    <string name="collection_card_background_style_desc">將封面作為合集卡片背景</string>
+    <string name="favorite_folder_card_background_style">收藏夾卡片背景</string>
+    <string name="favorite_folder_card_background_style_desc">將封面作為收藏夾卡片背景</string>
     <string name="ui_style_settings">UI樣式</string>
 
     <string name="color_sakura">櫻花</string>

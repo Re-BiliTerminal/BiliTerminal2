@@ -559,7 +559,8 @@ fun MainScreen(mainNavController: androidx.navigation.NavController) {
             composable("favorite") {
                 FavoriteScreen(
                     onFolderClick = { fid, name ->
-                        contentNavController.navigate("favorite_videos/$fid/$name")
+                        val encodedName = java.net.URLEncoder.encode(name, "UTF-8")
+                        contentNavController.navigate("favorite_videos/$fid/$encodedName")
                     },
                     onOpusFavoriteClick = {
                         contentNavController.navigate("opus_favorite")
@@ -576,7 +577,8 @@ fun MainScreen(mainNavController: androidx.navigation.NavController) {
                 )
             ) { backStackEntry ->
                 val fid = backStackEntry.arguments?.getLong("fid") ?: 0L
-                val name = backStackEntry.arguments?.getString("name") ?: ""
+                val encodedName = backStackEntry.arguments?.getString("name") ?: ""
+                val name = URLDecoder.decode(encodedName, "UTF-8")
                 val mid = AccountManager.currentAccount.accountId
                 
                 FavoriteVideosScreen(

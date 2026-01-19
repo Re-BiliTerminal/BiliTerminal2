@@ -119,6 +119,7 @@ import androidx.wear.compose.material3.PaddingDefaults
 import androidx.wear.compose.material3.ScreenScaffold
 import com.huanli233.bilizepam.data.setting.LocalData
 import com.huanli233.bilizepam.R
+import com.huanli233.bilizepam.ui.components.SelectionDialog
 import com.huanli233.bilizepam.ui.dialog.AdaptDialog
 import com.huanli233.bilizepam.utils.MsgUtil
 import kotlinx.coroutines.delay
@@ -1206,11 +1207,14 @@ fun PlayerScreen(
     }
 
     if (showQualitySelector) {
-        QualitySelectionDialog(
-            currentQuality = playerSettings?.defaultQuality ?: 64,
-            availableQualities = uiState.availableQualities,
+        SelectionDialog(
+            title = "选择清晰度",
+            options = uiState.availableQualities.map { quality ->
+                quality.qn to quality.description
+            },
+            currentValue = playerSettings?.defaultQuality ?: 64,
             onDismiss = { showQualitySelector = false },
-            onQualitySelected = { quality ->
+            onConfirm = { quality ->
                 viewModel.changeQuality(quality)
                 showQualitySelector = false
             }
@@ -1218,10 +1222,19 @@ fun PlayerScreen(
     }
 
     if (showSpeedSelector) {
-        SpeedSelectionDialog(
-            currentSpeed = playbackSpeed,
+        SelectionDialog(
+            title = "播放速度",
+            options = listOf(
+                0.5f to "0.5x",
+                0.75f to "0.75x",
+                1.0f to "1.0x",
+                1.25f to "1.25x",
+                1.5f to "1.5x",
+                2.0f to "2.0x"
+            ),
+            currentValue = playbackSpeed,
             onDismiss = { showSpeedSelector = false },
-            onSpeedSelected = { speed ->
+            onConfirm = { speed ->
                 playbackSpeed = speed
                 viewModel.ijkPlayer.setSpeed(speed)
                 val playerSettings = settings?.playerSettings
@@ -1532,50 +1545,6 @@ private fun formatTime(millis: Long): String {
     return String.format("%02d:%02d", minutes, secs)
 }
 
-@Composable
-fun SpeedSelectionDialog(
-    currentSpeed: Float,
-    onDismiss: () -> Unit,
-    onSpeedSelected: (Float) -> Unit
-) {
-    val speedOptions = listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f)
-
-    AdaptDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = { },
-        title = { Text("播放速度") },
-        text = {
-            Column {
-                speedOptions.forEach { speed ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                onSpeedSelected(speed)
-                                onDismiss()
-                            }
-                            .padding(vertical = 12.dp, horizontal = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = currentSpeed == speed,
-                            onClick = {
-                                onSpeedSelected(speed)
-                                onDismiss()
-                            }
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(
-                            text = "${speed}x",
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-                }
-            }
-        }
-    )
-}
 
 @Composable
 fun PageSelectorDialog(
@@ -1629,49 +1598,6 @@ fun PageSelectorDialog(
     )
 }
 
-@Composable
-fun QualitySelectionDialog(
-    currentQuality: Int,
-    availableQualities: List<VideoQuality>,
-    onDismiss: () -> Unit,
-    onQualitySelected: (Int) -> Unit
-) {
-    AdaptDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = { },
-        title = { Text("选择清晰度") },
-        text = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(max = 300.dp)
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                availableQualities.forEach { quality ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onQualitySelected(quality.qn) }
-                            .padding(vertical = 12.dp, horizontal = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = quality.qn == currentQuality,
-                            onClick = { onQualitySelected(quality.qn) }
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(
-                            text = quality.description,
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-                }
-            }
-        }
-    )
-}
 
 @Composable
 fun ArcSeekbar(

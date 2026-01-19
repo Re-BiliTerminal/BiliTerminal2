@@ -121,6 +121,22 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    fun updateCollectionCardBackgroundStyle(enabled: Boolean) {
+        viewModelScope.launch {
+            LocalData.edit {
+                uiSettings = uiSettings.edit { collectionCardBackgroundStyle = enabled }
+            }
+        }
+    }
+
+    fun updateFavoriteFolderCardBackgroundStyle(enabled: Boolean) {
+        viewModelScope.launch {
+            LocalData.edit {
+                uiSettings = uiSettings.edit { favoriteFolderCardBackgroundStyle = enabled }
+            }
+        }
+    }
+
     fun clearAllSettings() {
         viewModelScope.launch {
             LocalData.clearAllSettings()
